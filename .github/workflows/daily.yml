@@ -1,0 +1,50 @@
+name: Daily AI News
+
+on:
+  # 每天早上 8 点（北京时间 16:00）自动运行
+  schedule:
+    - cron: '0 8 * * *'
+  # 也可以手动触发
+  workflow_dispatch:
+  # 每次push也运行（方便测试）
+  push:
+
+jobs:
+  fetch-news:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run feed fetcher
+        run: python feed.py
+
+      - name: Commit and push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # 添加更改
+          git add daily-ai-news.md
+
+          # 只有有更改时才提交
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update AI news - $(date +%Y-%m-%d)"
+            git push
+          fi
