@@ -93,7 +93,7 @@ def send_slack(report):
     blocks = [
         {"type": "header", "text": {"type": "plain_text", "text": "📡 AI 前沿动态"}},
         {"type": "section", "text": {"type": "mrkdwn", "text": report['summary'][:500]}},
-        {"type": "actions", "elements": [{"type": "button", "text": {"type": "plain_text", "text": "查看详情"}, "url": "file:///Users/shenyalan/ai-daily-news/daily-ai-news-improved.md"}]}
+        {"type": "actions", "elements": [{"type": "button", "text": {"type": "plain_text", "text": "查看详情"}, "url": "https://yl0223-ai.github.io/ai-daily-news/daily-ai-news-2026-03-10.html"}]}
     ]
 
     try:
@@ -198,7 +198,7 @@ def send_feishu(report):
             {
                 "tag": "button",
                 "text": {"tag": "plain_text", "content": "📖 查看详情"},
-                "url": "file:///Users/shenyalan/ai-daily-news/daily-ai-news.html",
+                "url": "https://yl0223-ai.github.io/ai-daily-news/daily-ai-news-2026-03-10.html",
                 "type": "primary"
             }
         ]
