@@ -18,6 +18,16 @@ import sys
 sys.path.insert(0, '/Users/shenyalan/ai-daily-news')
 from improve_news import improve_news
 
+# 导入研究者推文抓取
+def fetch_researcher_tweets():
+    """抓取前沿研究者推文"""
+    try:
+        from tweet_fetcher import get_tweets
+        return get_tweets()
+    except Exception as e:
+        print(f"   ⚠️ 抓取研究者推文失败: {e}")
+        return []
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ========== 配置 ==========
@@ -52,9 +62,9 @@ def parse_opml(opml_file):
 
 SOURCES = parse_opml(OPML_FILE)
 EXTRA_SOURCES = {
-    # OPML 中已有：TechCrunch, 量子位, 新智元, Google DeepMind, OpenAI, Sakana 等
-    # 仅添加 OPML 中没有的源
+    # 添加官方 RSS 源（确认有效的）
     "HuggingFace Blog": ("https://huggingface.co/blog/feed.xml", "US"),
+    # 其他需要手动确认 RSS 地址
 }
 SOURCES.update(EXTRA_SOURCES)
 
@@ -64,12 +74,18 @@ SOURCES.update(EXTRA_SOURCES)
 
 # 顶尖AI公司列表
 TIER1_AI_COMPANIES = [
-    "openai", "anthropic", "google", "nvidia",
-    "deepmind", "figure ai", "physical intelligence", "π",
-    "z.ai", "智谱", "glm", "qwen", "minimax", "kimi",
-    "deepseek", "worldlabs", "thinking machines",
-    "字节", "腾讯", "阿里", "百度", "meta", "microsoft",
-    "apple", "amazon", "xai", "mistral", "huggingface"
+    # 顶级 AI 实验室
+    "openai", "anthropic", "google deepmind", "deepmind",
+    "meta ai", "meta", "microsoft", "amazon", "apple",
+    # 前沿团队
+    "deepseek", "worldlabs", "thinking machines", "physical intelligence", "figure ai",
+    "xai", "mistral", "huggingface", "stability ai", "runway",
+    # 中国头部
+    "字节", "腾讯", "阿里", "百度", "智谱", "minimax", "kimi", "qwen", "glm",
+    # 前沿研究者
+    "谢赛宁", "贾扬清", "李飞飞", "吴恩达", "karpathy",
+    # 硬件
+    "nvidia", "amd", "intel", "tpu",
 ]
 
 # ===== 研究领域细分 =====
@@ -190,17 +206,31 @@ OFFICIAL_COMPANY_SOURCES = [
 ]
 
 # 1. 来源权重
+# 信息源金字塔
+# Tier 1: 官方发布 (100分)
+# Tier 2: 一手信源 (85分)
+# Tier 3: 行业聚合 (70分)
+# Tier 4: 其他 (50分)
+
 SOURCE_WEIGHTS = {
+    # Tier 1 - 官方发布
     "OpenAI News": 100, "Google DeepMind": 100, "Anthropic": 100,
     "NVIDIA Blog": 100, "Figure AI": 100, "Physical Intelligence": 100,
     "World Labs": 100, "Thinking Machines Lab": 100, "Meta AI": 100,
     "Microsoft Research": 100, "HuggingFace Blog": 100,
-    "karpathy": 95, "Sakana Blog": 90,
-    "Y Combinator Blog": 85, "a16z": 85, "Sequoia": 80,
-    "The Information": 80, "TechCrunch": 70, "Wired": 70,
-    "The Verge": 70, "Ars Technica": 65,
-    "量子位": 70, "新智元": 70, "机器之心": 70, "36氪": 65,
-    "IT桔子": 60, "PaperWeekly": 60,
+    "DeepSeek": 100, "Mistral AI": 100,
+    "ByteDance": 100, "字节": 100, "阿里": 100, "百度": 100,
+
+    # Tier 2 - 一手信源 (记者/分析师直接报道)
+    "The Information": 90, "Wired": 85, "TechCrunch": 85,
+    "The Verge": 85, "Ars Technica": 85,
+    "karpathy": 90, "Y Combinator Blog": 85, "a16z": 85, "Sequoia": 85,
+    "36氪": 85,
+
+    # Tier 3 - 行业聚合
+    "量子位": 75, "新智元": 75, "机器之心": 75,
+    "IT桔子": 70, "PaperWeekly": 70,
+    "Sakana Blog": 80,
 }
 
 # 其他配置
@@ -439,7 +469,7 @@ CATEGORIES = {
                 "cvpr", "acl", "arxiv", "学者", "教授", "paper",
                 "算法", "突破", "实验室"],
 }
-CATEGORY_PRIORITY = {"模型前沿": 1, "产业动态": 2, "算力追踪": 3, "初创&融资": 4, "研究关注": 5, "其他": 6}
+CATEGORY_PRIORITY = {"模型前沿": 1, "产业动态": 2, "算力追踪": 3, "初创&融资": 4, "研究关注": 5, "X讨论": 6, "其他": 7}
 
 # 研究子领域优先级
 SUBFIELD_ORDER = {
@@ -476,6 +506,22 @@ def parse_date(entry):
             except: continue
     return None
 
+
+# 解析推文时间
+def parse_tweet_time(published_str):
+    """解析推文的 published 字段为 published_parsed 格式"""
+    if not published_str:
+        return None
+    try:
+        from email.utils import parsedate_to_datetime
+        dt = parsedate_to_datetime(published_str)
+        return [
+            dt.year, dt.month, dt.day,
+            dt.hour, dt.minute, dt.second,
+            dt.weekday(), dt.timetuple().tm_yday, 0
+        ]
+    except:
+        return None
 # 播客源（需要过滤）
 PODCAST_SOURCES = ["a16z", "simplecast", "podcast", "播客"]
 
@@ -580,7 +626,7 @@ def call_llm(prompt):
         "anthropic-version": "2023-06-01"
     }
     data = {
-        "model": "MiniMax-M2.5",
+        "model": "MiniMax-M2.5", "temperature": 0.2,
         "max_tokens": 8000,
         "system": """你是一个AI新闻处理器。
 
@@ -599,11 +645,12 @@ def call_llm(prompt):
 - 娱乐圈、房地产、招聘
 
 ### 分类规则
-- 模型前沿：模型发布、benchmark、多模态、视频生成
+- 模型前沿：模型发布、benchmark、多模态、视频生成、模型开源、模型评测
 - 产业动态：商业、合作、用户增长、政策
 - 算力追踪：芯片、硬件、半导体设备
 - 初创&融资：融资、投资
-- 研究关注：论文、学术、CVPR/ICML
+- 研究关注：论文、学术、CVPR/ICML、可解释性、AI安全
+- X讨论：个人动态、观点分享、日常讨论
 
 ## 输出格式
 JSON数组，按顺序输出：
@@ -619,13 +666,16 @@ JSON数组，按顺序输出：
 ]
 
 ## 重要
-- title格式：事件主体+做什么/发布什么+为什么重要（不用感叹号、不用媒体夸张口吻）
-  - 错误示例：「彻底告别VE与VAE！商汤硬核重构多模态」「GPU时代落幕？硅谷巨头集体叛逃」
-  - 正确示例：「商汤发布新多模态架构：砍掉中间编码器，2B参数超越传统范式」「英伟达投入1500亿自研芯片：应对巨头叛逃，GPU时代或终结」
-- body必须是一段完整的2句话摘要，不能只是关键词
-- key_points从body中提取新信息，不要重复body已说的内容
+- title格式：中文标题，事件主体+做什么/发布什么+为什么重要
+  - 必须用中文输出标题
+  - 禁止使用英文标题
+  - 禁止感叹号、问号结尾
+  - 禁止媒体夸张词汇（彻底告别、炸裂、暴击等）
+  - 禁止模糊称呼（如"AI研究者"、"研究人员"），必须具体到人名或公司名
+- body必须是一段完整的中文2句话摘要，不能只是关键词
+- key_points从body中提取新信息，用中文描述
 - 必须按新闻顺序输出，不要跳序
-- 标题用原文标题""",
+- 所有输出必须用中文""",
         "messages": [{"role": "user", "content": prompt}]
     }
     try:
@@ -755,7 +805,7 @@ def fetch_source(name, url, limit=15):
                 "link": link,
                 "categories": cats,
                 "source": name,
-                "published_parsed": e.get("published_parsed"),
+                "published_parsed": list(e.get("published_parsed"))[:6] if e.get("published_parsed") else None,
             }
 
             # 研究类用专门计算方法
@@ -798,7 +848,7 @@ def generate_report(articles):
              "---", "",
              "#要点汇总#", ""]
 
-    for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注"]:
+    for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
         items = by_cat.get(cat, [])
         if items:
             # 要点速览只显示"是什么"（取冒号之前的部分）
@@ -808,7 +858,7 @@ def generate_report(articles):
                     if sep in title:
                         return title.split(sep)[0][:35]
                 return title[:35]
-            titles = "; ".join([get_what(a['title']) for a in items[:3]])
+            titles = "; ".join([get_what(a['title']) for a in items[:5]])
             lines.append(f"- {cat}：{titles}")
 
     lines.extend(["", "---", "", "## 📖 详细参考", ""])
@@ -952,6 +1002,27 @@ def main():
     unique = dedup_articles(all_arts)
     print(f"\n📊 去重后: {len(unique)} 条")
 
+    # 抓取前沿研究者推文
+    print("📡 抓取研究者动态...")
+    researcher_tweets = fetch_researcher_tweets()
+    if researcher_tweets:
+        print(f"   获取 {len(researcher_tweets)} 条推文")
+        # 转换为文章格式
+        for t in researcher_tweets:
+            all_arts.append({
+                "title": t.get("title", "")[:80],
+                "summary": t.get("title", ""),
+                "content": t.get("title", ""),
+                "link": t.get("link", ""),
+                "categories": ["研究者动态"],
+                "is_tweet": True,
+                "source": t.get("source", ""),
+                "published_parsed": parse_tweet_time(t.get("published", "")),
+                "priority": 120,  # 研究者推文提高优先级
+            })
+        unique = dedup_articles(all_arts)
+        print(f"   合并后共 {len(unique)} 条")
+
     print("🔗 合并多源事件...")
     merged = merge_events(unique)
     print(f"📊 合并后: {len(merged)} 条")
@@ -980,11 +1051,32 @@ def main():
     print("🔧 LLM后规范化（分类修正）...")
     merged = improve_news(merged, do_filter=False)
 
+    # 区分个人账号和公司账号
+    COMPANY_ACCOUNTS = {'openai', 'anthropicai', 'googledeepmind', 'meta', 'alibaba', 'deepseek', 'xai', 'theworldlabs', 'physical_int'}
+    RESEARCHER_ACCOUNTS = {'denny_zhou', 'neelnanda5', 'yitayml', 'shunyuyao12', 'jaseweston', 'thesephist', 'thegregyang', 'tingchenai', 'pabbeel', 'svlevine', 'ylecun', 'percyliang', 'chelseabfinn', 'drfeifei'}
+    
+    for a in merged:
+        if a.get('is_tweet'):
+            source = a.get('source', '').lower().replace('@', '')
+            title = a.get('title', '').lower()
+            
+            # 研究者账号的学术讨论 -> 研究关注
+            if any(r in source for r in RESEARCHER_ACCOUNTS):
+                if any(k in title for k in ['paper', 'arxiv', 'research', 'study', 'experiment', 'method', 'model', 'agi', 'agent', 'oracles', 'activation', 'red team', '对齐', '研究', '论文', '模型']):
+                    a['categories'] = ['研究关注']
+                else:
+                    a['categories'] = ['X讨论']
+            # 公司账号保持原有分类
+            elif any(c in source for c in COMPANY_ACCOUNTS):
+                pass  # 保持原有分类
+            else:
+                a['categories'] = ['X讨论']
+
     by_cat = defaultdict(int)
     for a in merged:
         for c in a["categories"]: by_cat[c] += 1
     print(f"📂 分类: ", end="")
-    for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注"]:
+    for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
         print(f"{cat}{by_cat.get(cat,0)} ", end="")
     print("")
 

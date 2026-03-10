@@ -168,10 +168,10 @@ def generate_html(articles):
     def get_what(title):
         for sep in ['：', ':', '？', '?', '！', '!']:
             if sep in title:
-                return title.split(sep)[0][:30]
-        return title[:30]
+                return title.split(sep)[0][:50]
+        return title[:50]
     
-    for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注"]:
+    for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
         items = by_cat.get(cat, [])
         if items:
             titles = " | ".join([get_what(a['title']) for a in items[:3]])
@@ -185,7 +185,7 @@ def generate_html(articles):
     </div>
     <div class="content">"""
 
-    for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注"]:
+    for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
         items = by_cat.get(cat, [])
         if not items: continue
         html += f'<div class="section-title">{cat}</div>'
@@ -226,6 +226,14 @@ def generate_html(articles):
                 html += f'<div class="source">📌 来源: <a href="{link}" target="_blank">{source}</a></div>'
             else:
                 html += f'<div class="source">📌 来源: {source}</div>'
+
+            # 显示合并的来源（Twitter账号等）
+            merged = a.get('merged_sources', [])
+            if merged and len(merged) > 1:
+                other = [s for s in merged if s != source]
+                if other:
+                    html += f'<div class="source" style="margin-top:4px;color:#888">📎 同时参考: {", ".join(other)}</div>'
+
             html += '</div>'
 
     html += f"""

@@ -1,4 +1,4 @@
-## 03月07日 AI 前沿动态
+## 03月10日 AI 前沿动态
 
 > 自动汇总 | 时间窗口: 24h | 每类 Top 5
 
@@ -6,72 +6,116 @@
 
 #要点汇总#
 
-- 模型前沿：FlashAttention-4正式发布
-- 产业动态：Microsoft, Google, Amazon say Anthr; Anthropic’s Claude found 22 vulnera; Quantum scale-up Pasqal plans $2B S
-- 算力追踪：GPU时代落幕; 琻捷电子港交所递交招股书
-- 初创&融资：Science获得2.3亿美元C轮融资; 此间无限获得千万美元天使投资; The Week’s 10 Biggest Funding Round
-- 研究关注：CVPR 2026 | 1B模型也能当多镜头导演; 300万AI悄悄「建国」？Nature长文; Transformer论文作者重造龙虾，Rust搓出钢铁版，告别Ope
+- 模型前沿：港科大提出音频生成统一模型AudioX
+- 产业动态：智谱正式上线AutoClaw推动AI平权; 企业微信正式支持接入OpenClaw; IBM推出Granite 4.0 1B语音模型：面向边缘设备的紧凑多语; World Labs举办黑客松活动聚焦世界模型与空间智能; Anthropic与Mozilla合作测试Claude安全漏洞发现能力
+- 算力追踪：ABB Robotics联合NVIDIA Omniverse实现工业级; OpenAI和Google员工支持Anthropic起诉国防部; AI驱动的行业变革：2026年收入增长与生产力提升; xAI承诺部署改善人类生活的AI并增加数据中心电力供应
+- 初创&融资：OpenAI收购AI安全平台Promptfoo强化企业AI安全
+- 研究关注：Yann LeCun团队揭示Transformer内部计算机制; OpenAI发布Chain-of-Thought可控性评估套件与研究论; 研究者发起红队对抗模型误用、控制与对齐研究项目; 研究证明数据回放既能减少遗忘又能帮助学习新数据
+- X讨论：Karpathy提出自动化研究需要大规模异步协作; Karpathy发布自包含的autoresearch最小化代码库; Karpathy透露nanochat生产环境运行更大模型及8倍H100
 
 ---
 
 ## 📖 详细参考
 
 ### 模型前沿
-**FlashAttention-4正式发布：算法流水线大改，矩阵乘法级速度**
-   - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651020091&idx=2&sn=dc5a27b3f449a9d5ea45b053cacb184f&chksm=8557a76222bf87fa7a09e370dc14ffb4678f5076f8311c004536f419113035875159d3fa7356&scene=0&xtrack=1#rd)
+**港科大提出音频生成统一模型AudioX**
+- 港科大郭毅可院士团队提出AudioX音频生成统一模型，基于Diffusion Transformer架构，支持多模态输入生成音效和音乐，在多项基准上达到SOTA。
+   - **港科大提出音频生成统一模型AudioX**
+   - **支持文本、视频、图像等多模态输入生成音频**
+   - **论文被ICLR 2026接收**
+   - 来源: [新智元](https://mp.weixin.qq.com/s/xxx)
 
 ### 产业动态
-**Microsoft, Google, Amazon say Anthropic Claude remains available to non-defense customers**
-   - 来源: [TechCrunch](https://techcrunch.com/2026/03/06/microsoft-anthropic-claude-remains-available-to-customers-except-the-defense-department/)
+**智谱正式上线AutoClaw推动AI平权**
+- 智谱正式上线AutoClaw（中文名：澳龙），这是国内首个真·一键安装的本地版OpenClaw，预置50+热门Skills，支持一键接入飞书等即时通讯工具。
+   - **智谱上线国内首个一键安装的本地版OpenClaw**
+   - **预置50+热门Skills，支持一键接入飞书**
+   - 来源: [量子位](https://mp.weixin.qq.com/s/ksLlPO58gnHgm2W-zVi4Rw)
 
-**Anthropic’s Claude found 22 vulnerabilities in Firefox over two weeks**
-   - 来源: [TechCrunch](https://techcrunch.com/2026/03/06/anthropics-claude-found-22-vulnerabilities-in-firefox-over-two-weeks/)
+**企业微信正式支持接入OpenClaw**
+- 企业微信正式支持接入OpenClaw，企业成员可与AI助手直接对话，让AI主动处理业务、写入智能表格。管理员无需配置域名即可使用。
+   - **企业微信正式支持接入OpenClaw**
+   - **管理员无需配置域名，选择API模式即可接入**
+   - 来源: [机器之心](https://mp.weixin.qq.com/s/nvtED-ELdGiWCpEDWpfZnQ)
 
-**Quantum scale-up Pasqal plans $2B SPAC listing, promises to ‘remain French’**
-   - 来源: [TechCrunch](https://techcrunch.com/2026/03/06/quantum-scale-up-pasqal-plans-2b-spac-listing-promises-to-remain-french/)
+**IBM推出Granite 4.0 1B语音模型：面向边缘设备的紧凑多语言方案**
+- IBM在HuggingFace发布Granite 4.0 1B语音模型，这是一款紧凑、多语言、专为边缘设备设计的语音模型，支持多种语言的语音处理任务。
+   - **IBM发布Granite 4.0 1B语音模型**
+   - **模型专为边缘设备设计，支持多语言**
+   - 来源: [HuggingFace Blog](https://huggingface.co/blog/ibm-granite/granite-4-speech)
 
-**Bill Gates’ TerraPower gets approval to build new nuclear reactor**
-   - 来源: [TechCrunch](https://techcrunch.com/2026/03/06/bill-gates-terrapower-gets-approval-to-build-new-nuclear-reactor/)
+**World Labs举办黑客松活动聚焦世界模型与空间智能**
+- World Labs举办WL-HACK 01黑客松活动，汇聚了对世界模型和空间智能未来感兴趣的开发者，共同探索前沿AI技术。
+   - **World Labs举办世界模型黑客松活动**
+   - **活动聚焦空间智能和世界模型**
+   - 来源: [@theworldlabs](https://x.com/theworldlabs/status/2029633878743470442#m)
 
-**Claude’s consumer growth surge continues after Pentagon deal debacle**
-   - 来源: [TechCrunch](https://techcrunch.com/2026/03/06/claudes-consumer-growth-surge-continues-after-pentagon-deal-debacle/)
-
-**These are the countries moving to ban social media for children**
-   - 来源: [TechCrunch](https://techcrunch.com/2026/03/06/social-media-ban-children-countries-list/)
-
-**TriZetto confirms 3.4M people’s health and personal data was stolen during breach**
-   - 来源: [TechCrunch](https://techcrunch.com/2026/03/06/trizetto-confirms-3-4m-peoples-health-and-personal-data-was-stolen-during-breach/)
-
-**Indonesia outlines plan to limit under-16s’ access to social media**
-   - 来源: [TechCrunch](https://techcrunch.com/2026/03/06/indonesia-outlines-plan-to-limit-under-16s-access-to-social-media/)
+**Anthropic与Mozilla合作测试Claude安全漏洞发现能力**
+- Anthropic与Mozilla合作测试Claude在Firefox中发现安全漏洞的能力，Opus 4.6在两周内发现22个安全漏洞，展现了AI在网络安全领域的应用潜力。
+   - **Anthropic与Mozilla合作测试Claude安全检测能力**
+   - **Opus 4.6两周内发现22个漏洞**
+   - 来源: [@AnthropicAI](https://x.com/AnthropicAI/status/2029978909207617634#m)
 
 ### 算力追踪
-**GPU时代落幕？硅谷巨头集体「叛逃」，英伟达1500亿疯狂自救**
-   - 来源: [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652680916&idx=1&sn=a1ef7b6e4f2f7ba3ec0d53be1a17b893)
+**ABB Robotics联合NVIDIA Omniverse实现工业级物理AI规模化部署**
+- ABB Robotics宣布采用NVIDIA Omniverse平台来交付工业级物理AI解决方案，vLLM为Jetson上的完全本地化AI助手提供支持，OpenClaw教程展示了如何在NVIDIA Jetson上服务Nemotron 3 Nano等MoE模型。
+   - **ABB Robotics采用NVIDIA Omniverse实现工业级物理AI规模化部署**
+   - **vLLM为Jetson本地AI助手提供支持**
+   - **展示了在边缘设备上部署MoE模型的技术方案**
+   - 来源: [NVIDIA Blog](https://blogs.nvidia.com/blog/abb-robotics-omniverse/)
 
-**琻捷电子港交所递交招股书**
-   - 来源: [IT桔子](https://www.itjuzi.com/pre-ipo?comname=琻捷电子)
+**OpenAI和Google员工支持Anthropic起诉国防部**
+- 超过30名OpenAI和Google DeepMind员工签署声明，支持Anthropic起诉国防部的诉讼，回应了政府对AI军事应用的监管争议。
+   - **超过30名OpenAI和Google DeepMind员工支持Anthropic**
+   - **涉及对国防部AI军事应用政策的争议**
+   - 来源: [TechCrunch](https://techcrunch.com/2026/03/09/openai-and-google-employees-rush-to-anthropics-defense-in-dod-lawsuit/)
+
+**AI驱动的行业变革：2026年收入增长与生产力提升**
+- NVIDIA博客探讨AI如何为各行业推动收入增长、降低成本并提升生产力，指出当前模型并非'够用'，智能竞赛远未结束，更高阶的智能仍是追求目标。
+   - **AI正在为各行业带来实际收入增长和成本降低**
+   - **更高阶智能仍是AI发展的未来方向**
+   - 来源: [NVIDIA Blog](https://blogs.nvidia.com/blog/state-of-ai-report-2026/)
+
+**xAI承诺部署改善人类生活的AI并增加数据中心电力供应**
+- xAI承诺部署改善人类生活的AI技术，同时将在数据中心附近增加更多电力供应以支持AI系统的运行需求。
+   - **xAI承诺部署改善生活的AI技术**
+   - **计划增加数据中心附近电力供应**
+   - 来源: [@xai](https://x.com/xai/status/2029294509230874896#m)
 
 ### 初创&融资
-**Science获得2.3亿美元C轮融资**
-   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14693519) (11源合并)
-
-**此间无限获得千万美元天使投资**
-   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14693517)
-
-**The Week’s 10 Biggest Funding Rounds: Space Tech, AI Infrastructure Lead Fundraises**
-   - 来源: [Crunchbase News](https://news.crunchbase.com/venture/biggest-funding-rounds-space-tech-sierra-ai-ayar/)
+**OpenAI收购AI安全平台Promptfoo强化企业AI安全**
+- OpenAI宣布收购Promptfoo，这是一家AI安全平台，帮助企业在开发过程中识别和修复AI系统漏洞。Promptfoo被超过25%的财富500强企业使用。
+   - **OpenAI收购AI安全平台Promptfoo**
+   - **Promptfoo被超过25%财富500强企业使用**
+   - **将整合到OpenAI Frontier平台**
+   - 来源: [OpenAI](https://openai.com/index/openai-to-acquire-promptfoo)
 
 ### 研究关注
-**CVPR 2026 | 1B模型也能当多镜头导演？大连理工&amp;快手可灵开源力作MultiShotMaster**
+**Yann LeCun团队揭示Transformer内部计算机制**
+- 纽约大学Yann LeCun团队发表论文，研究Transformer中大值激活和Attention Sink现象，证明共并非必然，为量化部署提供优化思路。
+   - **Yann LeCun团队揭示Transformer内部计算机制**
+   - **大值激活与Attention Sink共并非必然**
+   - **为量化部署和长上下文推理提供优化思路**
    - 来源: 机器之心
 
-**300万AI悄悄「建国」？Nature长文：第一代AI社会正在成形**
-   - 来源: 新智元
+**OpenAI发布Chain-of-Thought可控性评估套件与研究论文**
+- OpenAI发布了新的思维链（CoT）可控性评估套件和研究论文，发现GPT-5.4 Thinking在思维链可控性方面表现较弱，为模型推理能力评估提供新基准。
+   - **OpenAI发布思维链可控性评估套件**
+   - **GPT-5.4 Thinking在CoT可控性上表现不足**
+   - 来源: @OpenAI
 
-**Transformer论文作者重造龙虾，Rust搓出钢铁版，告别OpenClaw裸奔漏洞**
-   - 来源: 量子位
+**研究者发起红队对抗模型误用、控制与对齐研究项目**
+- NeelNanda发起一个关于红队测试模型误用、控制和对齐的研究机会，呼吁研究者参与AI安全领域的红队研究工作。
+   - **NeelNanda发起红队研究项目**
+   - **聚焦模型误用、控制和对齐问题**
+   - 来源: @NeelNanda5
+
+**研究证明数据回放既能减少遗忘又能帮助学习新数据**
+- Percy Liang团队研究发现，数据回放技术不仅能减少知识遗忘，还能帮助模型在学习新数据时取得更好效果，相关论文已发布在arXiv。
+   - **数据回放可减少知识遗忘**
+   - **数据回放同时有助于新数据学习**
+   - 来源: @percyliang
 
 
 ---
-*更新时间: 2026-03-07 22:37*
+*更新时间: 2026-03-10 10:04*

@@ -13,8 +13,11 @@ from collections import defaultdict
 
 # ========== 1. 非新闻内容过滤 ==========
 NON_NEWS_KEYWORDS = [
+    # 转推
+    "rt by", "rt:", "rt @",
+
     # 活动招募/征集
-    "征集中", "火热征集", "倒计时", "招募", "报名", "邀请函",
+    "征集中", "火热征集", "倒计时", "招募", "报名", "邀请函", "申报即日起", "申报启动", "申报截止",
     # 传统行业/非AI科技（纯硬件/消费电子）
     "pc shipments", "个人电脑", "笔记本电脑", "手机销量", "智能手表",
     "电动汽车", "rad power", "radpower",
@@ -34,6 +37,8 @@ NON_NEWS_KEYWORDS = [
     "仓库",
     # 纯广告/商业
     "ad format", "advertising",
+    # 非AI的营销/活动
+    "免费送", "排爆", "鸡蛋",
 ]
 
 def is_non_news(title: str, summary: str = "") -> bool:
