@@ -248,6 +248,8 @@ def generate_html(articles):
 
 
 def main():
+    from datetime import datetime, timedelta
+    
     # 读取最新存档
     files = sorted(os.listdir(ARCHIVE_DIR))
     if not files:
@@ -255,17 +257,86 @@ def main():
         return
 
     latest = files[-1]
+    # 从文件名提取日期
+    date_str = latest.replace("news_", "").replace(".json", "")
     with open(os.path.join(ARCHIVE_DIR, latest), 'r') as f:
         data = json.load(f)
 
     articles = data.get("articles", [])
     print(f"📖 读取到 {len(articles)} 条文章")
 
+    # 生成带日期的HTML文件
+    dated_html_file = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{date_str}.html"
     html = generate_html(articles)
+    
+    # 保存带日期的版本
+    with open(dated_html_file, 'w') as f:
+        f.write(html)
+    print(f"✅ 已生成HTML: {dated_html_file}")
+    
+    # 同时保存为 daily-ai-news.html
     with open(OUTPUT_HTML, 'w') as f:
         f.write(html)
+    print(f"✅ 已更新: {OUTPUT_HTML}")
+    
+    # 更新 index.html
+    update_index(date_str)
 
-    print(f"✅ 已生成HTML: {OUTPUT_HTML}")
+def update_index(latest_date):
+    """更新 index.html，添加最新日期的链接"""
+    import re
+    
+    index_file = "/Users/shenyalan/ai-daily-news/index.html"
+    
+    # 读取现有 index.html
+    if os.path.exists(index_file):
+        with open(index_file, 'r') as f:
+            index_content = f.read()
+    else:
+        # 创建新的 index.html
+        index_content = """<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI前沿动态</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+        h1 { color: #1a1a2e; }
+        .archive-list { list-style: none; padding: 0; }
+        .archive-list li { padding: 10px 0; border-bottom: 1px solid #eee; }
+        .archive-list a { color: #0066cc; text-decoration: none; font-size: 16px; }
+        .archive-list a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>📡 AI前沿动态</h1>
+    <ul class="archive-list">
+    </ul>
+</body>
+</html>"""
+    
+    # 解析现有日期列表
+    dates = re.findall(r'href="daily-ai-news-(\d{4}-\d{2}-\d{2})\.html"', index_content)
+    dates = list(set(dates))
+    
+    # 添加新日期
+    if latest_date not in dates:
+        dates.append(latest_date)
+    
+    # 按日期排序（最新的在前）
+    dates.sort(reverse=True)
+    
+    # 生成新的列表
+    links_html = '\n'.join([f'        <li><a href="daily-ai-news-{d}.html">{d} AI前沿动态</a></li>' for d in dates])
+    
+    # 替换内容
+    index_content = re.sub(r'<ul class="archive-list">.*?</ul>', f'<ul class="archive-list">\n{links_html}\n    </ul>', index_content, flags=re.DOTALL)
+    
+    with open(index_file, 'w') as f:
+        f.write(index_content)
+    
+    print(f"✅ 已更新index.html")
 
 
 if __name__ == "__main__":

@@ -44,17 +44,18 @@ HEADERS = {
 CACHE_FILE = Path(__file__).parent / "cache.json"
 TIMEOUT = 15
 MAX_PER_ACCOUNT = 3
-MAX_HOURS = 120
+MAX_HOURS = 24  # 只保留120小时内的推文
 
 
 def is_recent(published: str) -> bool:
+    """检查推文是否在时间窗口内"""
     try:
         pub_date = parsedate_to_datetime(published)
         now = datetime.now(timezone.utc)
         hours_ago = (now - pub_date).total_seconds() / 3600
         return hours_ago <= MAX_HOURS
     except:
-        return True
+        return False  # 无法解析时间则视为过期
 
 
 def get_available_instance() -> Optional[str]:
@@ -107,6 +108,7 @@ def fetch_user_tweets(username: str, instance: str, count: int = 3) -> List[Dict
 def fetch_all_tweets(max_per_account: int = MAX_PER_ACCOUNT) -> List[Dict]:
     instance = get_available_instance()
     if not instance:
+        print("   ⚠️ 无法连接Nitter，使用缓存")
         return load_cache()
 
     print(f"   使用实例: {instance}")
@@ -120,26 +122,59 @@ def fetch_all_tweets(max_per_account: int = MAX_PER_ACCOUNT) -> List[Dict]:
             all_tweets.extend(tweets)
             time.sleep(0.3)
 
-    save_cache(all_tweets)
+    if all_tweets:
+        save_cache(all_tweets)
+        print(f"   抓取到 {len(all_tweets)} 条新推文")
+    
     return all_tweets
 
 
 def save_cache(tweets: List[Dict]):
-    CACHE_FILE.write_text(json.dumps(tweets, ensure_ascii=False, indent=2))
+    """保存到缓存，包含缓存时间"""
+    cache_data = {
+        "tweets": tweets,
+        "cached_at": datetime.now().isoformat()
+    }
+    CACHE_FILE.write_text(json.dumps(cache_data, ensure_ascii=False, indent=2))
 
 
 def load_cache() -> List[Dict]:
-    if CACHE_FILE.exists():
-        try:
-            return json.loads(CACHE_FILE.read_text())
-        except:
-            pass
-    return []
+    """加载缓存，并过滤过期推文"""
+    if not CACHE_FILE.exists():
+        return []
+    
+    try:
+        cache_data = json.loads(CACHE_FILE.read_text())
+        tweets = cache_data.get("tweets", [])
+        cached_at = cache_data.get("cached_at", "")
+        
+        # 过滤掉过期的推文
+        valid_tweets = []
+        for t in tweets:
+            published = t.get("published", "")
+            if is_recent(published):
+                valid_tweets.append(t)
+        
+        if valid_tweets:
+            print(f"   缓存中有 {len(valid_tweets)} 条有效推文（过滤了 {len(tweets) - len(valid_tweets)} 条过期）")
+        else:
+            print(f"   缓存已过期，无有效推文")
+            
+        return valid_tweets
+    except Exception as e:
+        print(f"   加载缓存失败: {e}")
+        return []
 
 
 def get_tweets() -> List[Dict]:
+    """获取推文，优先抓取新推文，失败时使用缓存"""
     try:
-        return fetch_all_tweets()
+        tweets = fetch_all_tweets()
+        if tweets:
+            return tweets
+        # 抓取为空时尝试使用缓存
+        print("   抓取结果为空，尝试使用缓存...")
+        return load_cache()
     except Exception as e:
         print(f"   抓取失败: {e}, 使用缓存")
         return load_cache()

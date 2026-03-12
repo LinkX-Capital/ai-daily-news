@@ -4,7 +4,7 @@
 cd /Users/shenyalan/ai-daily-news
 
 # 设置环境变量
-export ANTHROPIC_AUTH_TOKEN="${ANTHROPIC_AUTH_TOKEN}"
+export MINIMAX_API_KEY="${MINIMAX_API_KEY}"
 export NOTIFY_METHOD="feishu"
 export FEISHU_WEBHOOK="${FEISHU_WEBHOOK}"
 
