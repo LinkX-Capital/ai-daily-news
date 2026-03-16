@@ -26,12 +26,24 @@ from config_loader import (
 
 # 导入研究者推文抓取
 def fetch_researcher_tweets():
-    """抓取前沿研究者推文"""
+    """抓取前沿研究者推文，优先使用缓存"""
     try:
-        from tweet_fetcher import get_tweets
-        return get_tweets()
+        # 直接使用缓存，跳过网络抓取（nitter经常超时）
+        cache_file = "/Users/shenyalan/ai-daily-news/tweet_fetcher/cache.json"
+        import json
+        import os
+        if os.path.exists(cache_file):
+            with open(cache_file, 'r') as f:
+                data = json.load(f)
+            # 支持两种格式：直接 list 或 {"tweets": [...], "cached_at": "..."}
+            tweets = data.get("tweets", data) if isinstance(data, dict) else data
+            if tweets and isinstance(tweets, list):
+                print(f"   📦 使用缓存: {len(tweets)} 条推文")
+                return tweets
+        print(f"   ⚠️ 无缓存，跳过推文抓取")
+        return []
     except Exception as e:
-        print(f"   ⚠️ 抓取研究者推文失败: {e}")
+        print(f"   ⚠️ 读取推文缓存失败: {e}")
         return []
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -310,15 +322,12 @@ CATEGORIES = {
                 "模型", "发布", "开源", "能力", "benchmark", "评测", "sota", "参数",
                 "多模态", "视频生成", "图像生成", "文生图", "文生视频",
                 "具身智能", "机器人", "world model", "reasoning", "推理",
-                "moe", "transformer", "vla", "agent", "embedding", "embedding2", "gemini embedding"],
+                "moe", "transformer", "vla", "agent","attention","memory","RL"],
     
     # 算力追踪：硬件、芯片、云服务
-    "embedding": "模型前沿",
-    "nvidia model": "产业动态",
-    "nvidia发布": "产业动态",
     "算力追踪": ["gpu", "npu", "tpu", "h100", "h200", "b100", "blackwell",
                 "芯片", "算力", "nvidia", "amd", "intel",
-                "云计算", "aws", "azure", "gcp", "inference", "训练", "推理"],
+                "云计算", "aws", "azure", "gcp", "token demand", "cohere", "groq"],
     
     # 产业动态：公司战略、产品发布、合作、高管动态
     "产业动态": ["产品", "发布", "上线", "更新", "合作", "战略", "部署",
@@ -342,13 +351,14 @@ CATEGORY_PRIORITY = {"模型前沿": 1, "产业动态": 2, "算力追踪": 3, "�
 SUBFIELD_ORDER = {
     "LLM/大语言模型": 1,
     "推理/思考": 2,
-    "AI安全/对齐": 3,
-    "多模态": 4,
-    "世界模型/具身智能": 5,
+    "多模态": 3,
+    "世界模型/具身智能": 4,
+    "MLSys/系统": 5,
     "AI4S/科学智能": 6,
-    "MLSys/系统": 7,
-    "传统ML": 8,
-    "其他研究": 9,
+    "评测": 7,
+    "AI安全/对齐": 8,
+    "传统ML": 9,
+    "其他研究": 10,
 }
 
 MAX_PER_CATEGORY = 8
@@ -488,7 +498,7 @@ def call_llm(prompt):
     data = {
         "model": "MiniMax-M2.5", "temperature": 0.2,
         "max_tokens": 8000,
-        "system": """你是一个AI新闻处理器。
+        "system": """你是一个顶尖AI新闻分析师。
 
 ## 任务
 处理下方的新闻列表，严格按【新闻1】、【新闻2】的顺序输出结果。
@@ -512,9 +522,9 @@ def call_llm(prompt):
 - 非重大、非突破性的政策/路线图/安全指南
 
 ### 分类规则
-- 模型前沿：模型发布、benchmark、多模态、视频生成、模型开源、模型评测
-- 产业动态：商业、合作、用户增长、政策
-- 算力追踪：芯片、硬件、半导体设备
+- 模型前沿：模型发布、benchmark、多模态、视频生成、模型开源、模型评测、世界模型、VLA
+- 产业动态：商业、合作、用户增长、政策、产品更新
+- 算力追踪：芯片、硬件、半导体设备、算力
 - 初创&融资：融资、投资
 - 研究关注：论文、学术、CVPR/ICML、可解释性、AI安全
 - X讨论：个人动态、观点分享、日常讨论
@@ -524,24 +534,30 @@ JSON数组，只返回is_ai_related=true的新闻：
 [
   {
     "original_title": "原始标题（必须和输入完全一致）",
-    "title": "中文标题",
-    "body": "3-6句话，还原事件本身和关键细节",
-    "insight": "一句话点评：趋势洞察、竞争分析、或与其他事件的关联",
+    "title": "中文标题，事件主体+做什么+为什么重要，禁止感叹号/问号结尾",
+    "body": "3-6句话，必须有so what（为什么重要），关键判断/数据加粗**，读完能跟人聊来龙去脉",
+    "insight": "一句话点评：趋势洞察、竞争分析、机会风险",
     "category": "分类"
   }
 ]
 
 ## 重要
-- title格式：关键特征+产品名/公司名
+- title格式：中文标题，事件主体+做什么/发布什么+为什么重要
   - 把"是什么"放在前面（多模态嵌入、Agent运行时、自研芯片），产品名放在后面
   - 示例：「多模态统一嵌入模型Gemini Embedding 2」而非「Gemini Embedding 2多模态嵌入」
+  - 必须用中文输出标题
+  - 海外公司/人名保持英文
   - 禁止感叹号、问号结尾
   - 禁止模糊称呼，必须具体到人名或公司名
+  - 禁止媒体夸张词汇（彻底告别、炸裂、暴击等）
 - body规则（专注事件还原）：
   - 3-6句话，只描述事件本身、关键细节和数据
+  - 关键数据/判断必须加粗**（如：**120B参数**、**首次**、**50%**）
+  - 谨慎判断摘要是否能代表全文：如果摘要只是开头引入/背景，而非事件核心，需标注"补充"或基于常识补充
   - 不包含判断和评价，判断放在insight里
   - 信息密度高，不重复标题
   - 海外公司/人名保持英文
+  - 读完能了解来龙去脉，不点进原文也能跟人聊
 - insight规则（负责判断）：
   - 一句话点评，作为顶尖AI分析师的洞察
   - 可以是：趋势判断、竞争格局分析、或与其他事件的关联
@@ -593,15 +609,16 @@ def process_with_llm(articles, recent_articles=None):
 来源：{a['source']}
 摘要：{summary[:300]}""")
     
-    prompt = """你是一个AI新闻处理器。请严格按照下方新闻进行处理。
+    prompt = """你是一个顶尖AI新闻分析师。请严格按照下方新闻进行处理。
 
 ## 输出格式要求
 只返回is_ai_related=true的新闻，JSON数组格式：
 [
   {
     "original_title": "原始标题（必须和输入完全一致）",
-    "title": "中文标题（事件主体+做什么+为什么重要）",
-    "body": "3-6句话摘要，必须有so what（为什么重要）",
+    "title": "中文标题，事件主体+做什么+为什么重要，禁止感叹号/问号结尾",
+    "body": "3-6句话，必须有so what（为什么重要），关键判断/数据加粗**",
+    "insight": "一句话点评：趋势洞察、竞争分析、机会风险",
     "category": "分类"
   }
 ]
@@ -715,47 +732,54 @@ def process_with_llm(articles, recent_articles=None):
     return articles
 
 # ========== 抓取 ==========
-def fetch_source(name, url, limit=15):
-    try:
-        client = httpx.Client(timeout=15, verify=False, follow_redirects=True)
-        r = client.get(url, headers={"User-Agent": "Mozilla/5.0"})
-        r.raise_for_status()
-        feed = feedparser.parse(r.text)
-        articles = []
-        for e in feed.entries:
-            if not is_in_window(e): continue
-            title = clean_text(e.get("title", ""))
-            link = e.get("link", "")
-            summary = clean_text(e.get("summary") or e.get("description") or "")
-            if not title or len(title) < 5: continue
-            cats = get_cat(title, summary)
-            primary_cat = cats[0]
+def fetch_source(name, url, limit=15, max_retries=5):
+    """抓取 RSS 源，支持重试"""
+    for attempt in range(max_retries):
+        try:
+            client = httpx.Client(timeout=15, verify=False, follow_redirects=True)
+            r = client.get(url, headers={"User-Agent": "Mozilla/5.0"})
+            r.raise_for_status()
+            feed = feedparser.parse(r.text)
+            articles = []
+            for e in feed.entries:
+                if not is_in_window(e): continue
+                title = clean_text(e.get("title", ""))
+                link = e.get("link", "")
+                summary = clean_text(e.get("summary") or e.get("description") or "")
+                if not title or len(title) < 5: continue
+                cats = get_cat(title, summary)
+                primary_cat = cats[0]
 
-            article = {
-                "title": title,
-                "summary": summary[:150] if summary else "",
-                "content": summary,
-                "link": link,
-                "categories": cats,
-                "source": name,
-                "published_parsed": list(e.get("published_parsed"))[:6] if e.get("published_parsed") else None,
-            }
+                article = {
+                    "title": title,
+                    "summary": summary[:150] if summary else "",
+                    "content": summary,
+                    "link": link,
+                    "categories": cats,
+                    "source": name,
+                    "published_parsed": list(e.get("published_parsed"))[:6] if e.get("published_parsed") else None,
+                }
 
-            # 研究类用专门计算方法
-            if primary_cat == "研究关注":
-                priority, subfield = calculate_research_priority(article)
-                article["priority"] = priority
-                article["subfield"] = subfield
-            else:
-                priority, companies = calculate_priority(article, primary_cat)
-                article["priority"] = priority
-                article["subfield"] = None
+                # 研究类用专门计算方法
+                if primary_cat == "研究关注":
+                    priority, subfield = calculate_research_priority(article)
+                    article["priority"] = priority
+                    article["subfield"] = subfield
+                else:
+                    priority, companies = calculate_priority(article, primary_cat)
+                    article["priority"] = priority
+                    article["subfield"] = None
 
-            articles.append(article)
-            if len(articles) >= limit: break
-        client.close()
-        return articles, None
-    except Exception as e: return [], str(e)[:60]
+                articles.append(article)
+                if len(articles) >= limit: break
+            client.close()
+            return articles, None
+        except Exception as e:
+            if attempt < max_retries - 1:
+                import time
+                time.sleep(2)  # 重试前等待2秒
+                continue
+            return [], str(e)[:60]
 
 # ========== 生成报告 ==========
 def generate_report(articles):
@@ -909,22 +933,33 @@ def save_archive(articles):
         json.dump(data, f, ensure_ascii=False, indent=2)
     print(f"✅ 已存档: {archive_file}")
 
-def get_time_window():
-    """获取时间窗口：固定 24 小时（昨天9点 → 今天9点）"""
-    beijing_offset = 8
-    now_utc = datetime.now(timezone.utc)
-    now_beijing = now_utc + timedelta(hours=beijing_offset)
+def get_time_window(target_date=None):
+    """获取时间窗口：固定 24 小时（昨天9点 → 今天9点）
 
-    # 固定：今天9点结束
-    end_beijing = now_beijing.replace(hour=9, minute=0, second=0, microsecond=0)
-    if now_beijing.hour < 9:
-        end_beijing = end_beijing - timedelta(days=1)
+    Args:
+        target_date: 指定日期，格式 YYYY-MM-DD。默认为今天。
+    """
+    beijing_offset = 8
+
+    if target_date:
+        # 使用指定日期（带时区）
+        end_beijing = datetime.strptime(target_date, "%Y-%m-%d").replace(
+            hour=9, minute=0, second=0, microsecond=0, tzinfo=timezone(timedelta(hours=beijing_offset))
+        )
+    else:
+        # 使用当前时间
+        now_utc = datetime.now(timezone.utc)
+        now_beijing = now_utc + timedelta(hours=beijing_offset)
+        end_beijing = now_beijing.replace(hour=9, minute=0, second=0, microsecond=0)
+        if now_beijing.hour < 9:
+            end_beijing = end_beijing - timedelta(days=1)
 
     # 固定：24小时窗口
     start_beijing = end_beijing - timedelta(days=1)
 
     return start_beijing - timedelta(hours=8), end_beijing - timedelta(hours=8), start_beijing, end_beijing
 
+# 默认时间窗口（今天）
 START_UTC, END_UTC, START_BJ, END_BJ = get_time_window()
 
 # ========== 主函数 ==========
@@ -954,7 +989,13 @@ def main():
     parser.add_argument('--from-cache', action='store_true', help='从缓存文件读取，跳过抓取')
     parser.add_argument('--skip-llm', action='store_true', help='跳过 LLM 处理')
     parser.add_argument('--limit', type=int, default=0, help='限制处理条数（用于快速测试）')
+    parser.add_argument('--date', type=str, default=None, help='指定日期 YYYY-MM-DD')
     args = parser.parse_args()
+
+    # 使用指定日期重新计算时间窗口
+    global START_UTC, END_UTC, START_BJ, END_BJ
+    if args.date:
+        START_UTC, END_UTC, START_BJ, END_BJ = get_time_window(args.date)
 
     print(f"🤖 AI前沿动态 v5.1")
     print(f"   时间窗口: {START_BJ.strftime('%Y-%m-%d %H:%M')} - {END_BJ.strftime('%Y-%m-%d %H:%M')} 北京时间")
@@ -1076,6 +1117,37 @@ def main():
             else:
                 a['categories'] = ['X讨论']
 
+    # 修正 LLM 分类错误
+    for a in merged:
+        title = a.get('title', '').lower()
+        current_cat = a.get('categories', [''])[0]
+        
+        # DeepMind/3D重建/记忆 → 研究关注
+        if 'deepmind' in title or '3d' in title or '重建' in title or '记忆' in title:
+            if current_cat == '产业动态':
+                a['categories'] = ['研究关注']
+        
+        # ICLR/ICML/CVPR → 强制研究关注
+        if any(k in title for k in ['iclr', 'icml', 'cvpr']):
+            a['categories'] = ['研究关注']
+        
+        # 模型/评测/基准 → 研究关注
+        if '模型' in title or '评测' in title or '基准' in title:
+            if any(k in title for k in ['顶会', '大学', '学术', '论文','教授']):
+                if current_cat == '产业动态' or current_cat == '模型前沿':
+                    a['categories'] = ['研究关注']
+        
+        # NVIDIA 非算力内容 → 分类修正
+        if 'nvidia' in title or '英伟达' in title:
+            # 模型/产品发布 → 模型前沿
+            if any(k in title for k in ['模型', 'model', 'nemo', 'chip', 'demo', '发布', '开源']):
+                if current_cat == '算力追踪':
+                    a['categories'] = ['模型前沿']
+            # 论文/研究 → 研究关注
+            if any(k in title for k in ['论文', '研究', 'paper', 'arxiv']):
+                if current_cat == '算力追踪':
+                    a['categories'] = ['研究关注']
+
     # 统计
     by_cat = defaultdict(int)
     for a in merged:
@@ -1088,27 +1160,32 @@ def main():
     if errors:
         print(f"⚠️ 失败: {errors[:3]}")
 
-    # 生成报告
-    report = generate_report(merged)
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write(report)
+    # 生成报告（仅当不指定日期时才输出到主文件）
+    if not args.date:
+        report = generate_report(merged)
+        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+            f.write(report)
 
-    # 生成简洁版报告
-    SUMMARY_FILE = "/Users/shenyalan/ai-daily-news/daily-ai-news-summary.md"
-    summary_report = generate_summary_report(merged)
-    with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
-        f.write(summary_report)
-    print(f"✅ 简洁版: {SUMMARY_FILE}")
+        # 生成简洁版报告
+        SUMMARY_FILE = "/Users/shenyalan/ai-daily-news/daily-ai-news-summary.md"
+        summary_report = generate_summary_report(merged)
+        with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
+            f.write(summary_report)
+        print(f"✅ 简洁版: {SUMMARY_FILE}")
 
+        # 生成HTML
+        try:
+            import subprocess
+            subprocess.run(['python', 'generate_html.py'], check=True, capture_output=True)
+        except:
+            pass
+
+    # 保存到归档（无论是否指定日期）
     save_archive(merged)
-    print(f"✅ 已输出: {OUTPUT_FILE}")
-
-    # 生成HTML
-    try:
-        import subprocess
-        subprocess.run(['python', 'generate_html.py'], check=True, capture_output=True)
-    except:
-        pass
+    if args.date:
+        print(f"✅ 已归档: archive/news_{args.date}.json")
+    else:
+        print(f"✅ 已输出: {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     main()
