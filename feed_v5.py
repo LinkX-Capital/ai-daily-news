@@ -910,28 +910,18 @@ def save_archive(articles):
     print(f"✅ 已存档: {archive_file}")
 
 def get_time_window():
-    """获取时间窗口
-    - 周一：上周五9点 -> 本周一9点（3天，覆盖周末）
-    - 其他日期：昨天9点 -> 今天9点（24小时）
-    """
+    """获取时间窗口：固定 24 小时（昨天9点 → 今天9点）"""
     beijing_offset = 8
     now_utc = datetime.now(timezone.utc)
     now_beijing = now_utc + timedelta(hours=beijing_offset)
 
-    # 判断今天是周几（0=周一，6=周日）
-    weekday = now_beijing.weekday()
-
+    # 固定：今天9点结束
     end_beijing = now_beijing.replace(hour=9, minute=0, second=0, microsecond=0)
     if now_beijing.hour < 9:
         end_beijing = end_beijing - timedelta(days=1)
 
-    # 周一：回溯到上周五（3天）
-    if weekday == 0:
-        start_beijing = end_beijing - timedelta(days=3)
-        window_desc = "72h"
-    else:
-        start_beijing = end_beijing - timedelta(days=1)
-        window_desc = "24h"
+    # 固定：24小时窗口
+    start_beijing = end_beijing - timedelta(days=1)
 
     return start_beijing - timedelta(hours=8), end_beijing - timedelta(hours=8), start_beijing, end_beijing
 
