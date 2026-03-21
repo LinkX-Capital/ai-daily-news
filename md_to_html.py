@@ -98,6 +98,12 @@ def parse_md(md_content):
     return articles, summary_items
 
 
+def convert_bold(text):
+    """将 **text** 转换为 <strong>text</strong>"""
+    import re
+    return re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', text)
+
+
 def generate_html(articles, summary_items):
     """生成 HTML"""
     month_day = datetime.now().strftime("%m月%d日")
@@ -271,12 +277,12 @@ def generate_html(articles, summary_items):
             </div>'''
 
             if a.get('body'):
-                html += f'<div class="body">{a["body"]}</div>'
+                html += f'<div class="body">{convert_bold(a["body"])}</div>'
 
             if a.get('key_points'):
                 html += '<ul class="key-points">'
                 for point in a['key_points'][:3]:
-                    html += f'<li>{point}</li>'
+                    html += f'<li>{convert_bold(point)}</li>'
                 html += '</ul>'
 
             source = a.get('source', '')

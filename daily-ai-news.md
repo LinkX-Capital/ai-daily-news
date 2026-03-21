@@ -6,7 +6,7 @@
 
 #要点汇总#
 
-- 产业动态：亚马逊研发以Alexa为核心的新智能手机; Mellea 0.4.0更新与Granite库正式发布; HuggingFace发布一天内构建特定领域嵌入模型教程; AI初创公司占据去年风投41%，创历史新高; 苏剑林第一视角解析Kimi残差连接创新
+- 产业动态：亚马逊研发以Alexa为核心的新智能手机; HuggingFace发布一天内构建特定领域嵌入模型教程; AI初创公司占据去年风投41%，创历史新高; 苏剑林第一视角解析Kimi残差连接创新
 - 初创&融资：浙大百卡团队开源实时世界模型，视频秒转可交互4D世界; 字节跳动60亿美元出售沐瞳科技，聚焦AI战略; 能源技术或成最佳AI投资方向
 - X讨论：vLLM v0.18.0发布; Fei-Fei Li团队空间表征研究; Percy Liang：精细调优与scaling实现5倍数据效率提升; Sergey Levine：结构化设计实现数据驱动优化
 
@@ -36,7 +36,7 @@
    - 来源: [TechCrunch](https://techcrunch.com/2026/03/20/ai-startups-are-eating-the-venture-industry-and-the-returns-so-far-are-good/)
 
 **苏剑林第一视角解析Kimi残差连接创新**
-- Kimi模型弃用残差连接，苏剑林从第一视角解析了Attention Residuals方法。该方法用注意力机制重写层间连接，是大模型架构的重要创新。
+- Kimi模型在最新架构中弃用了传统的残差连接（Residual Connection），改用Attention Residuals方法。苏剑林从第一性原理出发，深入解析了这一架构创新：传统残差连接在深层网络中可能导致信息稀释，而Attention Residuals通过注意力机制重新加权层间信息流动，使模型能够更精准地保留和传递关键信息。**这一改动可能是Kimi在长文本处理上表现优异的关键因素之一**，也预示着大模型架构设计正在从"堆层数"转向"优化信息流"。
   > 💡 中国AI研究者在模型架构创新上走在前沿，Attention Residuals或成下一代LLM标配
    - 来源: [PaperWeekly](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw==&mid=2247718782&idx=1&sn=ff904ff58d178097a1e38141d43f7118)
 
