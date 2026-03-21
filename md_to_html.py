@@ -3,6 +3,7 @@
 
 import re
 from datetime import datetime
+from collections import defaultdict
 
 MD_FILE = "/Users/shenyalan/ai-daily-news/daily-ai-news.md"
 OUTPUT_HTML = "/Users/shenyalan/ai-daily-news/daily-ai-news.html"
@@ -13,16 +14,18 @@ def parse_md(md_content):
     current_cat = None
 
     lines = md_content.split('\n')
-    for i, line in enumerate(lines):
-        # 检测分类标题
+    for line in lines:
+        line = line.strip()
+
+        # 检测分类标题 (### 开头)
         if line.startswith('### '):
-            current_cat = line[3:].strip()
+            current_cat = line[4:].strip()
             continue
 
-        # 检测文章标题 (以 ** 开头)
-        if line.startswith('**') and '**' in line[1:]:
-            title_end = line.index('**', 1)
-            title = line[1:title_end]
+        # 检测文章标题 (**title**)
+        if line.startswith('**') and line.endswith('**'):
+            # 移除前后的 **
+            title = line[2:-2]
             articles.append({
                 'title': title,
                 'categories': [current_cat] if current_cat else [],
@@ -47,7 +50,7 @@ def parse_md(md_content):
             continue
 
         # 检测来源
-        if line.strip().startswith('- 来源:') and articles:
+        if line.startswith('- 来源:') and articles:
             source_match = re.search(r'\[([^\]]+)\]', line)
             if source_match:
                 articles[-1]['source'] = source_match.group(1).strip()
@@ -58,10 +61,16 @@ def parse_md(md_content):
     return articles
 
 
+def get_what(title):
+    """提取'是什么'（取冒号之前的部分）"""
+    for sep in ['：', ':', '？', '?', '！', '!']:
+        if sep in title:
+            return title.split(sep)[0][:50]
+    return title[:50]
+
+
 def generate_html(articles):
     """生成 HTML"""
-    from collections import defaultdict
-
     month_day = datetime.now().strftime("%m月%d日")
 
     by_cat = defaultdict(list)
@@ -205,13 +214,7 @@ def generate_html(articles):
     <div class="summary">
         <h2>📌 要点速览</h2>"""
 
-    # 要点速览只显示"是什么"（取冒号之前的部分）
-    def get_what(title):
-        for sep in ['：', ':', '？', '?', '！', '!']:
-            if sep in title:
-                return title.split(sep)[0][:50]
-        return title[:50]
-
+    # 要点速览
     for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
         items = by_cat.get(cat, [])
         if items:
@@ -224,6 +227,7 @@ def generate_html(articles):
     </div>
     <div class="content">"""
 
+    # 详细内容
     for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
         items = by_cat.get(cat, [])
         if not items:
@@ -272,6 +276,9 @@ def main():
 
     articles = parse_md(md_content)
     print(f"📖 解析到 {len(articles)} 条文章")
+
+    for a in articles:
+        print(f"  [{a['categories'][0] if a['categories'] else '未知'}] {a['title'][:30]}...")
 
     html = generate_html(articles)
 
