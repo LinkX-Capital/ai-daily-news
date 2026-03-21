@@ -80,11 +80,15 @@ def parse_md(md_content):
 
 
 def get_what(title):
-    """提取'是什么'（取冒号之前的部分）"""
+    """提取'是什么' - 对于X讨论，显示完整标题"""
+    if title and '：' in title and 'X讨论' not in title:
+        # X讨论显示完整标题
+        return title[:60]
+    # 其他分类取冒号之前
     for sep in ['：', ':', '？', '?', '！', '!']:
         if sep in title:
-            return title.split(sep)[0][:50]
-    return title[:50]
+            return title.split(sep)[0][:30]
+    return title[:30]
 
 
 def generate_html(articles):
