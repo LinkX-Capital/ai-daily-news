@@ -9,14 +9,33 @@ MD_FILE = "/Users/shenyalan/ai-daily-news/daily-ai-news.md"
 OUTPUT_HTML = "/Users/shenyalan/ai-daily-news/daily-ai-news.html"
 
 def parse_md(md_content):
-    """解析 MD 文件，提取文章"""
+    """解析 MD 文件，提取文章和要点汇总"""
     articles = []
     current_cat = None
     current_body_lines = []
+    summary_items = {}  # 分类 -> 要点列表
+    in_summary = False
 
     lines = md_content.split('\n')
     for i, line in enumerate(lines):
         stripped = line.strip()
+
+        # 检测要点汇总部分
+        if '#要点汇总#' in stripped:
+            in_summary = True
+            continue
+        if in_summary and stripped.startswith('---'):
+            in_summary = False
+            continue
+        if in_summary and stripped.startswith('- '):
+            # 解析要点汇总行: - 分类：要点1; 要点2; ... (使用中文冒号)
+            parts = stripped[2:].split('：', 1)
+            if len(parts) == 2:
+                cat = parts[0].strip()
+                items_str = parts[1].strip()
+                items = [i.strip() for i in items_str.split(';') if i.strip()]
+                summary_items[cat] = items
+            continue
 
         # 检测分类标题 (### 开头)
         if stripped.startswith('### '):
@@ -76,22 +95,10 @@ def parse_md(md_content):
         body_text = ' '.join(current_body_lines)
         articles[-1]['body'] = body_text
 
-    return articles
+    return articles, summary_items
 
 
-def get_what(title):
-    """提取'是什么' - 对于X讨论，显示完整标题"""
-    if title and '：' in title and 'X讨论' not in title:
-        # X讨论显示完整标题
-        return title[:60]
-    # 其他分类取冒号之前
-    for sep in ['：', ':', '？', '?', '！', '!']:
-        if sep in title:
-            return title.split(sep)[0][:30]
-    return title[:30]
-
-
-def generate_html(articles):
+def generate_html(articles, summary_items):
     """生成 HTML"""
     month_day = datetime.now().strftime("%m月%d日")
 
@@ -236,13 +243,13 @@ def generate_html(articles):
     <div class="summary">
         <h2>📌 要点速览</h2>"""
 
-    # 要点速览
+    # 要点速览 - 使用 summary_items 而不是从文章标题提取
     for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
-        items = by_cat.get(cat, [])
+        items = summary_items.get(cat, [])
         if items:
             html += f'<div class="summary-item"><span class="cat-tag">{cat}</span>'
-            for a in items[:3]:
-                html += f'<span class="summary-title">{get_what(a["title"])}</span>'
+            for item in items[:4]:
+                html += f'<span class="summary-title">{item}</span>'
             html += '</div>'
 
     html += """
@@ -296,15 +303,13 @@ def main():
     with open(MD_FILE, 'r') as f:
         md_content = f.read()
 
-    articles = parse_md(md_content)
+    articles, summary_items = parse_md(md_content)
     print(f"📖 解析到 {len(articles)} 条文章")
+    print(f"📋 要点汇总: {len(summary_items)} 个分类")
+    for cat, items in summary_items.items():
+        print(f"  {cat}: {items[:3]}...")
 
-    for a in articles:
-        cat = a['categories'][0] if a['categories'] else '未知'
-        body_preview = a['body'][:40] + '...' if len(a['body']) > 40 else a['body']
-        print(f"  [{cat}] {a['title'][:25]}... | body: {body_preview}")
-
-    html = generate_html(articles)
+    html = generate_html(articles, summary_items)
 
     # 保存 HTML
     with open(OUTPUT_HTML, 'w') as f:
