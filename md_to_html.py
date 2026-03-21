@@ -12,20 +12,26 @@ def parse_md(md_content):
     """解析 MD 文件，提取文章"""
     articles = []
     current_cat = None
+    current_body_lines = []
 
     lines = md_content.split('\n')
-    for line in lines:
-        line = line.strip()
+    for i, line in enumerate(lines):
+        stripped = line.strip()
 
         # 检测分类标题 (### 开头)
-        if line.startswith('### '):
-            current_cat = line[4:].strip()
+        if stripped.startswith('### '):
+            current_cat = stripped[4:].strip()
             continue
 
         # 检测文章标题 (**title**)
-        if line.startswith('**') and line.endswith('**'):
-            # 移除前后的 **
-            title = line[2:-2]
+        if stripped.startswith('**') and stripped.endswith('**'):
+            # 保存之前的文章
+            if articles and current_body_lines:
+                body_text = ' '.join(current_body_lines)
+                articles[-1]['body'] = body_text
+            current_body_lines = []
+
+            title = stripped[2:-2]
             articles.append({
                 'title': title,
                 'categories': [current_cat] if current_cat else [],
@@ -37,26 +43,38 @@ def parse_md(md_content):
             })
             continue
 
-        # 检测 body (以 - 开头)
-        if line.startswith('- ') and articles:
-            articles[-1]['body'] = line[2:].strip()
-            continue
-
-        # 检测 insight
-        if '> 💡' in line and articles:
-            insight = line.split('💡')[1].strip() if '💡' in line else ''
+        # 检测 insight (> 💡)
+        if '> 💡' in stripped and articles:
+            insight = stripped.split('💡')[1].strip() if '💡' in stripped else ''
             if insight:
                 articles[-1]['key_points'].append(insight)
             continue
 
-        # 检测来源
-        if line.startswith('- 来源:') and articles:
-            source_match = re.search(r'\[([^\]]+)\]', line)
+        # 检测来源 (- 来源:)
+        if stripped.startswith('- 来源:') and articles:
+            # 先保存body
+            if current_body_lines:
+                body_text = ' '.join(current_body_lines)
+                articles[-1]['body'] = body_text
+                current_body_lines = []
+
+            source_match = re.search(r'\[([^\]]+)\]', stripped)
             if source_match:
                 articles[-1]['source'] = source_match.group(1).strip()
-                link_match = re.search(r'\(([^)]+)\)', line)
+                link_match = re.search(r'\(([^)]+)\)', stripped)
                 if link_match:
                     articles[-1]['link'] = link_match.group(1)
+            continue
+
+        # 检测 body (以 - 开头，但不是来源)
+        if stripped.startswith('- ') and not stripped.startswith('- 来源:') and articles:
+            current_body_lines.append(stripped[2:].strip())
+            continue
+
+    # 保存最后一个文章的body
+    if articles and current_body_lines:
+        body_text = ' '.join(current_body_lines)
+        articles[-1]['body'] = body_text
 
     return articles
 
@@ -278,7 +296,9 @@ def main():
     print(f"📖 解析到 {len(articles)} 条文章")
 
     for a in articles:
-        print(f"  [{a['categories'][0] if a['categories'] else '未知'}] {a['title'][:30]}...")
+        cat = a['categories'][0] if a['categories'] else '未知'
+        body_preview = a['body'][:40] + '...' if len(a['body']) > 40 else a['body']
+        print(f"  [{cat}] {a['title'][:25]}... | body: {body_preview}")
 
     html = generate_html(articles)
 
