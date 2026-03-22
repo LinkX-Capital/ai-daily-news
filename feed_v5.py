@@ -1119,18 +1119,47 @@ def main():
 
     # 修正 LLM 分类错误
     for a in merged:
-        title = a.get('title', '').lower()
+        title = a.get('title', '')
+        summary = a.get('summary', '')
+        source = a.get('source', '')
         current_cat = a.get('categories', [''])[0]
-        
+
+        # 方法1: 学术机构模式匹配（不列举具体名字）
+        # 模式: xx大学、xx理工、学院、实验室、中科院等 + 技术创新词
+        academic_patterns = [
+            r'[\u4e00-\u9fa5]{2,4}大学', r'[\u4e00-\u9fa5]{2,4}理工', r'[\u4e00-\u9fa5]{2,4}学院',
+            r'[\u4e00-\u9fa5]{2,4}实验室', r'中科院', r'[\u4e00-\u9fa5]{2,4}研究院',
+            r'MIT\b', r'Stanford\b', r'Berkeley\b', r'CMU\b', r'UIUC\b',
+            r'清[华北]|北大|复旦|浙大|上交|中科大',  # 常见缩写
+            r'哈工[深大]|北航|北理|国科大|南大|武大|华科|西交|天大',  # 更多常见缩写
+            r'创智[\w\s]*×[\w\s]*复旦|复旦[\w\s]*团队',  # 合作机构模式
+        ]
+        tech_innovation_patterns = [
+            r'提出[\w\s]{0,10}(新|方法|架构|算法|范式|模型)', r'发布[\w\s]{0,10}(模型|算法|系统)',
+            r'推出[\w\s]{0,10}(新|方法|架构)', r'首创', r'突破', r'实现[\w\s]{0,10}(极低|高效|优化)',
+            r'\d+\.?\d*[Bb]参数', r'[Ll][Ll][Mm]', r'[Aa]gent', r'强化学习', r'多模态', r'架构'
+        ]
+        has_academic = any(re.search(p, title) for p in academic_patterns)
+        has_innovation = any(re.search(p, title) for p in tech_innovation_patterns)
+
+        # 方法2: 学术媒体来源判断
+        academic_sources = ['PaperWeekly', '机器之心', '量子位']
+        is_academic_source = any(s.lower() in source.lower() for s in academic_sources)
+
+        # 综合判断: 学术机构+技术创新 OR 学术媒体来源
+        if (has_academic and has_innovation) or (is_academic_source and has_academic):
+            if current_cat == '产业动态':
+                a['categories'] = ['研究关注']
+
         # DeepMind/3D重建/记忆 → 研究关注
         if 'deepmind' in title or '3d' in title or '重建' in title or '记忆' in title:
             if current_cat == '产业动态':
                 a['categories'] = ['研究关注']
-        
+
         # ICLR/ICML/CVPR → 强制研究关注
         if any(k in title for k in ['iclr', 'icml', 'cvpr']):
             a['categories'] = ['研究关注']
-        
+
         # 模型/评测/基准 → 研究关注
         if '模型' in title or '评测' in title or '基准' in title:
             if any(k in title for k in ['顶会', '大学', '学术', '论文','教授']):
