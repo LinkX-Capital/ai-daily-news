@@ -9,8 +9,12 @@ from collections import defaultdict
 ARCHIVE_DIR = "/Users/shenyalan/ai-daily-news/archive"
 OUTPUT_HTML = "/Users/shenyalan/ai-daily-news/daily-ai-news.html"
 
-def generate_html(articles):
-    month_day = datetime.now().strftime("%m月%d日")
+def generate_html(articles, date_str=None):
+    if date_str:
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+        month_day = date_obj.strftime("%m月%d日")
+    else:
+        month_day = datetime.now().strftime("%m月%d日")
 
     by_cat = defaultdict(list)
     for a in articles:
