@@ -21,15 +21,17 @@ from improve_news import improve_news
 from config_loader import (
     twitter_company_accounts, twitter_researcher_accounts,
     tier1_ai_companies, research_subfields, top_conferences,
-    high_citation_authors, official_sources
+    high_citation_authors, official_sources,
+    base_dir, archive_dir, output_md, output_html, output_html_path, summary_md, cache_file, tweet_cache, opml_file
 )
+from html_generator import md_to_html
 
 # 导入研究者推文抓取
 def fetch_researcher_tweets():
     """抓取前沿研究者推文，优先使用缓存"""
     try:
         # 直接使用缓存，跳过网络抓取（nitter经常超时）
-        cache_file = "/Users/shenyalan/ai-daily-news/tweet_fetcher/cache.json"
+        cache_file = tweet_cache()
         import json
         import os
         if os.path.exists(cache_file):
@@ -51,11 +53,11 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ========== 配置 ==========
 API_KEY = os.environ.get("MINIMAX_API_KEY", "")  # 独立变量，不影响 GLM
 API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
-OPML_FILE = "/Users/shenyalan/Desktop/Subscriptions-OnMyMac.opml"
-ARCHIVE_DIR = "/Users/shenyalan/ai-daily-news/archive"
-OUTPUT_FILE = "/Users/shenyalan/ai-daily-news/daily-ai-news.md"
-SUMMARY_FILE = "/Users/shenyalan/ai-daily-news/daily-ai-news-summary.md"
-CACHE_FILE = "/Users/shenyalan/ai-daily-news/cache_raw_news.json"
+OPML_FILE = opml_file()
+ARCHIVE_DIR = archive_dir()
+OUTPUT_FILE = output_md()
+SUMMARY_FILE = summary_md()
+CACHE_FILE = cache_file()
 
 os.makedirs(ARCHIVE_DIR, exist_ok=True)
 
@@ -120,49 +122,150 @@ OFFICIAL_COMPANY_SOURCES = [
     "@AnthropicAI", "OpenAI", "Google AI"
 ]
 
-# 1. 来源权重
-# 信息源金字塔
-# Tier 1: 官方发布 (100分)
-# Tier 2: 一手信源 (85分)
-# Tier 3: 行业聚合 (70分)
-# Tier 4: 其他 (50分)
+# ============================================================
+# 优先级计算 v2.0 - 按「事件量级 × 来源权威性」
+# ============================================================
 
-SOURCE_WEIGHTS = {
-    # Tier 1 - 官方发布
-    "OpenAI News": 100, "Google DeepMind": 100, "Anthropic": 100,
-    "NVIDIA Blog": 100, "Figure AI": 100, "Physical Intelligence": 100,
-    "World Labs": 100, "Thinking Machines Lab": 100, "Meta AI": 100,
-    "Microsoft Research": 100, "HuggingFace Blog": 100,
-    "DeepSeek": 100, "Mistral AI": 100,
-    "ByteDance": 100, "字节": 100, "阿里": 100, "百度": 100,
-    "The Keyword": 100,  # Google 官方博客
-
-    # Tier 2 - 一手信源 (记者/分析师直接报道)
-    "The Information": 90, "Wired": 85, "TechCrunch": 85,
-    "The Verge": 85, "Ars Technica": 85,
-    "karpathy": 90, "Y Combinator Blog": 85, "a16z": 85, "Sequoia": 85,
-    "36氪": 85,
-
-    # Tier 3 - 行业聚合
-    "量子位": 75, "新智元": 75, "机器之心": 75,
-    "IT桔子": 70, "PaperWeekly": 70,
-    "Sakana Blog": 80,
+# ===== 来源权威性 (1-10) =====
+SOURCE_AUTHORITY = {
+    # Tier 1 - 官方发布 (10)
+    "OpenAI News": 10, "Google DeepMind": 10, "Anthropic": 10,
+    "NVIDIA Blog": 10, "Meta AI": 10, "Microsoft Research": 10,
+    "HuggingFace Blog": 10, "DeepSeek": 10, "Mistral AI": 10,
+    "Figure AI": 10, "Physical Intelligence": 10, "World Labs": 10,
+    "Thinking Machines Lab": 10, "The Keyword": 10,
+    # Tier 1.5 - 顶级分析 (9)
+    "SemiAnalysis": 9, "The Information": 9,
+    # Tier 2 - 一手信源 (7-8)
+    "TechCrunch": 8, "Wired": 8, "The Verge": 8, "Ars Technica": 8,
+    "36氪": 8, "karpathy": 8,
+    # Tier 3 - 行业聚合 (5-6)
+    "量子位": 6, "新智元": 6, "机器之心": 6,
+    "PaperWeekly": 6, "IT桔子": 5, "Sakana Blog": 6,
+    # 默认
+    "_default": 5,
 }
 
-# 其他配置
-HIGH_PRIORITY_KEYWORDS = [
-    "gpt-5", "gpt-4.5", "o3", "o4", "o1", "claude 4", "gemini 2",
-    "deepseek", "qwen3", "llama4", "mistral", "sora", "veo",
-    "billion", "十亿", "亿美元", "acquire", "acquisition", "收购",
-    "breakthrough", "state-of-the-art", "sota", "nature", "science",
-    "launch", "unveil", "release", "announce", "发布", "开源",
-    "embedding", "embedding2", "gemini embedding",
+def get_source_authority(source):
+    """获取来源权威性分数 (1-10)"""
+    return SOURCE_AUTHORITY.get(source, SOURCE_AUTHORITY["_default"])
+
+
+# ===== 事件量级判断模式 =====
+
+# 模型前沿 - 事件量级
+MODEL_FRONTIER_HIGH = [
+    "gpt-5", "o3", "o4", "claude 4", "gemini 3",
+    "breakthrough", "首次", "首创", "全新架构", "新范式",
+    "state-of-the-art", "sota", "超越", "beat",
+]
+MODEL_FRONTIER_MEDIUM = [
+    "gpt-4.5", "gemini 2", "llama 4", "qwen3", "deepseek v4",
+    "发布", "开源", "release", "launch", "unveil",
+    "multimodal", "多模态", "reasoning", "推理", "agent",
 ]
 
-LOW_PRIORITY_KEYWORDS = [
-    "advertisement", "sponsored", "招聘", "求职", "课程", "培训",
-    "webinar", "抽奖", "活动", "meetup", "广告", "推广",
+# 算力追踪 - 事件量级
+INFRA_HIGH = [
+    "gb300", "gb200", "b300", "b200", "blackwell",
+    "euv", "high-na", "光刻机", "asml",
+    "hbm4", "hbm3e", "hbm3", "存储突破",
+    "cowos", "封装产能", "产能突破",
+    "capex", "数据中心", "data center",
+    "trainium", "inferentia",
 ]
+INFRA_MEDIUM = [
+    "h200", "h100", "b100", "gpu", "npu", "tpu",
+    "nvidia", "amd", "intel", "tsmc", "台积电",
+    "算力", "云计算", "芯片", "chip",
+    "三星", "sk海力士", "美光", "micron", "dram",
+]
+
+# 研究关注 - 事件量级
+RESEARCH_HIGH = [
+    "首次提出", "开创性", "全新方法", "新范式", "颠覆性",
+    "paradigm shift", "first", "novel", "breakthrough",
+]
+RESEARCH_MEDIUM = [
+    "nature", "science", "neurips", "icml", "cvpr", "iclr", "acl",
+    "改进", "优化", "提升", "新方法", "提出",
+]
+
+# 产业动态 - 事件量级
+INDUSTRY_HIGH = [
+    "pmf", "product-market fit",
+    "重磅发布", "major release", "flagship",
+    "arr", "annual recurring revenue", "月活", "mau", "dau",
+    "付费用户", "订阅用户", "revenue",
+]
+INDUSTRY_MEDIUM = [
+    "发布", "上线", "推出", "launch", "release",
+    "合作", "战略", "partnership",
+    "用户增长", "增长", "growth",
+]
+
+# 初创&融资 - 事件量级
+FUNDING_HIGH = [
+    "agi", "通用人工智能", "具身智能", "embodied", "人形机器人",
+    "ai agent", "world model", "世界模型",
+    "收购", "acquire", "merger", "并购",
+    "十亿", "百亿", "$10b", "$100b",
+]
+FUNDING_MEDIUM = [
+    "融资", "funding", "round",
+    "sequoia", "a16z", "红杉", "软银",
+    "亿美元", "$100m", "估值",
+]
+
+# X讨论 - 事件量级
+DISCUSSION_HIGH = [
+    "深度分析", "深度", "insight", "analysis",
+    "预测", "predict", "判断", "观点",
+    "cognition", "cursor", "devin",  # AI编程公司
+    "anthropic", "openai", "deepmind", "google ai",  # 头部AI公司
+    "x.ai", "sakana",  # 新兴AI公司
+]
+DISCUSSION_MEDIUM = [
+    "paper", "论文", "research", "研究",
+    "技术", "technical", "模型", "model",
+]
+
+
+def calculate_event_magnitude(title, summary, category):
+    """计算事件量级 (1-10)"""
+    text = (title + " " + (summary or "")).lower()
+
+    # 根据分类选择模式
+    patterns = {
+        "模型前沿": (MODEL_FRONTIER_HIGH, MODEL_FRONTIER_MEDIUM),
+        "算力追踪": (INFRA_HIGH, INFRA_MEDIUM),
+        "研究关注": (RESEARCH_HIGH, RESEARCH_MEDIUM),
+        "产业动态": (INDUSTRY_HIGH, INDUSTRY_MEDIUM),
+        "初创&融资": (FUNDING_HIGH, FUNDING_MEDIUM),
+        "X讨论": (DISCUSSION_HIGH, DISCUSSION_MEDIUM),
+    }
+
+    high_patterns, medium_patterns = patterns.get(category, ([], []))
+
+    if not high_patterns:
+        return 5  # 默认中等
+
+    # 匹配高量级模式
+    high_count = sum(1 for p in high_patterns if p in text)
+    if high_count >= 2:
+        return 10
+    elif high_count == 1:
+        return 8
+
+    # 匹配中量级模式
+    medium_count = sum(1 for p in medium_patterns if p in text)
+    if medium_count >= 3:
+        return 7
+    elif medium_count >= 1:
+        return 6
+
+    return 4  # 低量级
+
 
 # ========== 判断研究子领域 ==========
 def get_research_subfield(title, summary):
@@ -187,46 +290,321 @@ def get_research_subfield(title, summary):
         return "其他研究"
     return max(scores.items(), key=lambda x: x[1])[0]
 
-# ========== 计算研究文章优先级 ==========
-def calculate_research_priority(article):
-    """计算研究类文章优先级"""
+# ============================================================
+# 优先级计算 v2.0 - 按「事件量级 × 来源权威性」
+# ============================================================
+
+# ===== 来源权威性 (1-10) =====
+SOURCE_AUTHORITY = {
+    # Tier 1 - 官方发布 (9-10)
+    "OpenAI News": 10, "Google DeepMind": 10, "Anthropic": 10,
+    "NVIDIA Blog": 10, "Meta AI": 10, "Microsoft Research": 10,
+    "HuggingFace Blog": 10, "DeepSeek": 10, "Mistral AI": 10,
+    # Tier 1.5 - 顶级分析 (9)
+    "SemiAnalysis": 9, "The Information": 9,
+    # Tier 2 - 一手信源 (7-8)
+    "TechCrunch": 8, "Wired": 8, "The Verge": 8, "Ars Technica": 8,
+    "36氪": 8,
+    # Tier 3 - 行业聚合 (5-6)
+    "量子位": 6, "新智元": 6, "机器之心": 6,
+    "PaperWeekly": 6, "IT桔子": 5,
+    # 默认
+    "_default": 5,
+}
+
+def get_source_authority(source):
+    """获取来源权威性分数 (1-10)"""
+    return SOURCE_AUTHORITY.get(source, SOURCE_AUTHORITY["_default"])
+
+
+# ===== 事件量级判断模式 =====
+
+# 模型前沿 - 事件量级
+MODEL_FRONTIER_HIGH = [
+    # 下一代模型
+    "gpt-5", "o3", "o4", "claude 4", "gemini 3",
+    # 重大突破
+    "breakthrough", "首次", "首创", "全新架构", "新范式",
+    "state-of-the-art", "sota", "超越",
+]
+MODEL_FRONTIER_MEDIUM = [
+    # 重要更新
+    "gpt-4.5", "gemini 2", "llama 4", "qwen3", "deepseek v4",
+    "发布", "开源", "release", "launch", "unveil",
+]
+
+# 算力追踪 - 事件量级
+INFRA_HIGH = [
+    # 新一代芯片
+    "gb300", "gb200", "b300", "b200", "blackwell",
+    # 光刻机
+    "euv", "high-na euv", "光刻机", "asml",
+    # 存储
+    "hbm4", "hbm3e", "hbm3", "内存", "memory", "dram",
+    "三星存储", "sk海力士", "美光", "micron",
+    # 供应链
+    "cowos", "封装", "产能", "tsmc", "台积电",
+    # 重大 Capex
+    "capex", "$10b", "$100b",
+]
+INFRA_MEDIUM = [
+    # 芯片相关
+    "h200", "h100", "b100", "gpu", "npu", "tpu",
+    "nvidia", "amd", "intel", "groq",
+    # 算力相关
+    "算力", "云计算", "数据中心", "data center",
+]
+
+# 研究关注 - 事件量级
+RESEARCH_HIGH = [
+    # 开创性工作
+    "首次提出", "开创性", "全新方法", "新范式", "颠覆性",
+    "paradigm shift", "first", "novel", "breakthrough",
+]
+RESEARCH_MEDIUM = [
+    # 顶会论文
+    "nature", "science", "neurips", "icml", "cvpr", "iclr", "acl",
+    # 重要改进
+    "改进", "优化", "提升", "新方法", "提出",
+]
+
+# 产业动态 - 事件量级
+INDUSTRY_HIGH = [
+    # PMF 验证
+    "pmf", "product-market fit", "找到产品市场匹配",
+    # 重要产品
+    "重磅发布", "major release", "flagship",
+    # 运营数据
+    "arr", "annual recurring revenue", "月活", "mau", "dau",
+    "付费用户", "订阅用户", "revenue",
+]
+INDUSTRY_MEDIUM = [
+    # 产品发布
+    "发布", "上线", "推出", "launch", "release",
+    # 合作
+    "合作", "战略", "partnership",
+    # 用户数据
+    "用户增长", "增长", "growth",
+]
+
+# 初创&融资 - 事件量级
+FUNDING_HIGH = [
+    # 前沿领域
+    "agi", "通用人工智能", "具身智能", "embodied", "人形机器人",
+    "ai agent", "agent", "世界模型", "world model",
+    # 重点收购
+    "收购", "acquire", "merger", "并购",
+    # 大金额
+    "十亿", "百亿", "$10b", "$100b", "$1b",
+]
+FUNDING_MEDIUM = [
+    # 融资相关
+    "融资", "funding", "round",
+    # 投资方
+    "sequoia", "a16z", "红杉", "软银",
+    # 金额
+    "亿美元", "$100m", "估值",
+]
+
+# X讨论 - 事件量级
+DISCUSSION_HIGH = [
+    # 顶级账号关键词
+    "深度分析", "深度", "insight", "analysis",
+    # 重要观点
+    "预测", "predict", "判断", "观点",
+]
+DISCUSSION_MEDIUM = [
+    # 研究相关
+    "paper", "论文", "research", "研究",
+    # 技术相关
+    "技术", "technical", "模型", "model",
+]
+
+
+def calculate_event_magnitude(title, summary, category):
+    """计算事件量级 (1-10)"""
+    text = (title + " " + (summary or "")).lower()
+
+    # 根据分类选择模式
+    if category == "模型前沿":
+        high_patterns = MODEL_FRONTIER_HIGH
+        medium_patterns = MODEL_FRONTIER_MEDIUM
+    elif category == "算力追踪":
+        high_patterns = INFRA_HIGH
+        medium_patterns = INFRA_MEDIUM
+    elif category == "研究关注":
+        high_patterns = RESEARCH_HIGH
+        medium_patterns = RESEARCH_MEDIUM
+    elif category == "产业动态":
+        high_patterns = INDUSTRY_HIGH
+        medium_patterns = INDUSTRY_MEDIUM
+    elif category == "初创&融资":
+        high_patterns = FUNDING_HIGH
+        medium_patterns = FUNDING_MEDIUM
+    elif category == "X讨论":
+        high_patterns = DISCUSSION_HIGH
+        medium_patterns = DISCUSSION_MEDIUM
+    else:
+        return 5  # 默认中等
+
+    # 匹配高量级模式
+    high_count = sum(1 for p in high_patterns if p in text)
+    if high_count >= 2:
+        return 9 + min(high_count, 1)  # 9-10
+    elif high_count == 1:
+        return 8
+    # 匹配中量级模式
+    medium_count = sum(1 for p in medium_patterns if p in text)
+    if medium_count >= 3:
+        return 7
+    elif medium_count >= 1:
+        return 6
+    # 默认低量级
+    return 4
+
+
+def calculate_priority_v2(article):
+    """计算优先级 v2.0 - 事件量级 × 来源权威性"""
+    source = article.get("source", "")
+    title = article.get("title", "")
+    summary = article.get("summary", "")
+    category = article.get("categories", [""])[0] if article.get("categories") else ""
+    # 计算两个维度
+    source_score = get_source_authority(source)
+    event_score = calculate_event_magnitude(title, summary, category)
+    # 综合分数 = 事件量级 × 来源权威性
+    total = event_score * source_score
+    return total
+
+
+# ============================================================
+# 优先级计算 v2.0 - 统一框架
+# ============================================================
+
+# 研究关注 - 来源权威性
+RESEARCH_SOURCE_AUTHORITY = {
+    "Nature": 10, "Science": 10, "Nature Machine Intelligence": 10,
+    "NeurIPS": 9, "ICML": 9, "CVPR": 9, "ICLR": 9,
+    "PaperWeekly": 7, "机器之心": 7, "量子位": 7,
+    "_default": 6,
+}
+
+import re
+
+
+def get_conference_tier(text):
+    """识别顶会等级 - 使用模式匹配"""
+    text_lower = text.lower()
+
+    # Tier 0 - 顶刊
+    if re.search(r'\b(nature|science)\b', text_lower):
+        return 1.5
+
+    # Tier 1 - 顶级AI会议（使用简单包含匹配，兼容各种格式如 CVPR26, CVPR'26）
+    top_conf = ['neurips', 'nips', 'icml', 'iclr', 'cvpr', 'iccv']
+    for conf in top_conf:
+        if conf in text_lower:
+            return 1.4
+
+    # Tier 2 - 重要会议
+    important_conf = ['acl', 'emnlp', 'aaai', 'ijcai', 'conll']
+    for conf in important_conf:
+        if conf in text_lower:
+            return 1.3
+
+    return 1.0
+
+
+def get_institution_tier(text):
+    """识别机构等级 - 使用模式匹配"""
+    # Tier 0 - 高被引学者
+    high_citation = [
+        r'(Hinton|LeCun|Bengio|Goodfellow)',
+        r'(Karpathy|Jeff Dean|Demis Hassabis)',
+        r'(孙剑|汤晓鸥|朱松纯|唐杰)',
+    ]
+    for p in high_citation:
+        if re.search(p, text, re.I):
+            return 1.5
+
+    # Tier 1 - 顶尖机构
+    top_institutions = [
+        r'\b(Stanford|MIT|Berkeley|CMU|Caltech|Harvard)\b',
+        r'\b(Oxford|Cambridge|ETH Zurich|EPFL|Princeton)\b',
+        r'(清华|北大|北京大学|清华大学)',
+        r'(复旦|浙大|浙江大学|上交|上海交大|中科大)',
+        r'(中科院|国科大|中国科学院)',
+        r'(Google DeepMind|DeepMind)',
+        r'(OpenAI|Anthropic|Meta AI|Microsoft Research)',
+    ]
+    for p in top_institutions:
+        if re.search(p, text):
+            return 1.3
+
+    # Tier 2 - 一般学术机构
+    if re.search(r'(大学|学院|研究院|实验室|Institute|Lab)', text):
+        return 1.1
+
+    return 1.0
+
+
+def calculate_research_priority_v2(article):
+    """计算研究关注优先级 v2.0 - 事件量级 × 来源权威性 × 影响力加成"""
     source = article.get("source", "")
     title = article.get("title", "").lower()
     summary = article.get("summary", "").lower()
     text = title + " " + summary
 
-    # 1. 子领域基础分
-    subfield = get_research_subfield(article.get("title", ""), summary)
-    subfield_weight = RESEARCH_SUBFIELDS.get(subfield, {}).get("citation_weight", 15)
+    # 1. 事件量级
+    magnitude = 5  # 默认
 
-    # 2. 来源权重
-    source_score = SOURCE_WEIGHTS.get(source, 50)
+    # 量级=10：开创性工作
+    paradigm_shift = ["首次提出", "开创性", "全新方法", "新范式", "颠覆性",
+                      "paradigm shift", "groundbreaking", "breakthrough"]
+    if any(p in text for p in paradigm_shift):
+        magnitude = 10
+    # 量级=9：顶刊
+    elif re.search(r'\b(nature|science|cell|pnas)\b', text):
+        magnitude = 9
+    # 量级=8：顶会（使用简单匹配，兼容各种格式）
+    elif any(c in text for c in ['neurips', 'nips', 'icml', 'iclr', 'cvpr', 'iccv']):
+        magnitude = 8
+    # 量级=7：重要成果
+    elif any(p in text for p in ["best paper", "最佳论文", "sota", "state-of-the-art"]):
+        magnitude = 7
 
-    # 3. 顶会加成
-    conf_score = 0
-    for conf, weight in TOP_CONFERENCES.items():
-        if conf in text:
-            conf_score = max(conf_score, weight)
+    # 2. 来源权威性
+    source_score = RESEARCH_SOURCE_AUTHORITY.get(source, RESEARCH_SOURCE_AUTHORITY["_default"])
 
-    # 4. 学者/机构被引量
-    author_score = 0
-    for author, weight in HIGH_CITATION_AUTHORS.items():
-        if author.lower() in text:
-            author_score = max(author_score, weight)
+    # 3. 影响力加成 = 顶会等级 × 机构等级
+    conf_tier = get_conference_tier(text)
+    inst_tier = get_institution_tier(text)
+    bonus = conf_tier * inst_tier
 
-    # 5. 热度关键词
-    keyword_score = 0
-    for kw in HIGH_PRIORITY_KEYWORDS:
-        if kw.lower() in text:
-            keyword_score += 5
-    keyword_score = min(keyword_score, 20)
+    # 4. 最终分数
+    total = magnitude * source_score * bonus
+    return total
 
-    # 综合分数
-    total = source_score + subfield_weight + conf_score + author_score + keyword_score
 
-    return total, subfield
+def calculate_priority_v2(article):
+    """计算优先级 v2.0 - 事件量级 × 来源权威性"""
+    category = article.get("categories", [""])[0] if article.get("categories") else ""
 
-# ========== 计算普通优先级 ==========
+    # 研究关注使用专门的计算
+    if category == "研究关注":
+        return calculate_research_priority_v2(article)
+
+    source = article.get("source", "")
+    title = article.get("title", "")
+    summary = article.get("summary", "")
+
+    source_score = get_source_authority(source)
+    event_score = calculate_event_magnitude(title, summary, category)
+
+    return event_score * source_score
+
+
+# ========== 计算普通优先级 (已废弃，使用 calculate_priority_v2) ==========
 def calculate_priority(article, category=None):
     source = article.get("source", "")
     title = article.get("title", "").lower()
@@ -315,35 +693,110 @@ NON_AI_KEYWORDS = [
     "仓库", "fatality",
 ]
 
-# 改进的分类关键词
+# ============================================================
+# 分类系统 v2.0 - 按「主体 + 事件性质」划分
+# ============================================================
+
+# ===== 学术实体 =====
+ACADEMIC_ENTITIES = [
+    # 中文大学
+    "大学", "学院", "研究院", "实验室", "中科院", "清华", "北大", "复旦", "浙大",
+    "上交", "中科大", "哈工", "北航", "北理", "国科大", "南大", "武大", "华科", "西交",
+    # 英文大学
+    "stanford", "mit", "berkeley", "cmu", "uiuc", "caltech", "oxford", "cambridge",
+]
+
+# ===== 顶会/期刊 =====
+TOP_VENUES = [
+    "nature", "science", "icml", "neurips", "cvpr", "iclr", "acl", "emnlp", "aaai",
+    "arxiv", "论文", "paper",
+]
+
+# ===== 模型前沿：模型能力本身 =====
+MODEL_PATTERNS = [
+    # 具体模型名
+    "gpt-4", "gpt-5", "gpt-4o", "gpt-4.5", "o1", "o3", "o4",
+    "claude 3", "claude 4", "claude-3", "claude-4",
+    "gemini 2", "gemini-2", "gemini 1.5",
+    "llama 3", "llama 4", "llama-3", "llama-4",
+    "qwen", "deepseek", "mistral", "minimax", "kimi", "grok",
+    # 模型架构/技术
+    "benchmark", "评测", "sota", "参数", "推理能力",
+    "多模态", "视频生成", "图像生成", "文生图", "文生视频",
+    "world model", "reasoning", "vla", "agent", "embedding",
+    "moe", "transformer", "attention", "diffusion",
+    # 模型动作
+    "发布模型", "开源模型", "新模型", "模型更新",
+    # 编程模型
+    "coding model", "编程模型", "代码模型",
+    # 语言模型
+    "语言模型", "大模型", "llm", "diffusion llm", "扩散语言模型",
+]
+
+# ===== 算力追踪：算力硬件 + 基础设施 + Capex + 算力需求 =====
+INFRA_PATTERNS = [
+    # 算力芯片（chip 要结合上下文，消费电子会被 CONSUMER_ELECTRONICS 排除）
+    "gpu", "npu", "tpu", "h100", "h200", "b100", "b200", "blackwell", "gb200", "gb300",
+    "算力芯片", "ai芯片", "训练芯片", "推理芯片", "chip",
+    # 算力厂商
+    "nvidia", "amd", "intel", "groq", "cerebras", "tenstorrent",
+    # 云服务/数据中心
+    "云计算", "云服务", "云厂商", "数据中心", "data center", "datacenter", "算力中心", "算力工厂",
+    "aws", "azure", "gcp", "oracle cloud", "coreweave",
+    # SemiAnalysis / Capex
+    "semianalysis", "capex", "capital expenditure", "ai capex",
+    # 算力需求（注意：不含单独的 token，避免匹配 "AI tokens" 薪酬话题）
+    "算力需求", "计算需求", "compute demand",
+    "算力缺口", "算力短缺", "gpu shortage", "算力供给", "算力供应",
+    "训练算力", "推理算力", "eflops", "exaflops", "petaflops",
+    "算力租赁", "gpu rental", "gpu cloud",
+    # 供应链
+    "tsmc", "台积电", "cowos", "hbm", "封装产能", "芯片产能",
+    # 数据中心能源
+    "数据中心电力", "数据中心能耗",
+]
+
+# ===== 产业动态：商业/产品/合作/政策 =====
+INDUSTRY_PATTERNS = [
+    # 商业数据
+    "用户增长", "营收", "付费用户", "订阅", "dau", "mau",
+    # 合作/战略
+    "战略合作", "合作伙伴",
+    # 高管
+    "高管", "ceo", "cto", "离职", "加入", "人事变动",
+    # 安全/合规
+    "安全事件", "漏洞", "数据泄露", "封禁", "监管", "合规",
+    # 产品（非模型类）
+    "产品上线", "产品更新", "功能更新",
+    # 公司动态
+    "裁员", "组织架构", "业务调整",
+]
+
+# ===== 初创&融资：融资/收购/IPO =====
+FUNDING_PATTERNS = [
+    "融资", "funding", "round", "a轮", "b轮", "c轮", "d轮", "pre-ipo",
+    "估值", "ipo", "上市", "独角兽",
+    "收购", "并购", "acquire", "acquisition", "merger",
+]
+
+# ===== X讨论：个人动态 =====
+PERSONAL_PATTERNS = [
+    "我认为", "我觉得", "interesting", "个人观点",
+]
+
+# 消费电子排除（不算算力追踪）
+CONSUMER_ELECTRONICS = [
+    "手机", "智能手机", "pc出货", "笔记本电脑", "智能手表", "耳机", "平板",
+    "phone", "laptop", "smartwatch", "earbuds", "tablet", "consumer electronics",
+]
+
+# 兼容旧代码（保留 CATEGORIES 变量名）
 CATEGORIES = {
-    # 模型前沿：模型本身的发布、能力更新、评测
-    "模型前沿": ["gpt", "claude", "gemini", "llama", "qwen", "deepseek", "minimax", "kimi",
-                "模型", "发布", "开源", "能力", "benchmark", "评测", "sota", "参数",
-                "多模态", "视频生成", "图像生成", "文生图", "文生视频",
-                "具身智能", "机器人", "world model", "reasoning", "推理",
-                "moe", "transformer", "vla", "agent","attention","memory","RL"],
-    
-    # 算力追踪：硬件、芯片、云服务
-    "算力追踪": ["gpu", "npu", "tpu", "h100", "h200", "b100", "blackwell",
-                "芯片", "算力", "nvidia", "amd", "intel",
-                "云计算", "aws", "azure", "gcp", "token demand", "cohere", "groq"],
-    
-    # 产业动态：公司战略、产品发布、合作、高管动态
-    "产业动态": ["产品", "发布", "上线", "更新", "合作", "战略", "部署",
-                "高管", "ceo", "融资", "投资", "收购", "并购", "上市",
-                "苹果", "apple", "meta", "google", "microsoft", "amazon",
-                "阿里", "字节", "百度", "腾讯", "华为", "字节跳动"],
-    
-    # 初创&融资：融资事件、投资动态
-    "初创&融资": ["融资", "投资", "funding", "round", "估值", "ipo",
-                "a轮", "b轮", "c轮", "d轮", "独角兽", "上市",
-                "收购", "并购", "acquire"],
-    
-    # 研究关注：论文、学术研究
-    "研究关注": ["论文", "研究", "nature", "science", "icml", "neurips",
-                "cvpr", "acl", "arxiv", "学者", "教授", "paper",
-                "算法", "突破", "实验室"],
+    "模型前沿": MODEL_PATTERNS,
+    "算力追踪": INFRA_PATTERNS,
+    "产业动态": INDUSTRY_PATTERNS,
+    "初创&融资": FUNDING_PATTERNS,
+    "研究关注": TOP_VENUES,
 }
 CATEGORY_PRIORITY = {"模型前沿": 1, "产业动态": 2, "算力追踪": 3, "初创&融资": 4, "研究关注": 5, "X讨论": 6, "其他": 7}
 
@@ -371,7 +824,7 @@ def parse_date(entry):
     if hasattr(entry, "published_parsed") and entry.published_parsed:
         try:
             return datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
-        except: pass
+        except Exception: pass
     import email.utils, calendar
     for f in ["published", "updated", "created"]:
         if hasattr(entry, f):
@@ -380,7 +833,7 @@ def parse_date(entry):
                 if p:
                     timestamp = calendar.timegm(p[:9])
                     return datetime.fromtimestamp(timestamp, tz=timezone.utc)
-            except: continue
+            except Exception: continue
     return None
 
 
@@ -397,7 +850,7 @@ def parse_tweet_time(published_str):
             dt.hour, dt.minute, dt.second,
             dt.weekday(), dt.timetuple().tm_yday, 0
         ]
-    except:
+    except Exception:
         return None
 # 播客源（需要过滤）
 PODCAST_SOURCES = ["a16z", "simplecast", "podcast", "播客"]
@@ -411,27 +864,34 @@ def is_in_window(entry):
     d = parse_date(entry)
     return False if d is None else START_UTC <= d <= END_UTC
 
-def is_ai_related(title, summary):
-    """判断是否与AI相关（包含前沿科技）"""
+def is_ai_related(title, summary, source=""):
+    """判断是否与AI相关（包含前沿科技 + 来源判断）"""
     text = (title + " " + (summary or "")).lower()
-    
+    source_lower = source.lower().replace("@", "")
+
+    # 如果来源是 AI 公司官方账号，直接认为是 AI 相关
+    company_accounts = twitter_company_accounts()
+    if any(c in source_lower for c in company_accounts):
+        return True
+
     # AI 相关关键词
     ai_keywords = ["ai", "人工智能", "大模型", "llm", "gpt", "claude", "gemini",
                    "模型", "机器学习", "深度学习", "神经网络", "transformer",
                    "nlp", "cv", "计算机视觉", "语音", "自然语言", "自动驾驶",
                    "agent", "agents", "多模态", "视频生成", "图像生成", "文生图"]
-    
+
     # 前沿科技（和AI一样属于科技前沿，应保留）
     frontier_keywords = ["quantum", "量子", "brain-computer", "脑机", "bci",
                         "fusion", "核聚变", "核融合", "可控核聚变",
-                        "nuclear", "半导体", "芯片", "gpu", "nvidia"]
-    
+                        "nuclear", "半导体", "芯片", "chip", "gpu", "nvidia",
+                        "算力", "数据中心", "data center", "terafab"]
+
     has_ai = any(kw in text for kw in ai_keywords)
     has_frontier = any(kw in text for kw in frontier_keywords)
-    
+
     # 检查是否包含非AI关键词
     has_non_ai = any(kw in text for kw in NON_AI_KEYWORDS)
-    
+
     # 如果有AI关键词或前沿科技，且没有非AI关键词
     if (has_ai or has_frontier) and not has_non_ai:
         return True
@@ -442,25 +902,47 @@ def is_ai_related(title, summary):
         return (ai_count + frontier_count) > non_ai_count
     return False
 
-def get_cat(title, summary):
+def get_cat(title, summary, source=""):
+    """分类判断 v2.0 - 按「主体 + 事件性质」划分"""
     text = (title + " " + (summary or "")).lower()
-    
-    # 先判断是否AI相关
-    if not is_ai_related(title, summary):
-        return ["其他"]  # 非AI内容归为"其他"
-    
-    scores = {}
-    for cat, keywords in CATEGORIES.items():
-        score = sum(1 for k in keywords if k.lower() in text)
-        if score > 0:
-            scores[cat] = score
-    
-    if not scores:
-        return ["产业动态"]  # 默认为产业动态
-    
-    # 优先级排序
-    sorted_cats = sorted(scores.items(), key=lambda x: (-x[1], CATEGORY_PRIORITY.get(x[0], 6)))
-    return [sorted_cats[0][0]]
+
+    # ===== 0. 先判断是否AI相关（内容 + 来源）=====
+    if not is_ai_related(title, summary, source):
+        return ["其他"]
+
+    # ===== 1. 初创&融资：融资事件优先判断 =====
+    if any(p in text for p in FUNDING_PATTERNS):
+        return ["初创&融资"]
+
+    # ===== 2. 研究关注：学术实体 + 研究内容 =====
+    has_academic = any(e in text for e in ACADEMIC_ENTITIES)
+    has_venue = any(v in text for v in TOP_VENUES)
+    has_research = any(p in text for p in ["论文", "paper", "研究", "提出", "发现", "算法"])
+
+    # 学术机构 + 研究内容 → 研究关注
+    if has_academic and (has_venue or has_research):
+        return ["研究关注"]
+
+    # ===== 3. 算力追踪：先排除消费电子 =====
+    is_consumer_electronics = any(c in text for c in CONSUMER_ELECTRONICS)
+
+    if not is_consumer_electronics:
+        has_infra = any(p in text for p in INFRA_PATTERNS)
+        if has_infra:
+            return ["算力追踪"]
+
+    # ===== 4. 模型前沿：模型能力 =====
+    has_model = any(p in text for p in MODEL_PATTERNS)
+    if has_model:
+        return ["模型前沿"]
+
+    # ===== 5. 产业动态：商业/合作/产品 =====
+    has_industry = any(p in text for p in INDUSTRY_PATTERNS)
+    if has_industry:
+        return ["产业动态"]
+
+    # ===== 6. 默认：产业动态 =====
+    return ["产业动态"]
 
 def extract_keywords(title):
     t = clean_text(title).lower()
@@ -505,29 +987,43 @@ def call_llm(prompt):
 
 ## 判断规则
 ### 保留条件（is_ai_related=true）
-- AI/大模型、模型发布
+- AI/大模型、模型发布、模型评测
 - 量子、脑机接口、核聚变、半导体
 - AI+行业、智慧城市、机器人研究
 - AI相关产业链的科技融资
+- 算力芯片、数据中心、云厂商AI投资
+- 顶会论文（CVPR/ICML/NeurIPS/Nature/Science）
+- 学术机构研究（清华/北大/浙大/中科院/MIT/Stanford/Berkeley）
+- 重要公司动态（x.ai、Terafab、Sakana AI、Cursor、Cognition）
+- 芯片发布/投资计划（SpaceX/Tesla/Apple/Amazon）
+- 监管政策、安全事件（涉及AI公司）
 
 ### 过滤条件（is_ai_related=false）
-- 纯汽车、PC销量、纯安全事故
+- 纯汽车销量、纯安全事故（与AI无关）
 - 娱乐圈、房地产、招聘
-- 纯活动预告、会议邀请（除非有实质性发布内容）
-- 个人动态、日常讨论、无实质内容的转发
-- 客户采用XX技术/模型的案例（除非是重大合作）
-- 非核心厂商的产品/功能更新（非Google/OpenAI/NVIDIA等核心厂商）
-- 已发布很久的技术新介绍（炒冷饭）
-- 顶尖大学/研究机构的重要研究应该保留（UIUC、清华、斯坦福、MIT等）
-- 非重大、非突破性的政策/路线图/安全指南
+- 纯活动预告、会议邀请（无实质性发布内容）
+- 纯RT转发（无个人评论的转发）
+- Pinned推文
+- 已发布很久的技术介绍（炒冷饭）
+- 明显与AI无关的新闻
+- 一般性的版权纠纷/诉讼（除非是重大突破性判决）
+- 非关键公司的一般性产品采用案例
+- 一般性的政策/监管/安全指南（非重大突破）
 
 ### 分类规则
-- 模型前沿：模型发布、benchmark、多模态、视频生成、模型开源、模型评测、世界模型、VLA
-- 产业动态：商业、合作、用户增长、政策、产品更新
-- 算力追踪：芯片、硬件、半导体设备、算力
-- 初创&融资：融资、投资
-- 研究关注：论文、学术、CVPR/ICML、可解释性、AI安全
-- X讨论：个人动态、观点分享、日常讨论
+- 模型前沿：模型发布、模型能力更新、benchmark、多模态、视频生成、模型开源、模型评测、世界模型、VLA、Agent架构
+- 算力追踪：算力芯片(GPU/NPU/TPU)、云服务、数据中心、AI Capex、算力需求/缺口、算力供应链、SemiAnalysis
+- 产业动态：用户增长、营收、战略合作、高管变动、安全事件、非模型类产品更新、监管政策
+- 初创&融资：融资、收购、IPO、估值变化
+- 研究关注：学术论文、顶会(Nature/Science/ICML/NeurIPS/CVPR)、学术机构研究成果
+- X讨论：个人观点、日常动态、非正式分享
+
+### 分类边界
+- NVIDIA发布GPU → 算力追踪；NVIDIA发布模型 → 模型前沿
+- OpenAI发布GPT-5 → 模型前沿；OpenAI用户数增长 → 产业动态
+- Stanford发论文 → 研究关注；OpenAI发论文 → 模型前沿（公司研究核心是模型）
+- SemiAnalysis分析 → 算力追踪
+- 消费电子(PC/手机/手表) → 过滤，不属于算力追踪
 
 ## 输出格式
 JSON数组，只返回is_ai_related=true的新闻：
@@ -550,18 +1046,28 @@ JSON数组，只返回is_ai_related=true的新闻：
   - 禁止感叹号、问号结尾
   - 禁止模糊称呼，必须具体到人名或公司名
   - 禁止媒体夸张词汇（彻底告别、炸裂、暴击等）
-- body规则（专注事件还原）：
-  - 3-6句话，只描述事件本身、关键细节和数据
-  - 关键数据/判断必须加粗**（如：**120B参数**、**首次**、**50%**）
-  - 谨慎判断摘要是否能代表全文：如果摘要只是开头引入/背景，而非事件核心，需标注"补充"或基于常识补充
-  - 不包含判断和评价，判断放在insight里
-  - 信息密度高，不重复标题
-  - 海外公司/人名保持英文
+- body规则（按分类有不同侧重点，关注事件要点还原）：
+  - 3-6句话，关键数据/判断必须加粗（如：**首次实现超百万上下文窗口**；**M2.7是MiniMax首个深度参与自身进化的模型**）
   - 读完能了解来龙去脉，不点进原文也能跟人聊
-- insight规则（负责判断）：
+  - 海外公司/人名保持英文
+  - 不包含判断和评价，判断放在insight里
+  - 分类侧重点：
+    - 模型前沿：能力突破点、关键数据（成本、benchmark）、适用场景
+    - 算力追踪：规模（芯片型号、数量）、产能，成本变化、供应链影响
+    - 研究关注：方法创新点、实验结果、局限性
+    - 产业动态：商业影响、用户数据、竞争格局
+    - 初创&融资：领域、商业逻辑、金额，投资方背书
+    - X讨论：观点核心、论据
+- insight规则（按分类有不同侧重点）：
   - 一句话点评，作为顶尖AI分析师的洞察
-  - 可以是：趋势判断、竞争格局分析、或与其他事件的关联
   - 要有观点，不要套话
+  - 分类侧重点：
+    - 模型前沿：技术代差、商业影响
+    - 算力追踪：供需关系、格局变化
+    - 研究关注：创新性、实用性
+    - 产业动态：市场影响、竞争定位
+    - 初创&融资：商业逻辑、团队或项目亮点
+    - X讨论：观点质量、值得关注程度
 - 只返回is_ai_related=true的新闻
 - 所有输出必须用中文""",
         "messages": [{"role": "user", "content": prompt}]
@@ -668,7 +1174,7 @@ def process_with_llm(articles, recent_articles=None):
                         for obj in objects:
                             try:
                                 llm_results.append(json_module.loads(obj))
-                            except:
+                            except Exception:
                                 pass
                         if not llm_results:
                             print(f"   ⚠️ JSON解析失败: {e1}")
@@ -760,15 +1266,8 @@ def fetch_source(name, url, limit=15, max_retries=5):
                     "published_parsed": list(e.get("published_parsed"))[:6] if e.get("published_parsed") else None,
                 }
 
-                # 研究类用专门计算方法
-                if primary_cat == "研究关注":
-                    priority, subfield = calculate_research_priority(article)
-                    article["priority"] = priority
-                    article["subfield"] = subfield
-                else:
-                    priority, companies = calculate_priority(article, primary_cat)
-                    article["priority"] = priority
-                    article["subfield"] = None
+                # 使用新的优先级计算 v2.0
+                article["priority"] = calculate_priority_v2(article)
 
                 articles.append(article)
                 if len(articles) >= limit: break
@@ -950,9 +1449,10 @@ def get_time_window(target_date=None):
         # 使用当前时间
         now_utc = datetime.now(timezone.utc)
         now_beijing = now_utc + timedelta(hours=beijing_offset)
+        # end_beijing = 今天9点（如果还没到9点）或昨天9点（如果已过9点）
         end_beijing = now_beijing.replace(hour=9, minute=0, second=0, microsecond=0)
-        if now_beijing.hour < 9:
-            end_beijing = end_beijing - timedelta(days=1)
+        if now_beijing.hour >= 9:
+            end_beijing = end_beijing + timedelta(days=1)
 
     # 固定：24小时窗口
     start_beijing = end_beijing - timedelta(days=1)
@@ -961,6 +1461,22 @@ def get_time_window(target_date=None):
 
 # 默认时间窗口（今天）
 START_UTC, END_UTC, START_BJ, END_BJ = get_time_window()
+
+# ========== MD to HTML (委托给 html_generator 模块) ==========
+def md_to_html_from_file(md_file=None, output_html=None):
+    """从 MD 文件生成 HTML"""
+    if md_file is None:
+        md_file = output_md()
+    if output_html is None:
+        output_html = output_html_path()
+
+    if not os.path.exists(md_file):
+        print(f"❌ MD 文件不存在: {md_file}")
+        return
+
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    dated_html = f"{base_dir()}/daily-ai-news-{date_str}.html"
+    md_to_html(md_file, output_html, dated_html)
 
 # ========== 主函数 ==========
 def load_recent_archives(days=3):
@@ -978,8 +1494,8 @@ def load_recent_archives(days=3):
                             "title": a.get("title", ""),
                             "category": a.get("categories", [""])[0] if a.get("categories") else ""
                         })
-            except:
-                pass
+            except Exception as e:
+                print(f"   ⚠️ 读取存档失败: {e}")
     return recent_news
 
 def main():
@@ -990,7 +1506,13 @@ def main():
     parser.add_argument('--skip-llm', action='store_true', help='跳过 LLM 处理')
     parser.add_argument('--limit', type=int, default=0, help='限制处理条数（用于快速测试）')
     parser.add_argument('--date', type=str, default=None, help='指定日期 YYYY-MM-DD')
+    parser.add_argument('--md', action='store_true', help='从 MD 文件生成 HTML（用于手动编辑后的发布）')
     args = parser.parse_args()
+
+    # 从 MD 生成 HTML（独立模式）
+    if args.md:
+        md_to_html_from_file()
+        return
 
     # 使用指定日期重新计算时间窗口
     global START_UTC, END_UTC, START_BJ, END_BJ
@@ -1041,18 +1563,15 @@ def main():
         if researcher_tweets:
             print(f"   获取 {len(researcher_tweets)} 条推文")
             for t in researcher_tweets:
-                source = t.get("source", "").lower().replace("@", "")
+                source = t.get("source", "")
                 title = t.get("title", "")
-                # 根据账号类型计算优先级
-                if any(c in source for c in COMPANY_ACCOUNTS):
-                    # 公司账号：用普通优先级规则（来源权重）
-                    priority, _ = calculate_priority({"source": t.get("source", ""), "title": title, "summary": title})
-                elif any(r in source for r in RESEARCHER_ACCOUNTS):
-                    # 研究者账号：用研究者优先级规则
-                    priority, _ = calculate_research_priority({"source": t.get("source", ""), "title": title, "summary": title})
-                else:
-                    # 其他推文：用普通优先级规则（按内容重要性）
-                    priority, _ = calculate_priority({"source": "TechCrunch", "title": title, "summary": title})
+                # 使用新的优先级计算 v2.0
+                priority = calculate_priority_v2({
+                    "source": source,
+                    "title": title,
+                    "summary": title,
+                    "categories": ["研究者动态"]
+                })
 
                 all_arts.append({
                     "title": title[:80],
@@ -1103,6 +1622,17 @@ def main():
     print("🔧 后规范化...")
     merged = improve_news(merged, do_filter=False)
 
+    # 如果跳过了 LLM，用新分类逻辑重新分类
+    if args.skip_llm:
+        for a in merged:
+            new_cat = get_cat(a.get('title', ''), a.get('summary', ''), a.get('source', ''))
+            a['categories'] = new_cat
+            # 同时重新计算优先级
+            a['priority'] = calculate_priority_v2(a)
+
+    # 重新排序
+    merged = sorted(merged, key=lambda x: x.get("priority", 0), reverse=True)
+
     for a in merged:
         if a.get("is_tweet"):
             source = a.get("source", "").lower().replace("@", "")
@@ -1116,66 +1646,6 @@ def main():
                 pass
             else:
                 a['categories'] = ['X讨论']
-
-    # 修正 LLM 分类错误
-    for a in merged:
-        title = a.get('title', '')
-        summary = a.get('summary', '')
-        source = a.get('source', '')
-        current_cat = a.get('categories', [''])[0]
-
-        # 方法1: 学术机构模式匹配（不列举具体名字）
-        # 模式: xx大学、xx理工、学院、实验室、中科院等 + 技术创新词
-        academic_patterns = [
-            r'[\u4e00-\u9fa5]{2,4}大学', r'[\u4e00-\u9fa5]{2,4}理工', r'[\u4e00-\u9fa5]{2,4}学院',
-            r'[\u4e00-\u9fa5]{2,4}实验室', r'中科院', r'[\u4e00-\u9fa5]{2,4}研究院',
-            r'MIT\b', r'Stanford\b', r'Berkeley\b', r'CMU\b', r'UIUC\b',
-            r'清[华北]|北大|复旦|浙大|上交|中科大',  # 常见缩写
-            r'哈工[深大]|北航|北理|国科大|南大|武大|华科|西交|天大',  # 更多常见缩写
-            r'创智[\w\s]*×[\w\s]*复旦|复旦[\w\s]*团队',  # 合作机构模式
-        ]
-        tech_innovation_patterns = [
-            r'提出[\w\s]{0,10}(新|方法|架构|算法|范式|模型)', r'发布[\w\s]{0,10}(模型|算法|系统)',
-            r'推出[\w\s]{0,10}(新|方法|架构)', r'首创', r'突破', r'实现[\w\s]{0,10}(极低|高效|优化)',
-            r'\d+\.?\d*[Bb]参数', r'[Ll][Ll][Mm]', r'[Aa]gent', r'强化学习', r'多模态', r'架构'
-        ]
-        has_academic = any(re.search(p, title) for p in academic_patterns)
-        has_innovation = any(re.search(p, title) for p in tech_innovation_patterns)
-
-        # 方法2: 学术媒体来源判断
-        academic_sources = ['PaperWeekly', '机器之心', '量子位']
-        is_academic_source = any(s.lower() in source.lower() for s in academic_sources)
-
-        # 综合判断: 学术机构+技术创新 OR 学术媒体来源
-        if (has_academic and has_innovation) or (is_academic_source and has_academic):
-            if current_cat == '产业动态':
-                a['categories'] = ['研究关注']
-
-        # DeepMind/3D重建/记忆 → 研究关注
-        if 'deepmind' in title or '3d' in title or '重建' in title or '记忆' in title:
-            if current_cat == '产业动态':
-                a['categories'] = ['研究关注']
-
-        # ICLR/ICML/CVPR → 强制研究关注
-        if any(k in title for k in ['iclr', 'icml', 'cvpr']):
-            a['categories'] = ['研究关注']
-
-        # 模型/评测/基准 → 研究关注
-        if '模型' in title or '评测' in title or '基准' in title:
-            if any(k in title for k in ['顶会', '大学', '学术', '论文','教授']):
-                if current_cat == '产业动态' or current_cat == '模型前沿':
-                    a['categories'] = ['研究关注']
-        
-        # NVIDIA 非算力内容 → 分类修正
-        if 'nvidia' in title or '英伟达' in title:
-            # 模型/产品发布 → 模型前沿
-            if any(k in title for k in ['模型', 'model', 'nemo', 'chip', 'demo', '发布', '开源']):
-                if current_cat == '算力追踪':
-                    a['categories'] = ['模型前沿']
-            # 论文/研究 → 研究关注
-            if any(k in title for k in ['论文', '研究', 'paper', 'arxiv']):
-                if current_cat == '算力追踪':
-                    a['categories'] = ['研究关注']
 
     # 统计
     by_cat = defaultdict(int)
@@ -1196,7 +1666,6 @@ def main():
             f.write(report)
 
         # 生成简洁版报告
-        SUMMARY_FILE = "/Users/shenyalan/ai-daily-news/daily-ai-news-summary.md"
         summary_report = generate_summary_report(merged)
         with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
             f.write(summary_report)
@@ -1206,8 +1675,8 @@ def main():
         try:
             import subprocess
             subprocess.run(['python', 'generate_html.py'], check=True, capture_output=True)
-        except:
-            pass
+        except Exception as e:
+            print(f"   ⚠️ HTML生成失败: {e}")
 
     # 保存到归档（无论是否指定日期）
     save_archive(merged)

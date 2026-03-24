@@ -2,174 +2,152 @@
 
 > 这份文档包含今天抓取的 Twitter 内容，可能有重要信息被 LLM 过滤。如需添加，请手动修改 archive 目录下的 json 文件。
 
-## 1. @vllm_project
+## 1. @AnthropicAI
 
-Closing out NVIDIA GTC? Join @inferact for a vLLM Happy Hour tonight. 
+Introducing the Anthropic Science Blog.
 
-https://
+Increasing the pace of scientific progress is a core part of Anthropic's mission. The Science Blog will feature...
 
-- 来源: @vllm_project
-- 链接: https://x.com/vllm_project/status/2034655901882479043#m
-
----
-
-## 2. @svlevine
-
-R to @svlevine: RL tokens (RLT) not only make highly precise tasks more robust, 
-
-- 来源: @svlevine
-- 链接: https://x.com/svlevine/status/2034728249998418279#m
+- 来源: @AnthropicAI
+- 链接: https://x.com/AnthropicAI/status/2036179042081317370#m
 
 ---
 
-## 3. @svlevine
+## 2. @AnthropicAI
 
-R to @svlevine: The main idea is to get π-06 to summarize its internal represent
+R to @AnthropicAI: We're launching with two new posts.
 
-- 来源: @svlevine
-- 链接: https://x.com/svlevine/status/2034728247800602891#m
+Can AI do theoretical physics?
 
----
+Harvard physicist Matthew Schwartz led Claude Opus 4.5 throug...
 
-## 4. @svlevine
-
-R to @svlevine: To read more about RLT, check out our blog post: https://www.pi.
-
-- 来源: @svlevine
-- 链接: https://x.com/svlevine/status/2034728251629904372#m
+- 来源: @AnthropicAI
+- 链接: https://x.com/AnthropicAI/status/2036179043377418553#m
 
 ---
 
-## 5. @swyx
+## 3. @AnthropicAI
 
-R to @auth0: boosting https://x.com/grinich/status/2034768621067755872?s=20
+R to @AnthropicAI: Models keep improving on long-horizon tasks, but splitting work across many agents doesn't suit every problem.
+
+We walk through th...
+
+- 来源: @AnthropicAI
+- 链接: https://x.com/AnthropicAI/status/2036179045143158925#m
+
+---
+
+## 4. @OpenAI
+
+It's now easier to find, reuse, and build on the files you upload and create in ChatGPT.
+
+You can quickly reference files in a chat using recent files...
+
+- 来源: @OpenAI
+- 链接: https://x.com/OpenAI/status/2036183180219392103#m
+
+---
+
+## 5. @sama
+
+I have loved being on the Helion board; I continue to be extremely excited about a future with abundant energy and Helion in particular.
+
+As Helion an...
+
+- 来源: @sama
+- 链接: https://x.com/sama/status/2036137695605563682#m
+
+---
+
+## 6. @NeelNanda5
+
+It is extremely important that models remain monitorable. But you can't control what you can't measure. And what does this actually mean?
+
+Opaque seri...
+
+- 来源: @NeelNanda5
+- 链接: https://x.com/NeelNanda5/status/2036170591661859191#m
+
+---
+
+## 7. @jaseweston
+
+🌐Unified Post-Training via On-Policy-Trained LM-as-RM🔧
+
+RLLM = RL + LM-as-RM:
+
+- post-training framework that unifies RL across easy-, hard-to-verify,...
+
+- 来源: @jaseweston
+- 链接: https://x.com/jaseweston/status/2036119252214620513#m
+
+---
+
+## 8. @TheGregYang
+
+my gut got irritated (by kale I think) a few days ago and is taking a while to recover
+
+I notice my resting heart rate and HRV are worse and take much...
+
+- 来源: @TheGregYang
+- 链接: https://x.com/TheGregYang/status/2036214964126622071#m
+
+---
+
+## 9. @TheGregYang
+
+take a moment to appreciate how the US never really had famines while Europe, China, Russia, and India all suffered catastrophic ones well into the 20...
+
+- 来源: @TheGregYang
+- 链接: https://x.com/TheGregYang/status/2036210077196230785#m
+
+---
+
+## 10. @swyx
+
+the pattern is clear:
+
+come on @latentspacepod /@aiDotEngineer , get billions thrown at you by @alexandr_wang and @natfriedman
+
+(congrats)
 
 - 来源: @swyx
-- 链接: https://x.com/swyx/status/2034790106549428680#m
+- 链接: https://x.com/swyx/status/2036205006806982931#m
 
 ---
 
-## 6. @swyx
+## 11. @swyx
 
-R to @swyx: (they are not the ONLY ones of course - https://www.youtube.com/@aiD
+R to @swyx: https://x.com/lennysan/status/2036144971380826478?s=46 example
 
 - 来源: @swyx
-- 链接: https://x.com/swyx/status/2034721362284323322#m
+- 链接: https://x.com/swyx/status/2036199448792203699#m
 
 ---
 
-## 7. @theworldlabs
+## 12. @swyx
 
-3D is becoming an interface for creating and interacting with worlds 🌎
+fun fact: Alap is so good at pitching he got me to quit finance. When he presented @Sentieo while i was still working in my hedge fund, I walked him o...
 
-Earlier 
-
-- 来源: @theworldlabs
-- 链接: https://x.com/theworldlabs/status/2034666920025428456#m
+- 来源: @swyx
+- 链接: https://x.com/swyx/status/2036161815013630063#m
 
 ---
 
-## 8. @physical_int
+## 13. @ylecun
 
-R to @physical_int: With RL, the robot can learn very precise tasks, like fasten
+RT by @ylecun: Orban's 13 oligarchs "netted more than €28bn in government tenders from 2010 to late 2025, either alone or as part of consortiums — an ...
 
-- 来源: @physical_int
-- 链接: https://x.com/physical_int/status/2034728229093969927#m
-
----
-
-## 9. @physical_int
-
-R to @physical_int: To learn more about RLT, check out our blog post: https://ww
-
-- 来源: @physical_int
-- 链接: https://x.com/physical_int/status/2034728230624927788#m
+- 来源: @ylecun
+- 链接: https://x.com/anders_aslund/status/2036091981948948571#m
 
 ---
 
-## 10. @MiniMax_AI
+## 14. @ylecun
 
-R to @openclaw: Correction:
-ET (Eastern Time): 10:00 PM Thursday
-PT (Pacific Tim
+RT by @ylecun: The CDC is responsible for protecting the health of 340 million Americans. But that didn't stop Trump's "health" secretary, Robert F. K...
 
-- 来源: @MiniMax_AI
-- 链接: https://x.com/MiniMax_AI/status/2034781679664148597#m
+- 来源: @ylecun
+- 链接: https://x.com/KenRoth/status/2036153750004306257#m
 
 ---
-
-## 11. @MiniMax_AI
-
-M2.7 × Raspberry Pi × Space Invaders= pure nostalgia + builder energy🥲😎
-
-- 来源: @MiniMax_AI
-- 链接: https://x.com/MiniMax_AI/status/2034724823491121578#m
-
----
-
-## 12. @MiniMax_AI
-
-Day 0 on @runware 🚀
-Good to see M2.7 being used for real-world workflows - from 
-
-- 来源: @MiniMax_AI
-- 链接: https://x.com/MiniMax_AI/status/2034672922711974318#m
-
----
-
-## 13. @perplexity_ai
-
-Perplexity Computer now connects to your health apps, wearable devices, lab resu
-
-- 来源: @perplexity_ai
-- 链接: https://x.com/perplexity_ai/status/2034668608375382346#m
-
----
-
-## 14. @perplexity_ai
-
-R to @perplexity_ai: Build a custom marathon training protocol based on fitness 
-
-- 来源: @perplexity_ai
-- 链接: https://x.com/perplexity_ai/status/2034668783156252694#m
-
----
-
-## 15. @perplexity_ai
-
-R to @perplexity_ai: Now rolling out Perplexity Pro and Max subscribers in the U
-
-- 来源: @perplexity_ai
-- 链接: https://x.com/perplexity_ai/status/2034668803486072905#m
-
----
-
-## 16. @physical_int
-
-We developed an RL method for fine-tuning our models for precise tasks in just a
-
-- 来源: @physical_int
-- 链接: https://x.com/physical_int/status/2034728220818641363#m
-
----
-
-## 17. @theworldlabs
-
-R to @theworldlabs: Take a look at the winning project 👇
-
-https://x.com/theworld
-
-- 来源: @theworldlabs
-- 链接: https://x.com/theworldlabs/status/2034666921627664867#m
-
----
-
-## 18. @Alibaba_Qwen
-
-Pretty proud of this one! 😎 Qwen 3.5 Max Preview just hit #3 in Math, Top 10 in 
-
-- 来源: @Alibaba_Qwen
-- 链接: https://x.com/Alibaba_Qwen/status/2034658901321560549#m
-
----
-
