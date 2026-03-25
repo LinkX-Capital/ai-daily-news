@@ -62,6 +62,10 @@
             transform: translateY(-2px);
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+        .archive-item.featured {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            font-weight: 600;
+        }
         .archive-item .icon { font-size: 18px; margin-right: 10px; }
         .archive-item .text { flex: 1; font-size: 14px; }
         .archive-item .arrow { color: #999; font-size: 16px; }
@@ -83,6 +87,20 @@
 
         <div class="section">
             <div class="section-header">
+                <span class="icon">📌</span>
+                <h2>专题报告</h2>
+            </div>
+            <ul class="archive-list">
+                <li><a href="GTC-2026-Official-Report.html" class="archive-item featured">
+                    <span class="icon">🎯</span>
+                    <span class="text">GTC 2026 官方报告</span>
+                    <span class="arrow">→</span>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
                 <span class="icon">📅</span>
                 <h2>日报存档</h2>
             </div>
@@ -92,12 +110,7 @@
     </div>
 
     <script>
-        function getDateFromFilename(filename) {
-            const match = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
-            if (match) return new Date(match[1], match[2] - 1, match[3]);
-            return new Date(0);
-        }
-
+        // 从 archive 目录读取日期列表
         fetch('archive/')
             .then(r => r.text())
             .then(html => {
@@ -114,7 +127,10 @@
                     }
                 });
 
+                // 去重并排序（最新在前）
                 const uniqueDates = [...new Set(dates)].sort().reverse();
+
+                // 生成 HTML
                 const list = document.getElementById('archive-list');
                 uniqueDates.forEach(date => {
                     const li = document.createElement('li');
