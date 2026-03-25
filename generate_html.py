@@ -3,11 +3,21 @@
 
 import json
 import os
+import re
 from datetime import datetime
 from collections import defaultdict
 
 ARCHIVE_DIR = "/Users/shenyalan/ai-daily-news/archive"
 OUTPUT_HTML = "/Users/shenyalan/ai-daily-news/daily-ai-news.html"
+
+
+def md_to_html(text):
+    """将 Markdown **加粗** 转换为 HTML <strong>"""
+    if not text:
+        return text
+    # **xxx** -> <strong>xxx</strong>
+    return re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
+
 
 def generate_html(articles, date_str=None):
     if date_str:
@@ -107,7 +117,8 @@ def generate_html(articles, date_str=None):
         .priority.medium {{ background: #faad14; color: white; }}
         .priority.low {{ background: #d9d9d9; color: #666; }}
         .title {{ font-size: 16px; font-weight: 600; color: #1a1a2e; flex: 1; }}
-        .body {{ font-size: 14px; color: #666; margin-bottom: 12px; }}
+        .body {{ font-size: 14px; color: #666; margin-bottom: 8px; }}
+        .insight {{ font-size: 13px; color: #555; background: #f0f7ff; padding: 10px 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #0066cc; }}
         .key-points {{
             background: #f9f9f9;
             padding: 12px;
@@ -209,27 +220,30 @@ def generate_html(articles, date_str=None):
         <div class="card">
             <div class="card-header">
                 <span class="priority {priority_class}">{emoji}</span>
-                <span class="title">{a['title']}</span>
+                <span class="title">{md_to_html(a['title'])}</span>
             </div>'''
 
             if a.get('body'):
-                html += f'<div class="body">{a["body"]}</div>'
+                html += f'<div class="body">{md_to_html(a["body"])}</div>'
+
+            if a.get('insight'):
+                html += f'<div class="insight">💡 {md_to_html(a["insight"])}</div>'
 
             if a.get('key_points'):
                 html += '<ul class="key-points">'
                 for point in a['key_points'][:3]:
-                    html += f'<li>{point}</li>'
+                    html += f'<li>{md_to_html(point)}</li>'
                 html += '</ul>'
 
             if a.get('related'):
-                html += f'<div class="related">🔗 关联: {a["related"]}</div>'
+                html += f'<div class="related">🔗 关联: {md_to_html(a["related"])}</div>'
 
             source = a.get('source', '')
             link = a.get('link', '')
             if link:
-                html += f'<div class="source">📌 来源: <a href="{link}" target="_blank">{source}</a></div>'
+                html += f'<div class="source">📌 来源: <a href="{link}" target="_blank">{md_to_html(source)}</a></div>'
             else:
-                html += f'<div class="source">📌 来源: {source}</div>'
+                html += f'<div class="source">📌 来源: {md_to_html(source)}</div>'
 
             # 显示合并的来源（Twitter账号等）
             merged = a.get('merged_sources', [])
