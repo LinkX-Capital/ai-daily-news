@@ -19,7 +19,7 @@ def md_to_html(text):
     return re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
 
 
-def generate_html(articles, date_str=None):
+def generate_html(articles, date_str=None, summary_raw_text=None):
     if date_str:
         date_obj = datetime.strptime(date_str, "%Y-%m-%d")
         month_day = date_obj.strftime("%m月%d日")
@@ -179,20 +179,25 @@ def generate_html(articles, date_str=None):
     <div class="summary">
         <h2>📌 要点速览</h2>"""
 
-    # 要点速览只显示"是什么"（取冒号之前的部分）
-    def get_what(title):
-        for sep in ['：', ':', '？', '?', '！', '!']:
-            if sep in title:
-                return title.split(sep)[0][:50]
-        return title[:50]
-    
-    for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
-        items = by_cat.get(cat, [])
-        if items:
-            html += f'<div class="summary-item"><span class="cat-tag">{cat}</span>'
-            for a in items:
-                html += f'<span class="summary-title">{get_what(a["title"])}</span>'
-            html += '</div>'
+    # 如果有原始要点汇总文本，直接使用；否则从文章重建
+    if summary_raw_text:
+        # 原始文本格式：- 分类：内容1; 内容2; 内容3
+        html += f'<div class="summary-text">{md_to_html(summary_raw_text)}</div>'
+    else:
+        # 要点速览只显示"是什么"（取冒号之前的部分）
+        def get_what(title):
+            for sep in ['：', ':', '？', '?', '！', '!']:
+                if sep in title:
+                    return title.split(sep)[0][:50]
+            return title[:50]
+
+        for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
+            items = by_cat.get(cat, [])
+            if items:
+                html += f'<div class="summary-item"><span class="cat-tag">{cat}</span>'
+                for a in items:
+                    html += f'<span class="summary-title">{get_what(a["title"])}</span>'
+                html += '</div>'
 
     html += """
     </div>
