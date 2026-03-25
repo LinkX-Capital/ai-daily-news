@@ -198,6 +198,21 @@ def main():
     print("📝 从 md 发布")
     print("=" * 50)
 
+    # 检查 md 文件是否有未提交的更改
+    import subprocess
+    result = subprocess.run(
+        ['git', 'diff', '--name-only', MD_FILE],
+        capture_output=True, text=True,
+        cwd='/Users/shenyalan/ai-daily-news'
+    )
+    if result.stdout.strip():
+        print(f"⚠️ 警告: {MD_FILE} 有未提交的更改:")
+        print(result.stdout.strip())
+        response = input("继续发布将覆盖这些更改，是否继续？(y/N): ")
+        if response.lower() != 'y':
+            print("已取消发布")
+            return
+
     # 读取 md 文件
     if not os.path.exists(MD_FILE):
         print(f"❌ 文件不存在: {MD_FILE}")
