@@ -189,10 +189,8 @@ def generate_html(articles, date_str=None):
     for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
         items = by_cat.get(cat, [])
         if items:
-            titles = " | ".join([get_what(a['title']) for a in items[:3]])
-            # 每个要点单独一行，更清晰
             html += f'<div class="summary-item"><span class="cat-tag">{cat}</span>'
-            for a in items[:3]:
+            for a in items:
                 html += f'<span class="summary-title">{get_what(a["title"])}</span>'
             html += '</div>'
 
