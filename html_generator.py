@@ -43,7 +43,7 @@ def parse_md(md_content):
         original_stripped = line.strip()
 
         # 检测要点汇总
-        if '#要点汇总#' in original_stripped:
+        if '要点汇总' in original_stripped and original_stripped.startswith('#'):
             in_summary = True
             continue
         if in_summary and original_stripped.startswith('---'):
@@ -122,8 +122,16 @@ def convert_bold(text):
     return re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', text)
 
 
-def get_priority_display(priority):
-    """根据优先级返回样式和图标"""
+def get_priority_display(priority, categories=None):
+    """根据优先级和分类返回样式和图标"""
+    # 按分类强制提升优先级
+    if categories:
+        cat = categories[0] if categories else ""
+        if "模型前沿" in cat:
+            priority = max(priority, 160)
+        elif "算力追踪" in cat or "研究关注" in cat:
+            priority = max(priority, 110)
+
     if priority > 150:
         return "high", "🔥"
     elif priority > 100:
@@ -312,7 +320,7 @@ def generate_html(articles, summary_items, month_day=None):
         html += f'<div class="section-title">{cat}</div>'
         for a in items:
             priority = a.get("priority", 0)
-            priority_class, emoji = get_priority_display(priority)
+            priority_class, emoji = get_priority_display(priority, a.get("categories"))
 
             html += f'''
         <div class="card">
