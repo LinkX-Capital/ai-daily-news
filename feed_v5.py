@@ -1370,6 +1370,25 @@ def generate_report(articles):
             lines.append(f"   - 来源: {a['source']}")
             lines.append("")
 
+    # X讨论 (按优先级排序)
+    x_items = by_cat.get("X讨论", [])
+    if x_items:
+        lines.append("### X讨论")
+        for a in x_items:
+            link = a.get("link", "")
+            if link:
+                source_line = f"   - 来源: [{a['source']}]({link})"
+            else:
+                source_line = f"   - 来源: {a['source']}"
+
+            lines.append(f"**{a['title']}**")
+            if a.get('body'):
+                lines.append(f"- {a['body']}")
+            if a.get('insight'):
+                lines.append(f"  > 💡 {a['insight']}")
+            lines.append(source_line)
+            lines.append("")
+
     lines.extend(["", "---", f"*更新时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}*"])
     return "\n".join(lines)
 
@@ -1570,15 +1589,17 @@ def main():
                     "source": source,
                     "title": title,
                     "summary": title,
-                    "categories": ["研究者动态"]
+                    "categories": ["X讨论"]
                 })
+                # 推文优先级 boost，确保进入 LLM 处理
+                priority += 15
 
                 all_arts.append({
                     "title": title[:80],
                     "summary": title,
                     "content": title,
                     "link": t.get("link", ""),
-                    "categories": ["研究者动态"],
+                    "categories": ["X讨论"],
                     "is_tweet": True,
                     "source": t.get("source", ""),
                     "published_parsed": parse_tweet_time(t.get("published", "")),

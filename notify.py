@@ -137,7 +137,7 @@ def send_feishu(report):
     date_str = datetime.now().strftime("%m月%d日")
 
     # 直接从 HTML 文件读取要点速览
-    html_file = "/Users/shenyalan/ai-daily-news/daily-ai-news.html"
+    html_file = "/Users/shenyalan/ai-daily-news/daily-ai-news-2026-03-27.html"
     try:
         with open(html_file, 'r', encoding='utf-8') as f:
             html_content = f.read()
@@ -150,28 +150,24 @@ def send_feishu(report):
 
     # 如果成功读取 HTML，解析要点速览
     if html_content and "要点速览" in html_content:
-        # 提取要点速览部分
-        summary_match = re.search(r'要点速览.*?</div>\s*<div class="content">', html_content, re.DOTALL)
-        if summary_match:
-            summary_html = summary_match.group()
+        # 提取摘要部分 - 从 <div class="summary"> 到 <div class="content">
+        start = html_content.find('<div class="summary">')
+        content_start = html_content.find('<div class="content">', start)
+        if start >= 0 and content_start >= 0:
+            summary_html = html_content[start:content_start]
 
-            # 提取每个分类
-            item_pattern = re.compile(r'<div class="summary-item">(.*?)</div>', re.DOTALL)
-            for item in item_pattern.finditer(summary_html):
-                item_html = item.group(1)
-
-                # 提取分类标签
-                cat_match = re.search(r'<span class="cat-tag">(.*?)</span>', item_html)
+            # 按summary-item分割
+            items_html = re.split(r'<div class="summary-item">', summary_html)
+            for item_html in items_html[1:]:
+                cat_match = re.search(r'<span class="cat-tag">([^<]+)</span>', item_html)
                 if not cat_match:
                     continue
                 cat = unescape(cat_match.group(1))
 
-                # 提取所有要点
-                titles = re.findall(r'<span class="summary-title">(.*?)</span>', item_html)
+                titles = re.findall(r'<span class="summary-title">([^<]+)</span>', item_html)
                 titles = [unescape(t).strip() for t in titles if t.strip()]
 
                 if titles:
-                    # 格式：分类名 + 要点列表
                     titles_str = "；".join(titles)
                     elements.append({
                         "tag": "div",

@@ -1,66 +1,72 @@
-## 03月24日 AI 前沿动态
+## 03月27日 AI 前沿动态
 
 > 展开阐释 + 关键细节 + 为什么重要 + 来源链接
 
 ---
 
 ### 模型前沿
-**NVIDIA发布OpenShell框架，提升自动驾驶AI智能体安全设计**
-- 该框架标志着AI系统从单纯响应任务向自主行动的重要转变。
-- OpenShell强调在系统设计阶段就将安全性纳入核心架构，而非事后补救。
-- 安全设计从开发阶段介入，反映了AI行业对智能体安全风险的前瞻性布局
-[来源: NVIDIA Blog](https://blogs.nvidia.com/blog/secure-autonomous-ai-agents-openshell/)
+**它石智航发布OmniVTA视触觉世界模型，实现从被动感知到理解接触的跨越**
+- 该模型融合视觉与触觉信息，使AI能够在物理交互中理解物体材质、硬度和接触力度等物理属性。
+- **这是首个能够理解物理接触本质的视触觉统一模型**，为机器人灵巧操作和精细作业提供了新的技术基础。
+- 视触觉融合是机器人智能的关键突破口，率先落地将带来机器人操作能力的质变
+[来源: 新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652686704&idx=2&sn=a41c0e510bc8a4aa7395149a343d823d)
 
 ### 产业动态
-**Sebastian Raschka发布LLM架构画廊，系统梳理注意力机制**
-- 该博客获得AI社区高度关注和广泛赞誉，为研究者和开发者提供了全面的架构参考指南。
-- 顶级AI技术作者的系统性整理，为社区提供重要知识资源
-[来源: 机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651023106&idx=1&sn=cf7819f0a37b38ac328dfa5963e26f8a&chksm=8510f7d322e55a29f92007c01a8090d0001bfe941f4683e02656636b0848fb6e8434c7df2f22&scene=0&xtrack=1#rd)
+**Cohere发布Transcribe语音识别模型，支持14种语言**
+- **该模型获得vLLM的Day-0支持**，意味着开源社区可以立即在其推理框架中部署使用。
+- 2B参数规模使其适合在消费级GPU上运行推理。
+- 语音识别开源模型再添重磅玩家，2B参数级别在端侧部署具有明显优势
+[来源: @vllm_project](https://x.com/vllm_project/status/2037197243111895066#m)
 
-**Apple宣布WWDC 2026将于6月举行，将公布AI重大更新**
-- 市场预期Apple将公布Siri的重大AI升级。
-- 作为消费电子领域的重要开发者大会，Apple的AI布局备受关注。
-- Apple加码AI投资，Siri或迎来重大重构以应对竞争
-[来源: TechCrunch](https://techcrunch.com/2026/03/23/apple-wwdc-june-8-12-ai-advancements-siri-developers-conference/)
+**Google实时耳机翻译功能扩展至iOS和更多国家**
+- 该功能最初在Pixel Buds和Android设备上推出，现扩展至更广泛的生态。
+- **这是Google将AI翻译能力推向终端设备的关键步骤**，进一步模糊了语言障碍。
+- AI翻译从云端走向端侧，实时耳机交互或将成为下一代人机交互形态
+[来源: TechCrunch](https://techcrunch.com/2026/03/26/google-translates-real-time-headphone-translations-feature-expands-to-ios-and-more-countries/)
+
+**Google Search Live全球上线，支持实时视觉搜索与对话**
+- 用户可以实时询问关于物体的信息，AI能够理解上下文并给出相关答案。
+- **这是Google将多模态AI能力直接嵌入搜索体验的核心产品**，标志搜索从关键词时代进入多模态交互时代。
+- 视觉搜索是搜索引擎的范式转变，多模态交互将成为移动搜索的新入口
+[来源: TechCrunch](https://techcrunch.com/2026/03/26/google-is-launching-search-live-globally/)
+
+### 算力追踪
+**NVIDIA GTC展示Omniverse虚拟世界，推动Physical AI时代**
+- Omniverse平台为开发者和企业提供了构建3D虚拟世界的工具，使物理机器人和自动驾驶车辆能够在虚拟环境中进行训练和测试。
+- **这一技术路径被视为AI从数字空间走向物理世界的关键基础设施**。
+- NVIDIA通过Omniverse构建了AI通往物理世界的桥梁，虚拟训练将成为机器人落地的必经之路
+[来源: NVIDIA Blog](https://blogs.nvidia.com/blog/gtc-2026-virtual-worlds-physical-ai/)
 
 ### 初创&融资
-**Gimlet Labs获8000万美元融资，实现跨芯片异构推理**
-- 该方案旨在解决AI推理过程中的算力瓶颈问题，实现跨硬件平台的高效推理。
-- 异构计算有望显著降低推理成本并提升模型响应速度。
-- 跨芯片异构推理技术直击AI部署痛点，或将重塑算力基础设施格局
-[来源: TechCrunch](https://techcrunch.com/2026/03/23/startup-gimlet-labs-is-solving-the-ai-inference-bottleneck-in-a-surprisingly-elegant-way/)
-
-**DocuSign以1.65亿美元现金收购AI合同管理公司Lexion**
-- Lexion致力于帮助运营团队加速销售、采购、法务、人力资源等流程中的协议管理。
-- DocuSign通过此次收购强化其智能协议管理能力，将AI技术深度整合到电子签名业务流程中。
-- AI合同管理赛道价值凸显，大厂加速布局企业级AI应用
-[来源: IT桔子](https://www.itjuzi.com/merger/13893)
-
-**美国创业融资3月大幅放缓，AI大额融资减少是主因**
-- 融资放缓几乎完全是由于当月完成的AI大额融资数量减少。
-- 这一趋势反映出AI投资市场可能进入调整期，投资者对早期AI项目的筛选更加严格。
-- AI融资市场降温反映资本趋于理性，行业洗牌或将来临
-[来源: Crunchbase News](https://news.crunchbase.com/business/us-startup-funding-slows-march-2026-data/)
-
-### 研究关注
-**北大提出SHINE超网络架构，一次前向传播完成文本到LoRA转换**
-- 该工作由刘晔玮、王希元、毛彦升等人完成，Yoav Gelberg、Haggai Maron、张牧涵参与指导。
-- 该技术有望大幅降低LoRA微调的计算开销，为个性化模型适配提供新思路。
-- 一次前向传播完成适配器生成的技术突破，为高效微调开辟新路径
-[来源: 机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651023106&idx=3&sn=1f34564faacef4e288bd0580245ca742&chksm=852507f780a322784486c05ae0c8c8db91389d07a70866edf3517c3248972181ac8eec48624b&scene=0&xtrack=1#rd)
-
-**复旦提出Game-RL框架，通过打游戏提升VLM推理能力**
-- 该研究将发表于ICLR 2026，实验表明VLM通过打游戏练级可达到与几何数据相当的推理水平。
-- 该方法为VLM训练提供了新范式，展示了游戏作为训练数据的潜力。
-- 游戏训练为VLM推理提升开辟新路径，或将改变数据稀缺困境
-[来源: PaperWeekly](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw==&mid=2247718843&idx=2&sn=2ab80850f5a40076148d35fb7e7d12e4)
+**AI驱动的金融数据服务商讯兔科技完成近2亿元A轮融资**
+- 讯兔科技定位为AI驱动的金融数据与生产力服务商，通过AI Agent提升全球机构投资者的工作效率，目标提高资本市场信息有效性。
+- **本轮融资规模在AI Agent赛道处于头部水平**，投资方集合了头部美元基金。
+- AI Agent在金融垂直领域的落地获资本认可，机构投资场景的商业化路径逐渐清晰
+[来源: IT桔子](https://www.itjuzi.com/investevent/14694686)
 
 ### X讨论
-**Anthropic推出科学博客，聚焦AI加速科学研究**
-- 该博客将发布Anthropic在AI科研领域的最新成果和思考。
-- 提高科学研究速度是Anthropic使命的核心部分，科学博客的推出体现了公司对基础研究的重视。
-- AI公司布局科研发布平台，展现从应用层向基础研究延伸的战略
-[来源: @AnthropicAI](https://x.com/AnthropicAI/status/2036179042081317370#m)
+**Meta AI发布TRIBE v2三模态脑编码器，可预测大脑视觉响应**
+- 该模型整合了大脑的三模态信号，能够在不需要任何重新训练的情况下，可靠地预测从未见过的个体的脑响应。
+- **该模型达到了接近大脑fmri信号真实值解码的准确性**，为脑科学研究和脑机接口应用提供了强大的AI工具。
+- 脑机接口的底层技术突破，AI解码大脑信号从实验走向可复用的基础模型阶段
+[来源: @aiatmeta](https://x.com/AIatMeta/status/2037153756346016207#m)
+
+**TRIBE v2无需重新训练即可预测未见个体的脑响应**
+- 这解决了传统脑编码模型需要对每个新个体进行昂贵fMRI扫描和重新训练的痛点。
+- **该模型首次实现了跨个体的大脑信号预测**，极大降低了脑机接口技术的应用门槛。
+- 零样本泛化能力是脑科学AI化的分水岭，意味着脑机接口从定制化走向规模化成为可能
+[来源: @aiatmeta](https://x.com/AIatMeta/status/2037153758455750717#m)
+
+**Google发布Gemini 3.1 Flash Live，支持实时对话式AI编程**
+- 用户可以在Google AI Studio中构建能够进行双向语音对话的实时对话代理，AI能够理解用户的语音指令并即时生成代码或应用。
+- **这是Google首个支持实时语音交互的轻量级模型**，将大幅降低AI应用开发门槛。
+- 实时语音交互是AI编程助手的下一代形态，轻量模型支持边缘部署将加速AI普惠
+[来源: @googleai](https://x.com/GoogleAI/status/2037190798609932671#m)
+
+**月之暗面Kimi在GTC介绍Attention Residuals注意力残差技术**
+- **通过注意力残差机制，模型可以在保持长上下文能力的同时显著降低计算开销**，这为长上下文大模型的工程落地提供了新的优化思路。
+- 长上下文模型的计算效率优化成为新焦点，注意力机制创新是突破算力瓶颈的关键路径
+[来源: @kimi_moonshot](https://x.com/Kimi_Moonshot/status/2037010118957817988#m)
 
 ---
-*更新时间: 2026-03-24 08:15*
+*更新时间: 2026-03-27 07:55*

@@ -6,7 +6,7 @@ from playwright.async_api import async_playwright
 import os
 
 async def generate_screenshot():
-    html_file = "/Users/shenyalan/ai-daily-news/daily-ai-news.html"
+    html_file = "/Users/shenyalan/ai-daily-news/daily-ai-news-2026-03-27.html"
 
     async with async_playwright() as p:
         browser = await p.chromium.launch()

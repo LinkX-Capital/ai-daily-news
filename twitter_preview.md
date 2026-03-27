@@ -1,153 +1,136 @@
-# Twitter 预览
-
-> 这份文档包含今天抓取的 Twitter 内容，可能有重要信息被 LLM 过滤。如需添加，请手动修改 archive 目录下的 json 文件。
-
-## 1. @AnthropicAI
-
-Introducing the Anthropic Science Blog.
-
-Increasing the pace of scientific progress is a core part of Anthropic's mission. The Science Blog will feature...
-
-- 来源: @AnthropicAI
-- 链接: https://x.com/AnthropicAI/status/2036179042081317370#m
+# Twitter 动态预览
+**日期**：2026-03-27 07:15
+**总计**：25 条推文
 
 ---
 
-## 2. @AnthropicAI
+## 📋 过滤说明
 
-R to @AnthropicAI: We're launching with two new posts.
-
-Can AI do theoretical physics?
-
-Harvard physicist Matthew Schwartz led Claude Opus 4.5 throug...
-
-- 来源: @AnthropicAI
-- 链接: https://x.com/AnthropicAI/status/2036179043377418553#m
+**抓取规则**：24小时内、去除重复账号、内容 >30字符
+**存疑过滤**：2条（公司账号自我回复/转发，标注⚠️）
 
 ---
 
-## 3. @AnthropicAI
+## ⭐ 今日重点（LLM 提炼）
 
-R to @AnthropicAI: Models keep improving on long-horizon tasks, but splitting work across many agents doesn't suit every problem.
-
-We walk through th...
-
-- 来源: @AnthropicAI
-- 链接: https://x.com/AnthropicAI/status/2036179045143158925#m
-
----
-
-## 4. @OpenAI
-
-It's now easier to find, reuse, and build on the files you upload and create in ChatGPT.
-
-You can quickly reference files in a chat using recent files...
-
-- 来源: @OpenAI
-- 链接: https://x.com/OpenAI/status/2036183180219392103#m
-
----
-
-## 5. @sama
-
-I have loved being on the Helion board; I continue to be extremely excited about a future with abundant energy and Helion in particular.
-
-As Helion an...
-
-- 来源: @sama
-- 链接: https://x.com/sama/status/2036137695605563682#m
+1. **Private inference with TEE‑supported providers**
+   @openrouter
+2. **OpenRouter setup instructions for private inference**
+   @openrouter
+3. **OpenClaw free period extended for XiaomiMiMo V2‑Pro and V2‑Omni users**
+   @openrouter
+4. **TRIBE v2 predicts human brain responses to visual stimuli**
+   @aiatmeta
+5. **TRIBE v2 generalizes to unseen individuals without retraining**
+   @aiatmeta
+6. **Single creator builds 100 M Gaussian splat cyberpunk world**
+   @theworldlabs
+7. **Uni‑1 offers cultured aesthetic direction across lighting, color, texture**
+   @lumalabsai
+8. **Uni‑1 enables precise visual edits with localized changes**
+   @lumalabsai
+9. **Uni‑1 produces intelligent information design with strong layout hierarchy**
+   @lumalabsai
+10. **Correct scaling laws can save costs**
+   @percyliang
 
 ---
 
-## 6. @NeelNanda5
+## 🏢 公司发布（20条）
 
-It is extremely important that models remain monitorable. But you can't control what you can't measure. And what does this actually mean?
+### @aiatmeta | Model
 
-Opaque seri...
+- Today we're introducing TRIBE v2 (Trimodal Brain Encoder), a foundation model trained to predict how the human brain responds to almost any sight or s...
+  [查看](https://x.com/AIatMeta/status/2037153756346016207#m)
+- R to @AIatMeta: Without any retraining, TRIBE v2 can reliably predict the brain responses of individuals it has never seen before, achieving a nearly ...
+  [查看](https://x.com/AIatMeta/status/2037153758455750717#m)
 
-- 来源: @NeelNanda5
-- 链接: https://x.com/NeelNanda5/status/2036170591661859191#m
+### @alibaba_qwen | Model
 
----
+- Big thanks to Steve for testing the entire Qwen3.5 family. Community feedback like this helps us get better. 🙏
+  [查看](https://x.com/Alibaba_Qwen/status/2037092892876169556#m)
 
-## 7. @jaseweston
+### @googleai | Model
 
-🌐Unified Post-Training via On-Policy-Trained LM-as-RM🔧
+- Vibe code at the speed of thought with Gemini 3.1 Flash Live. Here’s an example to get you started.   Using the model in @GoogleAIStudio, you can buil...
+  [查看](https://x.com/GoogleAI/status/2037190798609932671#m)
+- ⚠️ R to @GoogleAI: Start building with 3.1 Flash Live anywhere it’s available:  — Gemini Live in @GeminiApp + Search Live — Gemini Live API + @GoogleAISt...
+  [查看](https://x.com/GoogleAI/status/2037190722898559108#m)
+- Listen up 🔊Gemini 3.1 Flash Live is launching today, making a big difference for developers who are building real-time voice and vision agents.  How, ...
+  [查看](https://x.com/GoogleAI/status/2037190720201670847#m)
 
-RLLM = RL + LM-as-RM:
+### @kimi_moonshot | Model
 
-- post-training framework that unifies RL across easy-, hard-to-verify,...
+- Zhilin at GTC: Introducing Attention Residuals  Learning selective memory, rather than mechanically accumulating everything, is the beauty of attentio...
+  [查看](https://x.com/Kimi_Moonshot/status/2037010118957817988#m)
 
-- 来源: @jaseweston
-- 链接: https://x.com/jaseweston/status/2036119252214620513#m
+### @lumalabsai | Research
 
----
+- Uni-1 is cultured.   Matches high-level aesthetic direction across lighting, color, texture, and art-direction cues.  Try today → http://lumalabs.ai/u...
+  [查看](https://x.com/LumaLabsAI/status/2037258289373647120#m)
+- Uni-1 is directable.   Executes explicit visual instructions with precise, localized edits and minimal unintended changes.  Try today → http://lumalab...
+  [查看](https://x.com/LumaLabsAI/status/2037243186817470808#m)
+- Uni-1 is intelligent.   Generates dense, legible information design with strong layout hierarchy and typography control.  Try today → http://lumalabs....
+  [查看](https://x.com/LumaLabsAI/status/2037228086975246383#m)
 
-## 8. @TheGregYang
+### @openai | Model
 
-my gut got irritated (by kale I think) a few days ago and is taking a while to recover
+- ⚠️ RT by @OpenAI: We're rolling out plugins in Codex.  Codex now works seamlessly out of the box with the most important tools builders already use, like...
+  [查看](https://x.com/OpenAIDevs/status/2037296316104282119#m)
 
-I notice my resting heart rate and HRV are worse and take much...
+### @openrouter | Infra
 
-- 来源: @TheGregYang
-- 链接: https://x.com/TheGregYang/status/2036214964126622071#m
+- TIP: If you want private inference where even the provider can't see prompts or completions, you can use TEE-supported providers like @PhalaNetwork or...
+  [查看](https://x.com/OpenRouter/status/2037240084710445203#m)
+- R to @OpenRouter: See below for setup instructions.
+  [查看](https://x.com/OpenRouter/status/2037200982418116908#m)
+- Good news for @XiaomiMiMo V2-Pro and V2-Omni users:  The OpenClaw free period has been extended one week until 12pm EDT April 2nd!
+  [查看](https://x.com/OpenRouter/status/2037200970673954954#m)
 
----
+### @theworldlabs | Research
 
-## 9. @TheGregYang
+- This entire cyberpunk world was built by a single creator.  100 million Gaussian splats, with nearly every surface and structure generated in Marble. ...
+  [查看](https://x.com/theworldlabs/status/2037200344267227301#m)
 
-take a moment to appreciate how the US never really had famines while Europe, China, Russia, and India all suffered catastrophic ones well into the 20...
+### @vllm_project | Infra
 
-- 来源: @TheGregYang
-- 链接: https://x.com/TheGregYang/status/2036210077196230785#m
+- 🎉 Congrats to @Cohere on releasing Cohere Transcribe, a 2B speech recognition model (Apache 2.0, 14 languages). Day-0 support in vLLM.  Cohere contrib...
+  [查看](https://x.com/vllm_project/status/2037197243111895066#m)
+- 🎉 Congrats to @MistralAI on launching Voxtral 4B TTS — enterprise-grade TTS built for production voice agents. Day-0 support in vLLM Omni.  🌍 9 langua...
+  [查看](https://x.com/vllm_project/status/2037193518519902408#m)
+- Thanks to @AI21Labs for tracking down a silent uint32 overflow in vLLM's Mamba-1 CUDA kernel and contributing the fix.  Root cause: `uint32_t` stride ...
+  [查看](https://x.com/vllm_project/status/2037123968939987428#m)
 
----
+### @zai_org | Model
 
-## 10. @swyx
+- RT by @Zai_org: Agents don’t learn by watching.  They learn by building.  CodeBuddy × GLM — Global AI Hackathon Singapore 🇸🇬  Build. Ship. See what ac...
+  [查看](https://x.com/ZaiforStartups/status/2037173389451006052#m)
+- GLM-5-Turbo is now available for all GLM Coding Plan users.
+  [查看](https://x.com/Zai_org/status/2037148488983511527#m)
 
-the pattern is clear:
+## 👤 研究者动态（5条）
 
-come on @latentspacepod /@aiDotEngineer , get billions thrown at you by @alexandr_wang and @natfriedman
+### @drfeifei [Stanford] | Research
 
-(congrats)
+- AI can generate 100 million splats, but it’s one creator’s imagination that made this uniquely beautiful world possible!🤩
+  [查看](https://x.com/drfeifei/status/2037213440138248242#m)
 
-- 来源: @swyx
-- 链接: https://x.com/swyx/status/2036205006806982931#m
+### @jeffdean [Google] | Infra
 
----
+- 📢 Another exciting step forward today with the launch of Gemini 3.1 Flash Live.  It natively understands audio, making it much more capable of handlin...
+  [查看](https://x.com/JeffDean/status/2037200383270170735#m)
 
-## 11. @swyx
+### @karpathy [independent] | Research
 
-R to @swyx: https://x.com/lennysan/status/2036144971380826478?s=46 example
+- When I built menugen ~1 year ago, I observed that the hardest part by far was not the code itself, it was the plethora of services you have to assembl...
+  [查看](https://x.com/karpathy/status/2037200624450936940#m)
 
-- 来源: @swyx
-- 链接: https://x.com/swyx/status/2036199448792203699#m
+### @percyliang [Stanford] | Research
 
----
+- Why doing scaling laws right can save you $$$
+  [查看](https://x.com/percyliang/status/2037270877491056946#m)
 
-## 12. @swyx
+### @swyx [AI社区] | App
 
-fun fact: Alap is so good at pitching he got me to quit finance. When he presented @Sentieo while i was still working in my hedge fund, I walked him o...
-
-- 来源: @swyx
-- 链接: https://x.com/swyx/status/2036161815013630063#m
-
----
-
-## 13. @ylecun
-
-RT by @ylecun: Orban's 13 oligarchs "netted more than €28bn in government tenders from 2010 to late 2025, either alone or as part of consortiums — an ...
-
-- 来源: @ylecun
-- 链接: https://x.com/anders_aslund/status/2036091981948948571#m
-
----
-
-## 14. @ylecun
-
-RT by @ylecun: The CDC is responsible for protecting the health of 340 million Americans. But that didn't stop Trump's "health" secretary, Robert F. K...
-
-- 来源: @ylecun
-- 链接: https://x.com/KenRoth/status/2036153750004306257#m
-
----
+- First software ate the world, Now @OpenClaw + Pi will eat software.  @pmarca 🔜 @latentspacepod
+  [查看](https://x.com/swyx/status/2037305302790676563#m)
