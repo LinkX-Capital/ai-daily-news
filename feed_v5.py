@@ -1444,7 +1444,8 @@ def generate_summary_report(articles):
     return "\n".join(lines)
 
 def save_archive(articles):
-    date_str = END_BJ.strftime("%Y-%m-%d")
+    # 使用 START_BJ（今天）命名存档，与 md 标题日期一致
+    date_str = START_BJ.strftime("%Y-%m-%d")
     archive_file = os.path.join(ARCHIVE_DIR, f"news_{date_str}.json")
     data = {"date": date_str, "count": len(articles), "articles": articles}
     with open(archive_file, "w", encoding="utf-8") as f:
@@ -1692,19 +1693,21 @@ def main():
             f.write(summary_report)
         print(f"✅ 简洁版: {SUMMARY_FILE}")
 
-        # 生成HTML
-        try:
-            import subprocess
-            subprocess.run(['python', 'generate_html.py'], check=True, capture_output=True)
-        except Exception as e:
-            print(f"   ⚠️ HTML生成失败: {e}")
-
+        # 先保存归档，确保 generate_html.py 能读到正确的存档
     # 保存到归档（无论是否指定日期）
     save_archive(merged)
     if args.date:
         print(f"✅ 已归档: archive/news_{args.date}.json")
     else:
         print(f"✅ 已输出: {OUTPUT_FILE}")
+
+    # 生成HTML（仅当不指定日期时才生成）
+    if not args.date:
+        try:
+            import subprocess
+            subprocess.run(['python', 'generate_html.py'], check=True, capture_output=True)
+        except Exception as e:
+            print(f"   ⚠️ HTML生成失败: {e}")
 
 if __name__ == "__main__":
     main()

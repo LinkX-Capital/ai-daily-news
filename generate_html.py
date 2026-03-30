@@ -288,21 +288,56 @@ def generate_html(articles, date_str=None, summary_raw_text=None):
 
 def main():
     from datetime import datetime, timedelta
-    
-    # 读取最新存档
-    files = sorted(os.listdir(ARCHIVE_DIR))
-    if not files:
-        print("❌ 没有找到存档文件")
+    import re
+
+    # 从 md 文件读取日期，确定应该读取哪个存档
+    md_file = "/Users/shenyalan/ai-daily-news/daily-ai-news.md"
+    date_str = None
+    if os.path.exists(md_file):
+        with open(md_file, 'r', encoding='utf-8') as f:
+            md_content = f.read()
+        # 解析 md 文件中的日期，如 "03月27日"
+        date_match = re.search(r'(\d{2})月(\d{2})日', md_content)
+        if date_match:
+            month, day = date_match.groups()
+            date_str = f"2026-{month}-{day}"  # 如 "2026-03-27"
+            # 查找对应的存档文件
+            expected_archive = f"news_{date_str}.json"
+            archive_path = os.path.join(ARCHIVE_DIR, expected_archive)
+            if os.path.exists(archive_path):
+                with open(archive_path, 'r') as f:
+                    data = json.load(f)
+                articles = data.get("articles", [])
+                print(f"📖 读取存档 {expected_archive}: {len(articles)} 条文章")
+            else:
+                print(f"⚠️ 存档不存在: {expected_archive}，尝试读取最新存档")
+                files = sorted(os.listdir(ARCHIVE_DIR))
+                if files:
+                    latest = files[-1]
+                    date_str = latest.replace("news_", "").replace(".json", "")
+                    with open(os.path.join(ARCHIVE_DIR, latest), 'r') as f:
+                        data = json.load(f)
+                    articles = data.get("articles", [])
+                    print(f"📖 读取最新存档 {latest}: {len(articles)} 条文章")
+                else:
+                    print("❌ 没有找到存档文件")
+                    return
+        else:
+            print("⚠️ 无法从 md 文件解析日期，使用最新存档")
+            files = sorted(os.listdir(ARCHIVE_DIR))
+            if files:
+                latest = files[-1]
+                date_str = latest.replace("news_", "").replace(".json", "")
+                with open(os.path.join(ARCHIVE_DIR, latest), 'r') as f:
+                    data = json.load(f)
+                articles = data.get("articles", [])
+                print(f"📖 读取最新存档 {latest}: {len(articles)} 条文章")
+            else:
+                print("❌ 没有找到存档文件")
+                return
+    else:
+        print("❌ md 文件不存在")
         return
-
-    latest = files[-1]
-    # 从文件名提取日期
-    date_str = latest.replace("news_", "").replace(".json", "")
-    with open(os.path.join(ARCHIVE_DIR, latest), 'r') as f:
-        data = json.load(f)
-
-    articles = data.get("articles", [])
-    print(f"📖 读取到 {len(articles)} 条文章")
 
     # 生成带日期的HTML文件
     dated_html_file = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{date_str}.html"
@@ -368,9 +403,9 @@ def update_index(latest_date):
     
     # 生成新的列表
     links_html = '\n'.join([f'        <li><a href="daily-ai-news-{d}.html">{d} AI前沿动态</a></li>' for d in dates])
-    
-    # 替换内容
-    index_content = re.sub(r'<ul class="archive-list">.*?</ul>', f'<ul class="archive-list">\n{links_html}\n    </ul>', index_content, flags=re.DOTALL)
+
+    # 精确替换日报存档的 ul（使用 id="daily-archive"）
+    index_content = re.sub(r'<ul class="archive-list" id="daily-archive">.*?</ul>', f'<ul class="archive-list" id="daily-archive">\n{links_html}\n    </ul>', index_content, flags=re.DOTALL)
     
     with open(index_file, 'w') as f:
         f.write(index_content)

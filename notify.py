@@ -137,7 +137,7 @@ def send_feishu(report):
     date_str = datetime.now().strftime("%m月%d日")
 
     # 直接从 HTML 文件读取要点速览
-    html_file = "/Users/shenyalan/ai-daily-news/daily-ai-news-2026-03-27.html"
+    html_file = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{datetime.now().strftime('%Y-%m-%d')}.html"
     try:
         with open(html_file, 'r', encoding='utf-8') as f:
             html_content = f.read()

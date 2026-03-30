@@ -269,7 +269,7 @@ def generate_preview_md(cache, output_path, highlights=None):
     return total
 
 
-def push_to_feishu(cache, webhook_url):
+def push_to_feishu(cache, webhook_url, highlights=None):
     """推送到飞书"""
     import httpx
 
@@ -284,9 +284,10 @@ def push_to_feishu(cache, webhook_url):
     if 'Researcher' in cats:
         overview += f"\n- 👤 研究者动态：{cats.get('Researcher', 0)}条"
 
-    # LLM 提取重点
-    print("   🔄 调用 LLM 提取今日重点...")
-    highlights = extract_highlights_llm(cache)
+    # LLM 提取重点（优先使用已提取的结果）
+    if highlights is None:
+        print("   🔄 调用 LLM 提取今日重点...")
+        highlights = extract_highlights_llm(cache)
 
     if highlights:
         print(f"   ✅ LLM 提取到 {len(highlights)} 条重点")
@@ -368,7 +369,7 @@ def main():
 
     # 4. 推送飞书
     print('📨 推送飞书...')
-    result = push_to_feishu(tweets, webhook)
+    result = push_to_feishu(tweets, webhook, highlights)
     if result.get('msg') == 'success':
         print('   ✅ 飞书推送成功')
     else:
