@@ -424,6 +424,61 @@ def md_to_html(md_file, output_html=None, dated_html=None):
     return articles
 
 
+def scan_daily_htmls(base_dir):
+    """扫描目录中所有 daily-ai-news-*.html，    return [(sort_key, display_date, filename), 按日期降序排列"""
+    import re as _re
+    pattern = _re.compile(r'daily-ai-news-(\d{4}-\d{2}-\d{2}\+?\d*?)\.html$')
+    files = []
+    for f in os.listdir(base_dir):
+        m = pattern.match(f)
+        if m:
+            date_str = m.group(1)
+            sort_key = date_str.replace('+', '')
+            files.append((sort_key, date_str, f))
+    files.sort(reverse=True)
+    return files
+
+
+def update_index(base_dir):
+    """自动扫描目录，更新 index.html 的日报存档列表"""
+    import re as _re
+
+    index_file = os.path.join(base_dir, "index.html")
+    if not os.path.exists(index_file):
+        return
+
+    with open(index_file, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    daily_files = scan_daily_htmls(base_dir)
+    if not daily_files:
+        return
+
+    today = datetime.now().strftime('%Y-%m-%d')
+
+    links = []
+    for sort_key, date_str, filename in daily_files:
+        href = filename
+        label = f"{date_str} AI前沿动态"
+        if date_str == today:
+            links.append(f'        <li><a href="{href}" class="archive-item featured">{label}</a></li>')
+        else:
+            links.append(f'        <li><a href="{href}" class="archive-item">{label}</a></li>')
+
+    links_html = '\n'.join(links)
+
+    new_content = _re.sub(
+        r'<ul class="archive-list" id="daily-archive">.*?</ul>',
+        f'<ul class="archive-list" id="daily-archive">\n{links_html}\n    </ul>',
+        content,
+        flags=_re.DOTALL
+    )
+
+    with open(index_file, 'w', encoding='utf-8') as f:
+        f.write(new_content)
+    print(f"✅ 已更新index.html ({len(daily_files)} 条日报)")
+
+
 if __name__ == "__main__":
     if HAS_CONFIG:
         MD_FILE = output_md()
@@ -439,3 +494,6 @@ if __name__ == "__main__":
 
     articles = md_to_html(MD_FILE, OUTPUT_HTML, DATED_HTML)
     print(f"📖 解析到 {len(articles)} 条文章")
+
+    # 自动更新 index.html
+    update_index(BASE_DIR)
