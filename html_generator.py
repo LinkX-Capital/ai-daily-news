@@ -122,14 +122,54 @@ def convert_bold(text):
     return re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', text)
 
 
-def get_priority_display(priority, categories=None):
-    """根据优先级和分类返回样式和图标"""
-    # 按分类强制提升优先级
-    if categories:
-        cat = categories[0] if categories else ""
-        if "模型前沿" in cat:
+# 关键词优先级提升规则
+HIGH_KEYWORDS = [
+    # 重大事件
+    "泄露", "leak", "关停", "关闭", "shutdown", "shut down",
+    # 突破性数据
+    "50x", "10x", "5x", "翻倍", "饱和", "突破",
+    # 重大金额
+    "$10b", "$20b", "万亿美元",
+    # 安全/漏洞
+    "漏洞", "vulnerability", "安全担忧",
+    # 里程碑
+    "首次", "首创", "里程碑",
+]
+
+MEDIUM_KEYWORDS = [
+    # 产品/模型动态
+    "发布", "上线", "launch", "release", "开源", "open source",
+    "推出", "新方法", "新工具", "新功能",
+    # 重要人物
+    "lecun", "karpathy", "altman", "hassabis",
+    # 技术趋势
+    "agent", "mcp", "推理", "benchmark",
+    # 行业变化
+    "洗牌", "格局", "重塑", "战略",
+    # 重要金额
+    "$1b", "$2b", "$5b", "亿",
+]
+
+
+def get_priority_display(priority, categories=None, title="", body=""):
+    """根据关键词 + 分类返回样式和图标"""
+    text = (title + " " + body).lower()
+
+    # 关键词匹配提升优先级
+    for kw in HIGH_KEYWORDS:
+        if kw.lower() in text:
             priority = max(priority, 160)
-        elif "算力追踪" in cat or "研究关注" in cat:
+            break
+    else:
+        for kw in MEDIUM_KEYWORDS:
+            if kw.lower() in text:
+                priority = max(priority, 120)
+                break
+
+    # 按分类兜底提升
+    if priority < 110 and categories:
+        cat = categories[0] if categories else ""
+        if "模型前沿" in cat or "算力追踪" in cat or "研究关注" in cat:
             priority = max(priority, 110)
 
     if priority > 150:
@@ -320,7 +360,7 @@ def generate_html(articles, summary_items, month_day=None):
         html += f'<div class="section-title">{cat}</div>'
         for a in items:
             priority = a.get("priority", 0)
-            priority_class, emoji = get_priority_display(priority, a.get("categories"))
+            priority_class, emoji = get_priority_display(priority, a.get("categories"), a.get("title", ""), a.get("body", ""))
 
             html += f'''
         <div class="card">
