@@ -76,15 +76,15 @@
 
 ### X讨论
 
-**多 Agent 流量翻倍：Cline 和 Hermes Agent 本周流量激增**
-- OpenRouter 数据显示 Cline 和 Hermes Agent 本周流量翻倍。**Agent 不再只是概念，真实调用量的快速增长说明开发者在实际生产中大量使用 Agent**，与 MCP 97M 安装量形成呼应——协议层标准化 + 调用量激增，Agent 生态正进入正循环。
-  > 💡 流量翻倍是最直接的采用信号，Agent 基础设施层的创业窗口正在打开。
-   - 来源: [@OpenRouter](https://nitter.net/OpenRouter/status/2037198266094543094#m)
-
 **MCP 跨越 97M 安装量，成为 Agent 生态标准协议**
 - Anthropic 主导的 Model Context Protocol (MCP) 安装量突破 9700 万，正在成为 AI Agent 与外部工具交互的事实标准。**MCP 的快速普及意味着 Agent 生态的基础设施层正在成型**，类似于 HTTP 之于 Web。同时 Microsoft 接管 2.1GW Texas "AI Factory" 自建算力产能，也反映了大厂对 Agent 所需算力的长期押注。
   > 💡 协议层的标准化是生态爆发的必要条件，MCP 的赢家通吃效应将决定未来 Agent 工具链的格局。
    - 来源: [X](https://x.com/v_shakthi/status/2038082825459740708)
+  
+**多 Agent 流量翻倍：Cline 和 Hermes Agent 本周流量激增**
+- OpenRouter 数据显示 Cline 和 Hermes Agent 本周流量翻倍。**Agent 不再只是概念，真实调用量的快速增长说明开发者在实际生产中大量使用 Agent**，与 MCP 97M 安装量形成呼应——协议层标准化 + 调用量激增，Agent 生态正进入正循环。
+  > 💡 流量翻倍是最直接的采用信号，Agent 基础设施层的创业窗口正在打开。
+   - 来源: [@OpenRouter](https://nitter.net/OpenRouter/status/2037198266094543094#m)
 
 **Karpathy 反思 LLM 辅助写作：打磨4小时后被 LLM 瞬间拆穿**
 - Karpathy 分享了一个发人深省的经历：自己写了一篇博客，用 LLM 花了4小时精心打磨论证，感觉很满意后让 LLM 批判——结果被瞬间拆穿。**这个案例揭示了 LLM 辅助思考的悖论：LLM 擅长生成看似有说服力的内容，但同样擅长发现这些内容中的漏洞**。对人机协作中"谁来审核"这个问题有重要启发。
