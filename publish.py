@@ -127,10 +127,10 @@ def save_archive(articles, date_str):
 
 
 def generate_html(date_str):
-    """调用 generate_html.py"""
+    """调用 html_generator.py"""
     import subprocess
     result = subprocess.run(
-        ['python', '/Users/shenyalan/ai-daily-news/generate_html.py'],
+        ['python', '/Users/shenyalan/ai-daily-news/html_generator.py'],
         capture_output=True,
         text=True
     )

@@ -29,8 +29,9 @@
 │     a. 从 markdown 重新生成 JSON（如果手动编辑过）                │
 │     b. 运行 generate_html.py 生成 HTML                          │
 │     c. 更新 index.html                                         │
-│     d. 运行 notify.py 推送到飞书                                │
-│     e. 运行 gen_screenshot.py 生成手机端长图                     │
+│     d. 运行 html_generator.py 生成 HTML（含index）                │
+│     e. 运行 notify.py 推送到飞书                                │
+│     f. 运行 gen_screenshot.py 生成手机端长图                     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -46,10 +47,9 @@ python3 feed_v5.py
 # 3. （人工编辑）daily-ai-news.md
 
 # 4. 生成并分发
-python3 -c "..."  # 从 md 生成 JSON
-python3 generate_html.py
-python3 notify.py
-python3 gen_screenshot.py
+python3 html_generator.py  # 生成 HTML + 更新 index
+python3 notify.py          # 推送飞书
+python3 gen_screenshot.py  # 生成手机端长图
 ```
 
 ## 关键文件
@@ -58,7 +58,7 @@ python3 gen_screenshot.py
 |------|------|------|------|
 | tweet_fetcher/main.py | 抓取 Twitter | - | cache.json |
 | feed_v5.py | 主管线 | RSS + cache.json | archive/news_*.json + daily-ai-news.md |
-| generate_html.py | 生成 HTML | archive/news_*.json | daily-ai-news-*.html + daily-ai-news.html + index.html |
+| html_generator.py | 生成 HTML | daily-ai-news.md | daily-ai-news.html + daily-ai-news-YYYY-MM-DD.html + index.html |
 | notify.py | 推送飞书 | daily-ai-news.html | 飞书卡片 |
 | gen_screenshot.py | 生成长图 | daily-ai-news.html | daily-ai-news-mobile.png |
 
@@ -75,11 +75,8 @@ RSS 源          tweet_fetcher
              │
              └─→ daily-ai-news.md     (可手动编辑)
                      │
-                     ↓ (如编辑过)
-                 重新生成 JSON
-                     │
                      ↓
-                 generate_html.py
+                 html_generator.py
                      │
                      ├─→ daily-ai-news.html
                      ├─→ daily-ai-news-YYYY-MM-DD.html
@@ -89,6 +86,6 @@ RSS 源          tweet_fetcher
 ## 注意事项
 
 1. **Twitter 缓存优先**：单独抓取可确保管线不因网络问题中断
-2. **JSON 是真实数据源**：如果手动编辑了 md，需要同步回 JSON
-3. **HTML 从 JSON 生成**：不要手动编辑 HTML，每次都从 JSON 重新生成
+2. **使用 html_generator.py**：统一使用此脚本生成 HTML，不要用 generate_html.py
+3. **HTML 从 md 直接生成**：不要手动编辑 HTML，每次都从 md 重新生成
 4. **人工核对必不可少**：LLM 分类可能不准确，优先级需要人工调整
