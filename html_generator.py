@@ -42,8 +42,8 @@ def parse_md(md_content):
     for line in lines:
         original_stripped = line.strip()
 
-        # 检测要点汇总
-        if '要点汇总' in original_stripped and original_stripped.startswith('#'):
+        # 检测要点汇总/要点速览
+        if ('要点汇总' in original_stripped or '要点速览' in original_stripped) and original_stripped.startswith('#'):
             in_summary = True
             continue
         if in_summary and original_stripped.startswith('---'):
@@ -52,25 +52,26 @@ def parse_md(md_content):
         if in_summary and original_stripped.startswith('- '):
             parts = original_stripped[2:].split('：', 1)
             if len(parts) == 2:
-                cat = normalize_category(parts[0].strip())
+                cat = re.sub(r'\*\*', '', parts[0].strip())  # 去掉**粗体标记
+                cat = normalize_category(cat)
                 items = [i.strip() for i in parts[1].split(';') if i.strip()]
                 summary_items[cat] = items
             continue
 
-        # 检测分类标题
-        for prefix in ['### ', '## ']:
-            if original_stripped.startswith(prefix):
-                cat_text = original_stripped[len(prefix):].strip()
-                if cat_text not in ['详细参考', '要点汇总', 'AI 前沿动态']:
-                    current_cat = normalize_category(cat_text)
-                break
+        # 检测分类标题（## 分类名，不是###文章标题）
+        if original_stripped.startswith('## ') and not original_stripped.startswith('### '):
+            cat_text = original_stripped[3:].strip()
+            if cat_text not in ['详细参考', '要点汇总', '要点速览', 'AI 前沿动态']:
+                current_cat = normalize_category(cat_text)
+            continue
 
-        # 检测文章标题
-        if original_stripped.startswith('**') and original_stripped.endswith('**') and not original_stripped.startswith('##'):
+        # 检测文章标题（### 文章标题）
+        if original_stripped.startswith('### '):
+            # 保存上一个文章的body
             if articles and current_body_lines:
                 articles[-1]['body'] = ' '.join(current_body_lines)
             current_body_lines = []
-            title = original_stripped[2:-2].strip()
+            title = original_stripped[4:].strip()
             if title:
                 articles.append({
                     'title': title,
@@ -103,11 +104,9 @@ def parse_md(md_content):
                     articles[-1]['link'] = link_match.group(1)
             continue
 
-        # 检测 body
-        if original_stripped.startswith('-') and '来源:' not in original_stripped and articles:
-            body_text = original_stripped.lstrip('-').strip()
-            if body_text:
-                current_body_lines.append(body_text)
+        # 检测 body（普通段落）
+        if original_stripped and not original_stripped.startswith('#') and not original_stripped.startswith('- ') and '💡' not in original_stripped and '来源' not in original_stripped and articles:
+            current_body_lines.append(original_stripped)
             continue
 
     # 保存最后一个 body
