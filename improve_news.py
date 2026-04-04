@@ -124,7 +124,7 @@ def fix_category(title: str, summary: str = "", current_cat: str = "") -> str:
 
 # ========== 3. 同一公司多条消息处理 ==========
 def group_by_company(articles: List[Dict]) -> Dict[str, List[Dict]]:
-    """按公司分组"""
+    """按公司分组，回退到按 source 分组"""
     companies = tier1_ai_companies()
 
     grouped = defaultdict(list)
@@ -142,7 +142,9 @@ def group_by_company(articles: List[Dict]) -> Dict[str, List[Dict]]:
         if found_company:
             grouped[found_company].append(a)
         else:
-            grouped["other"].append(a)
+            # 回退：按 source 分组，同一来源的多条消息视为一组
+            source = a.get("source", "").lower().strip()
+            grouped[source if source else "other"].append(a)
 
     return grouped
 

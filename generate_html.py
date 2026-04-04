@@ -179,12 +179,12 @@ def generate_html(articles, date_str=None, summary_raw_text=None):
     <div class="summary">
         <h2>📌 要点速览</h2>"""
 
-    # 要点速览只显示"是什么"（取冒号之前的部分）
+    # 要点速览只显示"是什么"（取冒号之前的部分，不截断）
     def get_what(title):
-        for sep in ['：', ':', '？', '?', '！', '!']:
+        for sep in ['：', ':']:
             if sep in title:
-                return title.split(sep)[0][:50]
-        return title[:50]
+                return title.split(sep)[0]
+        return title
 
     # 如果有原始要点汇总文本，解析并使用正确格式
     if summary_raw_text:
@@ -311,7 +311,7 @@ def main():
                 print(f"📖 读取存档 {expected_archive}: {len(articles)} 条文章")
             else:
                 print(f"⚠️ 存档不存在: {expected_archive}，尝试读取最新存档")
-                files = sorted(os.listdir(ARCHIVE_DIR))
+                files = sorted([f for f in os.listdir(ARCHIVE_DIR) if f.startswith("news_") and f.endswith(".json")])
                 if files:
                     latest = files[-1]
                     date_str = latest.replace("news_", "").replace(".json", "")
@@ -401,8 +401,12 @@ def update_index(latest_date):
     # 按日期排序（最新的在前）
     dates.sort(reverse=True)
     
-    # 生成新的列表
-    links_html = '\n'.join([f'        <li><a href="daily-ai-news-{d}.html">{d} AI前沿动态</a></li>' for d in dates])
+    # 生成新的列表（最新一条高亮，其余无图标）
+    items = []
+    for i, d in enumerate(dates):
+        cls = 'archive-item featured' if i == 0 else 'archive-item'
+        items.append(f'        <li><a href="daily-ai-news-{d}.html" class="{cls}"><span class="text">{d} AI前沿动态</span><span class="arrow">→</span></a></li>')
+    links_html = '\n'.join(items)
 
     # 精确替换日报存档的 ul（使用 id="daily-archive"）
     index_content = re.sub(r'<ul class="archive-list" id="daily-archive">.*?</ul>', f'<ul class="archive-list" id="daily-archive">\n{links_html}\n    </ul>', index_content, flags=re.DOTALL)

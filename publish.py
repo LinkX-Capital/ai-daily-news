@@ -251,6 +251,17 @@ def main():
     print("\n🔄 Git push...")
     git_push(date_str)
 
+    # 生成手机端截图
+    print("\n📸 生成手机端截图...")
+    import subprocess
+    result = subprocess.run(
+        ['python3', '/Users/shenyalan/ai-daily-news/gen_screenshot.py'],
+        capture_output=True, text=True
+    )
+    print(result.stdout)
+    if result.returncode != 0:
+        print(f"⚠️ 截图生成警告: {result.stderr}")
+
     print("\n✅ 发布完成!")
 
 

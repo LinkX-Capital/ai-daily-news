@@ -58,20 +58,42 @@ def parse_md(md_content):
                 summary_items[cat] = items
             continue
 
-        # 检测分类标题（## 分类名，不是###文章标题）
-        if original_stripped.startswith('## ') and not original_stripped.startswith('### '):
-            cat_text = original_stripped[3:].strip()
-            if cat_text not in ['详细参考', '要点汇总', '要点速览', 'AI 前沿动态']:
+        # 检测分类标题（### 分类名 或 ## 分类名）
+        # 分类标题的特征：下一行通常是 **标题** 格式
+        if original_stripped.startswith('### ') or (original_stripped.startswith('## ') and not original_stripped.startswith('### ')):
+            cat_text = original_stripped.lstrip('#').strip()
+            # 排除非分类的标题
+            if cat_text not in ['📖 详细参考', '详细参考', '要点汇总', '要点速览', 'AI 前沿动态', '04月05日 AI 前沿动态']:
                 current_cat = normalize_category(cat_text)
+            # 跳过分类标题行，不作为文章处理
             continue
 
-        # 检测文章标题（### 文章标题）
-        if original_stripped.startswith('### '):
+        # 检测文章标题（**粗体标题**）
+        if original_stripped.startswith('**') and original_stripped.endswith('**') and len(original_stripped) > 4:
             # 保存上一个文章的body
             if articles and current_body_lines:
                 articles[-1]['body'] = ' '.join(current_body_lines)
             current_body_lines = []
-            title = original_stripped[4:].strip()
+            title = original_stripped[2:-2].strip()  # 去掉首尾**
+            if title:
+                articles.append({
+                    'title': title,
+                    'categories': [current_cat] if current_cat else [],
+                    'body': '',
+                    'source': '',
+                    'link': '',
+                    'key_points': [],
+                    'priority': 100
+                })
+            continue
+
+        # 检测粗体标题 **标题**
+        if original_stripped.startswith('**') and original_stripped.endswith('**') and len(original_stripped) > 4:
+            # 保存上一个文章的body
+            if articles and current_body_lines:
+                articles[-1]['body'] = ' '.join(current_body_lines)
+            current_body_lines = []
+            title = original_stripped[2:-2].strip()  # 去掉首尾**
             if title:
                 articles.append({
                     'title': title,
@@ -104,9 +126,15 @@ def parse_md(md_content):
                     articles[-1]['link'] = link_match.group(1)
             continue
 
-        # 检测 body（普通段落）
-        if original_stripped and not original_stripped.startswith('#') and not original_stripped.startswith('- ') and '💡' not in original_stripped and '来源' not in original_stripped and articles:
-            current_body_lines.append(original_stripped)
+        # 检测 body（普通段落，支持 - 开头和无序列表）
+        if original_stripped and not original_stripped.startswith('#') and '💡' not in original_stripped and '来源' not in original_stripped and articles:
+            # 排除 --- 分隔线和更新时间
+            if original_stripped.startswith('---') or original_stripped.startswith('*更新时间'):
+                continue
+            # 去掉开头的 - 或 • 等列表标记
+            body_text = re.sub(r'^[\-\*•]\s+', '', original_stripped)
+            if body_text:
+                current_body_lines.append(body_text)
             continue
 
     # 保存最后一个 body
@@ -343,7 +371,7 @@ def generate_html(articles, summary_items, month_day=None):
         items = summary_items.get(cat, [])
         if items:
             html += f'<div class="summary-item"><span class="cat-tag">{cat}</span>'
-            for item in items[:4]:
+            for item in items:
                 html += f'<span class="summary-title">{convert_bold(item)}</span>'
             html += '</div>'
 

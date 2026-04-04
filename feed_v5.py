@@ -1031,7 +1031,7 @@ JSON数组，只返回is_ai_related=true的新闻：
   {
     "original_title": "原始标题（必须和输入完全一致）",
     "title": "中文标题，事件主体+做什么+为什么重要，禁止感叹号/问号结尾",
-    "body": "3-6句话，必须有so what（为什么重要），关键判断/数据加粗**，读完能跟人聊来龙去脉",
+    "body": "3-6句话，只写关键事实：是什么、关键突破/创新/关注点、为什么或什么影响，不写核心判断",
     "insight": "一句话点评：趋势洞察、竞争分析、机会风险",
     "category": "分类"
   }
@@ -1047,7 +1047,8 @@ JSON数组，只返回is_ai_related=true的新闻：
   - 禁止模糊称呼，必须具体到人名或公司名
   - 禁止媒体夸张词汇（彻底告别、炸裂、暴击等）
 - body规则（按分类有不同侧重点，关注事件要点还原）：
-  - 3-6句话，关键数据/判断必须加粗（如：**首次实现超百万上下文窗口**；**M2.7是MiniMax首个深度参与自身进化的模型**）
+  - 3-6句话，只写关键事实：是什么、关键突破/创新/关注点、为什么或什么影响
+  - 不写核心判断，不重复标题已说的内容，关键数据/事实可以加粗
   - 读完能了解来龙去脉，不点进原文也能跟人聊
   - 海外公司/人名保持英文
   - 不包含判断和评价，判断放在insight里
@@ -1123,8 +1124,7 @@ def process_with_llm(articles, recent_articles=None):
   {
     "original_title": "原始标题（必须和输入完全一致）",
     "title": "中文标题，事件主体+做什么+为什么重要，禁止感叹号/问号结尾",
-    "body": "3-6句话，必须有so what（为什么重要），关键判断/数据加粗**",
-    "insight": "一句话点评：趋势洞察、竞争分析、机会风险",
+    "body": "3-6句话，只写关键事实：是什么、关键突破/创新/关注点、为什么或什么影响，不写核心判断",
     "category": "分类"
   }
 ]
@@ -1393,7 +1393,7 @@ def generate_report(articles):
     return "\n".join(lines)
 
 def generate_summary_report(articles):
-    """生成简洁版报告：标题 + 展开阐释 + 关键细节 + 为什么重要 + 来源链接"""
+    """生成简洁版报告：序号标题 + 关键事实 + 来源链接"""
     month_day = END_BJ.strftime("%m月%d日")
     by_cat = defaultdict(list)
     for a in articles:
@@ -1403,8 +1403,10 @@ def generate_summary_report(articles):
         by_cat[cat] = sorted(by_cat[cat], key=lambda x: x.get("priority", 0), reverse=True)[:MAX_PER_CATEGORY]
 
     lines = [f"## {month_day} AI 前沿动态", "",
-             f"> 展开阐释 + 关键细节 + 为什么重要 + 来源链接", "",
              "---", ""]
+
+    # 全局序号
+    seq = 0
 
     for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
         items = by_cat.get(cat, [])
@@ -1412,24 +1414,19 @@ def generate_summary_report(articles):
         lines.append(f"### {cat}")
 
         for a in items:
-            lines.append(f"**{a['title']}**")
+            seq += 1
+            lines.append(f"**{seq}. {a['title']}**")
 
             # 获取 body 的句子
             sentences = [s.strip() for s in a.get('body', '').split('。') if s.strip()] if a.get('body') else []
 
-            # 细节 - key_points 或 body 第二句起
+            # 关键事实 - key_points 或 body 第二句起（跳过与标题重复的第一句）
             if a.get('key_points'):
                 for point in a['key_points'][:3]:
                     lines.append(f"- {point}")
             elif len(sentences) > 1:
                 for s in sentences[1:3]:
                     lines.append(f"- {s}。")
-
-            # 重要性 - insight 或 body 最后
-            if a.get('insight'):
-                lines.append(f"- {a['insight']}")
-            elif len(sentences) > 3:
-                lines.append(f"- {sentences[-1]}。")
 
             # 来源链接
             link = a.get('link', '')

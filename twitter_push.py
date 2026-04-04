@@ -29,15 +29,10 @@ def is_questionable_tweet(tweet):
 
 
 def extract_highlights_llm(tweets: list) -> list:
-    """用 LLM 提取今日重点"""
+    """用 LLM 提取今日重点（MiniMax 优先，GLM-4.7 备用）"""
     import os
     import httpx
-    import re
-    import json
-
-    api_key = os.environ.get("MINIMAX_API_KEY", "")
-    if not api_key:
-        return None
+    import time
 
     tweets_text = []
     for i, t in enumerate(tweets[:10], 1):
@@ -50,42 +45,61 @@ def extract_highlights_llm(tweets: list) -> list:
 推文：
 {chr(10).join(tweets_text)}"""
 
+    # 1. 尝试 MiniMax
+    minimax_key = os.environ.get("MINIMAX_API_KEY", "")
+    if minimax_key:
+        for attempt in range(3):
+            try:
+                response = httpx.post(
+                    "https://api.minimaxi.com/anthropic/v1/messages",
+                    headers={"Authorization": f"Bearer {minimax_key}", "Content-Type": "application/json"},
+                    json={"model": "minimaxi-text-01", "max_tokens": 1000, "messages": [{"role": "user", "content": prompt}]},
+                    timeout=60
+                )
+                if response.status_code == 200:
+                    result = response.json()
+                    content_text = ""
+                    for item in result.get("content", []):
+                        if item.get("type") == "text":
+                            content_text = item.get("text", "")
+                            break
+                    if not content_text:
+                        for item in result.get("content", []):
+                            if item.get("type") == "thinking":
+                                content_text = item.get("thinking", "")
+                                break
+                    data = _extract_json(content_text)
+                    if data:
+                        return data.get("highlights", [])
+            except Exception:
+                if attempt < 2:
+                    time.sleep(2)
+                    continue
+                break
+
+    # 2. 备用 GLM-4.7
+    glm_key = os.environ.get("ZHIPU_API_KEY", "")
+    if not glm_key:
+        glm_key = "5f650035e5a845549e4765184d8179b1.GdehlMpHT0dKq3m3"
     try:
         response = httpx.post(
-            "https://api.minimaxi.com/anthropic/v1/messages",
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": "minimaxi-text-01",
-                "max_tokens": 1000,
-                "messages": [{"role": "user", "content": prompt}]
-            },
+            "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+            headers={"Authorization": f"Bearer {glm_key}", "Content-Type": "application/json"},
+            json={"model": "GLM-4.7", "max_tokens": 1000, "messages": [{"role": "user", "content": prompt}]},
             timeout=60
         )
-
         if response.status_code == 200:
             result = response.json()
-            content = ""
-            for item in result.get("content", []):
-                if item.get("type") == "text":
-                    content = item.get("text", "")
-                    break
-            if not content:
-                for item in result.get("content", []):
-                    if item.get("type") == "thinking":
-                        content = item.get("thinking", "")
-                        break
-
-            # 解析 JSON
-            data = _extract_json(content)
+            content_text = result["choices"][0]["message"]["content"]
+            data = _extract_json(content_text)
             if data:
                 return data.get("highlights", [])
-    except Exception as e:
-        print(f"   LLM 提取重点失败: {e}")
+    except Exception:
+        pass
 
     return None
+
+
 
 
 def _extract_json(text: str):
