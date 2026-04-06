@@ -1,80 +1,63 @@
-## 04月05日 AI 前沿动态
+## 04月05-06日 AI 前沿动态
 
-> 自动汇总 | 时间窗口: 24h | 每类 Top 5
+> 自动汇总 | 时间窗口: 48h | 每类 Top 5
 
 ---
 
 #要点汇总#
 
-- 产业动态：港科大阿里联合提出RL冷启动新范式 揭示SFT与RL潜力差异; Anthropic为全量Claude订阅用户开放Microsoft 365连接器; Bespoke Labs建议简化Agent设计 减少MCP工具依赖; Anthropic在私募市场热度空前 二级市场交易活跃; OpenClaw更新Anthropic接入方式 Claude CLI需额外付费
-- 算力追踪：Google DeepMind Gemma 4日处理量达2.5B tokens
-- 研究关注：哈工深发布EgoTouch 首个大规模第一人称视觉触觉估计模型
-- X讨论：DeepMind团队发布70页数学推理论文 探索模型数学思考能力; 阿里Qwen3.6-Plus登顶OpenRouter 成首个单日处理万亿token的模型; SemiAnalysis质疑NVIDIA开源承诺 DGX Lepton软件开放延迟; 李飞飞连续第11年执教CS231n 分享计算机视觉教育心得
+- 模型前沿：OpenAI GPT-6曝光，奥特曼押注下一代模型
+- 产业动态：vLLM采用TorchSpec开源EAGLE3模型用于Kimi 2.5低延迟推理
+- 算力追踪：Epoch AI发布多项AI基础设施数据洞察，内存带宽年增4.1倍、CoWoS/HBM成产能瓶颈、Microsoft年资本支出达680亿美元
+- 研究关注：上海交大团队提出多智能体动态协作编程方案
+- 初创&融资：新书披露扎克伯格错过DeepMind投资历史
+- X讨论：Karpathy分享Farzapedia个性化维基百科应用案例
 
 ---
 
 ## 📖 详细参考
 
+### 模型前沿
+**OpenAI GPT-6曝光，奥特曼押注下一代模型**
+- 量子位报道披露了GPT-6的相关信息，OpenAI CEO奥特曼对下一代模型寄予厚望。作为OpenAI的核心产品线，GPT系列每次迭代都引发行业广泛关注。
+  > 💡 GPT-6的曝光表明OpenAI仍在快速推进模型迭代，下一代模型可能带来能力上的重大突破。
+   - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247880900&idx=1&sn=a17acaa2680901599ac85f378a1ceaf4)
+
 ### 产业动态
-**港科大阿里联合提出RL冷启动新范式 揭示SFT与RL潜力差异**
-- 港科大与阿里联合研究揭示大模型监督微调(SFT)后的效果不能预测强化学习(RL)的潜力。研究提出自适应冷启动新范式，通过动态调整训练策略解决RL训练中的冷启动问题。
-  > 💡 SFT与RL的潜力差异是RL训练的关键挑战，该研究为优化RL训练路径提供了方法论支撑
-   - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651025819&idx=2&sn=f46ab8d4d0a849b90c94a224627c46a8&chksm=85aace65c883d6a8dc8aae85428b7d83bdcb372fc79d8468e3d827138c825dce91a44615852e&scene=0&xtrack=1#rd)
-
-**Anthropic为全量Claude订阅用户开放Microsoft 365连接器**
-- Anthropic宣布所有Claude订阅计划现已支持Microsoft 365连接器。用户可连接Outlook、OneDrive和SharePoint，将邮件、文档和文件直接接入Claude对话界面，实现生产力工具与AI助手的深度集成。
-  > 💡 AI助手与生产力工具的深度整合成为差异化竞争关键，Anthropic此举提升Claude企业可用性
-   - 来源: [@claudeai](https://x.com/claudeai/status/2040086268562842097#m)
-
-**Bespoke Labs建议简化Agent设计 减少MCP工具依赖**
-- Bespoke Labs建议停止为Agent设计大量MCP工具，应尽可能将功能集成到沙盒文件系统中，让Agent直接使用终端。Terminal-Bench基准测试验证了这一方向的有效性。
-  > 💡 Agent架构设计从工具堆叠向简化和深度集成演进，这反映了工程实践的理性回归
-   - 来源: [@bespokelabsai](https://x.com/bespokelabsai/status/2040160510893752578#m)
-
-**Anthropic在私募市场热度空前 二级市场交易活跃**
-- Rainmaker Securities总裁Glen Anderson表示，私募股权二级市场从未如此活跃——Anthropic成为最炙手可热的标的。
-  > 💡 AI公司估值持续高企，Anthropic成为私募市场焦点，反映投资人对其商业前景的看好。
-   - 来源: [TechCrunch](https://techcrunch.com/2026/04/03/anthropic-is-having-a-moment-in-the-private-markets-spacex-could-spoil-the-party/)
-
-**OpenClaw更新Anthropic接入方式 Claude CLI需额外付费**
-- AI代理网关工具OpenClaw更新Anthropic支持，提供API Key和本地Claude CLI两种接入方式。Claude CLI模式从4月4日起需额外付费（Extra Usage），不再享有订阅内免费额度。新版本还支持prompt caching（5分钟或1小时缓存）和1M上下文窗口（beta）。
-  > 💡 OpenClaw作为第三方Claude网关，Claude CLI计费变更反映Anthropic对订阅权限收紧，第三方工具使用成本上升
-   - 来源: [OpenClaw Docs](https://docs.openclaw.ai/providers/anthropic)
+**vLLM采用TorchSpec开源EAGLE3模型用于Kimi 2.5低延迟推理**
+- vLLM宣布与TorchSpec团队合作，将EAGLE3 draft model集成到Kimi 2.5推理流程中。EAGLE3是TorchSpec最受欢迎的开源draft模型，采用 speculative decoding 框架。该合作旨在提升Kimi 2.5的推理速度，降低延迟。vLLM是高性能LLM推理框架，在开源社区有广泛使用。
+  > 💡 vLLM与TorchSpec的合作体现推理框架与speculative decoding技术的深度整合，是提升推理效率的重要工程路径。
+   - 来源: [@vllm_project](https://x.com/vllm_project/status/2040673312062538135#m)
 
 ### 算力追踪
-
-**Google DeepMind Gemma 4日处理量达2.5B tokens**
-- Google DeepMind的Gemma 4模型在开源社区的日处理量已达2.5B tokens。该模型提供31B dense和26B MoE两种架构，MoE版本运行速度比dense版本快5倍，支持256K上下文长度。
-  > 💡 Gemma 4的快速采用表明开源模型市场竞争激烈，Google与阿里形成双寡头格局
-   - 来源: [@openrouter](https://x.com/OpenRouter/status/2040234941754323178#m)
+**Epoch AI发布多项AI基础设施数据洞察**
+- Epoch AI发布三项数据洞察报告：1）全球AI芯片内存带宽年增长4.1倍，截至Q4 2025累计达7000万TB/s，约等于全球互联网流量30万倍；2）先进封装(CoWoS)和HBM成2025年AI芯片产能主要瓶颈，四大厂商消耗全球约90% CoWoS和HBM供应；3）Microsoft年资本支出达680亿美元，57%用于IT设备（GPU/服务器），39%用于建筑。
+  > 💡 AI基础设施投入持续加速，封装和HBM产能成为比逻辑芯片更关键的约束。
+   - 来源: [Epoch AI](https://epochai.substack.com/p/the-epoch-brief-march-2026)
 
 ### 研究关注
-**哈工深发布EgoTouch 首个大规模第一人称视觉触觉估计模型**
-- 哈工深圳发布EgoTouch模型，这是首个大规模第一人称视频双掌触觉估计模型。数据集包含300项操作任务、百万帧视觉触觉同步对齐数据。该研究补全了具身智能中触觉感知的短板，为机器人操作提供更全面的感知能力。
-  > 💡 触觉估计是具身智能的关键突破，该研究将推动机器人精细操作能力的大幅提升
-   - 来源: [量子位](https://mp.weixin.qq.com/s/qvFg1-bihlvvHGkBgJEKBA) 
+**上海交大团队提出多智能体动态协作编程方案**
+- 上海交通大学i-WiN中心团队提出新型多智能体动态协作编程方法。该方案实现Token成本降低68%，显著降低推理开销。团队负责人为关新平教授，作者包括陈彩莲教授、许齐敏副研究员。该研究探索多智能体系统的动态协作机制。
+  > 💡 多智能体动态协作是降低LLM推理成本的重要技术方向，有实际工程价值。
+   - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651025873&idx=3&sn=cc3f63fc2816723749bdeca2ed61e52e&chksm=85b72cbb718d17393accf23c723555a9a9e2c48391fff6791ee83fb42d0a602470edf477bca5&scene=0&xtrack=1#rd)
+
+### 初创&融资
+**新书披露扎克伯格错过DeepMind投资历史**
+- 记者塞巴斯蒂安·马拉比新书《无限机器》披露DeepMind早期历史。书中详细描述扎克伯格曾有机会投资DeepMind但最终错过的过程。这是关于DeepMind创始时期的重要历史记录，涉及Google收购DeepMind的背景。
+  > 💡 DeepMind早期投资历史反映AI领域先发优势的重要性，巨头战略布局影响行业格局。
+   - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651025873&idx=1&sn=84b7b942ec8be9dd3f38e02fce8bdc4d&chksm=8573e2f6f2b61fe1b52a1b1f86e4b564cad26a347e2a3383d1c1dca2719d2008645216256150&scene=0&xtrack=1#rd)
 
 ### X讨论
-**DeepMind团队发布70页数学推理论文 探索模型数学思考能力**
-- DeepMind团队在arXiv发布70页论文，研究如何改进语言模型对数学对象的推理能力。论文探讨了模型在进行数学推理时的内部表征和推理机制，是近期关于大模型数学推理能力的重要研究。
-  > 💡 数学推理是LLM能力的关键瓶颈，该研究为提升模型数学思维提供了新视角
-   - 来源: [@jaseweston](https://x.com/jaseweston/status/2040062089725645039#m)
+**Karpathy分享Farzapedia个性化维基百科应用案例**
+- Karpathy推荐Farzapedia项目，这是基于其Wiki LLM推文理念构建的个人维基百科工具。Farzapedia允许用户创建和管理自己的知识库，采用LLM进行个性化知识组织和检索。Karpathy表示看好这种AI驱动个性化知识管理的方式。该项目展示了AI在个人知识管理领域的应用潜力。
+  > 💡 个性化知识管理是LLM落地的重要场景，Wiki LLM类应用有明确的使用价值。
+   - 来源: [@karpathy](https://x.com/karpathy/status/2040572272944324650#m)
 
-**阿里Qwen3.6-Plus登顶OpenRouter 成首个单日处理万亿token的模型**
-- 阿里Qwen3.6-Plus在OpenRouter平台排名升至第一，成为首个单日处理超过1万亿token的模型。当前日处理量约为14亿token。Qwen3.6-Plus是阿里Qwen系列的最新版本，在开源模型中展现出显著的推理能力提升。
-  > 💡 阿里开源模型在开发者社区取得主导地位，日万亿token处理量标志着开源模型进入大规模实用阶段
-   - 来源: [@alibaba_qwen](https://x.com/Alibaba_Qwen/status/2040242594719158460#m)
-
-**SemiAnalysis质疑NVIDIA开源承诺 DGX Lepton软件开放延迟**
-- SemiAnalysis质疑NVIDIA屡次承诺开源DGX Lepton软件却迟迟未兑现。NVIDIA一直声称将开源该软件，但至今仍未实现。
-  > 💡 NVIDIA的开源承诺多次跳票，反映出其在软件生态与商业利益之间的平衡挑战
-   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2040263148771397648#m)
-
-**李飞飞连续第11年执教CS231n 分享计算机视觉教育心得**
-- 李飞飞连续第11年在斯坦福执教CS231n，每年春季学期第一节课已成为她年度Highlights。她照例询问学生为什么学习计算机视觉。
-  > 💡 顶尖学者持续投入AI教育，为人才培养和知识传承做出长期贡献
-   - 来源: [@drfeifei](https://x.com/drfeifei/status/2040110422557368538#m)
-
+### Twitter亮点
+**Qwen 3.6 Plus被评超越GPT-5.4-Codex**
+- 社区评价Qwen 3.6 Plus在agentic tasks上远超GPT-5.4-Codex，被称为"incredible model"。Qwen 3.6-Plus近日在OpenRouter上位居榜首，单日处理token突破万亿。
+- Redline成为Claude Code插件，支持模型自动决定何时进行代码审查
+   - 来源: [@OpenRouter](https://x.com/OpenRouter/status/2040846202082632188#m)
 
 ---
-*更新时间: 2026-04-04 19:31*
+*更新时间: 2026-04-06 13:15*
