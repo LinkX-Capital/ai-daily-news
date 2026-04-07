@@ -15,8 +15,8 @@
 - 该数据集支持低成本实现机器人全身灵巧操控，包括双臂、多指灵巧手与全身姿态的协调控制。
 [来源: 机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651025994&idx=3&sn=5956be2f313c43768ede919629f40fd1&chksm=85b85a28b63bc27d44e01c017d89ebaeb409ba09e745cc12ccbeabfea3b71e08e330a528601c&scene=0&xtrack=1#rd)
 
-**4. Meta华人团队提出Agent自进化方法，AI可自主提升能力**
-- 该研究提出新的Agent训练范式，改变传统Agent依赖外部训练数据的限制，实现自主能力提升。
+**4. Jenny Zhang等提出HyperAgents框架，实现Agent自进化能力**
+- 华人学者Jenny Zhang在Meta实习期间，联合Meta AI、UBC、纽约大学等机构提出HyperAgents框架。
 [来源: 新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652689976&idx=2&sn=a21099a1282b3764e04ad8c770cf3fce)
 
 **5. NVIDIA盘点物理AI机器人研究突破，推动AI进入现实物理世界**

@@ -6,7 +6,7 @@
 
 #要点汇总#
 
-- 产业动态：OpenAI发布智能时代产业政策框架，聚焦机会扩展与繁荣共享; Google推出离线优先AI听写应用，使用Gemma模型; USC发布HumDex数据集，解决人形机器人全身灵巧操作数据难题; Meta华人团队提出Agent自进化方法，AI可自主提升能力; NVIDIA盘点物理AI机器人研究突破，推动AI进入现实物理世界
+- 产业动态：OpenAI发布智能时代产业政策框架，聚焦机会扩展与繁荣共享; Google推出离线优先AI听写应用，使用Gemma模型; USC发布HumDex数据集，解决人形机器人全身灵巧操作数据难题; Jenny Zhang等提出HyperAgents框架，实现Agent自进化能力; NVIDIA盘点物理AI机器人研究突破，推动AI进入现实物理世界
 - 算力追踪：SemiAnalysis披露NVIDIA Rubin芯片TDP飙升至2300W，功耗挑战巨大; Gemma 4支持iPhone本地运行，零token延迟时代临近; 浙大Agent实现真实芯片设计工作流，打通EDA全流程; Epoch AI推出AI芯片所有者追踪工具，揭示全球AI算力分布
 - 初创&融资：GPT-6或抢先发布，Anthropic Mythos因算力需求过高难产
 - 研究关注：ICLR'26论文提出离线强化学习全局优化方法; 南洋理工大学发布手势驱动的世界模型交互方法
@@ -32,8 +32,8 @@
   > 💡 高质量数据稀缺是具身智能核心挑战，数据集突破将加速机器人学习
    - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651025994&idx=3&sn=5956be2f313c43768ede919629f40fd1&chksm=85b85a28b63bc27d44e01c017d89ebaeb409ba09e745cc12ccbeabfea3b71e08e330a528601c&scene=0&xtrack=1#rd)
 
-**Meta华人团队提出Agent自进化方法，AI可自主提升能力**
-- Meta华人研究团队发布新成果，让AI Agent实现类似左脚踩右脚的自进化能力。该研究提出新的Agent训练范式，改变传统Agent依赖外部训练数据的限制，实现自主能力提升。
+**Jenny Zhang等提出HyperAgents框架，实现Agent自进化能力**
+- 华人学者Jenny Zhang在Meta实习期间，联合Meta AI、UBC、纽约大学等机构研究者，提出HyperAgents智能体框架。该框架让AI Agent实现类似左脚踩右脚的自进化能力，改变传统Agent依赖外部训练数据的限制，实现自主能力提升。
   > 💡 自进化Agent可能是AGI路线图的关键里程碑，值得持续关注
    - 来源: [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652689976&idx=2&sn=a21099a1282b3764e04ad8c770cf3fce)
 
