@@ -46,8 +46,8 @@
 - 华人学者Jenny Zhang在Meta实习期间，联合Meta AI、UBC、纽约大学等机构提出HyperAgents框架。
 [来源: 新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652689976&idx=2&sn=a21099a1282b3764e04ad8c770cf3fce)
 
-**11. ICLR'26论文提出离线强化学习全局优化方法**
-- 该研究改进传统离线强化学习仅关注单步决策的局限，实现整体策略的全局优化。
+**11. 厦门大学&港科大提出MAGE离线强化学习算法**
+- 厦门大学和香港科技大学提出MAGE（Multi-scale Autoregressive Generation），通过多尺度自回归生成实现整体策略的全局优化。
 [来源: 量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247880964&idx=2&sn=66563b6c5c6fcf70a9432eb599439b9a)
 
 **12. 南洋理工大学发布手势驱动的世界模型交互方法**
