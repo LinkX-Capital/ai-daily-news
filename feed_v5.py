@@ -1697,7 +1697,7 @@ def main():
                 f.write(summary_report)
             print(f"✅ 简洁版: {SUMMARY_FILE}")
 
-        # 先保存归档，确保 generate_html.py 能读到正确的存档
+        # 先保存归档
     # 保存到归档（无论是否指定日期）
     save_archive(merged)
     if args.date:
@@ -1709,7 +1709,7 @@ def main():
     if not args.date:
         try:
             import subprocess
-            subprocess.run(['python', 'generate_html.py'], check=True, capture_output=True)
+            subprocess.run(['python', 'html_generator.py'], check=True, capture_output=True)
         except Exception as e:
             print(f"   ⚠️ HTML生成失败: {e}")
 

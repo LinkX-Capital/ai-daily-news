@@ -1,64 +1,70 @@
 # AI 日报工作流
 
-## 最佳实践（验证版）
+## 自动管线（cron，周一到周五）
+
+| 时间 | 任务 | 说明 |
+|------|------|------|
+| 7:15 | twitter_digest.sh | Twitter 抓取 |
+| 8:00 | run.sh | 主管线（全自动） |
+
+### run.sh 执行流程
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  1. 单独抓取 Twitter 存档                                     │
-│     目的：防止管线运行时网络抓取失败，确保数据可用性              │
-└─────────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  2. 运行管线 (feed_v5.py)                                    │
-│     - 读取缓存推文                                             │
-│     - 抓取 RSS                                                │
-│     - LLM 分类和摘要                                           │
-│     - 生成 JSON 存档 + markdown                               │
-└─────────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  3. 人工核对                                                   │
-│     - 核对动态优先级（priority 字段）                           │
-│     - 增减内容（漏抓的补上，无关的删除）                        │
-│     - 修正分类                                                 │
-│     - 编辑 daily-ai-news.md（如果需要）                          │
-└─────────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  4. 生成并分发                                                 │
-│     a. 从 markdown 重新生成 JSON（如果手动编辑过）                │
-│     b. 运行 generate_html.py 生成 HTML                          │
-│     c. 更新 index.html                                         │
-│     d. 运行 html_generator.py 生成 HTML（含index）                │
-│     e. 运行 notify.py 推送到飞书                                │
-│     f. 运行 gen_screenshot.py 生成手机端长图                     │
-└─────────────────────────────────────────────────────────────────┘
+1. 检查 archive/news_{当天}.json 是否存在
+   ├─ 存在 → 跳过（你已手动跑过，防止覆盖）
+   └─ 不存在 → 继续
+
+2. feed_v5.py --cache
+   抓取 RSS + Twitter → LLM 处理 → 生成 md + archive
+
+3. html_generator.py
+   从 md 生成 HTML + index.html（不从 archive JSON）
+
+4. gen_screenshot.py → 手机端截图
+
+5. notify.py → 飞书通知
+
+6. git push → 推送到 GitHub
 ```
 
-## 命令速查
+## 手动编辑后的发布
+
+手动编辑了 `daily-ai-news.md` 后：
 
 ```bash
-# 1. 抓取 Twitter 存档（可提前运行）
-python3 tweet_fetcher/main.py
-
-# 2. 运行管线
-python3 feed_v5.py
-
-# 3. （人工编辑）daily-ai-news.md
-
-# 4. 生成并分发
-python3 html_generator.py  # 生成 HTML + 更新 index
-python3 notify.py          # 推送飞书
-python3 gen_screenshot.py  # 生成手机端长图
+python3 md_to_html.py       # md → HTML + index
+python3 gen_screenshot.py   # 手机截图
+python3 notify.py           # 飞书通知
 ```
+
+或一键发布：
+
+```bash
+python3 publish.py
+```
+
+## 手动补充新闻
+
+往当天日报加一条新闻：
+
+1. 编辑 `daily-ai-news.md`，在对应分类下添加条目
+2. `python3 md_to_html.py` 更新 HTML
+3. `python3 publish.py` 发布
+
+## 防覆盖机制
+
+- **run.sh**：`archive/news_{当天}.json` 存在则跳过整个管线
+- **feed_v5.py --no-overwrite**：单独跳过覆盖 md 和 summary
+- 典型场景：早上手动跑管线并编辑 → 8:00 cron 检测到 archive → 自动跳过
 
 ## 关键文件
 
 | 文件 | 作用 | 输入 | 输出 |
 |------|------|------|------|
-| tweet_fetcher/main.py | 抓取 Twitter | - | cache.json |
 | feed_v5.py | 主管线 | RSS + cache.json | archive/news_*.json + daily-ai-news.md |
-| html_generator.py | 生成 HTML | daily-ai-news.md | daily-ai-news.html + daily-ai-news-YYYY-MM-DD.html + index.html |
+| html_generator.py | 自动管线用 | daily-ai-news.md | HTML + index.html |
+| md_to_html.py | 手动发布用 | daily-ai-news.md | HTML |
+| publish.py | 一键发布 | daily-ai-news.md | JSON + HTML + 飞书 + git push |
 | notify.py | 推送飞书 | daily-ai-news.html | 飞书卡片 |
 | gen_screenshot.py | 生成长图 | daily-ai-news.html | daily-ai-news-mobile.png |
 
@@ -66,26 +72,26 @@ python3 gen_screenshot.py  # 生成手机端长图
 
 ```
 RSS 源          tweet_fetcher
-    │                 │
-    └────────┬────────┘
-             ↓
+    |                 |
+    +--------+--------+
+             |
          feed_v5.py (LLM 处理)
-             │
-             ├─→ archive/news_*.json  (唯一真实数据源)
-             │
-             └─→ daily-ai-news.md     (可手动编辑)
-                     │
-                     ↓
-                 html_generator.py
-                     │
-                     ├─→ daily-ai-news.html
-                     ├─→ daily-ai-news-YYYY-MM-DD.html
-                     └─→ index.html
+             |
+             +-> archive/news_*.json
+             |
+             +-> daily-ai-news.md -> 可手动编辑
+                                        |
+                                        v
+                                  html_generator.py
+                                        |
+                                        +-> daily-ai-news.html
+                                        +-> daily-ai-news-YYYY-MM-DD.html
+                                        +-> index.html
 ```
 
 ## 注意事项
 
-1. **Twitter 缓存优先**：单独抓取可确保管线不因网络问题中断
-2. **使用 html_generator.py**：统一使用此脚本生成 HTML，不要用 generate_html.py
-3. **HTML 从 md 直接生成**：不要手动编辑 HTML，每次都从 md 重新生成
-4. **人工核对必不可少**：LLM 分类可能不准确，优先级需要人工调整
+1. **HTML 从 md 生成**：使用 html_generator.py 或 md_to_html.py，不要用 generate_html.py（它从 archive JSON 读取）
+2. **不要手动编辑 HTML**：每次都从 md 重新生成
+3. **archive 存在即跳过**：run.sh 防覆盖机制确保手动编辑不被 cron 覆盖
+4. **publish.py 是手动发布入口**：编辑完 md 后用 publish.py 一键完成发布
