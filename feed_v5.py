@@ -1524,6 +1524,7 @@ def main():
     parser.add_argument('--limit', type=int, default=0, help='限制处理条数（用于快速测试）')
     parser.add_argument('--date', type=str, default=None, help='指定日期 YYYY-MM-DD')
     parser.add_argument('--md', action='store_true', help='从 MD 文件生成 HTML（用于手动编辑后的发布）')
+    parser.add_argument('--no-overwrite', action='store_true', help='不覆盖已存在的 daily-ai-news.md（保留手动编辑）')
     args = parser.parse_args()
 
     # 从 MD 生成 HTML（独立模式）
@@ -1680,15 +1681,21 @@ def main():
 
     # 生成报告（仅当不指定日期时才输出到主文件）
     if not args.date:
-        report = generate_report(merged)
-        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-            f.write(report)
+        if args.no_overwrite and os.path.exists(OUTPUT_FILE):
+            print(f"⚠️ {OUTPUT_FILE} 已存在且 --no-overwrite，跳过覆盖")
+        else:
+            report = generate_report(merged)
+            with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+                f.write(report)
 
-        # 生成简洁版报告
-        summary_report = generate_summary_report(merged)
-        with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
-            f.write(summary_report)
-        print(f"✅ 简洁版: {SUMMARY_FILE}")
+        if args.no_overwrite and os.path.exists(SUMMARY_FILE):
+            print(f"⚠️ {SUMMARY_FILE} 已存在且 --no-overwrite，跳过覆盖")
+        else:
+            # 生成简洁版报告
+            summary_report = generate_summary_report(merged)
+            with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
+                f.write(summary_report)
+            print(f"✅ 简洁版: {SUMMARY_FILE}")
 
         # 先保存归档，确保 generate_html.py 能读到正确的存档
     # 保存到归档（无论是否指定日期）

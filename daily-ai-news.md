@@ -7,7 +7,7 @@
 #要点汇总#
 
 - 产业动态：OpenAI发布智能时代产业政策框架，聚焦机会扩展与繁荣共享; Google推出离线优先AI听写应用，使用Gemma模型; USC发布HumDex数据集，解决人形机器人全身灵巧操作数据难题; NVIDIA盘点物理AI机器人研究突破，推动AI进入现实物理世界
-- 算力追踪：SemiAnalysis披露NVIDIA Rubin芯片TDP飙升至2300W，功耗挑战巨大; Gemma 4支持iPhone本地运行，零token延迟时代临近; 浙大Agent实现真实芯片设计工作流，打通EDA全流程; Epoch AI推出AI芯片所有者追踪工具，揭示全球AI算力分布
+- 算力追踪：Anthropic联手Google与Broadcom签约数GW级TPU算力 2027年上线; SemiAnalysis披露NVIDIA Rubin芯片TDP飙升至2300W，功耗挑战巨大; Gemma 4支持iPhone本地运行，零token延迟时代临近; 浙大Agent实现真实芯片设计工作流，打通EDA全流程; Epoch AI推出AI芯片所有者追踪工具，揭示全球AI算力分布
 - 初创&融资：GPT-6或抢先发布，Anthropic Mythos因算力需求过高难产
 - 研究关注：Jenny Zhang等提出HyperAgents框架，实现Agent自进化能力; 厦门大学&港科大提出MAGE离线强化学习算法; 南洋理工大学发布手势驱动的世界模型交互方法
 - X讨论：开源模型首次在评测中击败Sonnet 4.6
@@ -32,17 +32,17 @@
   > 💡 高质量数据稀缺是具身智能核心挑战，数据集突破将加速机器人学习
    - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651025994&idx=3&sn=5956be2f313c43768ede919629f40fd1&chksm=85b85a28b63bc27d44e01c017d89ebaeb409ba09e745cc12ccbeabfea3b71e08e330a528601c&scene=0&xtrack=1#rd)
 
-**Jenny Zhang等提出HyperAgents框架，实现Agent自进化能力**
-- 华人学者Jenny Zhang在Meta实习期间，联合Meta AI、UBC、纽约大学等机构研究者，提出HyperAgents智能体框架。该框架让AI Agent实现类似左脚踩右脚的自进化能力，改变传统Agent依赖外部训练数据的限制，实现自主能力提升。
-  > 💡 自进化Agent可能是AGI路线图的关键里程碑，值得持续关注
-   - 来源: [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652689976&idx=2&sn=a21099a1282b3764e04ad8c770cf3fce)
-
 **NVIDIA盘点物理AI机器人研究突破，推动AI进入现实物理世界**
 - NVIDIA在国家机器人周期间发布物理AI研究进展汇总，重点介绍AI进入物理世界的关键技术突破。内容涵盖机器人运动控制、感知融合、具身智能等领域的最新研究成果和资源。
   > 💡 物理AI是AI从虚拟走向现实的必经之路，NVIDIA正在构建完整生态
    - 来源: [NVIDIA Blog](https://blogs.nvidia.com/blog/national-robotics-week-2026/)
 
 ### 算力追踪
+**Anthropic联手Google与Broadcom签约数GW级TPU算力 2027年上线**
+- Anthropic宣布与Google和Broadcom签署新协议，获得数GW级别的下一代TPU算力，预计2027年开始上线。**这是Anthropic迄今最大的算力承诺**，用于训练和运行Claude前沿模型。同时披露run-rate收入已超过300亿美元（2025年底约90亿），年化消费超百万美元的企业客户从2月的500家翻倍至1000家以上，不到两个月翻倍。大部分新算力部署在美国，延续其2025年11月承诺的500亿美元美国基础设施投资。Anthropic同时使用AWS Trainium、Google TPU和NVIDIA GPU，**Claude仍是唯一在三大云平台（AWS Bedrock、Google Vertex AI、Azure Foundry）同时可用的前沿模型**。
+  > 💡 Anthropic用史上最大算力订单锁定2027+训练规模，收入增速（半年3倍+）远超同行，AI基础设施竞赛进入GW级签约阶段
+   - 来源: [Anthropic Blog](https://www.anthropic.com/news/google-broadcom-partnership-compute)
+
 **SemiAnalysis披露NVIDIA Rubin芯片TDP飙升至2300W，功耗挑战巨大**
 - SemiAnalysis发布分析：NVIDIA下一代Rubin架构芯片级TDP从Blackwell的1000-1400W飙升至**2300W**，几乎翻倍。供应链消息称功耗密度已对数据中心散热和供电基础设施构成严峻挑战。**这意味着传统风冷方案可能彻底无法支撑下一代AI训练集群，液冷和定制供电方案将成为刚需**。
   > 💡 功耗翻倍将加速数据中心基础设施升级周期，散热/供电赛道迎来爆发
@@ -93,4 +93,4 @@
 
 
 ---
-*更新时间: 2026-04-07 07:47*
+*更新时间: 2026-04-07 22:30*
