@@ -324,7 +324,7 @@ def main():
                     return
         else:
             print("⚠️ 无法从 md 文件解析日期，使用最新存档")
-            files = sorted(os.listdir(ARCHIVE_DIR))
+            files = sorted([f for f in os.listdir(ARCHIVE_DIR) if f.startswith("news_") and f.endswith(".json")])
             if files:
                 latest = files[-1]
                 date_str = latest.replace("news_", "").replace(".json", "")
