@@ -87,7 +87,9 @@ EXTRA_SOURCES = {
     # 添加官方 RSS 源（确认有效的）
     "HuggingFace Blog": ("https://huggingface.co/blog/feed.xml", "US"),
     "The Keyword": ("https://blog.google/rss/", "US"),
-    # 其他需要手动确认 RSS 地址
+    # 36氪 - 国内AI新闻重要源（HappyHorse等独家报道）
+    "36氪": ("https://36kr.com/feed", "CN"),
+    # Anthropic/Meta AI 无官方RSS，已通过Twitter账号覆盖
 }
 SOURCES.update(EXTRA_SOURCES)
 
@@ -1097,11 +1099,10 @@ def process_with_llm(articles, recent_articles=None):
     # 构建历史动态摘要
     recent_summary = ""
     if recent_articles:
-        recent_titles = [a["title"][:40] for a in recent_articles[-15:]]
+        recent_titles = [a["title"][:40] for a in recent_articles[-30:]]
         recent_summary = f"\
 \
-## 近期动态(供参考关联)\
-" + "\
+## 近期已发布动态（去重规则：同一事件、同一角度、无新信息的新闻必须跳过；但如果是同一事件的后续进展、新数据、新细节，则保留并标注与哪条相关）\
 ".join([f"- {t}" for t in recent_titles])
 
     # 按优先级排序，确保重要新闻优先处理
@@ -1628,6 +1629,27 @@ def main():
     # 预规范化
     print("🔧 预规范化...")
     merged = improve_news(merged, do_filter=True)
+
+    # URL 硬去重：同一链接不重复收录
+    recent_urls = set()
+    for i in range(1, 4):
+        date = (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
+        archive_file = os.path.join(ARCHIVE_DIR, f"news_{date}.json")
+        if os.path.exists(archive_file):
+            try:
+                with open(archive_file, 'r', encoding='utf-8') as f:
+                    for a in json.load(f).get("articles", []):
+                        link = a.get("link", "").rstrip("/")
+                        if link:
+                            recent_urls.add(link)
+            except Exception:
+                pass
+    if recent_urls:
+        before = len(merged)
+        merged = [a for a in merged if a.get("link", "").rstrip("/") not in recent_urls]
+        removed = before - len(merged)
+        if removed > 0:
+            print(f"🔒 URL去重: 移除 {removed} 条近期已收录链接")
 
     # LLM 处理
     if not args.skip_llm and API_KEY and len(merged) > 5:
