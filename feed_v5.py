@@ -1008,7 +1008,6 @@ def call_llm(prompt):
 - 一般性的版权纠纷/诉讼（除非是重大突破性判决）
 - 非关键公司的一般性产品采用案例
 - 一般性的政策/监管/安全指南（非重大突破）
-- 中文科技媒体常见非AI内容：消费品牌营销、电商运营、传统行业转型、公司人事变动（非AI高管）、行业排名/榜单
 
 ### 分类规则
 - 模型前沿：模型发布、模型能力更新、benchmark、多模态、视频生成、模型开源、模型评测、世界模型、VLA、Agent架构
@@ -1087,6 +1086,83 @@ JSON数组，只返回is_ai_related=true的新闻：
         return None
 
 import re
+
+# ========== 质检 + 补全 ==========
+def has_key_facts(body):
+    """判断body是否包含关键事实（主体、具体信息）"""
+    if not body or len(body) < 20:
+        return False
+    # 检查是否有具体实体名（英文大写开头2+字符、中文机构名）
+    has_entity = bool(re.search(r'[A-Z][a-z]{2,}', body)) or bool(re.search(r'[\u4e00-\u9fff]{2,}(公司|团队|实验室|研究院|大学|集团)', body))
+    # 检查是否有具体数据（数字+单位/百分比）
+    has_data = bool(re.search(r'\d+\.?\d*%|\d+[亿万千百]', body)) or bool(re.search(r'\$\d+|\d+x\b', body))
+    return has_entity or has_data
+
+def enrich_low_quality_articles(articles, priority_threshold=50):
+    """对高优先级但body空洞的条目，抓取原文补全"""
+    enriched = []
+    for a in articles:
+        body = a.get('body', '')
+        priority = a.get('priority', 0)
+        link = a.get('link', '')
+
+        if priority >= priority_threshold and not has_key_facts(body) and link:
+            print(f"   🔍 质检补全: {a.get('title', '')[:40]}...")
+            try:
+                r = httpx.get(link, timeout=15, follow_redirects=True, verify=False,
+                              headers={"User-Agent": "Mozilla/5.0"})
+                if r.status_code == 200 and len(r.text) > 200:
+                    # 提取正文（简单去HTML标签）
+                    text = re.sub(r'<[^>]+>', ' ', r.text)
+                    text = re.sub(r'\s+', ' ', text).strip()
+                    if len(text) > 100:
+                        # 用原文前1500字让LLM补全body
+                        enriched_body = call_llm_for_enrichment(a.get('title', ''), text[:1500])
+                        if enriched_body:
+                            a['body'] = enriched_body[:400]
+                            print(f"   ✅ 补全成功")
+            except Exception as e:
+                print(f"   ⚠️ 补全失败: {str(e)[:50]}")
+        enriched.append(a)
+    return enriched
+
+def call_llm_for_enrichment(title, raw_text):
+    """用原文内容补全body"""
+    if not API_KEY:
+        return None
+    prompt = f"""根据下方原文内容，为这条新闻写一段3-4句的摘要body。
+要求：必须包含具体主体（谁/哪个公司/哪个机构）、具体事件、关键数据或具体结论。
+禁止模糊描述。如果原文没有足够的实质信息，返回空。
+
+新闻标题：{title}
+
+原文：
+{raw_text}
+
+直接输出body文本，不要JSON格式。"""
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json",
+        "anthropic-version": "2023-06-01"
+    }
+    data = {
+        "model": "MiniMax-M2.5", "temperature": 0.2,
+        "max_tokens": 500,
+        "messages": [{"role": "user", "content": prompt}]
+    }
+    try:
+        r = httpx.post(API_URL, headers=headers, json=data, timeout=60, verify=False)
+        r.raise_for_status()
+        result = r.json()
+        for item in result.get("content", []):
+            if item.get("type") == "text":
+                text = item.get("text", "").strip()
+                if len(text) > 30 and has_key_facts(text):
+                    return text
+        return None
+    except Exception:
+        return None
+
 def process_with_llm(articles, recent_articles=None):
     import re
     if recent_articles is None:
@@ -1219,7 +1295,7 @@ def process_with_llm(articles, recent_articles=None):
                 # 使用 LLM 生成的 body
                 llm_body = lr.get('body', '')
                 if llm_body and len(llm_body) > 10:
-                    article['body'] = llm_body[:200]
+                    article['body'] = llm_body[:400]
                 else:
                     article['body'] = orig_summary[:150] if orig_summary else article['title']
 
@@ -1234,6 +1310,9 @@ def process_with_llm(articles, recent_articles=None):
             print(f"✅ LLM处理了 {len(llm_results)} 条新闻，过滤后 {len(articles)} 条")
     except Exception as e:
         print(f"⚠️ 解析LLM结果失败: {e}")
+
+    # 质检：高优先级条目body缺乏关键事实时，抓原文补全
+    articles = enrich_low_quality_articles(articles)
     return articles
 
 # ========== 抓取 ==========
