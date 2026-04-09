@@ -11,7 +11,7 @@
 - 算力追踪：Qwen3.6-Plus登顶OpenRouter三榜第一
 - 初创&融资：Canva收购Simtheory和Ortto强化AI代理与营销自动化能力; 具身智能机器人公司Zerith零次方获超亿元A轮融资; 面壁智能开源2B语音模型，Q1融资超10亿元
 - 研究关注：Google Research发布PaperVizAgent和ScholarPeer两个AI学术Agent; Meta研究员Jason Weston提出Thinking Mid-training新训练范式; 港中文/蚂蚁ICLR 2026论文揭示音频大模型"音频贡献缺失"现象并提出后训练新范式
-- X讨论：Anthropic发布Claude Mythos Preview系统卡片
+- X讨论：Anthropic发布Claude Mythos Preview系统卡片，高于Opus的新模型层级，因网络安全能力过强不公开发布
 
 ---
 
@@ -103,9 +103,9 @@
    - 来源: [@jaseweston](https://x.com/jaseweston/status/2041864833214095484#m)
 
 ### X讨论
-**Anthropic发布Claude Mythos Preview系统卡片**
-- Anthropic发布了Claude Mythos Preview系统卡片，详细说明模型能力、安全设计和使用限制。
-  > 💡 模型透明度成行业趋势，系统卡片帮助用户理解AI能力边界
+**Anthropic发布Claude Mythos Preview系统卡片：高于Opus的新模型层级，因网络安全能力过强不公开发布**
+- Anthropic发布244页系统卡片，公布Claude Mythos Preview详情。**Mythos是高于Opus的全新模型层级**，内部代号"Capybara"，性能提升是之前趋势线的4.3倍。SWE-bench Verified 93.9%（Opus 4.6为80.8%），Cybench 100%通过率（史上首次），USAMO 2026数学证明97.6%。定价$25/$125（Opus 4.6的5倍），**不公开发布，仅提供给Amazon、Apple、Microsoft、Cisco等12家合作伙伴用于防御性网络安全工作**。
+  > 💡 AI模型首次因"能力太强"而被主动限制发布，网络安全成为AI能力的红色警戒线
    - 来源: [@anthropicai](https://x.com/AnthropicAI/status/2041580670774923517#m)
 
 
