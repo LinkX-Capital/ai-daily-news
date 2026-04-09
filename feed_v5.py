@@ -996,6 +996,7 @@ def call_llm(prompt):
 - 重要公司动态（x.ai、Terafab、Sakana AI、Cursor、Cognition）
 - 芯片发布/投资计划（SpaceX/Tesla/Apple/Amazon）
 - 监管政策、安全事件（涉及AI公司）
+- SemiAnalysis/Epoch AI深度分析（算力、芯片、训练成本、模型竞争格局等）
 
 ### 过滤条件（is_ai_related=false）
 - 纯汽车销量、纯安全事故（与AI无关）
