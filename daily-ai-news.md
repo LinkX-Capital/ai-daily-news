@@ -11,7 +11,7 @@
 - 算力追踪：Qwen3.6-Plus登顶OpenRouter三榜第一
 - 初创&融资：Canva收购Simtheory和Ortto强化AI代理与营销自动化能力; 具身智能机器人公司Zerith零次方获超亿元A轮融资; 面壁智能开源2B语音模型，Q1融资超10亿元
 - 研究关注：Google Research发布PaperVizAgent和ScholarPeer两个AI学术Agent; Meta研究员Jason Weston提出Thinking Mid-training新训练范式; 港中文/蚂蚁ICLR 2026论文揭示音频大模型"音频贡献缺失"现象并提出后训练新范式
-- X讨论：SemiAnalysis分析NVIDIA STX重新定义AI存储架构; Anthropic发布Claude Mythos Preview系统卡片
+- X讨论：Anthropic发布Claude Mythos Preview系统卡片
 
 ---
 
@@ -103,11 +103,6 @@
    - 来源: [@jaseweston](https://x.com/jaseweston/status/2041864833214095484#m)
 
 ### X讨论
-**SemiAnalysis分析NVIDIA STX重新定义AI存储架构**
-- SemiAnalysis分析指出NVIDIA STX不仅是新存储设备，更代表AI系统数据移动、访问和管理的重新设计，传统存储架构面临根本性变革。
-  > 💡 AI系统架构创新从计算向存储延伸，数据访问效率成新瓶颈
-   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2041561892775236086#m)
-
 **Anthropic发布Claude Mythos Preview系统卡片**
 - Anthropic发布了Claude Mythos Preview系统卡片，详细说明模型能力、安全设计和使用限制。
   > 💡 模型透明度成行业趋势，系统卡片帮助用户理解AI能力边界
