@@ -1108,7 +1108,7 @@ def process_with_llm(articles, recent_articles=None):
 
     # 构建清晰的新闻列表，每条独立
     news_list = []
-    for i, a in enumerate(sorted_articles[:25]):  # 取前25条高优先级新闻
+    for i, a in enumerate(sorted_articles[:35]):  # 取前35条高优先级新闻
         summary = a.get('summary', '') or a.get('content', '')
         news_list.append(f"""【新闻{i+1}】
 标题：{a['title']}
