@@ -87,9 +87,6 @@ EXTRA_SOURCES = {
     # 添加官方 RSS 源（确认有效的）
     "HuggingFace Blog": ("https://huggingface.co/blog/feed.xml", "US"),
     "The Keyword": ("https://blog.google/rss/", "US"),
-    # 36氪 - 国内AI新闻重要源（HappyHorse等独家报道）
-    "36氪": ("https://36kr.com/feed", "CN"),
-    # Anthropic/Meta AI 无官方RSS，已通过Twitter账号覆盖
 }
 SOURCES.update(EXTRA_SOURCES)
 
