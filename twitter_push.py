@@ -389,6 +389,18 @@ def main():
     else:
         print(f'   ❌ 飞书推送失败: {result}')
 
+    # 5. 推送到 GitHub
+    print('🔄 推送到 GitHub...')
+    import subprocess
+    date_str_for_git = datetime.now().strftime("%Y-%m-%d")
+    try:
+        subprocess.run(['git', 'add', 'twitter_preview.md'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
+        subprocess.run(['git', 'commit', '-m', f'twitter preview {date_str_for_git}'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
+        subprocess.run(['git', 'push'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
+        print('   ✅ GitHub push 成功')
+    except subprocess.CalledProcessError:
+        print('   ⚠️ GitHub push 失败')
+
     print(f'\n✅ 完成: {datetime.now().strftime("%H:%M:%S")}')
 
 

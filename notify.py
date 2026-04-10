@@ -194,7 +194,7 @@ def send_feishu(report):
             {
                 "tag": "button",
                 "text": {"tag": "plain_text", "content": "📖 查看详情"},
-                "url": f"https://yl0223-ai.github.io/ai-daily-news/daily-ai-news-{datetime.now().strftime("%Y-%m-%d")}.html",
+                "url": f"https://yl0223-ai.github.io/ai-daily-news/daily-ai-news-{datetime.now().strftime('%Y-%m-%d')}.html",
                 "type": "primary"
             }
         ]
