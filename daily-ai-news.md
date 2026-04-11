@@ -57,7 +57,7 @@
 **Meta押注Neural Computers：下一代计算机就是模型本身**
 - Meta提出Neural Computers概念，主张AI模型本身就是下一代计算平台，不再依赖传统软件栈。这一思路意味着未来应用开发可能从"编写代码"转向"训练和微调模型"，计算范式可能发生根本性转变。
   > 💡 模型即计算机的理念如果成真，将从底层重构软件产业，但距离实用仍有相当距离
-   - 来源: [微信公众号](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw==&mid=2247719459&idx=1&sn=e2c6f6e72e2e3f732d196c322d90c386)
+   - 来源: [PaperWeekly](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw==&mid=2247719459&idx=1&sn=e2c6f6e72e2e3f732d196c322d90c386)
 
 ### 初创&融资
 **生数科技融资2.93亿美元，阿里云领投，布局通用世界模型**
