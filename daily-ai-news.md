@@ -9,7 +9,7 @@
 - 产业动态：OpenAI星门计划三位核心负责人离职; Anthropic暂时封禁OpenClaw创始人Claude账号; Claude AI推出Word集成beta版本; 阿里Qwen Code推出定时任务功能; Google更新Gemini App集成NotebookLM功能
 - 算力追踪：Anthropic租用CoreWeave算力支持Claude; 光通信龙头Lumentum称2028年产能即将售罄
 - 研究关注：Meta押注Neural Computers：下一代计算机就是模型本身
-- 初创&融资：
+- 初创&融资：生数科技融资2.93亿美元阿里云领投，布局通用世界模型
 - X讨论：阿里Qwen发布子代理模型选择策略; SemiAnalysis展示用Claude同时运行8窗口控制agent swarm
 
 ---
@@ -60,7 +60,10 @@
    - 来源: [微信公众号](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw==&mid=2247719459&idx=1&sn=e2c6f6e72e2e3f732d196c322d90c386)
 
 ### 初创&融资
-
+**生数科技融资2.93亿美元，阿里云领投，布局通用世界模型**
+- 由清华大学朱军教授创立的AI初创企业生数科技完成20亿元人民币融资，阿里云领投。资金将用于开发"通用世界模型"，通过处理感官信息模拟人类感知与交互。生数科技是中国首家发布视频生成模型（Vidu）的公司，近期还开源了面向机器人控制的Motus模型，正从视频生成向具身智能拓展。
+  > 💡 生数科技从视频生成切入、逐步走向具身智能的技术路径清晰，阿里云领投显示国产大模型投资正从"卷模型"转向"卷落地"
+   - 来源: [新浪财经](https://finance.sina.com.cn/videoroll/2026-04-10/doc-inhtyrwc5286201.shtml)
 
 ### X讨论
 **阿里Qwen发布子代理模型选择策略**
