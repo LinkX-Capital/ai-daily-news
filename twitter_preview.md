@@ -1,104 +1,90 @@
 # Twitter 动态预览
-**日期**：2026-04-10 07:15
-**总计**：21 条推文
+**日期**：2026-04-11 07:15
+**总计**：22 条推文
 
 ---
 
 ## 📋 过滤说明
 
 **抓取规则**：24小时内、去除重复账号、内容 >30字符
-**存疑过滤**：1条（公司账号自我回复/转发，标注⚠️）
+**存疑过滤**：2条（公司账号自我回复/转发，标注⚠️）
 
 ---
 
-## ⭐ 今日重点（LLM 提炼）
+## 🏢 公司发布（18条）
 
-1. **标题**
-   @来源
+### @alibaba_qwen | Model
 
----
-
-## 🏢 公司发布（14条）
-
-### @aiatmeta | Model
-
-- Check out some cool ways the community has been putting Muse Spark to work (and play) 🧵👇  1/ https://x.com/skirano/status/2041926272226398393
-  [查看](https://x.com/AIatMeta/status/2042360012576866686#m)
-- R to @AIatMeta: 5/ https://x.com/Nain1sh/status/2041977532535468468
-  [查看](https://x.com/AIatMeta/status/2042360019300372634#m)
-- R to @AIatMeta: Try Muse Spark today via the Meta AI app or http://meta.ai.
-  [查看](https://x.com/AIatMeta/status/2042360021758197842#m)
+- R to @Alibaba_Qwen: Sub-agent Model Selection — Different Tasks, Different Models  Your main agent runs Qwen3.6-Plus for quality. But not every subtas...
+  [查看](https://x.com/Alibaba_Qwen/status/2042551230023762081#m)
+- R to @Alibaba_Qwen: Cron Jobs — AI That Works on a Schedule  Tell Qwen Code "check if tests pass every 30 minutes" and it sets up a cron job in your s...
+  [查看](https://x.com/Alibaba_Qwen/status/2042551225795703290#m)
+- R to @Alibaba_Qwen: Channels — Use Qwen Code from Your Phone  Your dev server is running at home. You're out. Something needs fixing. Open Telegram, s...
+  [查看](https://x.com/Alibaba_Qwen/status/2042551220423004193#m)
 
 ### @claudeai | Model
 
-- We're bringing the advisor strategy to the Claude Platform.  Pair Opus as an advisor with Sonnet or Haiku as an executor, and get near Opus-level inte...
-  [查看](https://x.com/claudeai/status/2042308622181339453#m)
+- Claude for Word is now in beta.  Draft, edit, and revise documents directly from the sidebar. Claude preserves your formatting, and edits appear as tr...
+  [查看](https://x.com/claudeai/status/2042670341915295865#m)
+
+### @googleai | Model
+
+- TGIF! Here are some of our favorite updates from the past week:  — Notebooks in @GeminiApp, an integration with @NotebookLM that enables you to retrie...
+  [查看](https://x.com/GoogleAI/status/2042671003570983299#m)
+- ⚠️ R to @GoogleAI: Share your Gemma 4 builds or the model variants you’re training in the replies below!
+  [查看](https://x.com/GoogleAI/status/2042627142018650162#m)
+- ⚠️ R to @GoogleAI: A playable, digital piano built with Gemma 4 E2B (2B).  https://x.com/0xCVYH/status/2039929097141318129?s=20
+  [查看](https://x.com/GoogleAI/status/2042627140101742686#m)
 
 ### @lumalabsai | Research
 
-- TODAY IS THE DAY! 21 ads made from 21 incredible ideas that never stood a chance, now made possible with Luma. See you in France... https://lumadreamb...
-  [查看](https://x.com/LumaLabsAI/status/2042289839438250015#m)
-
-### @openai | Model
-
-- Our existing $200 Pro tier still remains our highest usage option. And as a thank you to our existing Pro users on the $200 tier, we’re extending our ...
-  [查看](https://x.com/OpenAI/status/2042296046009626989#m)
-- ⚠️ R to @OpenAI: The Codex promotion for existing Plus subscribers ends today and as a part of this, we’re rebalancing Codex usage in Plus to support mor...
-  [查看](https://x.com/OpenAI/status/2042295690382995789#m)
+- Export to PDF.  Stitch clips. Build collages. Add watermarks. Swap audio. Trim. Convert formats. Extract frames.    All on your board. That's Media Tr...
+  [查看](https://x.com/LumaLabsAI/status/2042706887272206605#m)
+- Every pitch deserves the right deck.  Seed round. Sales. Grant application. Everything in between.   Pick your context and Luma Agents build it from t...
+  [查看](https://x.com/LumaLabsAI/status/2042665027036180537#m)
 
 ### @openrouter | Infra
 
-- Model comparison pages now show benchmarks.  Click "Compare" at the top of any model page to get started
-  [查看](https://x.com/OpenRouter/status/2042253685296599404#m)
-- How to enable /fast mode within Claude Code: https://openrouter.ai/docs/guides/coding-agents/claude-code-integration#fast-mode
-  [查看](https://x.com/OpenRouter/status/2042246609824596055#m)
+- RT by @OpenRouter: btw, you can spin up an agent on a @daytonaio sandbox with one command (courtesy of @OpenRouter's spawn cli) 🤩  here's me spawning ...
+  [查看](https://x.com/muhashmii/status/2042677434873745758#m)
+- RT by @OpenRouter: Some upgrades are coming soon to the @OpenRouter Auto Router, to help you pick the lowest-cost model that fits your workload  What ...
+  [查看](https://x.com/alexatallah/status/2042683257083359399#m)
+- Hitting model limits mid-session is painful  See how Ewan Jones rebuilt his setup around @zeddotdev and OpenRouter credits that roll over instead of r...
+  [查看](https://x.com/OpenRouter/status/2042628273520193582#m)
 
 ### @semianalysis_ | Infra
 
-- R to @SemiAnalysis_: DWDP is a specific optimization: you need NVL72-class peer bandwidth, context-heavy workloads, enough compute window to hide pref...
-  [查看](https://x.com/SemiAnalysis_/status/2042286556745007137#m)
-- R to @SemiAnalysis_: On the InferenceX dot com benchmark (8K input/1K output, DeepSeek-R1 on NVL72): output TPS/GPU improves 8.8% average at comparabl...
-  [查看](https://x.com/SemiAnalysis_/status/2042286555163746306#m)
-- R to @SemiAnalysis_: Whether DWDP wins depends if the compute window long enough to hide the weight prefetch. If compute finishes first, you get a bub...
-  [查看](https://x.com/SemiAnalysis_/status/2042286553506963534#m)
+- UMich income expectations did something unusual this month. In COVID and '22, all income tiers dropped together. This time the top third is falling fa...
+  [查看](https://x.com/SemiAnalysis_/status/2042769638606442848#m)
+- R to @JordanNanos: Full episode: https://youtu.be/uCvYU0UdXj4
+  [查看](https://x.com/SemiAnalysis_/status/2042719070290665876#m)
+- The intern is running 8 windows of Claude simultaneously and has become the boss of the agent swarm. SemiAnalysis built something that token mogs Meta...
+  [查看](https://x.com/SemiAnalysis_/status/2042719069397282992#m)
 
-### @vllm_project | Infra
+### @zai_org | Model
 
-- Congrats to the vllm-project/llm-compressor on 3K stars! 🎉  Gemma 4 and Qwen 3.5 already supported with NVFP4 and FP8 quantized checkpoints ready to g...
-  [查看](https://x.com/vllm_project/status/2042244885001200059#m)
-- We're proud to share that @NVIDIA submitted the first-ever MLPerf Vision Language Model (VLM) performance benchmark using vLLM. This achievement showc...
-  [查看](https://x.com/vllm_project/status/2042029880217567497#m)
+- RT by @Zai_org: BREAKING: GLM 5.1 by @Zai_org overwhelmingly dominates design-centric coding tasks amongst open-weight models  In the categories featu...
+  [查看](https://x.com/Designarena/status/2042717547112599704#m)
+- RT by @Zai_org: GLM-5.1 by @Zai_org is now #3 in Code Arena - surpassing Gemini 3.1 and GPT-5.4, and now on par with Claude Sonnet 4.6.  The first fro...
+  [查看](https://x.com/arena/status/2042611135434891592#m)
+- RT by @Zai_org: Often discuss my three-level vision for opening GLM to the community:  First, we focus on accessibility by lowering the barrier to ent...
+  [查看](https://x.com/ZixuanLi_/status/2042495832755151068#m)
 
-## 👤 研究者动态（7条）
+## 👤 研究者动态（4条）
 
-### @andrewyng [independent] | Research
+### @denny_zhou [Google DeepMind] | Model
 
-- New course: Efficient Inference with SGLang: Text and Image Generation, built in partnership with LMSys @lmsysorg and RadixArk @radixark, and taught b...
-  [查看](https://x.com/AndrewYNg/status/2042289428702642588#m)
-
-### @jeffdean [Google] | Infra
-
-- Congratulations to @matei_zaharia on winning this year's ACM Prize in Computing!  This is very well-deserved! 🎉
-  [查看](https://x.com/JeffDean/status/2042085829896716356#m)
-- Great to see the reception for the very capable Gemma 4 models!
-  [查看](https://x.com/JeffDean/status/2042031033303101840#m)
-
-### @karpathy [independent] | Research
-
-- Judging by my tl there is a growing gap in understanding of AI capability.  The first issue I think is around recency and tier of use. I think a lot o...
-  [查看](https://x.com/karpathy/status/2042334451611693415#m)
-
-### @lm_zheng | Research
-
-- Great courses on sglang from @AndrewYNg  and @richardczl !
-  [查看](https://x.com/lm_zheng/status/2042386781317054935#m)
+- Congratulations, Andrew! Really happy for you! Excited for your next chapter and can’t wait to see all the amazing things you’ll accomplish!
+  [查看](https://x.com/denny_zhou/status/2042449265981903347#m)
 
 ### @sama [OpenAI] | Model
 
-- It is very nice to see Codex getting so much love. We are launching a $100 ChatGPT Pro tier by very popular demand.
-  [查看](https://x.com/sama/status/2042342572958630332#m)
+- I wrote this early this morning and I wasn't sure if I would actually publish it, but here it is:  https://blog.samaltman.com/2279512
+  [查看](https://x.com/sama/status/2042738954550603884#m)
 
 ### @thegregyang [xAI] | Model
 
-- looks like at least part of my food sensitivity goes through the histamine pathways  H1 (loratadine + fexofenadine) and H2 (pepcid) blockers both help...
-  [查看](https://x.com/TheGregYang/status/2042286403812540626#m)
+- best I've felt in a long time  but just learned the hard way you can still crash and it doesn't change your pacing envelope 😅
+  [查看](https://x.com/TheGregYang/status/2042763747727675392#m)
+- just did a 48hr fast -- wow it's the most powerful intervention yet: energy is much better and brain stamina is much higher, and this is even comparin...
+  [查看](https://x.com/TheGregYang/status/2042672802034319700#m)
