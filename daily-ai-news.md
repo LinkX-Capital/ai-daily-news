@@ -10,7 +10,7 @@
 - 算力追踪：Anthropic租用CoreWeave算力支持Claude; 光通信龙头Lumentum称2028年产能即将售罄
 - 研究关注：Meta押注Neural Computers：下一代计算机就是模型本身
 - 初创&融资：
-- X讨论：阿里Qwen发布子代理模型选择策略; SemiAnalysis展示用Claude同时运行8窗口控制agent swarm; 
+- X讨论：阿里Qwen发布子代理模型选择策略; SemiAnalysis展示用Claude同时运行8窗口控制agent swarm
 
 ---
 
@@ -31,6 +31,16 @@
 - Claude for Word已开放beta测试，用户可直接从侧边栏起草、编辑和修订文档。Claude保留原有格式，编辑内容以追踪更改的形式呈现。
   > 💡 AI助手向传统办公软件渗透是商业化的重要路径
    - 来源: [@claudeai](https://x.com/claudeai/status/2042670341915295865#m)
+
+**阿里Qwen Code推出定时任务功能**
+- 用户可以告诉Qwen Code设置每30分钟检查测试是否通过的定时任务，系统会自动在项目环境中配置cron job。这扩展了AI编程助手的自动化能力。
+  > 💡 AI编程助手向持续集成/自动化方向演进
+   - 来源: [@alibaba_qwen](https://x.com/Alibaba_Qwen/status/2042551225795703290#m)
+
+**Google更新Gemini App集成NotebookLM功能**
+- Google本周更新了Gemini App，新增Notebooks功能，与NotebookLM集成使用户能够检索相关信息。这是Gemini生态系统的功能扩展。
+  > 💡 产品功能整合提升用户粘性，Google在AI助手场景持续深耕
+   - 来源: [@googleai](https://x.com/GoogleAI/status/2042671003570983299#m)
 
 ### 算力追踪
 **Anthropic租用CoreWeave算力支持Claude**
@@ -63,15 +73,5 @@
   > 💡 多窗口并发控制agent代表了一种新的AI协作架构，但实际效能和可靠性仍需验证
    - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2042719069397282992#m)
 
-**阿里Qwen Code推出定时任务功能**
-- 用户可以告诉Qwen Code设置每30分钟检查测试是否通过的定时任务，系统会自动在项目环境中配置cron job。这扩展了AI编程助手的自动化能力。
-  > 💡 AI编程助手向持续集成/自动化方向演进
-   - 来源: [@alibaba_qwen](https://x.com/Alibaba_Qwen/status/2042551225795703290#m)
-
-**Google更新Gemini App集成NotebookLM功能**
-- Google本周更新了Gemini App，新增Notebooks功能，与NotebookLM集成使用户能够检索相关信息。这是Gemini生态系统的功能扩展。
-  > 💡 产品功能整合提升用户粘性，Google在AI助手场景持续深耕
-   - 来源: [@googleai](https://x.com/GoogleAI/status/2042671003570983299#m)
-
 ---
-*更新时间: 2026-04-11 09:24*
+*更新时间: 2026-04-11 09:40*
