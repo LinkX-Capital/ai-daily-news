@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-13 07:15
-**总计**：5 条推文
+**总计**：4 条推文
 
 ---
 
@@ -11,17 +11,25 @@
 
 ---
 
-## 🏢 公司发布（2条）
+## ⭐ 今日重点（LLM 提炼）
+
+1. **环境塑造故事 – 上传参考并设定方向**
+   @lumalabsai
+2. **长期新冠：S1刺突蛋白在单核细胞中被检测到，伴随细胞因子特征**
+   @thegregyang
+3. **禁食期间进食导致HRV下降，但大脑炎症感受仍轻微**
+   @thegregyang
+4. **快速从崩溃中恢复，可能得益于禁食的强效抗炎作用**
+   @thegregyang
+
+---
+
+## 🏢 公司发布（1条）
 
 ### @lumalabsai | Research
 
 - The environment shapes the story. Make it exactly what you need.    Upload your reference. Set the direction. Watch any space become something entirel...
   [查看](https://x.com/LumaLabsAI/status/2043432137433764259#m)
-
-### @vllm_project | Infra
-
-- 🎉 Congrats to @MiniMax_AI on this release. Day-0 support for MiniMax M2.7 in vLLM!  🤖 Agentic-first design. Multi-agent orchestration ("Agent Teams") ...
-  [查看](https://x.com/vllm_project/status/2043133899593920877#m)
 
 ## 👤 研究者动态（3条）
 
