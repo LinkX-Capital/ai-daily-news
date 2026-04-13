@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-14 07:15
-**总计**：15 条推文
+**总计**：16 条推文
 
 ---
 
@@ -11,7 +11,14 @@
 
 ---
 
-## 🏢 公司发布（9条）
+## ⭐ 今日重点（LLM 提炼）
+
+1. **标题**
+   @来源
+
+---
+
+## 🏢 公司发布（10条）
 
 ### @googleai | Model
 
@@ -22,6 +29,8 @@
 
 ### @lumalabsai | Research
 
+- Say it. Send it. Done.    Voice dictation is now live in Luma. Tap the mic, speak your mind, and your agent gets it instantly.    Try it → http://luma...
+  [查看](https://x.com/LumaLabsAI/status/2043828634658713684#m)
 - Every logo has an entrance. Now yours has one too.    Upload your logo and your agent builds a cinematic reveal around it. Lights. Motion. Impact.   G...
   [查看](https://x.com/LumaLabsAI/status/2043779621158793383#m)
 - Your campaign shouldn't stop at one audience.  Regional variants. Seasonal campaigns. Cultural nuance. Retail displays. Billboards.     Every format, ...
