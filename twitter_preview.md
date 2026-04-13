@@ -1,60 +1,70 @@
 # Twitter 动态预览
-**日期**：2026-04-13 07:15
-**总计**：6 条推文
+**日期**：2026-04-14 07:15
+**总计**：15 条推文
 
 ---
 
 ## 📋 过滤说明
 
 **抓取规则**：24小时内、去除重复账号、内容 >30字符
-**存疑过滤**：无
+**存疑过滤**：1条（公司账号自我回复/转发，标注⚠️）
 
 ---
 
-## ⭐ 今日重点（LLM 提炼）
+## 🏢 公司发布（9条）
 
-1. **长期新冠患者单核细胞中发现S1刺突蛋白和细胞因子特征**
-   @thegregyang
-2. **昨晚心率变异性下降，可能因打破禁食进食过多，但未感到明显脑部炎症**
-   @thegregyang
-3. **约18年后首次在百老汇独唱，仅忘词一次**
-   @swyx
-4. **环境塑造故事，上传参考并设定方向，即可将任意空间变成完整场景**
-   @lumalabsai
-5. **使用OpenRouter构建的简易代理循环成功，配合Zendesk实现高效自动化**
-   @openrouter
-6. **Artemis II宇航员Victor Glover受到邻居英雄式欢迎**
-   @jeffdean
+### @googleai | Model
 
----
-
-## 🏢 公司发布（2条）
+- ⚠️ R to @GoogleAI: Prefer watching on @YouTube while scrolling through the comment section? We get it: http://youtu.be/b1Pvt072wKQ?si=NGPgm30ur1WFtKQS
+  [查看](https://x.com/GoogleAI/status/2043765857038577818#m)
+- Got a doodle for your next project laying around? Turn it into working software using @GoogleAIStudio and Nano Banana.  Watch us vibe code a weather-r...
+  [查看](https://x.com/GoogleAI/status/2043765855314706899#m)
 
 ### @lumalabsai | Research
 
-- The environment shapes the story. Make it exactly what you need.    Upload your reference. Set the direction. Watch any space become something entirel...
-  [查看](https://x.com/LumaLabsAI/status/2043432137433764259#m)
+- Every logo has an entrance. Now yours has one too.    Upload your logo and your agent builds a cinematic reveal around it. Lights. Motion. Impact.   G...
+  [查看](https://x.com/LumaLabsAI/status/2043779621158793383#m)
+- Your campaign shouldn't stop at one audience.  Regional variants. Seasonal campaigns. Cultural nuance. Retail displays. Billboards.     Every format, ...
+  [查看](https://x.com/LumaLabsAI/status/2043730395284549982#m)
 
 ### @openrouter | Infra
 
-- RT by @OpenRouter: answer hq agent must be wondering wtf i'm looking for   but yayyyyy, a simple agentic loop built on @OpenRouter works! with zendesk...
-  [查看](https://x.com/jjacky/status/2043427278571376750#m)
+- R to @OpenRouter: Similar to other stealth models:  💰 It is free 🔑 The provider logs all prompts and completions for this model, which may be used to ...
+  [查看](https://x.com/OpenRouter/status/2043714987856970047#m)
+- 🥷 Welcoming a new stealth model on OpenRouter: Elephant Alpha.  Elephant is a 100B parameter instant model, matching SOTA performance of similar scale...
+  [查看](https://x.com/OpenRouter/status/2043714975756390844#m)
 
-## 👤 研究者动态（4条）
+### @semianalysis_ | Infra
+
+- 7 of the top 10 companies by market cap depend almost entirely on TSMC's ability to produce chips. Trillions in revenue. Concentrated in one specific ...
+  [查看](https://x.com/SemiAnalysis_/status/2043796633108766898#m)
+- R to @SemiAnalysis_: The reality is that this shift has not only happened in mobile. Another area where the shift has been even more extreme is PCs, w...
+  [查看](https://x.com/SemiAnalysis_/status/2043736086585741625#m)
+- R to @SemiAnalysis_: As the new administration maintains pressure, these figures suggest the "China Plus One" strategy has moved past the planning pha...
+  [查看](https://x.com/SemiAnalysis_/status/2043736085117677699#m)
+
+## 👤 研究者动态（6条）
+
+### @andrewyng [independent] | Research
+
+- As AI agents accelerate coding, what is the future of software engineering? Some trends are clear, such as the Product Management Bottleneck, referrin...
+  [查看](https://x.com/AndrewYNg/status/2043742105852621052#m)
 
 ### @jeffdean [Google] | Infra
 
 - RT by @JeffDean: Artemis II astronaut Victor Glover received a hero's welcome from his neighbors! 🇺🇸
   [查看](https://x.com/OwenSparks/status/2043477332438958253#m)
 
+### @soumithchintala [Meta] | Research
+
+- Just like us at @thinkymachines, @luke_drago_ @LRudL_ care a lot about amplifying humans, not replacing them. They're joining us to build towards that...
+  [查看](https://x.com/soumithchintala/status/2043752413085966574#m)
+
 ### @swyx [AI社区] | App
 
-- late night low TAM tweet:  did a Broadway solo song for the first time in ~18 years! only fumbled lyrics once!
-  [查看](https://x.com/swyx/status/2043217991589102027#m)
-
-### @thegregyang [xAI] | Model
-
-- turns out I also have a bit of long covid  the covid S1 spike protein was found in my monocytes (a kind of immune cells) along with cytokine signature...
-  [查看](https://x.com/TheGregYang/status/2043389074434851006#m)
-- my HRV tanked last night lol I think I ate too much breaking the fast  but interestingly I don't feel much brain inflammation still even though I do f...
-  [查看](https://x.com/TheGregYang/status/2043361270091682093#m)
+- If you're looking to improve your writing game, Anh is one of the most consistent heavy hitters I know in devtools HN and she literally just open sour...
+  [查看](https://x.com/swyx/status/2043786360012845509#m)
+- btw ~80% of the world’s agents and ai engineering is done in these 3 square miles
+  [查看](https://x.com/swyx/status/2043778767798317349#m)
+- TIL @cognition usage has ~DOUBLED globally since these 2 launches. people are finding all sorts of creative usecases when u can compose agents togethe...
+  [查看](https://x.com/swyx/status/2043770029024653798#m)
