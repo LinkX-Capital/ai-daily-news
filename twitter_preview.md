@@ -13,16 +13,16 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **使用 OpenRouter 构建的简单代理循环，支持 Zendesk**
+1. **Simple agentic loop built on OpenRouter works with Zendesk**
    @openrouter
-2. **长期新冠患者在单核细胞中发现 S1 刺突蛋白及细胞因子特征**
+2. **Long COVID detected with S1 spike protein in monocytes and cytokine signature**
    @thegregyang
-3. **昨晚心率变异性下降，可能与断食后摄入过多有关，但脑部炎症未明显加剧**
+3. **HRV dropped after overeating during fasting, but brain inflammation not felt**
    @thegregyang
-4. **Artemis II 宇航员 Victor Glover 受到邻居英雄式欢迎**
-   @jeffdean
-5. **通过上传参考并设定方向，使环境塑造故事，打造完整空间**
+4. **Environment shapes the story—upload reference, set direction, watch any space become something**
    @lumalabsai
+5. **Artemis II astronaut Victor Glover receives hero's welcome from neighbors**
+   @jeffdean
 
 ---
 
