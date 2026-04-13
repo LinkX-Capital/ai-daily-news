@@ -1,79 +1,52 @@
-## 03月10日 AI 前沿动态
+## 04月13日 AI 前沿动态
 
 > 自动汇总 | 时间窗口: 24h | 每类 Top 5
 
 ---
 
-# 要点汇总
+#要点汇总#
 
-- **模型前沿**：港科大提出音频生成统一模型AudioX，基于Diffusion Transformer支持多模态输入
-- **产业动态**：智谱上线国内首个一键安装本地版OpenClaw；企业微信正式支持接入OpenClaw；IBM推出边缘设备语音模型Granite 4.0 1B；Anthropic与Mozilla合作Claude两周发现22个漏洞
-- **算力追踪**：ABB Robotics联合NVIDIA实现工业级物理AI部署；xAI承诺增加数据中心电力供应
-- **初创&融资**：OpenAI收购AI安全平台Promptfoo强化企业AI安全
-- **研究关注**：Yann LeCun团队揭示Transformer内部计算机制；OpenAI发布思维链可控性评估套件
+- 产业动态：HumanX大会Claude成最大赢家，OpenAI被指"掉队"; Physical AI领域爆发人才争夺战，自动驾驶工程师薪资飙至**$300K-$500K**; 灵初智能发布Psi-MobiDex具身智能数据集：**10万小时**真人操作数据; 浙大城市学院联合浙大等发布US-365K超声数据集含**36.4万**图文对; 强脑科技发布BrainCo Revo 3智能灵巧手
+- X讨论：Luma AI推出环境控制功能，支持参考图控制视频生成
 
 ---
 
 ## 📖 详细参考
 
-### 模型前沿
-
-**港科大提出音频生成统一模型AudioX**
-
-港科大郭毅可院士团队提出AudioX统一模型，基于Diffusion Transformer架构，支持文本、视频、图像等多模态输入生成音效和音乐。在多项基准测试中达到SOTA，论文已被ICLR 2026接收。
-
----
-
 ### 产业动态
+**HumanX AI大会：Claude成全场焦点，OpenAI"掉队"声四起**
+- 旧金山HumanX AI大会数千人参会，**Claude是被提及最多的聊天机器人**，ChatGPT几乎无人讨论。多位参展商主动表示团队已转向使用Claude，认为OpenAI"lost its footing"。WSJ近期分析称两家公司是"科技史上增长最快的企业"，Anthropic在企业用户端正在追赶OpenAI。
+- OpenAI近期负面不断：放弃Sora视频生成、在ChatGPT中注入广告、New Yorker质疑Sam Altman可信度。作为回应，OpenAI本周推出**$100/月**ChatGPT订阅层，主推Codex编程工具，**明显针对Claude Code**。
+  > 💡 这不是简单的产品口碑逆转——**AI助手市场的用户粘性正在重新洗牌**，开发者工具体验成为决定胜负的关键战场
+   - 来源: [TechCrunch](https://techcrunch.com/2026/04/12/at-the-humanx-conference-everyone-was-talking-about-claude/)
 
-**智谱正式上线AutoClaw推动AI平权**
+**Physical AI爆发人才争夺战：自动驾驶工程师底薪被推至$300K-$500K**
+- 机器人与国防科技公司正大规模从自动驾驶行业挖角，目标是有"经典机器人+AI"混合技能的人才。国防初创公司出手最阔绰，背后是美国国防部持续大额预算支撑。**Waymo不受影响（对价格不敏感），但初创公司和车企将承受最大压力**。
+- Eclipse风投刚完成**$13亿美元**新基金，专注Physical AI赛道，含$5.91亿早期孵化基金。创始人预测连锁效应：车企自动驾驶工程师将大量流失，初创公司需要融更多钱或更聪明地花钱。
+  > 💡 **Physical AI正在重演2016年自动驾驶的人才泡沫**，不同的是这次买单的是国防预算，供给侧结构性短缺短期内无法缓解
+   - 来源: [TechCrunch](https://techcrunch.com/2026/04/12/techcrunch-mobility-who-is-poaching-all-the-self-driving-vehicle-talent/)
 
-智谱正式上线AutoClaw（中文名：澳龙），这是国内首个真·一键安装的本地版OpenClaw。预置50+热门Skills，支持一键接入飞书等即时通讯工具，实现真·一键安装的AI助手部署。
+**灵初智能发布Psi-MobiDex具身智能数据集：10万小时真人操作数据覆盖294种场景**
+- 灵初智能发布大规模具身智能训练数据集Psi-MobiDex，真机数据**5417小时** + 人类数据**95472小时**，覆盖**294种场景、4821种任务、1382种物体**。目前1000小时已开源，年底将全部开放。该数据集引发国际AI学术界高度关注，PI、NVIDIA等机构均有反应。
+  > 💡 **具身智能的突破瓶颈在数据而非算法**，中国在数据积累层面正在建立结构性优势
+   - 来源: [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652691298&idx=1&sn=79453e0eb1067d97a6b91fdd81200b46)
 
-**企业微信正式支持接入OpenClaw**
+**浙大城市学院联合浙大、港城大等发布US-365K超声AI数据集：36.4万图文对**
+- 浙大城市学院联合浙江大学、香港城市大学、香港浸会大学等构建首个大规模超声专属数据集**US-365K**，包含**36.4万**超声图像与诊断文本对，涵盖**11676**例临床病例。配套提出**Ultrasound-CLIP**模型，帮助AI理解临床诊断语义。论文已被**CVPR 2026**接收。
+  > 💡 医疗影像数据是AI医疗落地的关键瓶颈，**垂直领域的大规模标注数据集价值远超通用数据**
+   - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247882513&idx=3&sn=59341c179023f0b961d21b4cf66b6d12)
 
-企业微信正式支持接入OpenClaw，企业成员可与AI助手直接对话，让AI主动处理业务、写入智能表格。管理员无需配置域名，选择API模式即可快速接入。
+**强脑科技发布BrainCo Revo 3智能灵巧手：21自由度，全掌握力70N，瞄准机器人应用**
+- 脑机接口独角兽**强脑科技（BrainCo）**发布新一代智能灵巧手**BrainCo Revo 3**，具备**21个自由度**、全掌握力**70N**，采用全直驱可反驱设计，灵活度接近人手水平。从医疗康复延伸至机器人控制领域，在脑机接口与机器人操控的交叉点形成了技术壁垒。
+  > 💡 脑机接口从医疗康复走向机器人控制，**人机融合的具身智能路线正在被验证**
+   - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247882513&idx=1&sn=d4c16158273ff392d9636bf5d11912ba)
 
-**IBM推出Granite 4.0 1B语音模型**
+### X讨论
+**Luma AI推出环境控制功能：上传参考图即可控制视频生成场景**
+- Luma AI发布新功能，用户可上传参考图像并设置方向，AI将任意空间转化为指定场景。面向影视、游戏等创作场景的定制化需求。
+  > 💡 3D/视频生成的竞争焦点从"能不能生成"转向"能不能精确控制"，**可控性成为新的差异化战场**
+   - 来源: [@lumalabsai](https://x.com/LumaLabsAI/status/2043432137433764259#m)
 
-IBM在HuggingFace发布Granite 4.0 1B语音模型，这是一款紧凑、多语言、专为边缘设备设计的语音模型。支持多种语言的语音处理任务，为边缘计算场景提供高效的语音AI解决方案。
-
-**Anthropic与Mozilla合作测试Claude安全漏洞发现能力**
-
-Anthropic与Mozilla合作测试Claude在Firefox中发现安全漏洞的能力。Opus 4.6在两周内发现**22个**安全漏洞，展现了AI在网络安全领域的巨大应用潜力。
-
----
-
-### 算力追踪
-
-**ABB Robotics联合NVIDIA实现工业级物理AI规模化部署**
-
-ABB Robotics宣布采用NVIDIA Omniverse平台交付工业级物理AI解决方案。vLLM为Jetson上的完全本地化AI助手提供支持，展示了在边缘设备上部署MoE模型的技术方案。
-
-**xAI承诺部署改善人类生活的AI并增加数据中心电力供应**
-
-xAI承诺部署改善人类生活的AI技术，同时将在数据中心附近增加更多电力供应以支持AI系统的运行需求。
-
----
-
-### 初创&融资
-
-**OpenAI收购AI安全平台Promptfoo强化企业AI安全**
-
-OpenAI宣布收购Promptfoo，这是一家AI安全平台，帮助企业在开发过程中识别和修复AI系统漏洞。Promptfoo被超过**25%**的财富500强企业使用，未来将整合到OpenAI Frontier平台。
 
 ---
-
-### 研究关注
-
-**Yann LeCun团队揭示Transformer内部计算机制**
-
-纽约大学Yann LeCun团队发表论文，研究Transformer中大值激活和Attention Sink现象，证明二者共非必然。这一发现为量化部署和长上下文推理提供了优化思路。
-
-**OpenAI发布Chain-of-Thought可控性评估套件与研究论文**
-
-OpenAI发布了新的思维链（CoT）可控性评估套件和研究论文。发现GPT-5.4 Thinking在思维链可控性方面表现较弱，为模型推理能力评估提供了新基准。
-
----
-
-*更新时间: 2026-03-10 10:04*
+*更新时间: 2026-04-13 14:04*

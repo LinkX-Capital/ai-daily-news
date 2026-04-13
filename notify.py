@@ -164,8 +164,8 @@ def send_feishu(report):
                     continue
                 cat = unescape(cat_match.group(1))
 
-                titles = re.findall(r'<span class="summary-title">([^<]+)</span>', item_html)
-                titles = [unescape(t).strip() for t in titles if t.strip()]
+                titles = re.findall(r'<span class="summary-title">(.*?)</span>', item_html)
+                titles = [re.sub(r'<[^>]+>', '', unescape(t)).strip() for t in titles if re.sub(r'<[^>]+>', '', t).strip()]
 
                 if titles:
                     titles_str = "；".join(titles)

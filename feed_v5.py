@@ -1441,8 +1441,8 @@ def generate_summary_report(articles):
     return "\n".join(lines)
 
 def save_archive(articles):
-    # 使用 START_BJ（今天）命名存档，与 md 标题日期一致
-    date_str = START_BJ.strftime("%Y-%m-%d")
+    # 使用 END_BJ（窗口结束日期）命名存档，与 run.sh skip 检查一致
+    date_str = END_BJ.strftime("%Y-%m-%d")
     archive_file = os.path.join(ARCHIVE_DIR, f"news_{date_str}.json")
     data = {"date": date_str, "count": len(articles), "articles": articles}
     with open(archive_file, "w", encoding="utf-8") as f:

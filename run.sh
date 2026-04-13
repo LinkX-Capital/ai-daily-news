@@ -1,5 +1,5 @@
 #!/bin/bash
-# AI 前沿动态 - 定时运行脚本（每天8:00）
+# AI 前沿动态 - 定时运行脚本（每天6:00）
 
 cd /Users/shenyalan/ai-daily-news
 
