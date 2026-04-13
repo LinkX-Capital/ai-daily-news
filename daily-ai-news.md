@@ -1,4 +1,4 @@
-## 04月12日 AI 前沿动态
+## 04月13日 AI 前沿动态
 
 > 自动汇总 | 时间窗口: 24h | 每类 Top 5
 
@@ -6,75 +6,47 @@
 
 #要点汇总#
 
-- 产业动态：OpenAI星门计划三位核心负责人离职; Anthropic暂时封禁OpenClaw创始人Claude账号; Claude AI推出Word集成beta版本; 阿里Qwen Code推出定时任务功能; Google更新Gemini App集成NotebookLM功能
-- 算力追踪：Anthropic租用CoreWeave算力支持Claude; 光通信龙头Lumentum称2028年产能即将售罄
-- 研究关注：Meta押注Neural Computers：下一代计算机就是模型本身
-- 初创&融资：生数科技融资2.93亿美元阿里云领投，布局通用世界模型
-- X讨论：阿里Qwen发布子代理模型选择策略; SemiAnalysis展示用Claude同时运行8窗口控制agent swarm
+- 产业动态：HumanX大会Claude成最大赢家，OpenAI被指"掉队"; Physical AI领域爆发人才争夺战，自动驾驶工程师薪资飙至**$300K-$500K**; 中国团队构建**10万小时**具身智能数据集; 首个大规模超声AI数据集含**36.4万**图文对; 脑机接口独角兽发布新一代仿生手
+- X讨论：Luma AI推出环境控制功能，支持参考图控制视频生成
 
 ---
 
 ## 📖 详细参考
 
 ### 产业动态
-**OpenAI星门计划三位核心负责人离职**
-- 曾参与启动OpenAI首个星门（Stargate）数据中心项目的三位高管集体离职，包括项目负责人Peter Herschler、算力战略负责人Shamez Hemani和算力部门负责人Anuj Saharan。星门是OpenAI首个超大规模数据中心项目，核心团队同时离开意味着算力基建战略可能面临方向性调整。
-  > 💡 核心基建团队集体出走对星门项目推进构成重大风险，OpenAI算力战略不确定性增加
-   - 来源: [36氪](https://36kr.com/newsflashes/3760818675565060)
+**HumanX AI大会：Claude成全场焦点，OpenAI"掉队"声四起**
+- 旧金山HumanX AI大会数千人参会，**Claude是被提及最多的聊天机器人**，ChatGPT几乎无人讨论。多位参展商主动表示团队已转向使用Claude，认为OpenAI"lost its footing"。WSJ近期分析称两家公司是"科技史上增长最快的企业"，Anthropic在企业用户端正在追赶OpenAI。
+- OpenAI近期负面不断：放弃Sora视频生成、在ChatGPT中注入广告、New Yorker质疑Sam Altman可信度。作为回应，OpenAI本周推出**$100/月**ChatGPT订阅层，主推Codex编程工具，**明显针对Claude Code**。
+  > 💡 这不是简单的产品口碑逆转——**AI助手市场的用户粘性正在重新洗牌**，开发者工具体验成为决定胜负的关键战场
+   - 来源: [TechCrunch](https://techcrunch.com/2026/04/12/at-the-humanx-conference-everyone-was-talking-about-claude/)
 
-**Anthropic暂时封禁OpenClaw创始人Claude账号**
-- OpenClaw创始人Peter Steinberger（现就职OpenAI）的Claude账号被Anthropic以"可疑活动"为由暂时封禁，在X上引发热议后数小时内恢复。此前Anthropic刚宣布Claude订阅不再覆盖OpenClaw等第三方工具，改为API按量计费——本质上是对开源工具征收"claw tax"。Steinberger暗示Anthropic先在自家Cowork agent中复制热门功能，再封锁开源工具，并透露"一家欢迎我，一家发律师函"。
-  > 💡 AI巨头通过定价策略和平台控制挤压第三方开源工具，平台锁定趋势值得关注
-   - 来源: [TechCrunch](https://techcrunch.com/2026/04/10/anthropic-temporarily-banned-openclaws-creator-from-accessing-claude/)
+**Physical AI爆发人才争夺战：自动驾驶工程师底薪被推至$300K-$500K**
+- 机器人与国防科技公司正大规模从自动驾驶行业挖角，目标是有"经典机器人+AI"混合技能的人才。国防初创公司出手最阔绰，背后是美国国防部持续大额预算支撑。**Waymo不受影响（对价格不敏感），但初创公司和车企将承受最大压力**。
+- Eclipse风投刚完成**$13亿美元**新基金，专注Physical AI赛道，含$5.91亿早期孵化基金。创始人预测连锁效应：车企自动驾驶工程师将大量流失，初创公司需要融更多钱或更聪明地花钱。
+  > 💡 **Physical AI正在重演2016年自动驾驶的人才泡沫**，不同的是这次买单的是国防预算，供给侧结构性短缺短期内无法缓解
+   - 来源: [TechCrunch](https://techcrunch.com/2026/04/12/techcrunch-mobility-who-is-poaching-all-the-self-driving-vehicle-talent/)
 
-**Claude AI推出Word集成beta版本**
-- Claude for Word已开放beta测试，用户可直接从侧边栏起草、编辑和修订文档。Claude保留原有格式，编辑内容以追踪更改的形式呈现。
-  > 💡 AI助手向传统办公软件渗透是商业化的重要路径
-   - 来源: [@claudeai](https://x.com/claudeai/status/2042670341915295865#m)
+**中国团队构建10万小时具身智能数据集，引发全球关注**
+- 中国团队发布规模达**10万小时**的大规模具身智能训练数据集，涵盖多种机器人操作场景，为具身智能研究提供关键数据基础。该数据集的发布引发国际AI学术界高度关注，PI、NVIDIA等机构均有反应。
+  > 💡 **具身智能的突破瓶颈在数据而非算法**，中国在数据积累层面正在建立结构性优势
+   - 来源: [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652691298&idx=1&sn=79453e0eb1067d97a6b91fdd81200b46)
 
-**阿里Qwen Code推出定时任务功能**
-- 用户可以告诉Qwen Code设置每30分钟检查测试是否通过的定时任务，系统会自动在项目环境中配置cron job。这扩展了AI编程助手的自动化能力。
-  > 💡 AI编程助手向持续集成/自动化方向演进
-   - 来源: [@alibaba_qwen](https://x.com/Alibaba_Qwen/status/2042551225795703290#m)
+**中国团队发布首个大规模超声AI数据集，含36.4万图文对**
+- 构建首个大规模超声专属数据集，包含**36.4万**超声图像与诊断文本对，旨在帮助AI模型理解临床诊断语义。已投递**CVPR 2026**，将推动超声AI诊断能力提升。
+  > 💡 医疗影像数据是AI医疗落地的关键瓶颈，**垂直领域的大规模标注数据集价值远超通用数据**
+   - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247882513&idx=3&sn=59341c179023f0b961d21b4cf66b6d12)
 
-**Google更新Gemini App集成NotebookLM功能**
-- Google本周更新了Gemini App，新增Notebooks功能，与NotebookLM集成使用户能够检索相关信息。这是Gemini生态系统的功能扩展。
-  > 💡 产品功能整合提升用户粘性，Google在AI助手场景持续深耕
-   - 来源: [@googleai](https://x.com/GoogleAI/status/2042671003570983299#m)
-
-### 算力追踪
-**Anthropic租用CoreWeave算力支持Claude**
-- Anthropic向CoreWeave租用数据中心算力，涵盖美国数据中心多种英伟达芯片架构，用于构建和部署Claude模型。CoreWeave目前已将四大AI模型开发商纳入客户名单，意味着AI算力需求正从传统云厂商向专业GPU云服务商分流。
-  > 💡 AI算力竞争从芯片延伸到云服务层，专业GPU云正成为大模型公司的新基建选择
-   - 来源: [36氪](https://36kr.com/newsflashes/3760948716438017)
-
-**光通信龙头Lumentum: 2028年产能即将售罄**
-- Lumentum CEO表示，超大规模云厂商资本开支极其庞大且没有放缓迹象，按当前趋势再过两个季度2028年全年产能将彻底售罄。他判断本轮光通信景气周期至少持续5年。AI数据中心对高速光互联的需求已从短期爆发转为长期结构性增长。
-  > 💡 光通信产能持续紧张印证AI基础设施投资进入长周期，不是短期泡沫
-   - 来源: [36氪](https://36kr.com/newsflashes/3760888124146437)
-
-### 研究关注
-**Meta押注Neural Computers：下一代计算机就是模型本身**
-- Meta提出Neural Computers概念，主张AI模型本身就是下一代计算平台，不再依赖传统软件栈。这一思路意味着未来应用开发可能从"编写代码"转向"训练和微调模型"，计算范式可能发生根本性转变。
-  > 💡 模型即计算机的理念如果成真，将从底层重构软件产业，但距离实用仍有相当距离
-   - 来源: [PaperWeekly](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw==&mid=2247719459&idx=1&sn=e2c6f6e72e2e3f732d196c322d90c386)
-
-### 初创&融资
-**生数科技融资2.93亿美元，阿里云领投，布局通用世界模型**
-- 由清华大学朱军教授创立的AI初创企业生数科技完成20亿元人民币融资，阿里云领投。资金将用于开发"通用世界模型"，通过处理感官信息模拟人类感知与交互。生数科技是中国首家发布视频生成模型（Vidu）的公司，近期还开源了面向机器人控制的Motus模型，正从视频生成向具身智能拓展。
-  > 💡 生数科技从视频生成切入、逐步走向具身智能的技术路径清晰，阿里云领投显示国产大模型投资正从"卷模型"转向"卷落地"
-   - 来源: [新浪财经](https://finance.sina.com.cn/videoroll/2026-04-10/doc-inhtyrwc5286201.shtml)
+**中国脑机接口独角兽发布新一代仿生手，瞄准机器人应用**
+- 中国首家脑机接口独角兽发布新一代仿生手技术，具备接近人手的灵活操作能力，计划将其应用于机器人领域。该公司在脑机接口与机器人控制的交叉点形成了技术壁垒。
+  > 💡 脑机接口从医疗康复走向机器人控制，**人机融合的具身智能路线正在被验证**
+   - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247882513&idx=1&sn=d4c16158273ff392d9636bf5d11912ba)
 
 ### X讨论
-**阿里Qwen发布子代理模型选择策略**
-- 阿里Qwen提出子代理模型选择方案：主代理使用Qwen3.6-Plus保证质量，但不同子任务可根据需求选择不同模型。这种分层模型架构可优化成本与性能的平衡。
-  > 💡 模型路由和任务分配成为agent架构优化的关键方向
-   - 来源: [@alibaba_qwen](https://x.com/Alibaba_Qwen/status/2042551230023762081#m)
+**Luma AI推出环境控制功能：上传参考图即可控制视频生成场景**
+- Luma AI发布新功能，用户可上传参考图像并设置方向，AI将任意空间转化为指定场景。面向影视、游戏等创作场景的定制化需求。
+  > 💡 3D/视频生成的竞争焦点从"能不能生成"转向"能不能精确控制"，**可控性成为新的差异化战场**
+   - 来源: [@lumalabsai](https://x.com/LumaLabsAI/status/2043432137433764259#m)
 
-**SemiAnalysis展示用Claude同时运行8窗口控制agent swarm**
-- SemiAnalysis构建了一个系统，让intern同时运行8个Claude窗口来管理agent swarm。该系统实现了token mogging功能，展示了多代理协作的架构设计。这一实践体现了AI agent在工作流中的实际应用方式。
-  > 💡 多窗口并发控制agent代表了一种新的AI协作架构，但实际效能和可靠性仍需验证
-   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2042719069397282992#m)
 
 ---
-*更新时间: 2026-04-11 09:40*
+*更新时间: 2026-04-13 14:04*
