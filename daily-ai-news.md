@@ -7,7 +7,7 @@
 #要点汇总#
 
 - 模型前沿：Cloudflare Agent Cloud集成OpenAI GPT-5.4和Codex，助力企业构建Agent工作流; 13项SOTA; 国内首个六维力感知数据采集发布，推动VLA模型力触觉进化; OpenRouter上线100B参数模型Elephant Alpha，对标同规模SOTA
-- 产业动态：OpenRouter提醒; 微软开发企业级Agent，类似OpenClaw强化安全控制; 吴翼加盟Meta MSL参与超级智能攻坚，清华叉院已撤其教职; Atlassian和Figma在AI研发投入上领跑，华尔街恐慌性抛售企业软件股
+- 产业动态：微软开发企业级Agent，类似OpenClaw强化安全控制; 吴翼加盟Meta MSL参与超级智能攻坚，清华叉院已撤其教职; Atlassian和Figma在AI研发投入上领跑，华尔街恐慌性抛售企业软件股
 - 算力追踪：日本追加6315亿日元补贴Rapidus，累计投入约1200亿人民币攻坚2nm芯片
 - 初创&融资：Vercel CEO暗示IPO就绪，AI agents推动营收大幅增长; 爱沙尼亚AI客服平台Handhold获300万欧元种子轮融资; AI企业合规服务商Haast获1200万美元A轮融资; 亚洲Q1创业融资达274亿美元创三年新高，中国占60%由AI驱动
 - X讨论：SemiAnalysis
@@ -33,16 +33,11 @@
    - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651027314&idx=2&sn=bf2af408e8bdecb4e27c70be4de0977e&chksm=85a2481a69fe09fb761d6a47c6178e39fb08f20583ee0a501c16d2ebbb9d7ffd619b24220b45&scene=0&xtrack=1#rd)
 
 **OpenRouter上线100B参数模型Elephant Alpha，对标同规模SOTA**
-- OpenRouter新增神秘模型Elephant Alpha，参数规模达100B，是即时模型，性能对标同规模SOTA。该模型目前免费使用。
-  > 💡 开源模型逐步逼近闭源SOTA，免费策略加剧模型层竞争
+- OpenRouter新增神秘模型Elephant Alpha，参数规模达100B，是即时模型，性能对标同规模SOTA。该模型目前免费使用。但OpenRouter提醒，provider会记录所有prompts和completions，可能用于模型训练。
+  > 💡 开源模型逐步逼近闭源SOTA，免费策略加剧模型层竞争，但**数据隐私是免费模型的隐形成本**
    - 来源: [@openrouter](https://x.com/OpenRouter/status/2043714975756390844#m)
 
 ### 产业动态
-**OpenRouter提醒：Elephant Alpha模型存在数据记录风险**
-- OpenRouter提示Elephant Alpha与其他stealth模型类似， provider会记录所有prompts和completions，可能用于模型训练。
-  > 💡 免费模型的隐形成本需关注，数据隐私是潜在风险
-   - 来源: [@openrouter](https://x.com/OpenRouter/status/2043714987856970047#m)
-
 **微软开发企业级Agent，类似OpenClaw强化安全控制**
 - 微软正在开发类似OpenClaw的企业级Agent，更注重安全控制，针对企业客户提供比开源版更好的安全特性。
   > 💡 微软补齐agent产品线，企业安全是差异化关键，挑战OpenClaw开源生态
