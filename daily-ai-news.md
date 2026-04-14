@@ -7,7 +7,7 @@
 #要点汇总#
 
 - 模型前沿：OpenRouter上线100B参数模型Elephant Alpha，对标同规模SOTA
-- 产业动态：微软开发企业级Agent，类似OpenClaw强化安全控制; 吴翼加盟Meta MSL参与超级智能攻坚，清华叉院已撤其教职; Atlassian和Figma在AI研发投入上领跑，华尔街恐慌性抛售企业软件股; Cloudflare Agent Cloud集成OpenAI GPT-5.4和Codex，助力企业构建Agent工作流; 13项SOTA; 国内首个六维力感知数据采集发布，推动VLA模型力触觉进化
+- 产业动态：Cloudflare Agent Cloud集成OpenAI GPT-5.4和Codex，助力企业构建Agent工作流; 微软开发企业级Agent，类似OpenClaw强化安全控制; 吴翼加盟Meta MSL参与超级智能攻坚，清华叉院已撤其教职; Atlassian和Figma在AI研发投入上领跑，华尔街恐慌性抛售企业软件股; 开源项目Marvin实现GUI控制新突破; 国内首个六维力感知数据采集发布，推动VLA模型力触觉进化
 - 算力追踪：日本追加6315亿日元补贴Rapidus，累计投入约1200亿人民币攻坚2nm芯片
 - 初创&融资：Vercel CEO暗示IPO就绪，AI agents推动营收大幅增长; 爱沙尼亚AI客服平台Handhold获300万欧元种子轮融资; AI企业合规服务商Haast获1200万美元A轮融资; 亚洲Q1创业融资达274亿美元创三年新高，中国占60%由AI驱动
 - X讨论：SemiAnalysis：政策压力下China Plus One已超越规划阶段
