@@ -1,6 +1,6 @@
 # Twitter 动态预览
-**日期**：2026-04-14 07:15
-**总计**：16 条推文
+**日期**：2026-04-15 07:15
+**总计**：17 条推文
 
 ---
 
@@ -11,69 +11,70 @@
 
 ---
 
-## ⭐ 今日重点（LLM 提炼）
+## 🏢 公司发布（14条）
 
-1. **标题**
-   @来源
+### @anthropicai | Model
 
----
+- New Anthropic Fellows research: developing an Automated Alignment Researcher.  We ran an experiment to learn whether Claude Opus 4.6 could accelerate ...
+  [查看](https://x.com/AnthropicAI/status/2044138481790648323#m)
+- R to @AnthropicAI: AI models aren’t yet general-purpose alignment scientists. Progress isn't as easy to verify on most alignment research tasks: our A...
+  [查看](https://x.com/AnthropicAI/status/2044138489495605292#m)
+- R to @AnthropicAI: We discuss this, along with the other implications of this research, in our blog: https://www.anthropic.com/research/automated-alig...
+  [查看](https://x.com/AnthropicAI/status/2044138490904932853#m)
 
-## 🏢 公司发布（10条）
+### @claudeai | Model
 
-### @googleai | Model
-
-- ⚠️ R to @GoogleAI: Prefer watching on @YouTube while scrolling through the comment section? We get it: http://youtu.be/b1Pvt072wKQ?si=NGPgm30ur1WFtKQS
-  [查看](https://x.com/GoogleAI/status/2043765857038577818#m)
-- Got a doodle for your next project laying around? Turn it into working software using @GoogleAIStudio and Nano Banana.  Watch us vibe code a weather-r...
-  [查看](https://x.com/GoogleAI/status/2043765855314706899#m)
+- We've redesigned Claude Code on desktop.  You can now run multiple Claude sessions side by side from one window, with a new sidebar to manage them all...
+  [查看](https://x.com/claudeai/status/2044131493966909862#m)
 
 ### @lumalabsai | Research
 
+- Professional headshots.     No outfit panic. No studio. No scheduling.    Upload your photo. Pick your style. Get a headshot ready for any room you're...
+  [查看](https://x.com/LumaLabsAI/status/2044152872879980670#m)
 - Say it. Send it. Done.    Voice dictation is now live in Luma. Tap the mic, speak your mind, and your agent gets it instantly.    Try it → http://luma...
   [查看](https://x.com/LumaLabsAI/status/2043828634658713684#m)
-- Every logo has an entrance. Now yours has one too.    Upload your logo and your agent builds a cinematic reveal around it. Lights. Motion. Impact.   G...
-  [查看](https://x.com/LumaLabsAI/status/2043779621158793383#m)
-- Your campaign shouldn't stop at one audience.  Regional variants. Seasonal campaigns. Cultural nuance. Retail displays. Billboards.     Every format, ...
-  [查看](https://x.com/LumaLabsAI/status/2043730395284549982#m)
+
+### @openai | Model
+
+- ⚠️ R to @OpenAI: For years, we’ve been building our cyber defense program on the principles of democratized access, iterative deployment, and ecosystem r...
+  [查看](https://x.com/OpenAI/status/2044161908354494633#m)
+- We’re expanding Trusted Access for Cyber with additional tiers for authenticated cybersecurity defenders.   Customers in the highest tiers can request...
+  [查看](https://x.com/OpenAI/status/2044161906936791179#m)
 
 ### @openrouter | Infra
 
-- R to @OpenRouter: Similar to other stealth models:  💰 It is free 🔑 The provider logs all prompts and completions for this model, which may be used to ...
-  [查看](https://x.com/OpenRouter/status/2043714987856970047#m)
-- 🥷 Welcoming a new stealth model on OpenRouter: Elephant Alpha.  Elephant is a 100B parameter instant model, matching SOTA performance of similar scale...
-  [查看](https://x.com/OpenRouter/status/2043714975756390844#m)
+- R to @OpenRouter: Simple to use: pass a query and documents, get back relevance scores using a single API: POST `/api/v1/rerank`  → model: "cohere/rer...
+  [查看](https://x.com/OpenRouter/status/2044070467254784009#m)
+- R to @OpenRouter: Available models are here: http://openrouter.ai/models?output_modalities=rerank  - cohere/rerank-4-pro — SOTA accuracy, 32K context ...
+  [查看](https://x.com/OpenRouter/status/2044070465547681815#m)
+- New on OpenRouter: Reranker Models 🔍  Why add a reranker to your RAG pipeline? Embedding search finds relevant chunks, but rerankers tell you which on...
+  [查看](https://x.com/OpenRouter/status/2044070463723204730#m)
 
-### @semianalysis_ | Infra
+### @theworldlabs | Research
 
-- 7 of the top 10 companies by market cap depend almost entirely on TSMC's ability to produce chips. Trillions in revenue. Concentrated in one specific ...
-  [查看](https://x.com/SemiAnalysis_/status/2043796633108766898#m)
-- R to @SemiAnalysis_: The reality is that this shift has not only happened in mobile. Another area where the shift has been even more extreme is PCs, w...
-  [查看](https://x.com/SemiAnalysis_/status/2043736086585741625#m)
-- R to @SemiAnalysis_: As the new administration maintains pressure, these figures suggest the "China Plus One" strategy has moved past the planning pha...
-  [查看](https://x.com/SemiAnalysis_/status/2043736085117677699#m)
+- We built Spark 2.0 to bring the most ambitious 3DGS worlds to the web🌍  Making high-fidelity 3D accessible on any device is a big step for spatial sto...
+  [查看](https://x.com/theworldlabs/status/2044096996148171035#m)
 
-## 👤 研究者动态（6条）
+### @vllm_project | Infra
+
+- 🚀 Great to see vLLM powering OCR at this scale — Chandra-OCR-2 (5B) serving ~60 papers/hour per L40S across 16 parallel jobs.  The full pipeline break...
+  [查看](https://x.com/vllm_project/status/2043964594679636260#m)
+
+### @zai_org | Model
+
+- RT by @Zai_org: GMI Cloud and @Zai_org  are bringing fast inference + frontier models around the globe.  First stop: Singapore.  Big congrats to all t...
+  [查看](https://x.com/gmi_cloud/status/2043937423470838255#m)
+
+## 👤 研究者动态（3条）
 
 ### @andrewyng [independent] | Research
 
-- As AI agents accelerate coding, what is the future of software engineering? Some trends are clear, such as the Product Management Bottleneck, referrin...
-  [查看](https://x.com/AndrewYNg/status/2043742105852621052#m)
+- I'm excited about voice as a UI layer for existing visual applications — where speech and screen update together. This goes well beyond voice-only use...
+  [查看](https://x.com/AndrewYNg/status/2044088884989177991#m)
 
-### @jeffdean [Google] | Infra
+### @thegregyang [xAI] | Model
 
-- RT by @JeffDean: Artemis II astronaut Victor Glover received a hero's welcome from his neighbors! 🇺🇸
-  [查看](https://x.com/OwenSparks/status/2043477332438958253#m)
-
-### @soumithchintala [Meta] | Research
-
-- Just like us at @thinkymachines, @luke_drago_ @LRudL_ care a lot about amplifying humans, not replacing them. They're joining us to build towards that...
-  [查看](https://x.com/soumithchintala/status/2043752413085966574#m)
-
-### @swyx [AI社区] | App
-
-- If you're looking to improve your writing game, Anh is one of the most consistent heavy hitters I know in devtools HN and she literally just open sour...
-  [查看](https://x.com/swyx/status/2043786360012845509#m)
-- btw ~80% of the world’s agents and ai engineering is done in these 3 square miles
-  [查看](https://x.com/swyx/status/2043778767798317349#m)
-- TIL @cognition usage has ~DOUBLED globally since these 2 launches. people are finding all sorts of creative usecases when u can compose agents togethe...
-  [查看](https://x.com/swyx/status/2043770029024653798#m)
+- looks like I have the TT genotype for the SLCO1B1 gene so I should have low risk for statin
+  [查看](https://x.com/TheGregYang/status/2044131630366032038#m)
+- incidentally I took this long covid test (Radiance Diagnostics) during the same blood draw another cytokine test (CytoDx) but the results are wildly d...
+  [查看](https://x.com/TheGregYang/status/2044128766730072158#m)
