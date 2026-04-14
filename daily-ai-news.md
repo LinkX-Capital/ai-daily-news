@@ -7,8 +7,9 @@
 #要点汇总#
 
 - 模型前沿：Cloudflare Agent Cloud集成OpenAI GPT-5.4和Codex，助力企业构建Agent工作流; 13项SOTA; 国内首个六维力感知数据采集发布，推动VLA模型力触觉进化; OpenRouter上线100B参数模型Elephant Alpha，对标同规模SOTA
-- 产业动态：OpenRouter提醒; 微软开发企业级Agent，类似OpenClaw强化安全控制
-- 初创&融资：Vercel CEO暗示IPO就绪，AI agents推动营收大幅增长; 爱沙尼亚AI客服平台Handhold获300万欧元种子轮融资; AI企业合规服务商Haast获1200万美元A轮融资; Google发布从备考到毕业的全流程AI学习工具
+- 产业动态：OpenRouter提醒; 微软开发企业级Agent，类似OpenClaw强化安全控制; 吴翼加盟Meta MSL参与超级智能攻坚，清华叉院已撤其教职; Atlassian和Figma在AI研发投入上领跑，华尔街恐慌性抛售企业软件股
+- 算力追踪：日本追加6315亿日元补贴Rapidus，累计投入约1200亿人民币攻坚2nm芯片
+- 初创&融资：Vercel CEO暗示IPO就绪，AI agents推动营收大幅增长; 爱沙尼亚AI客服平台Handhold获300万欧元种子轮融资; AI企业合规服务商Haast获1200万美元A轮融资; 亚洲Q1创业融资达274亿美元创三年新高，中国占60%由AI驱动
 - X讨论：SemiAnalysis
 
 ---
@@ -47,6 +48,22 @@
   > 💡 微软补齐agent产品线，企业安全是差异化关键，挑战OpenClaw开源生态
    - 来源: [TechCrunch](https://techcrunch.com/2026/04/13/microsoft-is-working-on-yet-another-openclaw-like-agent/)
 
+**吴翼加盟Meta MSL参与超级智能攻坚，清华叉院已撤其教职信息**
+- 清华交叉信息研究院助理教授吴翼已正式加盟Meta超级智能实验室（MSL），向副总裁Nat Friedman汇报。**扎克伯格亲自出面挖人**，吴翼将参与超级智能及多智能体系统前沿攻坚。清华叉院官网已移除其教职信息，"伯克利归国四子"中仅许华哲、陈建宇、高阳仍留校。吴翼此前创办边塞科技被蚂蚁集团收购，保留清华教职同时兼任蚂蚁强化智能实验室首席科学家。
+  > 💡 顶级AI人才从国内学术界流向硅谷巨头，**中国AI研究面临人才流失压力**，全球超级智能竞赛对顶级研究者的争夺进入白热化
+   - 来源: [量子位](https://www.qbitai.com/2026/04/401002.html)
+
+**Atlassian和Figma在AI研发投入上领跑，华尔街恐慌性抛售企业软件股**
+- 华尔街上周恢复对企业软件股的抛售，ServiceNow和Snowflake跌幅约8%，市场担忧AI工具对传统软件企业的冲击。但The Information分析认为恐慌过于indiscriminate，**Atlassian和Figma凭借在AI功能上的激进研发投入，实际上正在引领企业软件的AI转型军备竞赛**。
+  > 💡 **AI对传统SaaS的影响不是简单替代而是分化**，投入AI研发的头部企业软件公司反而将受益于行业洗牌
+   - 来源: [The Information](https://www.theinformation.com/articles/atlassian-figma-lead-r-d-arms-race)
+
+### 算力追踪
+**日本追加6315亿日元补贴Rapidus，累计投入约1200亿人民币攻坚2nm芯片**
+- 日本政府批准向半导体公司Rapidus追加6315亿日元（约270亿人民币）补贴，累计支持将达约1200亿人民币。Rapidus目标**2027年量产2nm芯片**，与IBM合作采用GAA纳米片晶体管架构，丰田、索尼、软银等日企均有出资。台积电已率先实现2nm量产，Rapidus仍面临良率提升、客户获取和持续融资三大挑战。另据透露**马斯克正与英特尔合作推进Terafab半导体项目**，为特斯拉和xAI自建芯片产能。
+  > 💡 全球先进制程竞争进入"举国之力"阶段，**AI芯片自主可控已成各国战略共识**，但Rapidus与台积电的实际差距仍需3-5年验证
+   - 来源: [凤凰网科技](https://tech.ifeng.com/c/8sIQ1znm7lR)
+
 ### 初创&融资
 **Vercel CEO暗示IPO就绪，AI agents推动营收大幅增长**
 - Vercel CEO表示公司已准备好IPO，AI agents正推动营收显著增长。这家10年历史的开发工具公司在AI时代找到了明确的增长路径。
@@ -68,6 +85,11 @@
   > 💡 Google在教育赛道全面布局，AI学习助手成为入口级产品
    - 来源: [The Keyword](https://blog.google/products-and-platforms/products/education/ai-tools-programs-educators/)
 
+**亚洲Q1创业融资达274亿美元创三年新高，中国占60%由AI驱动**
+- Crunchbase数据显示，2026年Q1亚洲创业融资达**274亿美元**，环比增长20%，同比接近翻倍，创三年多新高。其中中国创业公司获得约**165亿美元**（占60%），连续三个季度增长。**AI是核心驱动力**，Q1亚洲AI相关融资约112亿美元创历史记录，最大融资轮次包括StepFun、Moonshot AI和Galaxy Bot。印度以38亿美元位居第二，最大轮次为AI系统开发商Neysa的6亿美元融资。
+  > 💡 **中国AI创业投资已走出2025年上半年低谷**，大模型和具身智能是最受资本青睐的赛道，亚洲AI融资创纪录印证全球AI投资重心东移
+   - 来源: [Crunchbase News](https://news.crunchbase.com/venture/china-leads-startup-funding-ai-seed-growth-asia-q1-2026/)
+
 ### X讨论
 **SemiAnalysis：政策压力下China Plus One已超越规划阶段**
 - SemiAnalysis分析指出，新政府持续施压，相关数据显示China Plus One战略已超越规划阶段，进入实质性实施。
@@ -76,4 +98,4 @@
 
 
 ---
-*更新时间: 2026-04-14 08:11*
+*更新时间: 2026-04-14 09:30*
