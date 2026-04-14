@@ -1,4 +1,4 @@
-## 04月13日 AI 前沿动态
+## 04月14日 AI 前沿动态
 
 > 自动汇总 | 时间窗口: 24h | 每类 Top 5
 
@@ -6,47 +6,74 @@
 
 #要点汇总#
 
-- 产业动态：HumanX大会Claude成最大赢家，OpenAI被指"掉队"; Physical AI领域爆发人才争夺战，自动驾驶工程师薪资飙至**$300K-$500K**; 灵初智能发布Psi-MobiDex具身智能数据集：**10万小时**真人操作数据; 浙大城市学院联合浙大等发布US-365K超声数据集含**36.4万**图文对; 强脑科技发布BrainCo Revo 3智能灵巧手
-- X讨论：Luma AI推出环境控制功能，支持参考图控制视频生成
+- 模型前沿：Cloudflare Agent Cloud集成OpenAI GPT-5.4和Codex，助力企业构建Agent工作流; 13项SOTA; 国内首个六维力感知数据采集发布，推动VLA模型力触觉进化; OpenRouter上线100B参数模型Elephant Alpha，对标同规模SOTA
+- 产业动态：OpenRouter提醒; 微软开发企业级Agent，类似OpenClaw强化安全控制
+- 初创&融资：Vercel CEO暗示IPO就绪，AI agents推动营收大幅增长; 爱沙尼亚AI客服平台Handhold获300万欧元种子轮融资; AI企业合规服务商Haast获1200万美元A轮融资; Google发布从备考到毕业的全流程AI学习工具
+- X讨论：SemiAnalysis
 
 ---
 
 ## 📖 详细参考
 
+### 模型前沿
+**Cloudflare Agent Cloud集成OpenAI GPT-5.4和Codex，助力企业构建Agent工作流**
+- Cloudflare宣布在Agent Cloud中集成OpenAI的GPT-5.4和Codex模型，使企业能够构建、部署和扩展AI agents以完成现实世界任务。
+  > 💡 Cloudflare与OpenAI深度绑定，为企业agent场景提供完整的云边部署方案，竞争优势明显
+   - 来源: [OpenAI News](https://openai.com/index/cloudflare-openai-agent-cloud)
+
+**13项SOTA！开源项目Marvin实现GUI控制新突破**
+- 开源项目Marvin实现AI agents在电脑上进行GUI操作的控制能力，在13项任务上达到SOTA。该项目被称为「龙虾」，代表了GUI自动化控制的最新进展。
+  > 💡 GUI控制是agent落地的关键场景，开源项目填补了高精度自动化工具的空白
+   - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651027314&idx=1&sn=5f962ab9416c2eee0c4769a51057ced7&chksm=85b8ec80945c608f6ab701d09a552ec7c3235ee799b6db43b70b23dd05fc565b32b7b77abf9e&scene=0&xtrack=1#rd)
+
+**国内首个六维力感知数据采集发布，推动VLA模型力触觉进化**
+- 具身智能领域实现新突破，国内首个加入六维力的全感知数采方案发布。该技术能让VLA模型进化出力触觉感知能力，为机器人操作提供更精细的物理反馈。
+  > 💡 六维力感知是具身智能从视觉到物理交互的关键跨越，硅谷已领先，国内加速追赶
+   - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651027314&idx=2&sn=bf2af408e8bdecb4e27c70be4de0977e&chksm=85a2481a69fe09fb761d6a47c6178e39fb08f20583ee0a501c16d2ebbb9d7ffd619b24220b45&scene=0&xtrack=1#rd)
+
+**OpenRouter上线100B参数模型Elephant Alpha，对标同规模SOTA**
+- OpenRouter新增神秘模型Elephant Alpha，参数规模达100B，是即时模型，性能对标同规模SOTA。该模型目前免费使用。
+  > 💡 开源模型逐步逼近闭源SOTA，免费策略加剧模型层竞争
+   - 来源: [@openrouter](https://x.com/OpenRouter/status/2043714975756390844#m)
+
 ### 产业动态
-**HumanX AI大会：Claude成全场焦点，OpenAI"掉队"声四起**
-- 旧金山HumanX AI大会数千人参会，**Claude是被提及最多的聊天机器人**，ChatGPT几乎无人讨论。多位参展商主动表示团队已转向使用Claude，认为OpenAI"lost its footing"。WSJ近期分析称两家公司是"科技史上增长最快的企业"，Anthropic在企业用户端正在追赶OpenAI。
-- OpenAI近期负面不断：放弃Sora视频生成、在ChatGPT中注入广告、New Yorker质疑Sam Altman可信度。作为回应，OpenAI本周推出**$100/月**ChatGPT订阅层，主推Codex编程工具，**明显针对Claude Code**。
-  > 💡 这不是简单的产品口碑逆转——**AI助手市场的用户粘性正在重新洗牌**，开发者工具体验成为决定胜负的关键战场
-   - 来源: [TechCrunch](https://techcrunch.com/2026/04/12/at-the-humanx-conference-everyone-was-talking-about-claude/)
+**OpenRouter提醒：Elephant Alpha模型存在数据记录风险**
+- OpenRouter提示Elephant Alpha与其他stealth模型类似， provider会记录所有prompts和completions，可能用于模型训练。
+  > 💡 免费模型的隐形成本需关注，数据隐私是潜在风险
+   - 来源: [@openrouter](https://x.com/OpenRouter/status/2043714987856970047#m)
 
-**Physical AI爆发人才争夺战：自动驾驶工程师底薪被推至$300K-$500K**
-- 机器人与国防科技公司正大规模从自动驾驶行业挖角，目标是有"经典机器人+AI"混合技能的人才。国防初创公司出手最阔绰，背后是美国国防部持续大额预算支撑。**Waymo不受影响（对价格不敏感），但初创公司和车企将承受最大压力**。
-- Eclipse风投刚完成**$13亿美元**新基金，专注Physical AI赛道，含$5.91亿早期孵化基金。创始人预测连锁效应：车企自动驾驶工程师将大量流失，初创公司需要融更多钱或更聪明地花钱。
-  > 💡 **Physical AI正在重演2016年自动驾驶的人才泡沫**，不同的是这次买单的是国防预算，供给侧结构性短缺短期内无法缓解
-   - 来源: [TechCrunch](https://techcrunch.com/2026/04/12/techcrunch-mobility-who-is-poaching-all-the-self-driving-vehicle-talent/)
+**微软开发企业级Agent，类似OpenClaw强化安全控制**
+- 微软正在开发类似OpenClaw的企业级Agent，更注重安全控制，针对企业客户提供比开源版更好的安全特性。
+  > 💡 微软补齐agent产品线，企业安全是差异化关键，挑战OpenClaw开源生态
+   - 来源: [TechCrunch](https://techcrunch.com/2026/04/13/microsoft-is-working-on-yet-another-openclaw-like-agent/)
 
-**灵初智能发布Psi-MobiDex具身智能数据集：10万小时真人操作数据覆盖294种场景**
-- 灵初智能发布大规模具身智能训练数据集Psi-MobiDex，真机数据**5417小时** + 人类数据**95472小时**，覆盖**294种场景、4821种任务、1382种物体**。目前1000小时已开源，年底将全部开放。该数据集引发国际AI学术界高度关注，PI、NVIDIA等机构均有反应。
-  > 💡 **具身智能的突破瓶颈在数据而非算法**，中国在真人操作数据积累层面正在建立结构性优势
-   - 来源: [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652691298&idx=1&sn=79453e0eb1067d97a6b91fdd81200b46)
+### 初创&融资
+**Vercel CEO暗示IPO就绪，AI agents推动营收大幅增长**
+- Vercel CEO表示公司已准备好IPO，AI agents正推动营收显著增长。这家10年历史的开发工具公司在AI时代找到了明确的增长路径。
+  > 💡 老牌DevTools公司成功转型AI，证明有技术积累的 SaaS 企业能在AI浪潮中重生
+   - 来源: [TechCrunch](https://techcrunch.com/2026/04/13/vercel-ceo-guillermo-rauch-signals-ipo-readiness-as-ai-agents-fuel-revenue-surge/)
 
-**浙大城市学院联合浙大、港城大等发布US-365K超声AI数据集：36.4万图文对**
-- 浙大城市学院联合浙江大学、香港城市大学、香港浸会大学等构建首个大规模超声专属数据集**US-365K**，包含**36.4万**超声图像与诊断文本对，涵盖**11676**例临床病例。配套提出**Ultrasound-CLIP**模型，帮助AI理解临床诊断语义。论文已被**CVPR 2026**接收，将显著推动超声AI诊断能力提升。
-  > 💡 医疗影像数据是AI医疗落地的关键瓶颈，**垂直领域的大规模标注数据集价值远超通用数据**
-   - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247882513&idx=3&sn=59341c179023f0b961d21b4cf66b6d12)
+**爱沙尼亚AI客服平台Handhold获300万欧元种子轮融资**
+- Handhold是爱沙尼亚B2B软件全流程AI客服/销售自动化平台，核心以AI客户经理替代传统人工，覆盖潜客筛选、定制演示、用户激活全链路。获300万欧元种子轮融资，Entourage Capital领投。
+  > 💡 AI客户经理解决B2B销售人力痛点，北欧市场验证后加速全球化
+   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14695607)
 
-**强脑科技发布BrainCo Revo 3智能灵巧手：21自由度，全掌握力70N，瞄准机器人应用**
-- 脑机接口独角兽**强脑科技（BrainCo）**发布新一代智能灵巧手**BrainCo Revo 3**，具备**21个自由度**、全掌握力**70N**，采用全直驱可反驱设计，灵活度接近人手水平。该产品从医疗康复延伸至机器人控制领域，在脑机接口与机器人操控的交叉点形成了技术壁垒。
-  > 💡 脑机接口从医疗康复走向机器人控制，**人机融合的具身智能路线正在被验证**
-   - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247882513&idx=1&sn=d4c16158273ff392d9636bf5d11912ba)
+**AI企业合规服务商Haast获1200万美元A轮融资**
+- Haast是一家人工智能企业合规解决方案服务商，运用大语言模型实现企业合规工作自动化与现代化升级，助力营销、法务及合规团队节省时间、降低风险、加快内容审批效率。获1200万美元A轮融资，Peak XV Partners领投。
+  > 💡 合规自动化是LLM落地的确定性场景，大额融资验证赛道价值
+   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14695638)
+
+**Google发布从备考到毕业的全流程AI学习工具**
+- Google发布最新AI学习工具，覆盖从考试准备到毕业的全流程，为学习者提供AI驱动的个性化支持。
+  > 💡 Google在教育赛道全面布局，AI学习助手成为入口级产品
+   - 来源: [The Keyword](https://blog.google/products-and-platforms/products/education/ai-tools-programs-educators/)
 
 ### X讨论
-**Luma AI推出环境控制功能：上传参考图即可控制视频生成场景**
-- Luma AI发布新功能，用户可上传参考图像并设置方向，AI将任意空间转化为指定场景。面向影视、游戏等创作场景的定制化需求。
-  > 💡 3D/视频生成的竞争焦点从"能不能生成"转向"能不能精确控制"，**可控性成为新的差异化战场**
-   - 来源: [@lumalabsai](https://x.com/LumaLabsAI/status/2043432137433764259#m)
+**SemiAnalysis：政策压力下China Plus One已超越规划阶段**
+- SemiAnalysis分析指出，新政府持续施压，相关数据显示China Plus One战略已超越规划阶段，进入实质性实施。
+  > 💡 地缘政治持续影响供应链布局，制造业外迁速度超预期
+   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2043736085117677699#m)
 
 
 ---
-*更新时间: 2026-04-13 14:04*
+*更新时间: 2026-04-14 08:11*

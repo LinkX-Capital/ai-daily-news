@@ -1,38 +1,49 @@
-## 04月13日 AI 前沿动态
+## 04月14日 AI 前沿动态
 
 ---
+
+### 模型前沿
+**1. Cloudflare Agent Cloud集成OpenAI GPT-5.4和Codex，助力企业构建Agent工作流**
+[来源: OpenAI News](https://openai.com/index/cloudflare-openai-agent-cloud)
+
+**2. 13项SOTA！开源项目Marvin实现GUI控制新突破**
+- 该项目被称为「龙虾」，代表了GUI自动化控制的最新进展。
+[来源: 机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651027314&idx=1&sn=5f962ab9416c2eee0c4769a51057ced7&chksm=85b8ec80945c608f6ab701d09a552ec7c3235ee799b6db43b70b23dd05fc565b32b7b77abf9e&scene=0&xtrack=1#rd)
+
+**3. 国内首个六维力感知数据采集发布，推动VLA模型力触觉进化**
+- 该技术能让VLA模型进化出力触觉感知能力，为机器人操作提供更精细的物理反馈。
+[来源: 机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651027314&idx=2&sn=bf2af408e8bdecb4e27c70be4de0977e&chksm=85a2481a69fe09fb761d6a47c6178e39fb08f20583ee0a501c16d2ebbb9d7ffd619b24220b45&scene=0&xtrack=1#rd)
+
+**4. OpenRouter上线100B参数模型Elephant Alpha，对标同规模SOTA**
+- 该模型目前免费使用。
+[来源: @openrouter](https://x.com/OpenRouter/status/2043714975756390844#m)
 
 ### 产业动态
-**1. TechCrunch Mobility报道自动驾驶人才争夺战**
-- 各大自动驾驶公司正在相互挖角技术人才,文章分析了谁在招募以及招募对象。
-- 该报道聚焦AI在交通出行领域的应用和人才竞争现状。
-[来源: TechCrunch](https://techcrunch.com/2026/04/12/techcrunch-mobility-who-is-poaching-all-the-self-driving-vehicle-talent/)
+**5. OpenRouter提醒：Elephant Alpha模型存在数据记录风险**
+[来源: @openrouter](https://x.com/OpenRouter/status/2043714987856970047#m)
 
-**2. Anthropic在HumanX AI大会成为焦点**
-- Claude模型引发与会者广泛关注和讨论。
-- 该会议聚集了AI行业从业者,Anthropic展示了其AI技术实力。
-[来源: TechCrunch](https://techcrunch.com/2026/04/12/at-the-humanx-conference-everyone-was-talking-about-claude/)
+**6. 微软开发企业级Agent，类似OpenClaw强化安全控制**
+[来源: TechCrunch](https://techcrunch.com/2026/04/13/microsoft-is-working-on-yet-another-openclaw-like-agent/)
 
-**3. 灵初智能发布Psi-MobiDex具身智能数据集：10万小时真人操作数据**
-- 该数据集包含真机数据5417小时 + 人类数据95472小时，覆盖294种场景、4821种任务。
-- 此举引发国际AI学术界关注，PI、NVIDIA等机构均有反应。
-[来源: 新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652691298&idx=1&sn=79453e0eb1067d97a6b91fdd81200b46)
+### 初创&融资
+**7. Vercel CEO暗示IPO就绪，AI agents推动营收大幅增长**
+- 这家10年历史的开发工具公司在AI时代找到了明确的增长路径。
+[来源: TechCrunch](https://techcrunch.com/2026/04/13/vercel-ceo-guillermo-rauch-signals-ipo-readiness-as-ai-agents-fuel-revenue-surge/)
 
-**4. 浙大城市学院联合浙大、港城大等发布US-365K超声AI数据集**
-- 该数据集含36.4万超声图像与诊断文本对，涵盖11676例临床病例，配套Ultrasound-CLIP模型。
-- 论文已被CVPR 2026接收。
-[来源: 量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247882513&idx=3&sn=59341c179023f0b961d21b4cf66b6d12)
+**8. 爱沙尼亚AI客服平台Handhold获300万欧元种子轮融资**
+- 获300万欧元种子轮融资，Entourage Capital领投。
+[来源: IT桔子](https://www.itjuzi.com/investevent/14695607)
 
-**5. 强脑科技发布BrainCo Revo 3智能灵巧手：21自由度，瞄准机器人应用**
-- 该灵巧手具备21个自由度、全掌握力70N，采用全直驱可反驱设计。
-- 从医疗康复延伸至机器人控制领域。
-[来源: 量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247882513&idx=1&sn=d4c16158273ff392d9636bf5d11912ba)
+**9. AI企业合规服务商Haast获1200万美元A轮融资**
+- 获1200万美元A轮融资，Peak XV Partners领投。
+[来源: IT桔子](https://www.itjuzi.com/investevent/14695638)
+
+**10. Google发布从备考到毕业的全流程AI学习工具**
+[来源: The Keyword](https://blog.google/products-and-platforms/products/education/ai-tools-programs-educators/)
 
 ### X讨论
-**6. Luma AI推出可控视频生成功能，支持用户上传参考图控制生成方向**
-- 用户可以设置期望的环境场景,AI系统将据此生成符合要求的视频内容。
-- 该功能旨在为创作者提供更精确的AI视频生成控制能力。
-[来源: @lumalabsai](https://x.com/LumaLabsAI/status/2043432137433764259#m)
+**11. SemiAnalysis：政策压力下China Plus One已超越规划阶段**
+[来源: @semianalysis_](https://x.com/SemiAnalysis_/status/2043736085117677699#m)
 
 ---
-*更新时间: 2026-04-13 14:04*
+*更新时间: 2026-04-14 08:11*
