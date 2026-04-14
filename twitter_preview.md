@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-15 07:15
-**总计**：17 条推文
+**总计**：19 条推文
 
 ---
 
@@ -11,16 +11,41 @@
 
 ---
 
+## ⭐ 今日重点（LLM 提炼）
+
+1. **GMI Cloud and Zai_org launch fast inference + frontier models globally, first stop Singapore**
+   @zai_org
+2. **Luma AI introduces flexible aspect ratio and cropping for any frame**
+   @lumalabsai
+3. **Professional headshots with AI, no studio needed**
+   @lumalabsai
+4. **Claude Code desktop redesign with multi‑session sidebar**
+   @claudeai
+5. **vLLM powers large‑scale OCR pipeline for Chandra‑OCR‑2 at high throughput**
+   @vllm_project
+6. **The World Labs launches Spark 2.0 for high‑fidelity 3DGS on the web**
+   @theworldlabs
+7. **OpenRouter introduces new reranking API endpoint for relevance scores**
+   @openrouter
+8. **OpenRouter lists available reranker models including cohere/rerank‑4‑pro**
+   @openrouter
+9. **OpenRouter explains benefits of adding rerankers to RAG pipelines**
+   @openrouter
+10. **Recursive loop in startups: GTM improvements drive growth**
+   @swyx
+
+---
+
 ## 🏢 公司发布（14条）
 
 ### @anthropicai | Model
 
-- New Anthropic Fellows research: developing an Automated Alignment Researcher.  We ran an experiment to learn whether Claude Opus 4.6 could accelerate ...
-  [查看](https://x.com/AnthropicAI/status/2044138481790648323#m)
-- R to @AnthropicAI: AI models aren’t yet general-purpose alignment scientists. Progress isn't as easy to verify on most alignment research tasks: our A...
-  [查看](https://x.com/AnthropicAI/status/2044138489495605292#m)
 - R to @AnthropicAI: We discuss this, along with the other implications of this research, in our blog: https://www.anthropic.com/research/automated-alig...
   [查看](https://x.com/AnthropicAI/status/2044138490904932853#m)
+- R to @AnthropicAI: AI models aren’t yet general-purpose alignment scientists. Progress isn't as easy to verify on most alignment research tasks: our A...
+  [查看](https://x.com/AnthropicAI/status/2044138489495605292#m)
+- R to @AnthropicAI: To test the broader usefulness of the AARs’ methods, we assessed how well they worked on two datasets the AARs hadn’t seen before. ...
+  [查看](https://x.com/AnthropicAI/status/2044138487025144231#m)
 
 ### @claudeai | Model
 
@@ -29,10 +54,10 @@
 
 ### @lumalabsai | Research
 
+- Every platform. Every format. Every frame.    Pick your aspect ratio or crop it yourself. No exporting, no rebuilding from scratch.    Start today → h...
+  [查看](https://x.com/LumaLabsAI/status/2044182485848994216#m)
 - Professional headshots.     No outfit panic. No studio. No scheduling.    Upload your photo. Pick your style. Get a headshot ready for any room you're...
   [查看](https://x.com/LumaLabsAI/status/2044152872879980670#m)
-- Say it. Send it. Done.    Voice dictation is now live in Luma. Tap the mic, speak your mind, and your agent gets it instantly.    Try it → http://luma...
-  [查看](https://x.com/LumaLabsAI/status/2043828634658713684#m)
 
 ### @openai | Model
 
@@ -65,15 +90,22 @@
 - RT by @Zai_org: GMI Cloud and @Zai_org  are bringing fast inference + frontier models around the globe.  First stop: Singapore.  Big congrats to all t...
   [查看](https://x.com/gmi_cloud/status/2043937423470838255#m)
 
-## 👤 研究者动态（3条）
+## 👤 研究者动态（5条）
 
 ### @andrewyng [independent] | Research
 
 - I'm excited about voice as a UI layer for existing visual applications — where speech and screen update together. This goes well beyond voice-only use...
   [查看](https://x.com/AndrewYNg/status/2044088884989177991#m)
 
+### @swyx [AI社区] | App
+
+- i think one of the most impt recursive loops in startups is startups that improve marketing/revenue growth (aka GTM) because they can obviously dogfoo...
+  [查看](https://x.com/swyx/status/2044189953333309564#m)
+
 ### @thegregyang [xAI] | Model
 
+- RT by @TheGregYang: I want to ask you to follow this dot with your eyes. Was that easy? Without you even having to give that much thought, your brain ...
+  [查看](https://x.com/ImmunoFever/status/2043857878092529720#m)
 - looks like I have the TT genotype for the SLCO1B1 gene so I should have low risk for statin
   [查看](https://x.com/TheGregYang/status/2044131630366032038#m)
 - incidentally I took this long covid test (Radiance Diagnostics) during the same blood draw another cytokine test (CytoDx) but the results are wildly d...
