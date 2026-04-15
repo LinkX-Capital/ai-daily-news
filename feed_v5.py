@@ -1307,15 +1307,8 @@ def generate_report(articles):
     for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
         items = by_cat.get(cat, [])
         if items:
-            # 要点速览：精简说明是什么，不截断
-            def get_what(title):
-                # 有冒号/分隔符：取前面核心部分，不截断
-                for sep in ['：', ':', '？', '?', '！', '!']:
-                    if sep in title:
-                        return title.split(sep)[0]
-                # 无分隔符：直接返回完整标题
-                return title
-            titles = "; ".join([get_what(a['title']) for a in items[:5]])
+            # 要点速览：使用完整标题，不截断
+            titles = "; ".join([a['title'] for a in items[:5]])
             lines.append(f"- {cat}：{titles}")
 
     lines.extend(["", "---", "", "## 📖 详细参考", ""])
