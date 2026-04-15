@@ -99,7 +99,7 @@ def get_available_instance() -> Optional[str]:
     return None
 
 
-def fetch_user_tweets(username: str, instance: str, count: int = 3) -> List[Dict]:
+def fetch_user_tweets(username: str, instance: str, count: int = 5) -> List[Dict]:
     tweets = []
     url = f"{instance}/{username}/rss"
 
@@ -156,7 +156,7 @@ def fetch_user_tweets(username: str, instance: str, count: int = 3) -> List[Dict
     return tweets
 
 
-def fetch_all_tweets(max_per_account: int = 3) -> List[Dict]:
+def fetch_all_tweets(max_per_account: int = 5) -> List[Dict]:
     instance = get_available_instance()
     if not instance:
         print("   ⚠️ 无法连接Nitter，使用缓存")
