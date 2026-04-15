@@ -1,93 +1,91 @@
-## 04月14日 AI 前沿动态
+## 04月15日 AI 前沿动态
 
 > 自动汇总 | 时间窗口: 24h | 每类 Top 5
 
 ---
 
-#要点汇总#
+## 要点汇总
 
-- 模型前沿：OpenRouter上线100B参数模型Elephant Alpha，对标同规模SOTA
-- 产业动态：Cloudflare Agent Cloud集成OpenAI GPT-5.4和Codex，助力企业构建Agent工作流; 微软开发企业级Agent，类似OpenClaw强化安全控制; 吴翼加盟Meta MSL参与超级智能攻坚，清华叉院已撤其教职; Atlassian和Figma在AI研发投入上领跑，华尔街恐慌性抛售企业软件股; 开源项目Marvin实现GUI控制新突破; 国内首个六维力感知数据采集发布，推动VLA模型力触觉进化
-- 算力追踪：日本追加6315亿日元补贴Rapidus，累计投入约1200亿人民币攻坚2nm芯片
-- 初创&融资：Vercel CEO暗示IPO就绪，AI agents推动营收大幅增长; 爱沙尼亚AI客服平台Handhold获300万欧元种子轮融资; AI企业合规服务商Haast获1200万美元A轮融资; 亚洲Q1创业融资达274亿美元创三年新高，中国占60%由AI驱动
-- X讨论：SemiAnalysis：政策压力下China Plus One已超越规划阶段
+- 产业动态：Anthropic发布Claude Code重大更新，桌面版支持多会话并行，新增Routines定时自动化任务; Google发布Gemini Robotics-ER 1.6,提升机器人推理能力; The World Labs发布Spark 2.0,高保真3DGS进入网页; OpenRouter上线Reranker排序模型; 盛大AI研究院发布流式动作生成技术
+- 算力追踪：Epoch AI报告五大超算厂商控制全球超2/3 AI算力
+- 初创&融资：AI数据中心初创Fluidstack正进行10亿美元融资; AI视频生成公司Sand.ai完成5000万美元融资; CREAO AI完成Pre-A轮千万美元融资,用Agent OS重构工作入口; OpenAI收购AI财务规划公司Hiro Finance
+- 研究关注：NTU发布世界模型交互新范式; 北航与字节提出SAGE-RL,揭示大模型推理可按需调节
+- X讨论：Anthropic发布 Automated Alignment Researcher 研究
 
 ---
 
-## 📖 详细参考
-
-### 模型前沿
-
-**OpenRouter上线100B参数模型Elephant Alpha，对标同规模SOTA**
-- OpenRouter新增神秘模型Elephant Alpha，参数规模达100B，是即时模型，性能对标同规模SOTA。该模型目前免费使用。但OpenRouter提醒，provider会记录所有prompts和completions，可能用于模型训练。
-  > 💡 开源模型逐步逼近闭源SOTA，免费策略加剧模型层竞争，但**数据隐私是免费模型的隐形成本**
-   - 来源: [@openrouter](https://x.com/OpenRouter/status/2043714975756390844#m)
+## 详细参考
 
 ### 产业动态
+**Anthropic发布Claude Code重大更新：桌面版支持多会话并行，新增Routines定时自动化任务**
+- Claude Code桌面版全新设计，新增侧边栏支持用户在同一窗口并行运行多个Claude会话，便于管理和切换不同任务。同时推出Routines功能（研究预览），用户可配置一个routine（包含prompt、repo和connectors），支持按计划定时运行、API调用触发或事件响应触发。**Routines运行在Anthropic云端基础设施上，不需要保持电脑开机**，意味着开发者可以让AI编程助手真正成为后台持续工作的智能体。
+  > AI编程工具从被动应答走向主动执行，云端自动化是Agent从概念到生产的关键一步
+   - 来源: [@claudeai - 桌面版](https://x.com/claudeai/status/2044131493966909862#m) | [@claudeai - Routines](https://x.com/claudeai/status/2044095086460309790)
 
-**Cloudflare Agent Cloud集成OpenAI GPT-5.4和Codex，助力企业构建Agent工作流**
-- Cloudflare宣布在Agent Cloud中集成OpenAI的GPT-5.4和Codex模型，使企业能够构建、部署和扩展AI agents以完成现实世界任务。
-  > 💡 Cloudflare与OpenAI深度绑定，为企业agent场景提供完整的云边部署方案，竞争优势明显
-   - 来源: [OpenAI News](https://openai.com/index/cloudflare-openai-agent-cloud)
+**Google发布Gemini Robotics-ER 1.6，提升机器人推理能力**
+- Gemini Robotics-ER 1.6是Google DeepMind推出的推理优先模型升级版，帮助机器人理解环境并完成真实世界任务。该模型增强了推理能力，使机器人能更好应对复杂任务场景。
+  > 机器人模型从泛化能力转向推理能力，VLA路线竞争加剧
+   - 来源: [Google DeepMind](https://blog.google/innovation-and-ai/models-and-research/google-deepmind/gemini-robotics-er-1-6/)
 
-**微软开发企业级Agent，类似OpenClaw强化安全控制**
-- 微软正在开发类似OpenClaw的企业级Agent，更注重安全控制，针对企业客户提供比开源版更好的安全特性。
-  > 💡 微软补齐agent产品线，企业安全是差异化关键，挑战OpenClaw开源生态
-   - 来源: [TechCrunch](https://techcrunch.com/2026/04/13/microsoft-is-working-on-yet-another-openclaw-like-agent/)
+**The World Labs发布Spark 2.0，高保真3DGS进入网页**
+- The World Labs发布Spark 2.0，将高质量3D Gaussian Splatting场景带入网页端。该技术让高保真3D内容可在任意设备上访问，是空间计算的重要进展。
+  > 3D生成从本地走向网页，端侧体验优化推动空间互联网普及
+   - 来源: [@theworldlabs](https://x.com/theworldlabs/status/2044096996148171035#m)
 
-**吴翼加盟Meta MSL参与超级智能攻坚，清华叉院已撤其教职信息**
-- 清华交叉信息研究院助理教授吴翼已正式加盟Meta超级智能实验室（MSL），向副总裁Nat Friedman汇报。**扎克伯格亲自出面挖人**，吴翼将参与超级智能及多智能体系统前沿攻坚。清华叉院官网已移除其教职信息，"伯克利归国四子"中仅许华哲、陈建宇、高阳仍留校。吴翼此前创办边塞科技被蚂蚁集团收购，保留清华教职同时兼任蚂蚁强化智能实验室首席科学家。
-  > 💡 顶级AI人才从国内学术界流向硅谷巨头，**中国AI研究面临人才流失压力**，全球超级智能竞赛对顶级研究者的争夺进入白热化
-   - 来源: [量子位](https://www.qbitai.com/2026/04/401002.html)
+**OpenRouter上线Reranker排序模型**
+- OpenRouter推出Reranker排序模型，功能是在RAG流程中对文本块进行相关性排序。嵌入搜索找到相关 chunk，reranker进一步判断排序优先級。首批包括cohere/rerank-4-pro等模型。
+  > RAG工作流完善推动企业应用落地，排序模型成关键拼图
+   - 来源: [@openrouter](https://x.com/OpenRouter/status/2044070463723204730#m)
 
-**Atlassian和Figma在AI研发投入上领跑，华尔街恐慌性抛售企业软件股**
-- 华尔街上周恢复对企业软件股的抛售，ServiceNow和Snowflake跌幅约8%，市场担忧AI工具对传统软件企业的冲击。但The Information分析认为恐慌过于indiscriminate，**Atlassian和Figma凭借在AI功能上的激进研发投入，实际上正在引领企业软件的AI转型军备竞赛**。
-  > 💡 **AI对传统SaaS的影响不是简单替代而是分化**，投入AI研发的头部企业软件公司反而将受益于行业洗牌
-   - 来源: [The Information](https://www.theinformation.com/articles/atlassian-figma-lead-r-d-arms-race)
-
-**13项SOTA！开源项目Marvin实现GUI控制新突破**
-- 开源项目Marvin实现AI agents在电脑上进行GUI操作的控制能力，在13项任务上达到SOTA。该项目被称为「龙虾」，代表了GUI自动化控制的最新进展。
-  > 💡 GUI控制是agent落地的关键场景，开源项目填补了高精度自动化工具的空白
-   - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651027314&idx=1&sn=5f962ab9416c2eee0c4769a51057ced7&chksm=85b8ec80945c608f6ab701d09a552ec7c3235ee799b6db43b70b23dd05fc565b32b7b77abf9e&scene=0&xtrack=1#rd)
-
-**国内首个六维力感知数据采集发布，推动VLA模型力触觉进化**
-- 具身智能领域实现新突破，国内首个加入六维力的全感知数采方案发布。该技术能让VLA模型进化出力触觉感知能力，为机器人操作提供更精细的物理反馈。
-  > 💡 六维力感知是具身智能从视觉到物理交互的关键跨越，硅谷已领先，国内加速追赶
-   - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651027314&idx=2&sn=bf2af408e8bdecb4e27c70be4de0977e&chksm=85a2481a69fe09fb761d6a47c6178e39fb08f20583ee0a501c16d2ebbb9d7ffd619b24220b45&scene=0&xtrack=1#rd)
+**盛大AI研究院发布流式动作生成技术，推理延迟仅1帧**
+- 盛大AI研究院发布新工作，实现动作序列无限长且生成零延迟。技术突破流式生成超越非流式的效果，一句话即可让虚拟人动作丝滑如真实人类，推理延迟仅1帧（约33ms）。
+  > 动作生成低延迟突破为人形机器人交互奠定基础，时序生成是Diffusion外的另一路线
+   - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247883024&idx=3&sn=2de93fe100ad0f43d1c3402476af6020)
 
 ### 算力追踪
-**日本追加6315亿日元补贴Rapidus，累计投入约1200亿人民币攻坚2nm芯片**
-- 日本政府批准向半导体公司Rapidus追加6315亿日元（约270亿人民币）补贴，累计支持将达约1200亿人民币。Rapidus目标**2027年量产2nm芯片**，与IBM合作采用GAA纳米片晶体管架构，丰田、索尼、软银等日企均有出资。台积电已率先实现2nm量产，Rapidus仍面临良率提升、客户获取和持续融资三大挑战。另据透露**马斯克正与英特尔合作推进Terafab半导体项目**，为特斯拉和xAI自建芯片产能。
-  > 💡 全球先进制程竞争进入"举国之力"阶段，**AI芯片自主可控已成各国战略共识**，但Rapidus与台积电的实际差距仍需3-5年验证
-   - 来源: [凤凰网科技](https://tech.ifeng.com/c/8sIQ1znm7lR)
+**Epoch AI: 五大超算厂商控制全球超2/3 AI算力**
+- Epoch AI发布AI Chip Owners数据报告，**Google、Microsoft、Meta、Amazon、Oracle五家公司目前控制约2/3的全球AI算力**，较2024年初的~60%进一步上升。许多AI实验室（包括OpenAI和Anthropic）几乎完全依赖这些超算厂商获取算力资源。
+  > 算力集中度持续攀升，AI实验室对云厂商的依赖关系决定了产业格局的上层建筑
+   - 来源: [Epoch AI](https://epochai.substack.com/p/five-hyperscalers-now-own-over-two)
+
+### 研究关注
+**NTU发布世界模型交互新范式，解决主动操作难题**
+- 新加坡南洋理工大学发布世界模型交互新范式，攻克主动操作难题。该研究被称为头号玩家照进现实，为世界模型的主动交互提供新方法论。
+  > 世界模型从被动理解走向主动交互，物理引擎与学习融合是关键路径
+   - 来源: [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652691877&idx=3&sn=8256bbc70570c075269f74878cc0148b)
+
+**北航与字节提出SAGE-RL，揭示大模型推理可按需调节**
+- 北京航天航空大学与字节合作提出SAGE-RL方法，发现大模型具备根据任务难度自动调节推理能力的隐藏天赋。研究表明长推理不一定更强，模型可以自己踩刹车按需调整。
+  > 推理tokens可优化空间被验证，RL scaling law新方向，模型自身具备推理资源调节能力
+   - 来源: [PaperWeekly](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw==&mid=2247719552&idx=2&sn=e414a3299500b622cc0a8175271890d1)
 
 ### 初创&融资
-**Vercel CEO暗示IPO就绪，AI agents推动营收大幅增长**
-- Vercel CEO表示公司已准备好IPO，AI agents正推动营收显著增长。这家10年历史的开发工具公司在AI时代找到了明确的增长路径。
-  > 💡 老牌DevTools公司成功转型AI，证明有技术积累的 SaaS 企业能在AI浪潮中重生
-   - 来源: [TechCrunch](https://techcrunch.com/2026/04/13/vercel-ceo-guillermo-rauch-signals-ipo-readiness-as-ai-agents-fuel-revenue-surge/)
+**AI数据中心初创Fluidstack正进行10亿美元融资，估值180亿美元**
+- Fluidstack是一家AI数据中心初创公司，在为Anthropic建设数据中心获得500亿美元合同后，正在进行10亿美元融资。消息人士透露，此轮融资后估值将达到180亿美元，而就在几个月前其估值仅为75亿美元。
+  > 算力供给侧竞争加剧，Fluidstack以数据中心+大客户合同模式快速崛起，挑战传统云厂商地位
+   - 来源: [TechCrunch](https://techcrunch.com/2026/04/14/ai-datacenter-startup-fluidstack-in-talks-for-1b-round-at-18b-valuation-months-after-hitting-7-5b-says-report/)
 
-**AI企业合规服务商Haast获1200万美元A轮融资**
-- Haast是一家人工智能企业合规解决方案服务商，运用大语言模型实现企业合规工作自动化与现代化升级，助力营销、法务及合规团队节省时间、降低风险、加快内容审批效率。获1200万美元A轮融资，Peak XV Partners领投。
-  > 💡 合规自动化是LLM落地的确定性场景，大额融资验证赛道价值
-   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14695638)
+**AI视频生成公司Sand.ai完成5000万美元融资**
+- Sand.ai是一家中国AI视频生成技术公司，核心团队来自微软亚洲研究院和阿里巴巴达摩院。公司主要研究方向为视频生成大模型和通用人工智能，技术路线为自回归世界模型。近期完成新一轮约5000万美元融资。
+  > 中国视频生成赛道的自研世界模型路线获得资本认可，与Sora等Diffusion路线形成竞争
+   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14695680)
 
-**Google发布从备考到毕业的全流程AI学习工具**
-- Google发布最新AI学习工具，覆盖从考试准备到毕业的全流程，为学习者提供AI驱动的个性化支持。
-  > 💡 Google在教育赛道全面布局，AI学习助手成为入口级产品
-   - 来源: [The Keyword](https://blog.google/products-and-platforms/products/education/ai-tools-programs-educators/)
+**CREAO AI完成Pre-A轮千万美元融资，用Agent OS重构工作入口**
+- Agentic创业公司CREAO AI完成千万级美元Pre-A轮融资，由Prosperity7 Ventures（阿美风险投资）和经纬创投领投，云启资本、砺思资本、高瓴创投、红杉中国、华业天成资本跟投。成立不到一年累计融资超3000万美元，用户突破20万（几乎全部自然增长）。CTO Peter Pang为Meta Llama 3团队前研究科学家。产品定位"Agent OS"——AI既造工具也跑工具的闭环系统，区别于Gumloop的可视化工作流和Relevance的预配置智能体。
+  > Agent从"更好的回答者"走向"自主执行闭环"，AI造工具+AI用工具的模式是Agent落地的新范式
+   - 来源: [云启资本/Z Potentials](https://mp.weixin.qq.com/s/CGeWCscKeVbFpAH3oDF6pA)
 
-**亚洲Q1创业融资达274亿美元创三年新高，中国占60%由AI驱动**
-- Crunchbase数据显示，2026年Q1亚洲创业融资达**274亿美元**，环比增长20%，同比接近翻倍，创三年多新高。其中中国创业公司获得约**165亿美元**（占60%），连续三个季度增长。**AI是核心驱动力**，Q1亚洲AI相关融资约112亿美元创历史记录，最大融资轮次包括StepFun、Moonshot AI和Galaxy Bot。印度以38亿美元位居第二，最大轮次为AI系统开发商Neysa的6亿美元融资。
-  > 💡 **中国AI创业投资已走出2025年上半年低谷**，大模型和具身智能是最受资本青睐的赛道，亚洲AI融资创纪录印证全球AI投资重心东移
-   - 来源: [Crunchbase News](https://news.crunchbase.com/venture/china-leads-startup-funding-ai-seed-growth-asia-q1-2026/)
+**OpenAI收购AI财务规划公司Hiro Finance**
+- OpenAI收购AI个人理财初创Hiro Finance，创始人Ethan Bloch（此前创办Digit以约$2.3亿出售）及约10人团队加入OpenAI。Hiro成立于2024年，提供AI驱动的财务规划工具，用户输入薪资、债务等信息后可模拟不同财务情景。Hiro将于4月20日关停服务。**这暗示OpenAI在为ChatGPT构建财务规划能力**，此前OpenAI已有面向企业财务团队的营销定位。
+  > OpenAI通过收购补充垂直场景能力，ChatGPT从通用助手向专业领域纵深扩展
+   - 来源: [TechCrunch](https://techcrunch.com/2026/04/13/openai-has-bought-ai-personal-finance-startup-hiro/)
 
 ### X讨论
-**SemiAnalysis：政策压力下China Plus One已超越规划阶段**
-- SemiAnalysis分析指出，新政府持续施压，相关数据显示China Plus One战略已超越规划阶段，进入实质性实施。
-  > 💡 地缘政治持续影响供应链布局，制造业外迁速度超预期
-   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2043736085117677699#m)
+**Anthropic发布 Automated Alignment Researcher 研究**
+- Anthropic Fellows团队发布新研究，探讨开发自动化对齐研究员。实验旨在了解Claude Opus 4.6是否能加速AI对齐研究进程。该研究涉及将AI模型用于AI安全对齐方向。
+  > AI对齐研究自动化提上日程，模型反向服务于自身安全治理是重要方向探索
+   - 来源: [@anthropicai](https://x.com/AnthropicAI/status/2044138481790648323#m)
 
 
 ---
-*更新时间: 2026-04-14 09:30*
+*更新时间: 2026-04-15 07:45*

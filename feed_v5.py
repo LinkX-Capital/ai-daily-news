@@ -1302,7 +1302,7 @@ def generate_report(articles):
     lines = [f"## {month_day} AI 前沿动态", "",
              f"> 自动汇总 | 时间窗口: {hours}h | 每类 Top 5", "",
              "---", "",
-             "#要点汇总#", ""]
+             "## 要点汇总", ""]
 
     for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
         items = by_cat.get(cat, [])

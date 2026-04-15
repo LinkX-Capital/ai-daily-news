@@ -42,7 +42,7 @@ def read_report():
     summary = []
     in_summary = False
     for line in lines:
-        if "#要点汇总#" in line:
+        if "要点汇总" in line and line.strip().startswith('#'):
             in_summary = True
             continue
         if in_summary and line.startswith("---"):
@@ -63,7 +63,7 @@ def send_email(report):
         return False
 
     subject = f"AI前沿动态 {datetime.now().strftime('%m月%d日')}"
-    body = f"{report['date']}\n\n#要点汇总#\n\n{report['summary']}\n\n---\n详细内容见本地文件"
+    body = f"{report['date']}\n\n## 要点汇总\n\n{report['summary']}\n\n---\n详细内容见本地文件"
 
     msg = MIMEText(body, "plain", "utf-8")
     msg["Subject"] = subject
@@ -159,7 +159,7 @@ def send_feishu(report):
             # 按summary-item分割
             items_html = re.split(r'<div class="summary-item">', summary_html)
             for item_html in items_html[1:]:
-                cat_match = re.search(r'<span class="cat-tag">([^<]+)</span>', item_html)
+                cat_match = re.search(r'<span class="cat-tag[^"]*">([^<]+)</span>', item_html)
                 if not cat_match:
                     continue
                 cat = unescape(cat_match.group(1))
