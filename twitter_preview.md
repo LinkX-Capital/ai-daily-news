@@ -1,6 +1,6 @@
 # Twitter 动态预览
-**日期**：2026-04-15 07:15
-**总计**：19 条推文
+**日期**：2026-04-16 07:15
+**总计**：22 条推文
 
 ---
 
@@ -13,100 +13,88 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **GMI Cloud and Zai_org launch fast inference + frontier models globally, first stop Singapore**
-   @zai_org
-2. **Luma AI introduces flexible aspect ratio and cropping for any frame**
-   @lumalabsai
-3. **Professional headshots with AI, no studio needed**
-   @lumalabsai
-4. **Claude Code desktop redesign with multi‑session sidebar**
-   @claudeai
-5. **vLLM powers large‑scale OCR pipeline for Chandra‑OCR‑2 at high throughput**
-   @vllm_project
-6. **The World Labs launches Spark 2.0 for high‑fidelity 3DGS on the web**
-   @theworldlabs
-7. **OpenRouter introduces new reranking API endpoint for relevance scores**
-   @openrouter
-8. **OpenRouter lists available reranker models including cohere/rerank‑4‑pro**
-   @openrouter
-9. **OpenRouter explains benefits of adding rerankers to RAG pipelines**
-   @openrouter
-10. **Recursive loop in startups: GTM improvements drive growth**
-   @swyx
+1. **标题**
+   @来源
 
 ---
 
-## 🏢 公司发布（14条）
+## 🏢 公司发布（16条）
+
+### @aiatmeta | Model
+
+- RT by @AIatMeta: 🚀 Muse Spark Safety & Preparedness Report for Meta AI is out.  We start with our pre-deployment assessment under Meta's Advanced AI S...
+  [查看](https://x.com/summeryue0/status/2044187757099233772#m)
+
+### @alibaba_qwen | Model
+
+- It’s finally here! 🚀 Huge thanks to the @opencode  team for the seamless integration. Qwen3.6-Plus and Qwen3.5-Plus are now live in Go!  Update now to...
+  [查看](https://x.com/Alibaba_Qwen/status/2044427258526581148#m)
 
 ### @anthropicai | Model
 
-- R to @AnthropicAI: We discuss this, along with the other implications of this research, in our blog: https://www.anthropic.com/research/automated-alig...
-  [查看](https://x.com/AnthropicAI/status/2044138490904932853#m)
-- R to @AnthropicAI: AI models aren’t yet general-purpose alignment scientists. Progress isn't as easy to verify on most alignment research tasks: our A...
-  [查看](https://x.com/AnthropicAI/status/2044138489495605292#m)
-- R to @AnthropicAI: To test the broader usefulness of the AARs’ methods, we assessed how well they worked on two datasets the AARs hadn’t seen before. ...
-  [查看](https://x.com/AnthropicAI/status/2044138487025144231#m)
+- Research we co-authored on subliminal learning—how LLMs can pass on traits like preferences or misalignment through hidden signals in data—was publish...
+  [查看](https://x.com/AnthropicAI/status/2044493337835802948#m)
 
-### @claudeai | Model
+### @googleai | Model
 
-- We've redesigned Claude Code on desktop.  You can now run multiple Claude sessions side by side from one window, with a new sidebar to manage them all...
-  [查看](https://x.com/claudeai/status/2044131493966909862#m)
+- ⚠️ R to @GoogleAI: Gemini 3.1 Flash TTS is rolling out in Google Vids and is available today in preview via the Gemini API and in @GoogleAIStudio.   Whet...
+  [查看](https://x.com/GoogleAI/status/2044447638511383024#m)
+- Pinned: Today we launched Gemini 3.1 Flash TTS, our most expressive and controllable text-to-speech model yet.  This launch [excitement] includes audi...
+  [查看](https://x.com/GoogleAI/status/2044447560384102592#m)
 
 ### @lumalabsai | Research
 
+- The internet moves fast. Keep up.    Pick your meme. Set the context. Luma Agents remix it for whatever moment you're in.    Start today → https://app...
+  [查看](https://x.com/LumaLabsAI/status/2044529529121558895#m)
+- Luma Agents just powered Mazda's first AI-produced commercial. Concept to final approval in under two weeks.    Boundless, a Johannesburg-based indepe...
+  [查看](https://x.com/LumaLabsAI/status/2044460810781790435#m)
+- The censors decided this yogurt commercial for Luma's new campaign was too incredible and controversial, so they banned it. Are you going to let them ...
+  [查看](https://x.com/LumaLabsAI/status/2044449107801215350#m)
 - Every platform. Every format. Every frame.    Pick your aspect ratio or crop it yourself. No exporting, no rebuilding from scratch.    Start today → h...
   [查看](https://x.com/LumaLabsAI/status/2044182485848994216#m)
-- Professional headshots.     No outfit panic. No studio. No scheduling.    Upload your photo. Pick your style. Get a headshot ready for any room you're...
-  [查看](https://x.com/LumaLabsAI/status/2044152872879980670#m)
-
-### @openai | Model
-
-- ⚠️ R to @OpenAI: For years, we’ve been building our cyber defense program on the principles of democratized access, iterative deployment, and ecosystem r...
-  [查看](https://x.com/OpenAI/status/2044161908354494633#m)
-- We’re expanding Trusted Access for Cyber with additional tiers for authenticated cybersecurity defenders.   Customers in the highest tiers can request...
-  [查看](https://x.com/OpenAI/status/2044161906936791179#m)
 
 ### @openrouter | Infra
 
-- R to @OpenRouter: Simple to use: pass a query and documents, get back relevance scores using a single API: POST `/api/v1/rerank`  → model: "cohere/rer...
-  [查看](https://x.com/OpenRouter/status/2044070467254784009#m)
-- R to @OpenRouter: Available models are here: http://openrouter.ai/models?output_modalities=rerank  - cohere/rerank-4-pro — SOTA accuracy, 32K context ...
-  [查看](https://x.com/OpenRouter/status/2044070465547681815#m)
-- New on OpenRouter: Reranker Models 🔍  Why add a reranker to your RAG pipeline? Embedding search finds relevant chunks, but rerankers tell you which on...
-  [查看](https://x.com/OpenRouter/status/2044070463723204730#m)
-
-### @theworldlabs | Research
-
-- We built Spark 2.0 to bring the most ambitious 3DGS worlds to the web🌍  Making high-fidelity 3D accessible on any device is a big step for spatial sto...
-  [查看](https://x.com/theworldlabs/status/2044096996148171035#m)
+- RT by @OpenRouter: Since launching media-gen models, we've seen over 100m generations and 50% MoM growth.  Video on @OpenRouter does a few things diff...
+  [查看](https://x.com/alexatallah/status/2044500778086228278#m)
+- RT by @OpenRouter: Just for fun I made a benchmark of the models trading oil. I ran 9 frontier LLMs  trading from 1/1 => 3/14  Oil was up 72% so none ...
+  [查看](https://x.com/b3nhuang/status/2044486499660660826#m)
+- R to @OpenRouter: Thanks to everyone who tested the alpha and helped shape the API. If you want early access to what's next, join us on Discord: https...
+  [查看](https://x.com/OpenRouter/status/2044472227798667314#m)
+- R to @OpenRouter: Video models love detail. Use an LLM to write richer scene and motion prompts, or image models to generate characters and settings. ...
+  [查看](https://x.com/OpenRouter/status/2044472226322194905#m)
+- R to @OpenRouter: Video APIs are fragmented. Providers use different request shapes, parameter names, and billing units. Our approach:  - async job-ba...
+  [查看](https://x.com/OpenRouter/status/2044472224975909234#m)
 
 ### @vllm_project | Infra
 
-- 🚀 Great to see vLLM powering OCR at this scale — Chandra-OCR-2 (5B) serving ~60 papers/hour per L40S across 16 parallel jobs.  The full pipeline break...
-  [查看](https://x.com/vllm_project/status/2043964594679636260#m)
+- At vLLM Korea Meetup 2026 (Seoul, April 2), engineers shared how they run vLLM in production:  - Samsung: air-gapped private LLM API on internal GPUs,...
+  [查看](https://x.com/vllm_project/status/2044331421213569484#m)
+- If you missed what landed in vLLM v0.17–v0.19, this 8-min walkthrough by @mgoin_ is the fastest way to catch up. ⬇️
+  [查看](https://x.com/vllm_project/status/2044239837285495039#m)
 
-### @zai_org | Model
-
-- RT by @Zai_org: GMI Cloud and @Zai_org  are bringing fast inference + frontier models around the globe.  First stop: Singapore.  Big congrats to all t...
-  [查看](https://x.com/gmi_cloud/status/2043937423470838255#m)
-
-## 👤 研究者动态（5条）
+## 👤 研究者动态（6条）
 
 ### @andrewyng [independent] | Research
 
-- I'm excited about voice as a UI layer for existing visual applications — where speech and screen update together. This goes well beyond voice-only use...
-  [查看](https://x.com/AndrewYNg/status/2044088884989177991#m)
+- New course: Spec-Driven Development with Coding Agents, built in partnership with @jetbrains, and taught by @paulweveritt.  Vibe coding is fast, but o...
+  [查看](https://x.com/AndrewYNg/status/2044449830605582629#m)
+
+### @jeffdean [Google] | Infra
+
+- It was a delight to serve on the selection committee with an awesome group of committee members.  We had lots of great submissions to evaluate and exc...
+  [查看](https://x.com/JeffDean/status/2044509365164773818#m)
+- R to @JeffDean: In case it's not clear, you can click on the picture in the first image to learn more about Ricardo and the award: Twitter swallowed m...
+  [查看](https://x.com/JeffDean/status/2044449033490760085#m)
+- Delighted to see that Ricardo Baeza-Yates (@PolarBearby) is this year's winner of the @TheOfficialACM Luiz Barroso Award (an award named in honor of m...
+  [查看](https://x.com/JeffDean/status/2044448743811129716#m)
 
 ### @swyx [AI社区] | App
 
-- i think one of the most impt recursive loops in startups is startups that improve marketing/revenue growth (aka GTM) because they can obviously dogfoo...
-  [查看](https://x.com/swyx/status/2044189953333309564#m)
+- btw the famous slack chart is slack propaganda and everyone who cites it is legally obligated to also link to @sophiebits
+  [查看](https://x.com/swyx/status/2044294227887304731#m)
 
 ### @thegregyang [xAI] | Model
 
-- RT by @TheGregYang: I want to ask you to follow this dot with your eyes. Was that easy? Without you even having to give that much thought, your brain ...
-  [查看](https://x.com/ImmunoFever/status/2043857878092529720#m)
-- looks like I have the TT genotype for the SLCO1B1 gene so I should have low risk for statin
-  [查看](https://x.com/TheGregYang/status/2044131630366032038#m)
-- incidentally I took this long covid test (Radiance Diagnostics) during the same blood draw another cytokine test (CytoDx) but the results are wildly d...
-  [查看](https://x.com/TheGregYang/status/2044128766730072158#m)
+- turns out LMNT salt was a big part why I had persisting stomach issues last few weeks  this was made very obvious when I was fasting and took LMNT to ...
+  [查看](https://x.com/TheGregYang/status/2044203175599845660#m)
