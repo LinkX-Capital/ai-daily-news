@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-16 07:15
-**总计**：22 条推文
+**总计**：25 条推文
 
 ---
 
@@ -11,19 +11,7 @@
 
 ---
 
-## ⭐ 今日重点（LLM 提炼）
-
-1. **标题**
-   @来源
-
----
-
-## 🏢 公司发布（16条）
-
-### @aiatmeta | Model
-
-- RT by @AIatMeta: 🚀 Muse Spark Safety & Preparedness Report for Meta AI is out.  We start with our pre-deployment assessment under Meta's Advanced AI S...
-  [查看](https://x.com/summeryue0/status/2044187757099233772#m)
+## 🏢 公司发布（18条）
 
 ### @alibaba_qwen | Model
 
@@ -50,8 +38,6 @@
   [查看](https://x.com/LumaLabsAI/status/2044460810781790435#m)
 - The censors decided this yogurt commercial for Luma's new campaign was too incredible and controversial, so they banned it. Are you going to let them ...
   [查看](https://x.com/LumaLabsAI/status/2044449107801215350#m)
-- Every platform. Every format. Every frame.    Pick your aspect ratio or crop it yourself. No exporting, no rebuilding from scratch.    Start today → h...
-  [查看](https://x.com/LumaLabsAI/status/2044182485848994216#m)
 
 ### @openrouter | Infra
 
@@ -66,6 +52,20 @@
 - R to @OpenRouter: Video APIs are fragmented. Providers use different request shapes, parameter names, and billing units. Our approach:  - async job-ba...
   [查看](https://x.com/OpenRouter/status/2044472224975909234#m)
 
+### @prismml | Research
+
+- RT by @PrismML: The era of 1-bit LLMs is here — now with WebGPU acceleration! 🤯  It's incredible to think that a quantized 1.7B model (just 290MB in s...
+  [查看](https://x.com/xenovacom/status/2044451835780518024#m)
+
+### @semianalysis_ | Infra
+
+- Comparing hardware on InferenceX just got a massive upgrade. Our new changelog update lets you compare every change for any gpu all on the same chart....
+  [查看](https://x.com/SemiAnalysis_/status/2044551571707482407#m)
+- ISSCC 2026: NVIDIA & Broadcom CPO, HBM4 & LPDDR6, TSMC Active LSI, Logic-Based SRAM, UCIe-S and More
+  [查看](https://x.com/SemiAnalysis_/status/2044486174031409569#m)
+- A Day in the Life of @dwarkesh_sp's Cousin
+  [查看](https://x.com/SemiAnalysis_/status/2044445940904267921#m)
+
 ### @vllm_project | Infra
 
 - At vLLM Korea Meetup 2026 (Seoul, April 2), engineers shared how they run vLLM in production:  - Samsung: air-gapped private LLM API on internal GPUs,...
@@ -73,7 +73,7 @@
 - If you missed what landed in vLLM v0.17–v0.19, this 8-min walkthrough by @mgoin_ is the fastest way to catch up. ⬇️
   [查看](https://x.com/vllm_project/status/2044239837285495039#m)
 
-## 👤 研究者动态（6条）
+## 👤 研究者动态（7条）
 
 ### @andrewyng [independent] | Research
 
@@ -91,6 +91,8 @@
 
 ### @swyx [AI社区] | App
 
+- I've commented that "this is the year of subagents", but that is largely an optimization problem.  the inverse problem - having agents that compose an...
+  [查看](https://x.com/swyx/status/2044542494420214217#m)
 - btw the famous slack chart is slack propaganda and everyone who cites it is legally obligated to also link to @sophiebits
   [查看](https://x.com/swyx/status/2044294227887304731#m)
 
