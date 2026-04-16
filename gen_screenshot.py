@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""使用playwright生成手机端长图 - 深色正式风格（用于分享给LP）"""
+"""使用playwright生成手机端长图（用于分享给LP）"""
 
 import asyncio
 import re
+import os
+import base64
 from datetime import datetime
 from collections import defaultdict
 from playwright.async_api import async_playwright
-from html_generator import parse_md, convert_bold, get_priority_display, CAT_ORDER
+from html_generator import parse_md, convert_bold, CAT_ORDER
 
 
 def parse_md_screenshot(md_content):
@@ -15,11 +17,7 @@ def parse_md_screenshot(md_content):
     for a in articles:
         if not a.get('body'):
             continue
-        # 从 body 中提取 `> insight文字` 部分
-        # MD 里 insight 格式: "  > insight内容" 被 body 收集后变成 " > insight内容"
         body = a['body']
-        # 匹配末尾的 `> ` 开头的 insight 文本
-        # 可能有多个以 `. ` 结尾的句子，最后跟着 `> xxx`
         insight_parts = []
         body_parts = []
 
@@ -34,7 +32,6 @@ def parse_md_screenshot(md_content):
 
         if insight_parts:
             a['body'] = ' '.join(b.strip() for b in body_parts).strip()
-            # 追加到 key_points（insight 区域）
             for ip in insight_parts:
                 if ip not in a.get('key_points', []):
                     a.setdefault('key_points', []).insert(0, ip)
@@ -42,26 +39,33 @@ def parse_md_screenshot(md_content):
 
 
 def build_screenshot_html(md_content):
-    """从 MD 内容生成深色正式风格的截图 HTML"""
+    """渐变背景 + 白色卡片布局"""
     articles, summary_items = parse_md_screenshot(md_content)
-    month_day = datetime.now().strftime("%m月%d日")
-    today = datetime.now().strftime("%Y-%m-%d")
+    today_str = datetime.now().strftime("%Y年%m月%d日")
+    today_iso = datetime.now().strftime("%Y-%m-%d")
+
+    item_num = [0]
+
+    cat_icons = {
+        "模型前沿": "🧠", "产业动态": "🏭", "算力追踪": "⚡",
+        "初创&融资": "💰", "研究关注": "🔬", "X讨论": "💬",
+    }
 
     by_cat = defaultdict(list)
     for a in articles:
         for c in a.get("categories", []):
             by_cat[c].append(a)
 
-    # 分类配色
-    cat_colors = {
-        "模型前沿": "#60a5fa", "产业动态": "#34d399", "算力追踪": "#a78bfa",
-        "初创&融资": "#fbbf24", "研究关注": "#22d3ee", "X讨论": "#9ca3af",
-    }
-    cat_bg = {
-        "模型前沿": "rgba(59,130,246,0.12)", "产业动态": "rgba(16,185,129,0.12)",
-        "算力追踪": "rgba(139,92,246,0.12)", "初创&融资": "rgba(245,158,11,0.12)",
-        "研究关注": "rgba(6,182,212,0.12)", "X讨论": "rgba(107,114,128,0.12)",
-    }
+    # logos base64
+    logo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "assets-logo.png"))
+    with open(logo_path, "rb") as f:
+        logo_b64 = base64.b64encode(f.read()).decode()
+    logo_url = f"data:image/png;base64,{logo_b64}"
+
+    inc_logo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "assets-incubator-logo.png"))
+    with open(inc_logo_path, "rb") as f:
+        inc_b64 = base64.b64encode(f.read()).decode()
+    inc_logo_url = f"data:image/png;base64,{inc_b64}"
 
     html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -70,213 +74,315 @@ def build_screenshot_html(md_content):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-body {{
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-    background: #0c0f1a;
-    color: #e2e8f0;
+html, body {{
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #764ba2;
+    color: #1a1a1a;
     line-height: 1.6;
-    width: 375px;
+    margin: 0;
+    padding: 0;
     -webkit-font-smoothing: antialiased;
+    text-align: justify;
 }}
+
+/* ===== Header ===== */
 .header {{
-    background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 40%, #1e2a4a 100%);
-    padding: 32px 20px 24px;
-    position: relative;
-    overflow: hidden;
+    background: #ffffff;
+    margin: 12px 12px 0;
+    border-radius: 16px;
+    padding: 16px 20px 22px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }}
-.header::after {{
-    content: '';
-    position: absolute;
-    bottom: 0; left: 20px; right: 20px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(100,140,255,0.35), rgba(160,100,255,0.25), transparent);
+.header-logos {{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f0f0f0;
 }}
-.header-label {{
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: #475569;
-    margin-bottom: 10px;
+.header-logo-fund {{
+    height: 24px;
+    width: auto;
+}}
+.header-logo-inc {{
+    height: 14px;
+    width: auto;
+}}
+.header-text {{
+    text-align: center;
+    text-align-last: center;
 }}
 .header h1 {{
     font-size: 20px;
     font-weight: 700;
-    color: #f8fafc;
+    color: #1a1a2e;
+    letter-spacing: 0.5px;
     margin-bottom: 4px;
-    letter-spacing: -0.3px;
 }}
-.header-meta {{
-    font-size: 11px;
-    color: #475569;
+.header-sub {{
+    font-size: 10px;
+    color: #333333;
+    letter-spacing: 0.2px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    margin-left: -20px;
+    margin-right: -20px;
 }}
-.summary {{
-    padding: 18px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+.header-date {{
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #764ba2;
+    background: #f5f0ff;
+    padding: 3px 14px;
+    border-radius: 20px;
 }}
-.summary-label {{
-    font-size: 9px;
+
+/* ===== Content Cards ===== */
+.card {{
+    background: #ffffff;
+    margin: 12px;
+    border-radius: 16px;
+    padding: 0 20px 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}}
+.section-label {{
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #475569;
-    margin-bottom: 12px;
-}}
-.summary-item {{
+    color: #1a1a2e;
+    padding: 16px 0 10px;
     margin-bottom: 10px;
 }}
-.summary-item:last-child {{ margin-bottom: 0; }}
-.cat-tag {{
+/* 要点速览 */
+.summary-item {{
+    margin-bottom: 8px;
+}}
+.summary-item:last-child {{
+    margin-bottom: 0;
+}}
+.summary-cat {{
     display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #764ba2;
+    background: #f5f0ff;
     padding: 2px 8px;
     border-radius: 3px;
-    font-size: 9px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }}
 .summary-titles {{
     display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
+    flex-direction: column;
+    gap: 2px;
 }}
 .summary-title {{
-    display: inline-block;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
-    padding: 3px 8px;
-    border-radius: 3px;
-    font-size: 11px;
-    color: #94a3b8;
-    line-height: 1.35;
+    font-size: 12px;
+    color: #333333;
+    line-height: 1.4;
+    padding-left: 12px;
+    position: relative;
 }}
-.section-title {{
-    font-size: 10px;
+.summary-title::before {{
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #764ba2;
+    font-size: 12px;
+}}
+
+/* ===== Category ===== */
+.cat-section {{
+    margin-bottom: 20px;
+}}
+.cat-section:last-child {{
+    margin-bottom: 0;
+}}
+.cat-header {{
+    font-size: 13px;
     font-weight: 700;
+    color: #764ba2;
     letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 14px 20px 6px;
+    padding: 10px 0 8px;
+    border-bottom: 1px solid #f0e6f6;
+    margin-bottom: 12px;
 }}
-.card {{
-    padding: 14px 20px 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-    border-left: 2.5px solid transparent;
+
+/* ===== News Item ===== */
+.news-item {{
+    margin-bottom: 18px;
 }}
-.card-header {{
+.news-item:last-child {{
+    margin-bottom: 0;
+}}
+.news-header {{
     display: flex;
     align-items: flex-start;
-    gap: 7px;
+    gap: 8px;
     margin-bottom: 6px;
 }}
-.priority {{
+.news-num {{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #ffffff;
     font-size: 11px;
-    line-height: 1;
-    margin-top: 4px;
+    font-weight: 700;
+    border-radius: 4px;
     flex-shrink: 0;
+    margin-top: 1px;
 }}
-.title {{
+.news-title {{
     font-size: 14px;
     font-weight: 600;
-    color: #f1f5f9;
+    color: #1a1a2e;
+    line-height: 1.45;
     flex: 1;
-    line-height: 1.4;
 }}
-.body {{
-    font-size: 12px;
-    color: #94a3b8;
-    margin-bottom: 8px;
-    line-height: 1.7;
+.news-body {{
+    font-size: 13px;
+    color: #333333;
+    line-height: 1.75;
+    padding-left: 24px;
+    margin-bottom: 6px;
 }}
-.body strong {{ color: #e2e8f0; font-weight: 600; }}
-.body code {{
-    background: rgba(139,92,246,0.15);
+.news-body strong {{
+    color: #1a1a1a;
+    font-weight: 600;
+}}
+.news-body code {{
+    background: #f3eeff;
     padding: 1px 4px;
     border-radius: 3px;
-    font-size: 11px;
-    color: #c4b5fd;
+    font-size: 11.5px;
+    color: #764ba2;
 }}
-.insight {{
-    background: rgba(245,158,11,0.05);
-    border-left: 2px solid rgba(245,158,11,0.25);
+.news-insight {{
+    background: #faf6ff;
+    border-left: 2.5px solid #a78bfa;
     padding: 6px 10px;
     border-radius: 0 4px 4px 0;
+    font-size: 13px;
+    color: #6d28d9;
+    line-height: 1.5;
+    margin-left: 24px;
+    margin-bottom: 4px;
+}}
+.news-source {{
     font-size: 11px;
-    color: #fbbf24;
-    margin-bottom: 8px;
-    line-height: 1.45;
+    color: #999999;
+    padding-left: 24px;
 }}
-.source {{
-    font-size: 10px;
-    color: #334155;
-}}
-.source a {{
-    color: #475569;
-    text-decoration: none;
-}}
+
+/* ===== Footer ===== */
 .footer {{
+    background: #ffffff;
+    margin: 0 12px 12px;
+    border-radius: 16px;
     text-align: center;
     padding: 16px 20px;
-    color: #1e293b;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}}
+.footer-inner {{
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+}}
+.footer-logo {{
+    width: 80px;
+    height: auto;
+    flex-shrink: 0;
+    margin-top: 1px;
+}}
+.footer-desc {{
+    font-size: 11px;
+    color: #999999;
+    line-height: 1.6;
+    flex: 1;
+}}
+.footer-date {{
     font-size: 9px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    border-top: 1px solid rgba(255,255,255,0.02);
+    color: #cccccc;
+    text-align: center;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
 }}
 </style>
 </head>
 <body>
+
 <div class="header">
-    <div class="header-label">AI Daily Intelligence</div>
-    <h1>{month_day} AI前沿动态</h1>
-    <div class="header-meta">{len(articles)} 条动态 &middot; 过去24小时</div>
+    <div class="header-logos">
+        <img src="{logo_url}" class="header-logo-fund" alt="星连资本">
+        <img src="{inc_logo_url}" class="header-logo-inc" alt="奇绩创坛">
+    </div>
+    <div class="header-text">
+        <h1>全球AI前沿动态</h1>
+        <div class="header-sub">每日追踪AI领域前沿进展，捕捉模型演进、研究突破与产业动态等关键信号</div>
+        <div class="header-date">{today_str}</div>
+    </div>
 </div>
-<div class="summary">
-    <div class="summary-label">要点速览</div>"""
+
+<div class="card">
+    <div class="section-label">📌 要点速览</div>"""
 
     # 要点速览
     for cat in CAT_ORDER:
         items = summary_items.get(cat, [])
         if not items:
             continue
-        color = cat_colors.get(cat, "#94a3b8")
-        bg = cat_bg.get(cat, "rgba(255,255,255,0.05)")
-        html += f'<div class="summary-item"><span class="cat-tag" style="background:{bg};color:{color}">{cat}</span><div class="summary-titles">'
+        html += f'<div class="summary-item"><span class="summary-cat">{cat}</span><div class="summary-titles">'
         for item in items:
             html += f'<span class="summary-title">{convert_bold(item)}</span>'
         html += '</div></div>'
 
     html += '</div>'
 
-    # 详细内容
+    # 详细解读
+    html += '<div class="card"><div class="section-label">📖 详细解读</div>'
+
     for cat in CAT_ORDER:
-        items = by_cat.get(cat, [])
-        if not items:
+        cat_items = by_cat.get(cat, [])
+        if not cat_items:
             continue
-        color = cat_colors.get(cat, "#94a3b8")
-        html += f'<div class="section-title" style="color:{color}">{cat}</div>'
-        border_color = cat_colors.get(cat, "#475569")
-        for a in items:
-            priority = a.get("priority", 0)
-            _, emoji = get_priority_display(priority, a.get("categories"), a.get("title", ""), a.get("body", ""))
-            html += f'''<div class="card" style="border-left-color:{border_color}">
-    <div class="card-header">
-        <span class="priority">{emoji}</span>
-        <span class="title">{a["title"]}</span>
-    </div>'''
-            if a.get("body"):
-                html += f'<div class="body">{convert_bold(a["body"])}</div>'
-            if a.get("key_points"):
-                for point in a["key_points"]:
-                    html += f'<div class="insight">💡 {convert_bold(point)}</div>'
+        html += f'<div class="cat-section"><div class="cat-header">{cat}</div>'
+
+        for a in cat_items:
+            item_num[0] += 1
+            num = item_num[0]
+            title = a.get("title", "")
+            body = a.get("body", "")
+            key_points = a.get("key_points", [])
             source = a.get("source", "")
             link = a.get("link", "")
-            if link:
-                html += f'<div class="source">📌 来源: <a href="{link}">{source}</a></div>'
-            elif source:
-                html += f'<div class="source">📌 来源: {source}</div>'
+
+            html += '<div class="news-item">'
+            html += f'<div class="news-header"><span class="news-num">{num}</span><span class="news-title">{title}</span></div>'
+
+            if body:
+                html += f'<div class="news-body">{convert_bold(body)}</div>'
+
+            for point in key_points:
+                html += f'<div class="news-insight">💡 {convert_bold(point)}</div>'
+
             html += '</div>'
 
-    html += f"""<div class="footer">AI Daily Intelligence &middot; {today}</div>
+        html += '</div>'
+
+    html += '</div>'
+
+    html += f"""
+<div class="footer">
+    <div class="footer-inner">
+        <img src="{logo_url}" class="footer-logo" alt="星连资本">
+        <div class="footer-desc">每日追踪AI领域前沿进展。信号源覆盖全球顶尖科技企业、重点实验室与核心人才，为关键机会识别与趋势判断提供支持。</div>
+    </div>
+    <div class="footer-date">{today_iso}</div>
+</div>
 </body>
 </html>"""
     return html
@@ -284,10 +390,8 @@ body {{
 
 async def generate_screenshot():
     today = datetime.now().strftime('%Y-%m-%d')
-    # 优先用带日期的 MD，fallback 到 daily-ai-news.md
     md_dated = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{today}.md"
     md_default = "/Users/shenyalan/ai-daily-news/daily-ai-news.md"
-    import os
     md_file = md_dated if os.path.exists(md_dated) else md_default
     output_file = "/Users/shenyalan/ai-daily-news/daily-ai-news-mobile.png"
 
@@ -304,9 +408,9 @@ async def generate_screenshot():
         )
         await page.set_content(screenshot_html)
         await page.wait_for_timeout(2000)
-        height = await page.evaluate("document.body.scrollHeight")
+        height = await page.evaluate("document.documentElement.scrollHeight")
         await page.set_viewport_size({"width": 375, "height": height})
-        await page.screenshot(path=output_file, full_page=True)
+        await page.screenshot(path=output_file, full_page=True, clip={"x": 0, "y": 0, "width": 375, "height": height})
         await browser.close()
         print(f"✅ 已生成手机端长图: {output_file}")
 

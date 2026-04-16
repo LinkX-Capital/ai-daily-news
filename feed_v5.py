@@ -958,15 +958,21 @@ def calc_similarity(title1, title2):
     return intersection / union if union > 0 else 0
 
 def dedup_articles(articles):
-    """去重：已禁用
-    
-    原因：相似度判断会把不相关的新闻错误合并，导致：
-    1. link 指向错误来源
-    2. 不同新闻被当作同一事件
-    
-    如需恢复，使用 URL 精确匹配或提高相似度阈值
-    """
-    return articles
+    """基于 URL 精确匹配的跨天去重：过滤已在近期存档中出现的文章"""
+    try:
+        recent = load_recent_archives(days=3)
+        seen_links = {a.get("link", "").rstrip("/").split("#")[0] for a in recent if a.get("link")}
+    except Exception:
+        seen_links = set()
+
+    filtered = []
+    for a in articles:
+        link = a.get("link", "").rstrip("/").split("#")[0]
+        if link and link in seen_links:
+            print(f"   [跨天去重] '{a.get('title', '')[:40]}...' 已在前几天发布，跳过")
+        else:
+            filtered.append(a)
+    return filtered
 
 # ========== LLM ==========
 def call_llm(prompt):
@@ -1490,7 +1496,7 @@ def md_to_html_from_file(md_file=None, output_html=None):
 
 # ========== 主函数 ==========
 def load_recent_archives(days=3):
-    """读取近期存档用于关联分析"""
+    """读取近期存档用于关联分析和跨天去重"""
     recent_news = []
     for i in range(1, days+1):
         date = (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
@@ -1502,6 +1508,7 @@ def load_recent_archives(days=3):
                     for a in data.get("articles", []):
                         recent_news.append({
                             "title": a.get("title", ""),
+                            "link": a.get("link", ""),
                             "category": a.get("categories", [""])[0] if a.get("categories") else ""
                         })
             except Exception as e:
@@ -1551,6 +1558,11 @@ def main():
                 all_arts = cached.get('articles', [])
                 errors = cached.get('errors', [])
             print(f"📦 从缓存读取: {len(all_arts)} 条")
+            # 过滤超出时间窗口的文章
+            before_count = len(all_arts)
+            all_arts = [a for a in all_arts if is_in_window(a)]
+            if len(all_arts) < before_count:
+                print(f"   ⏰ 时间窗口过滤: {before_count} → {len(all_arts)} 条（移除 {before_count - len(all_arts)} 条过期）")
         else:
             print(f"❌ 缓存文件不存在: {CACHE_FILE}")
             return
