@@ -106,9 +106,12 @@ def parse_md(md_content):
                 })
             continue
 
-        # 检测 insight
-        if '> 💡' in original_stripped and articles:
-            insight = original_stripped.split('💡')[1].strip() if '💡' in original_stripped else ''
+        # 检测 insight: 支持 "> 💡 text" 和 "> text" 两种格式
+        if articles and (original_stripped.startswith('> ') or original_stripped.startswith('>')):
+            if '> 💡' in original_stripped:
+                insight = original_stripped.split('💡', 1)[1].strip()
+            else:
+                insight = original_stripped.lstrip('> ').strip()
             if insight:
                 articles[-1]['key_points'].append(insight)
             continue
