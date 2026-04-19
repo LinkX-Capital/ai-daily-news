@@ -19,8 +19,8 @@
 ### 产业动态
 
 **OpenAI高管Kevin Weil和Bill Peebles离职，公司关闭Sora团队**
-- OpenAI首席产品官Kevin Weil（后转任科学研究负责人）和Sora核心研究员Bill Peebles宣布离职。Weil此前负责OpenAI for Science项目（含Prism科学发现平台），Peebles是Sora的核心开发者。**Sora在被关闭前每天消耗约100万美元算力成本**，Weil还曾因在X上声称GPT-5解决了10个未解Erdős数学问题而被数学家公开打假。此外企业应用CTO Srinivas Narayanan同期离职。**三轮高管离职+砍掉消费者moonshot，OpenAI正全面转向企业AI和"超级应用"战略**。
-  > OpenAI在半年内砍掉Sora、Science等多个消费者项目，标志着公司从全面扩张转向聚焦企业AI和核心模型
+- OpenAI首席产品官Kevin Weil（后转任科学研究负责人）和Sora核心研究员Bill Peebles宣布离职。Weil此前负责OpenAI for Science项目（含Prism科学发现平台），Peebles是Sora的核心开发者。**Sora在被关闭前每天消耗约100万美元算力成本**，Weil还曾因在X上声称GPT-5解决了10个未解Erdős数学问题而被数学家公开打假。此外企业应用CTO Srinivas Narayanan同期离职。
+  > OpenAI近期的项目调整策略标志着公司从全面扩张转向聚焦企业AI和核心模型
    - 来源: [TechCrunch](https://techcrunch.com/2026/04/17/kevin-weil-and-bill-peebles-exit-openai-as-company-continues-to-shed-side-quests/)
 
 **xAI推出Grok语音转文本API，支持25种语言**
@@ -51,7 +51,7 @@
 ### 初创&融资
 
 **AI编程工具Cursor谈判超20亿美元融资，估值达500亿美元**
-- AI编程工具Cursor正在谈判新一轮融资，预期融资额超过20亿美元，估值达到500亿美元。现有投资方a16z和Thrive预计领投本轮融资。此轮融资反映出企业市场对AI编程工具的需求强劲增长，Cursor作为市场上最受欢迎的AI辅助编程应用之一持续获得资本青睐。
+- AI编程工具Cursor正在谈判新一轮融资，预期融资额超过20亿美元，估值达到500亿美元。现有投资方a16z和Thrive预计领投本轮融资。
   > AI编程工具赛道估值持续攀升，Cursor的高估值验证了企业在软件开发效率提升方面的强烈需求
    - 来源: [TechCrunch](https://techcrunch.com/2026/04/17/sources-cursor-in-talks-to-raise-2b-at-50b-valuation-as-enterprise-growth-surges/)
 
@@ -60,7 +60,7 @@
   > AI智能体在软件开发领域的应用获得资本持续看好
    - 来源: [IT桔子](https://www.itjuzi.com/investevent/14695935)
 
-**供应链AI公司Loop融资9500万美元预测供应链中断**
+**供应链AI公司Loop融资9500万美元预测供应链中断风险**
 - 旧金山初创公司Loop完成9500万美元C轮融资，由Antonio Gracias的Valor领投（xAI的主要支持者）。**Loop构建的AI系统能在供应链中断发生前进行预测和预警**，帮助企业提前调整采购和物流策略。后疫情时代供应链脆弱性已成为企业级AI最有付费意愿的场景之一。
   > 供应链预测AI从响应型走向预测型，9500万美元C轮反映出企业对供应链韧性投资的持续需求
    - 来源: [TechCrunch](https://techcrunch.com/2026/04/17/loop-raises-95m-to-build-supply-chain-ai-that-predicts-disruptions/)
