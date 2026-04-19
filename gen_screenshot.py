@@ -41,7 +41,18 @@ def parse_md_screenshot(md_content):
 def build_screenshot_html(md_content):
     """渐变背景 + 白色卡片布局"""
     articles, summary_items = parse_md_screenshot(md_content)
-    today_str = datetime.now().strftime("%Y年%m月%d日")
+    # Try to extract date from md title (e.g. "## 04月18-19日")
+    m = re.match(r'##\s*(\d{2})月(\d+)(?:[-+](\d+))?日', md_content.lstrip())
+    if m:
+        month = int(m.group(1))
+        day1 = int(m.group(2))
+        day2 = m.group(3)
+        if day2:
+            today_str = f"2026年{month}月{day1}日-{month}月{int(day2)}日"
+        else:
+            today_str = f"2026年{month}月{day1}日"
+    else:
+        today_str = datetime.now().strftime("%Y年%m月%d日")
     today_iso = datetime.now().strftime("%Y-%m-%d")
 
     item_num = [0]

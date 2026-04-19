@@ -145,9 +145,14 @@ def fetch_user_tweets_range(username: str, instance: str, start_date: datetime, 
 
 
 def main():
-    # 定义两个日期范围
+    # 昨天 8:00 到今天 8:00 (北京时间 UTC+8)
+    tz_cn = timezone(timedelta(hours=8))
+    now_cn = datetime.now(tz_cn)
+    start = datetime(now_cn.year, now_cn.month, now_cn.day - 1, 8, 0, 0, tzinfo=tz_cn)
+    end = datetime(now_cn.year, now_cn.month, now_cn.day, 8, 0, 0, tzinfo=tz_cn)
+    range_label = f"{start.month}_{start.day}-{end.month}_{end.day}"
     ranges = [
-        ("3.27-3.28", datetime(2026, 3, 27, 0, 0, 0, tzinfo=timezone.utc), datetime(2026, 3, 29, 0, 0, 0, tzinfo=timezone.utc)),
+        (range_label, start, end),
     ]
 
     instance = get_available_instance()

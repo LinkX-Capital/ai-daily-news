@@ -1684,39 +1684,33 @@ def main():
     if errors:
         print(f"⚠️ 失败: {errors[:3]}")
 
-    # 生成报告（仅当不指定日期时才输出到主文件）
-    if not args.date:
-        if args.no_overwrite and os.path.exists(OUTPUT_FILE):
-            print(f"⚠️ {OUTPUT_FILE} 已存在且 --no-overwrite，跳过覆盖")
-        else:
-            report = generate_report(merged)
-            with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-                f.write(report)
-
-        if args.no_overwrite and os.path.exists(SUMMARY_FILE):
-            print(f"⚠️ {SUMMARY_FILE} 已存在且 --no-overwrite，跳过覆盖")
-        else:
-            # 生成简洁版报告
-            summary_report = generate_summary_report(merged)
-            with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
-                f.write(summary_report)
-            print(f"✅ 简洁版: {SUMMARY_FILE}")
-
-        # 先保存归档
-    # 保存到归档（无论是否指定日期）
-    save_archive(merged)
-    if args.date:
-        print(f"✅ 已归档: archive/news_{args.date}.json")
+    # 生成报告
+    if args.no_overwrite and os.path.exists(OUTPUT_FILE):
+        print(f"⚠️ {OUTPUT_FILE} 已存在且 --no-overwrite，跳过覆盖")
     else:
-        print(f"✅ 已输出: {OUTPUT_FILE}")
+        report = generate_report(merged)
+        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+            f.write(report)
 
-    # 生成HTML（仅当不指定日期时才生成）
-    if not args.date:
-        try:
-            import subprocess
-            subprocess.run(['python', 'html_generator.py'], check=True, capture_output=True)
-        except Exception as e:
-            print(f"   ⚠️ HTML生成失败: {e}")
+    if args.no_overwrite and os.path.exists(SUMMARY_FILE):
+        print(f"⚠️ {SUMMARY_FILE} 已存在且 --no-overwrite，跳过覆盖")
+    else:
+        # 生成简洁版报告
+        summary_report = generate_summary_report(merged)
+        with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
+            f.write(summary_report)
+        print(f"✅ 简洁版: {SUMMARY_FILE}")
+
+    # 保存归档
+    save_archive(merged)
+    print(f"✅ 已输出: {OUTPUT_FILE}")
+
+    # 生成HTML
+    try:
+        import subprocess
+        subprocess.run(['python', 'html_generator.py'], check=True, capture_output=True)
+    except Exception as e:
+        print(f"   ⚠️ HTML生成失败: {e}")
 
 if __name__ == "__main__":
     main()
