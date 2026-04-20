@@ -275,22 +275,72 @@ def check_fact_heuristic(articles):
 
 
 def fetch_source_content(url):
-    """抓取原文内容"""
+    """httpx 直接抓取，作为 MCP 的回退方案"""
     try:
         with httpx.Client(timeout=15, follow_redirects=True, verify=False) as client:
             r = client.get(url, headers={"User-Agent": "Mozilla/5.0"})
             if r.status_code == 200:
-                # 简单提取正文
-                text = r.text
-                # 去掉 HTML 标签
-                text = re.sub(r'<[^>]+>', ' ', text)
-                # 去掉多余空白
+                text = re.sub(r'<[^>]+>', ' ', r.text)
                 text = re.sub(r'\s+', ' ', text).strip()
-                # 截取前 3000 字
-                return text[:3000]
+                if len(text) > 200:
+                    return text[:3000]
     except Exception:
         pass
     return None
+
+
+class MCPWebReader:
+    """MCP web-reader 客户端，复用单次 session"""
+    def __init__(self):
+        self.loop = None
+
+    def fetch(self, url):
+        import asyncio
+        from mcp.client.streamable_http import streamablehttp_client
+        from mcp import ClientSession
+
+        async def _fetch():
+            mcp_url = "https://open.bigmodel.cn/api/mcp/web_reader/mcp"
+            token = os.environ.get("ZHIPU_WEBREADER_TOKEN",
+                                    "5f650035e5a845549e4765184d8179b1.GdehlMpHT0dKq3m3")
+            headers = {"Authorization": f"Bearer {token}"}
+            async with streamablehttp_client(url=mcp_url, headers=headers) as (read, write, _):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+                    result = await session.call_tool("webReader", {
+                        "url": url,
+                        "return_format": "text",
+                        "retain_images": False,
+                    })
+                    for c in result.content:
+                        if hasattr(c, "text"):
+                            text = c.text
+                            try:
+                                parsed = json.loads(text)
+                                # 双重编码：json.loads 可能返回字符串
+                                if isinstance(parsed, str):
+                                    parsed = json.loads(parsed)
+                                if isinstance(parsed, dict):
+                                    content = parsed.get("content", "")
+                                    if content:
+                                        return content[:3000]
+                            except (json.JSONDecodeError, TypeError, AttributeError):
+                                pass
+                            if len(text) > 100:
+                                return text[:3000]
+                    return None
+
+        if self.loop is None or self.loop.is_closed():
+            self.loop = asyncio.new_event_loop()
+        try:
+            return self.loop.run_until_complete(_fetch())
+        except Exception as e:
+            # 如果失败，创建新 loop 重试一次
+            self.loop = asyncio.new_event_loop()
+            try:
+                return self.loop.run_until_complete(_fetch())
+            except Exception as e2:
+                return None
 
 
 def call_llm_factcheck(title, body, insight, source_text):
@@ -351,6 +401,8 @@ def check_fact_llm(articles):
     """用 LLM 对每条新闻与原文做事实校验"""
     issues = []
     checked = 0
+    mcp_reader = MCPWebReader()
+
     for a in articles:
         link = a.get('link', '')
         if not link:
@@ -365,12 +417,19 @@ def check_fact_llm(articles):
         if not links:
             links = [link]
 
-        # 抓取第一个可用链接的原文
+        # 优先用 MCP web-reader 抓取
         source_text = None
         for l in links:
-            source_text = fetch_source_content(l)
+            source_text = mcp_reader.fetch(l)
             if source_text and len(source_text) > 200:
                 break
+
+        # MCP 失败时回退 httpx
+        if not source_text or len(source_text) < 200:
+            for l in links:
+                source_text = fetch_source_content(l)
+                if source_text and len(source_text) > 200:
+                    break
 
         if not source_text or len(source_text) < 200:
             issues.append(('fetch_fail', title, f"无法抓取原文: {links[0][:60]}"))
