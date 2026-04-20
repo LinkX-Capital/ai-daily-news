@@ -6,7 +6,7 @@
 
 ## 要点汇总
 
-- 产业动态：Meta CEO小扎挖角Thinking Machines第5位创始人; 高德发布全栈具身技术体系及ABot-Claw机器人
+- 产业动态：Meta从Thinking Machines Lab挖走第5位创始成员; 高德发布全栈具身技术体系及ABot-Claw机器人
 - 算力追踪：Nikkei称全球DRAM供应缺口将持续到2030年; Epoch AI调查Stargate全部7个站点正在建设; Google与Marvell洽谈合作开发AI推理芯片; 三星停产LPDDR4/LPDDR4X
 - 初创&融资：OpenAI收购AI教育科技公司Chalkie，全球50万+教师用户; 半导体工艺公司AlixLabs获1410万欧元A轮开发原子层蚀刻工艺; Anthropic收到8000亿美元估值投资意向
 - 研究关注：Berkeley RDI审计8大AI Agent基准测试，全部可被零能力Agent刷满分
@@ -17,10 +17,10 @@
 ## 📖 详细参考
 
 ### 产业动态
-**MetaCEO小扎拆骨Thinking Machines，120亿美元AI独角兽第5位创始人加入**
-- Meta CEO扎克伯格正在挖角Thinking Machines的第5位创始人，该公司估值达120亿美元。Thinking Machines作为AI独角兽，其核心团队成员正被Meta高薪招募。
-  > 💡 Meta持续挖角Thinking Machines核心团队，AI顶尖人才的集中度正在提高
-   - 来源: [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652693322&idx=2&sn=33e2bc903b986938996d63f66bf56e2a)
+**Meta从Mira Murati的Thinking Machines Lab挖走第5位创始成员**
+- Thinking Machines Lab由前OpenAI CTO Mira Murati创立，估值120亿美元。最新加入Meta的是Joshua Gross，他从零构建并交付了该公司的旗舰产品Tinker，现加入Meta Superintelligence Labs领导工程团队。**Meta已挖走5位创始成员**（包括联合创始人Andrew Tulloch），OpenAI也挖走了其前CTO Barret Zoph。Thinking Machines Lab则反向引入了PyTorch创建者Soumith Chintala担任CTO，团队已扩张至约130人。
+  > 💡 Thinking Machines Lab同时面临Meta和OpenAI的双向挖角，但它也在从大厂吸引顶尖人才，AI人才流动已呈双向竞争态势
+   - 来源: [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652693322&idx=2&sn=33e2bc903b986938996d63f66bf56e2a) | [Business Insider](https://www.businessinsider.com/thinking-machines-lab-loses-another-founding-member-to-meta-2026-4)
 
 **高德发布全栈具身技术体系及ABot-Claw机器人，参加北京亦庄人形机器人半马**
 - 高德发布首个面向AGI的全栈具身技术体系，涵盖感知、规划、控制全链路，**在15项基准测试中达到SOTA性能**。同步发布ABot-Claw具身智能机器人，专注于打造世界记忆系统，解决机器人对环境的感知和记忆问题。在北京亦庄举行的2026人形机器人半程马拉松中，300余台机器人参赛，高德全自主具身机器人在城市主干道和复杂路段完成长距离导航和导盲任务。
