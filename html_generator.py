@@ -121,12 +121,17 @@ def parse_md(md_content):
             if current_body_lines:
                 articles[-1]['body'] = ' '.join(current_body_lines)
                 current_body_lines = []
-            source_match = re.search(r'\[([^\]]+)\]', original_stripped)
-            if source_match:
-                articles[-1]['source'] = source_match.group(1).strip()
-                link_match = re.search(r'\(([^)]+)\)', original_stripped)
-                if link_match:
-                    articles[-1]['link'] = link_match.group(1)
+            # 提取所有 [name](url) 来源链接
+            source_pairs = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', original_stripped)
+            if source_pairs:
+                articles[-1]['sources'] = source_pairs  # [(name, url), ...]
+                # 兼容旧字段
+                articles[-1]['source'] = source_pairs[0][0]
+                articles[-1]['link'] = source_pairs[0][1]
+            else:
+                source_match = re.search(r'\[([^\]]+)\]', original_stripped)
+                if source_match:
+                    articles[-1]['source'] = source_match.group(1).strip()
             continue
 
         # 检测 body（普通段落，支持 - 开头和无序列表）
@@ -409,7 +414,11 @@ def generate_html(articles, summary_items, month_day=None):
 
             source = a.get('source', '')
             link = a.get('link', '')
-            if link:
+            sources = a.get('sources', [])
+            if sources:
+                source_links = ' | '.join(f'<a href="{url}" target="_blank">{name}</a>' for name, url in sources)
+                html += f'<div class="source">📌 来源: {source_links}</div>'
+            elif link:
                 html += f'<div class="source">📌 来源: <a href="{link}" target="_blank">{source}</a></div>'
             elif source:
                 html += f'<div class="source">📌 来源: {source}</div>'
