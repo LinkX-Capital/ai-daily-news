@@ -289,6 +289,86 @@ def fetch_source_content(url):
     return None
 
 
+def search_alternative_sources(title):
+    """当原文抓取失败时，用 web-search 找替代来源并抓取"""
+    import asyncio
+    from mcp.client.streamable_http import streamablehttp_client
+    from mcp import ClientSession
+
+    # 从标题提取搜索关键词
+    search_query = re.sub(r'[，。：；！？、]', ' ', title).strip()[:70]
+
+    async def _search():
+        mcp_url = "https://open.bigmodel.cn/api/mcp/web_search_prime/mcp"
+        token = os.environ.get("ZHIPU_WEBREADER_TOKEN",
+                                "5f650035e5a845549e4765184d8179b1.GdehlMpHT0dKq3m3")
+        headers = {"Authorization": f"Bearer {token}"}
+        async with streamablehttp_client(url=mcp_url, headers=headers) as (read, write, _):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                result = await session.call_tool("web_search_prime", {
+                    "search_query": search_query,
+                    "location": "cn",
+                    "content_size": "medium",
+                })
+                items = []
+                for c in result.content:
+                    if hasattr(c, "text"):
+                        text = c.text
+                        try:
+                            parsed = json.loads(text)
+                            if isinstance(parsed, str):
+                                parsed = json.loads(parsed)
+                        except (json.JSONDecodeError, TypeError):
+                            parsed = None
+                        if isinstance(parsed, list):
+                            for item in parsed[:5]:
+                                if isinstance(item, dict):
+                                    items.append({
+                                        "url": item.get("link") or item.get("url", ""),
+                                        "content": item.get("content", ""),
+                                    })
+                        break
+                return items
+
+    try:
+        loop = asyncio.new_event_loop()
+        items = loop.run_until_complete(_search())
+        loop.close()
+    except Exception:
+        return None
+
+    if not items:
+        return None
+
+    # 优先拼接搜索结果的 content 作为原文摘要
+    summaries = []
+    for item in items:
+        if item["content"] and len(item["content"]) > 50:
+            summaries.append(item["content"])
+    if summaries:
+        combined = "\n".join(summaries)
+        if len(combined) > 200:
+            print(f"      -> 搜索摘要: {len(combined)}字")
+            return combined[:3000]
+
+    # 用 MCP web-reader 抓取搜索到的替代链接
+    mcp_reader = MCPWebReader()
+    for item in items:
+        alt_url = item["url"]
+        if not alt_url:
+            continue
+        content = mcp_reader.fetch(alt_url)
+        if content and len(content) > 200:
+            print(f"      -> 搜索替代来源: {alt_url[:60]}")
+            return content
+        content = fetch_source_content(alt_url)
+        if content and len(content) > 200:
+            print(f"      -> 搜索替代来源: {alt_url[:60]}")
+            return content
+    return None
+
+
 class MCPWebReader:
     """MCP web-reader 客户端，复用单次 session"""
     def __init__(self):
@@ -384,17 +464,38 @@ Insight：{insight}
         "messages": [{"role": "user", "content": prompt}],
     }
     try:
-        r = httpx.post(api_url, headers=headers, json=data, timeout=60, verify=False)
+        r = httpx.post(api_url, headers=headers, json=data, timeout=120, verify=False)
         if r.status_code == 200:
             resp = r.json()
-            text = resp.get("content", [{}])[0].get("text", "")
+            text = ""
+            if "content" in resp:
+                for block in resp["content"]:
+                    if block.get("type") == "text":
+                        text = block.get("text", "")
+                        break
+                    # MiniMax thinking 模型：text 可能在 thinking 字段
+                    if "text" in block:
+                        text = block["text"]
+                        break
+            elif "choices" in resp:
+                text = resp["choices"][0].get("message", {}).get("content", "")
             # 提取JSON
             match = re.search(r'\[.*\]', text, re.DOTALL)
             if match:
                 return json.loads(match.group())
+            # LLM 可能返回空数组或纯文本"[]"
+            if text.strip() == "[]":
+                return []
+            return None
+        else:
+            print(f"    LLM HTTP {r.status_code}")
+            return None
+    except httpx.TimeoutException:
+        print(f"    LLM超时，跳过")
+        return None
     except Exception as e:
         print(f"    LLM调用失败: {e}")
-    return None
+        return None
 
 
 def check_fact_llm(articles):
@@ -430,6 +531,11 @@ def check_fact_llm(articles):
                 source_text = fetch_source_content(l)
                 if source_text and len(source_text) > 200:
                     break
+
+        if not source_text or len(source_text) < 200:
+            # 最后尝试：web-search 搜索替代来源
+            print(f"    [?] 原文抓取失败，搜索替代来源: {title[:40]}...")
+            source_text = search_alternative_sources(title)
 
         if not source_text or len(source_text) < 200:
             issues.append(('fetch_fail', title, f"无法抓取原文: {links[0][:60]}"))
