@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-21 07:15
-**总计**：26 条推文
+**总计**：29 条推文
 
 ---
 
@@ -11,7 +11,24 @@
 
 ---
 
-## 🏢 公司发布（22条）
+## ⭐ 今日重点（LLM 提炼）
+
+1. **Amazon承诺向Anthropic追加投资至150亿美元**
+   @Anthropic AI
+2. **Anthropic推出STEM Fellows Program加速科技发展**
+   @Anthropic AI
+3. **Anthropic与Amazon达成5吉瓦计算能力合作协议**
+   @Anthropic AI
+4. **Google AI Pro和Ultra订阅者获新模型访问权限**
+   @Google AI
+5. **Google定制芯片技术详解（BLOOMBERG报道）**
+   @Jeff Dean / Google
+6. **Luma AI推出贴纸和视频生成AI代理工具**
+   @Luma AI
+
+---
+
+## 🏢 公司发布（23条）
 
 ### @alibaba_qwen | Model
 
@@ -20,6 +37,8 @@
 
 ### @anthropicai | Model
 
+- We're launching the Anthropic STEM Fellows Program.   AI will accelerate progress in science and engineering. We're looking for experts across these f...
+  [查看](https://x.com/AnthropicAI/status/2046362119755727256#m)
 - R to @AnthropicAI: Amazon is also investing an additional $5 billion in Anthropic today, with up to $20 billion more in the future.  Read more: https:...
   [查看](https://x.com/AnthropicAI/status/2046327625367625773#m)
 - We're expanding our collaboration with Amazon to secure up to 5 gigawatts of compute for training and deploying Claude. Capacity begins coming online ...
@@ -43,23 +62,23 @@
 
 - RT by @Kimi_Moonshot: Kimi K2.6 now in OpenCode — Go included
   [查看](https://x.com/opencode/status/2046275886396125680#m)
+- RT by @Kimi_Moonshot: Kimi K2.6 is live on OpenRouter!  @Kimi_Moonshot's new model is a long-horizon coding model built for sustained agentic work. It...
+  [查看](https://x.com/OpenRouter/status/2046259590774571199#m)
 - We are excited to have @baseten as a day 0 launch partner for Kimi K2.6!  Their inference stack brings KV-aware routing, NVFP4 on Blackwell, multi-mod...
   [查看](https://x.com/Kimi_Moonshot/status/2046272319191150749#m)
 - R to @Kimi_Moonshot: Sheer fabric with light transmission. Cloth physics that responds to wind. Depth-of-field compositing. Physically-based lighting ...
   [查看](https://x.com/Kimi_Moonshot/status/2046265981333549433#m)
 - R to @Kimi_Moonshot: Kimi wires up auth + database + backend in one pass One prompt gets you user registration, login, database, booking systems, admi...
   [查看](https://x.com/Kimi_Moonshot/status/2046265978024231067#m)
-- R to @Kimi_Moonshot: Real 3D, driven by scroll.  K2.6 builds with Three.js + React Three Fiber natively - real 3D scenes, real geometry, real lighting...
-  [查看](https://x.com/Kimi_Moonshot/status/2046265975000137811#m)
 
 ### @lumalabsai | Research
 
+- Your personality. Sticker sized.    Describe the look. Set the vibe. Luma Agents design every sticker from there.    Start today → https://app.lumalab...
+  [查看](https://x.com/LumaLabsAI/status/2046356064187363368#m)
 - Every social platform has its own creative language, and Luma Agents speak all of them.     Give them a hook and a format. From there, a finished vide...
   [查看](https://x.com/LumaLabsAI/status/2046322648679166088#m)
 - Drop in the raw: clips, stills, PDFs, audio, or logos.     Write a sentence. Then, Luma Agents get to work.  Stitching the cuts. Adding the audio. App...
   [查看](https://x.com/LumaLabsAI/status/2046273405859811717#m)
-- You. Just chibi-fied.   Upload your photo and watch Luma Agents turn you into the mini version of yourself you never knew you needed.    Start today →...
-  [查看](https://x.com/LumaLabsAI/status/2046003767494296022#m)
 
 ### @openrouter | Infra
 
@@ -84,7 +103,12 @@
 - 🎉 Congrats to the Moonshot team on Kimi K2.6 — day-0 support on vLLM 0.19.1.  • 1T total / 32B active MoE — 384 experts, 8 routed + 1 shared • MLA att...
   [查看](https://x.com/vllm_project/status/2046251287206035759#m)
 
-## 👤 研究者动态（4条）
+## 👤 研究者动态（6条）
+
+### @jeffdean [Google] | Infra
+
+- RT by @JeffDean: Read how Google built custom silicon and infrastructure - and how it's benefiting customers today - in the latest from @Bloomberg. We...
+  [查看](https://x.com/ThomasOrTK/status/2046344875994739028#m)
 
 ### @sama [OpenAI] | Model
 
@@ -100,5 +124,7 @@
 
 ### @swyx [AI社区] | App
 
+- the Codex x @skybysoftware acquisition may have been one of the best @openai deals made in the last year.  I've been waiting for "real" computer use s...
+  [查看](https://x.com/swyx/status/2046362691606855700#m)
 - excited to see a packed room (~75% East coast AI Engineers) @gabegreenberg kickoff AIE Miami - all talks streaming live for free on the youtube now!
   [查看](https://x.com/swyx/status/2046216133796143117#m)
