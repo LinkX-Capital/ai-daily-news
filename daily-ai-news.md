@@ -6,8 +6,8 @@
 
 ## 要点汇总
 
-- 产业动态：Meta从Thinking Machines Lab挖走第5位创始成员; 高德发布全栈具身技术体系及ABot-Claw机器人
-- 算力追踪：Nikkei称全球DRAM供应缺口将持续到2030年; Epoch AI调查Stargate全部7个站点正在建设; Google与Marvell洽谈合作开发AI推理芯片; 三星停产LPDDR4/LPDDR4X
+- 产业动态：Meta从Thinking Machines Lab挖走第5位创始成员; 高德发布全栈具身技术体系ABot及智能导盲犬途途
+- 算力追踪：Nikkei称全球DRAM供应缺口将持续到2030年; Epoch AI调查Stargate，全部7个数据中心站点正在建设，预计2029年达9+ GW; Google与Marvell洽谈合作开发AI推理芯片; 三星停产LPDDR4/LPDDR4X
 - 初创&融资：OpenAI收购AI教育科技公司Chalkie，全球50万+教师用户; 半导体工艺公司AlixLabs获1410万欧元A轮开发原子层蚀刻工艺; Anthropic收到8000亿美元估值投资意向
 - 研究关注：Berkeley RDI审计8大AI Agent基准测试，全部可被零能力Agent刷满分
 - X讨论：SemiAnalysis对话ChipBook团队探讨芯片制造; Luma提出AI系统联邦模型与mega模型两种路线
@@ -22,9 +22,9 @@
   > 💡 Thinking Machines Lab同时面临Meta和OpenAI的双向挖角，但它也在从大厂吸引顶尖人才，AI人才流动已呈双向竞争态势
    - 来源: [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652693322&idx=2&sn=33e2bc903b986938996d63f66bf56e2a) | [Business Insider](https://www.businessinsider.com/thinking-machines-lab-loses-another-founding-member-to-meta-2026-4)
 
-**高德发布全栈具身技术体系及ABot-Claw机器人，参加北京亦庄人形机器人半马**
-- 高德发布首个面向AGI的全栈具身技术体系，涵盖感知、规划、控制全链路，**在15项基准测试中达到SOTA性能**。同步发布ABot-Claw具身智能机器人，专注于打造世界记忆系统，解决机器人对环境的感知和记忆问题。在北京亦庄举行的2026人形机器人半程马拉松中，300余台机器人参赛，高德全自主具身机器人在城市主干道和复杂路段完成长距离导航和导盲任务。
-  > 💡 高德同时推进技术体系、产品落地和真实场景验证，具身智能从实验室走向城市道路的节奏在加快
+**高德发布全球首个面向AGI的全栈具身技术体系ABot，及智能导盲犬途途**
+- 高德发布全栈具身技术体系ABot，三层架构：数据层ABot-World（7802个3D场景、千万级训练轨迹）、模型层ABot-N0导航基座+ABot-M0操作基座、Agent层ABot-Claw任务调度与闭环纠错，**在15项基准测试中达到SOTA**。同步发布四足机器人「高德途途」，搭载ABot体系，无需预设路线和人工遥控即可在开放环境自主导航。途途在北京亦庄2026人形机器人半程马拉松中完成导盲任务，300余台机器人参赛。
+  > 💡 ABot三层架构（数据-模型-Agent）是从底层重构具身智能的完整方案，导盲场景的跑通意味着城市配送、巡检等开放环境任务离落地更近
    - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247884586&idx=1&sn=9bf96cc00105a72306c125f3513f7d07) | [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651028576&idx=1&sn=322ec19f119345c917c1a803e2c26905&chksm=8571c5a85201ce119154cd58233d0d08e2ed0d1fc3e5456790bb2f6e8b1f5aa3403dc30e0e52&scene=0&xtrack=1#rd) | [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652693322&idx=1&sn=a049b38295b61ad6ad8b23151cb82fcd)
 
 ### 算力追踪
