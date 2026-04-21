@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-22 07:15
-**总计**：31 条推文
+**总计**：29 条推文
 
 ---
 
@@ -11,12 +11,24 @@
 
 ---
 
-## 🏢 公司发布（23条）
+## ⭐ 今日重点（LLM 提炼）
 
-### @anthropicai | Model
+1. **Codex突破400万活跃用户**
+   @sama
+2. **ChatGPT Images 2.0可生成漫画**
+   @sama
+3. **Arena趋势：Google DeepMind与OpenAI在Text-to-Image领域激烈竞争**
+   @openai
+4. **ChatGPT Images 2.0多语言与文字渲染能力**
+   @openai
+5. **ChatGPT Images 2.0纵横比与分辨率支持**
+   @openai
+6. **vLLM recipes网站重大改版，支持点击式查询**
+   @vllm_project
 
-- We're launching the Anthropic STEM Fellows Program.   AI will accelerate progress in science and engineering. We're looking for experts across these f...
-  [查看](https://x.com/AnthropicAI/status/2046362119755727256#m)
+---
+
+## 🏢 公司发布（22条）
 
 ### @kimi_moonshot | Model
 
@@ -31,8 +43,8 @@
 
 ### @lumalabsai | Research
 
-- Your personality. Sticker sized.    Describe the look. Set the vibe. Luma Agents design every sticker from there.    Start today → https://app.lumalab...
-  [查看](https://x.com/LumaLabsAI/status/2046356064187363368#m)
+- Your story. Full manga treatment. Every speed line, every impact frame, every dramatic silence.    You build the cast. You set the scene. Luma Agents ...
+  [查看](https://x.com/LumaLabsAI/status/2046722038606540807#m)
 
 ### @openai | Model
 
@@ -83,7 +95,7 @@
 - 🎉 We just shipped a major redesign of http://recipes.vllm.ai.  "How do I run model X on hardware Y for task Z?" now has a clickable answer.  What's ne...
   [查看](https://x.com/vllm_project/status/2046592125740142903#m)
 
-## 👤 研究者动态（8条）
+## 👤 研究者动态（7条）
 
 ### @jeffdean [Google] | Infra
 
@@ -110,5 +122,3 @@
 
 - do not miss. one of the INSANE gets courtesy of @osanseviero and the @GoogleDeepMind london avengers.   if you always felt out of the loop on the SOTA...
   [查看](https://x.com/swyx/status/2046680414836715655#m)
-- the Codex x @skybysoftware acquisition may have been one of the best @openai deals made in the last year.  I've been waiting for "real" computer use s...
-  [查看](https://x.com/swyx/status/2046362691606855700#m)
