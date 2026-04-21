@@ -1,85 +1,80 @@
-## 04月20日 AI 前沿动态
+## 04月21日 AI 前沿动态
 
 ---
-
-### 模型前沿
-**1. 伯克利SWE-bench评测现满分事件引争议**
-- 该事件暴露了AI代码修复能力评估的局限性。
-[来源: 新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652693322&idx=3&sn=b5736691b9c0eceb02743abcd3340dd3)
 
 ### 产业动态
-**2. MetaCEO小扎拆骨Thinking Machines，120亿美元AI独角兽第5位创始人加入**
-- Thinking Machines作为AI独角兽，其核心团队成员正被Meta高薪招募。
-[来源: 新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652693322&idx=2&sn=33e2bc903b986938996d63f66bf56e2a)
+**1. Kimi K2.6上线OpenRouter，支持长程Agent编程**
+[来源: @openrouter](https://x.com/OpenRouter/status/2046259590774571199#m)
 
-**3. 高德发布面向AGI的全栈具身技术体系**
-- 该技术体系实现了15项全球领先的SOTA性能。
-- 具身智能需要理解物理世界，这是AGI的关键门槛。
-[来源: 量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247884586&idx=1&sn=9bf96cc00105a72306c125f3513f7d07)
+**2. John Ternus将于9月接任Apple CEO，接替Tim Cook**
+- John Ternus在Apple负责硬件工程多年，主导了多代iPhone和Apple Silicon的研发。
+[来源: TechCrunch](https://techcrunch.com/2026/04/20/tim-cook-stepping-down-as-apple-ceo-john-ternus-taking-over/)
 
-**4. 高德具身机器人参加北京亦庄马拉松展示导盲能力**
-- 高德公司的全自主具身机器人参与比赛，在城市主干道和GT赛车级复杂路段展示能力，完成导盲等硬核任务。
-[来源: 机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651028576&idx=1&sn=322ec19f119345c917c1a803e2c26905&chksm=8571c5a85201ce119154cd58233d0d08e2ed0d1fc3e5456790bb2f6e8b1f5aa3403dc30e0e52&scene=0&xtrack=1#rd)
+**3. 苏度科技发布具身模型Sudo R1，零样本实现98%抓取成功率**
+[来源: 量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247884737&idx=1&sn=4d25e5574e4e1d2dee56c592ed59099f)
 
-**5. Nikkei：全球DRAM供应缺口将持续到2030年**
-- 内存短缺问题可能持续到2030年。
-[来源: 机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651028576&idx=2&sn=b359daa45a3e8e72dc99d2ac26d966b6&chksm=85352c6fff3b477cfcf077a47974f42c4f0d83d2c140f6799d53e5cc322a7026b5b51d14f735&scene=0&xtrack=1#rd)
+**4. Moonshot与vLLM团队合作实现Kimi K2.6 day-0支持**
+- 该模型为1T总参数/32B活跃参数的MoE架构，包含384个专家、8个路由专家和1个共享专家，采用MLA注意力机制。
+[来源: @vllm_project](https://x.com/vllm_project/status/2046251287206035759#m)
 
-**6. 高德发布ABot-Claw具身智能机器人**
-- 该机器人專注于为具身智能打造世界记忆系统，解决了机器人对环境的感知和记忆问题。
-[来源: 新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652693322&idx=1&sn=a049b38295b61ad6ad8b23151cb82fcd)
+**5. Claude在Cowork中支持构建实时数据看板和追踪器**
+[来源: @claudeai](https://x.com/claudeai/status/2046328619249684989#m)
+
+### 算力追踪
+**6. NVIDIA与Adobe、WPP合作展示AI Agent在创意产业的大规模应用**
+- 该合作将NVIDIA的AI技术与Adobe的创意工具和WPP的行业专业知识结合，实现内容创作和决策流程的自动化加速。
+[来源: NVIDIA Blog](https://blogs.nvidia.com/blog/adobe-ai-agents-nvidia-wpp/)
+
+**7. NVIDIA与合作伙伴在汉诺威工业展展示AI驱动的制造业未来**
+- 制造业正处于转折点，AI技术正在帮助企业实现降本增效。
+[来源: NVIDIA Blog](https://blogs.nvidia.com/blog/ai-manufacturing-hannover-messe/)
+
+**8. NUS、复旦等发布首篇Latent Space大模型系统综述**
+[来源: PaperWeekly](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw==&mid=2247719707&idx=2&sn=1423a6767f8cfb128e90e99d47c74893)
+
+**9. Claude Opus 4.7登陆Amazon Bedrock，支持百万token上下文**
+- AWS Interconnect也正式发布GA版本。
+[来源: AWS Blog](https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026/)
 
 ### 初创&融资
-**7. 核聚变能源投资热潮显现裂痕**
-- TechCrunch分析指出，如果关键分歧不能友好解决，投资者与核聚变初创公司之间的裂痕可能进一步加深。
-- 当前核聚变行业的火热投资潮开始出现不稳定迹象。
-[来源: TechCrunch](https://techcrunch.com/2026/04/19/cracks-are-starting-to-form-on-fusion-energys-funding-boom/)
+**10. AI芯片企业曦望Sunrise获超10亿元融资**
+- 该公司致力于提供成本降低十倍、能效比突破的智能算力，已完成超10亿元融资。
+[来源: IT桔子](https://www.itjuzi.com/investevent/14696038)
 
-**8. OpenAI收购AI教育科技公司Chalkie**
-- 此次被OpenAI收购，是OpenAI在AI教育领域的重要布局。
-- Chalkie的核心产品能够帮助教师自动生成备课内容和教案。
-[来源: IT桔子](https://www.itjuzi.com/merger/13981)
+**11. 具身智能公司影身智能完成数千万元PreA轮融资**
+- 该公司累计融资近亿元，天使及天使+轮由恒生电子领投。
+[来源: IT桔子](https://www.itjuzi.com/investevent/14695973)
 
-**9. 半导体工艺公司AlixLabs获得1410万欧元A轮融资**
-- 其技术将40纳米宽的特征分割成两个10纳米的中间距特征，可扩展到10纳米以下。
-- 该工艺减少了光刻设备的使用。
-[来源: IT桔子](https://www.itjuzi.com/investevent/14695945)
-
-**10. 儿童安全通信科技公司Sage Haven获300万美元融资**
-- 投资方包括Hustle Fund、How Women Invest、LaunchTN等。
-[来源: IT桔子](https://www.itjuzi.com/investevent/14695942)
+### 研究关注
+**12. 北大联合南科大提出QuatRoPE，突破大模型3D空间推理瓶颈**
+- 北京大学王选计算机研究所刘洋团队提出QuatRoPE，通过引入四元数旋转位置编码来增强模型对三维物体空间关系的理解能力，解决现有方法在3D空间推理中的精度不足问题。
+[来源: 机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651028728&idx=3&sn=47e0887d67e1f7a1368bb26e66f6b74d&chksm=8591426347e8ccaf89e39e221c1bce53deb9111f60f5f0d8f9ba4ae7fede5cd4f27426c502fb&scene=0&xtrack=1#rd)
 
 ### X讨论
-**11. SemiAnalysis对话ChipBook团队：探讨芯片制造难题的解决方案**
-- 视频内容涉及半导体制造工艺的技术细节和解决方案。
-- 该播客持续约1小时，展示了ChipBook在芯片领域的专业见解。
-[来源: @semianalysis_](https://x.com/SemiAnalysis_/status/2045970772070445521#m)
+**13. 阿里发布Qwen3.6-Max-Preview，预告下一代旗舰模型**
+- 该模型在agentic coding能力上相比Qwen3.6有所提升。
+[来源: @alibaba_qwen](https://x.com/Alibaba_Qwen/status/2046227759475921291#m)
 
-**12. Luma提出AI系统构建两种路线：联邦模型与 mega 模型**
-- 两种路线代表了当前AI架构的不同发展方向。
-[来源: @lumalabsai](https://x.com/LumaLabsAI/status/2045925400371773870#m)
+**14. Google AI Pro和Ultra订阅用户获得更高使用限额和新模型访问权限**
+[来源: @googleai](https://x.com/GoogleAI/status/2046338574811853069#m)
 
-**13. Luma为1200万创作者构建统一模型**
-- 公司联合创始人@gravicle在与@AnjneyMidha的对谈中透露了这一目标。
-- 统一模型旨在为创意工作者提供更强大的AI工具支持。
-[来源: @lumalabsai](https://x.com/LumaLabsAI/status/2045910300676018561#m)
+**15. Positron 18个月出货首款AI芯片，三年内获得Oracle客户**
+- 通常初创公司获得甲骨文这类客户需要更长时间。
+[来源: @semianalysis_](https://x.com/SemiAnalysis_/status/2046333401381130551#m)
 
-**14. Luma：词语组合决定语言智能，像素排列决定视觉智能**
-- 统一模型（Unified models）的本质是如何表达智能，需要打通语言与视觉理解的边界。
-[来源: @lumalabsai](https://x.com/LumaLabsAI/status/2045917845641691235#m)
+**16. Anthropic扩大与Amazon合作，获最多5千兆瓦算力**
+- 算力将逐步上线。
+[来源: @anthropicai](https://x.com/AnthropicAI/status/2046327624092487688#m)
 
-**15. SemiAnalysis：存储公司令对冲基金盲飞**
-- 这一洞察揭示了存储行业信息不对称的现状。
-[来源: @semianalysis_](https://x.com/SemiAnalysis_/status/2045970771156058472#m)
+**17. Amazon追加对Anthropic 50亿美元投资，总额可达200亿美元**
+- 这是Amazon在AI领域的重要战略布局。
+[来源: @anthropicai](https://x.com/AnthropicAI/status/2046327625367625773#m)
 
-**16. Luma：创作者被困在衡量产出的工业系统中**
-- Luma致力于赋予创作者更多表达的自由，突破传统工业系统的约束。
-[来源: @lumalabsai](https://x.com/LumaLabsAI/status/2045940494857810109#m)
+**18. Luma Agents支持多平台视频创作自动化**
+[来源: @lumalabsai](https://x.com/LumaLabsAI/status/2046322648679166088#m)
 
-**17. MiamiAI工程师周活动汇聚行业顶尖专家**
-- 演讲者包括AI工程领域的重量级人物。
-- 活动组织者@swyx表示很自豪能够支持这一行业盛会。
-[来源: @swyx](https://x.com/swyx/status/2045770360117715046#m)
+**19. Luma Agents实现视频素材自动剪辑和音频合成**
+[来源: @lumalabsai](https://x.com/LumaLabsAI/status/2046273405859811717#m)
 
 ---
-*更新时间: 2026-04-20 06:06*
+*更新时间: 2026-04-21 06:06*
