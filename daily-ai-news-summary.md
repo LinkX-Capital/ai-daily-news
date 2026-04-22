@@ -1,80 +1,59 @@
-## 04月21日 AI 前沿动态
+## 04月22日 AI 前沿动态
 
 ---
+
+### 模型前沿
+**1. Claude Opus 4.7在ECI评测并列第三，GPT-5.4 Pro以158分领先**
+- GPT-5.4 Pro 158 > Gemini 3.1 Pro 157 > Opus 4.7/GPT-5.4 并列156。Opus 4.7编程专项MCP-Atlas 77.3%领先GPT-5.4（68.1%）。
+[来源: Epoch AI](https://epochai.substack.com/p/opus-47-scores-near-frontier-on-eci)
+
+**2. Ant Group发布Ling-2.6-flash：104B/7.4B MoE模型，此前以"Elephant Alpha"匿名霸榜OpenRouter**
+- 104B总参数仅7.4B激活（7%激活率），256K上下文免费使用。匿名发布数周后揭晓身份，先验证效果再公布。
+[来源: @OpenRouter](https://x.com/OpenRouter/status/2046663557899813181#m)
+
+**3. Kimi K2.6登顶开源智能体模型，Claw-Eval pass³ 62.3%并展示长程编码**
+- 开源第一、总榜第四。pass@3 80.9%，HLE with Tools 54.0，OSWorld 73.1%。价格约Opus 1/8。
+[来源: @kimi_moonshot](https://x.com/_TobiasLee/status/2046493043285737582#m)
 
 ### 产业动态
-**1. Kimi K2.6上线OpenRouter，支持长程Agent编程**
-[来源: @openrouter](https://x.com/OpenRouter/status/2046259590774571199#m)
+**4. Google发布Gemini Deep Research Max：基于Gemini 3.1 Pro的企业级自主研究Agent**
+- 新增MCP支持、原生图表生成、多模态输入。与FactSet、S&P、PitchBook合作MCP服务器设计。
+[来源: Google Blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/next-generation-gemini-deep-research/)
 
-**2. John Ternus将于9月接任Apple CEO，接替Tim Cook**
-- John Ternus在Apple负责硬件工程多年，主导了多代iPhone和Apple Silicon的研发。
-[来源: TechCrunch](https://techcrunch.com/2026/04/20/tim-cook-stepping-down-as-apple-ceo-john-ternus-taking-over/)
+**5. OpenAI Codex推出Chronicle屏幕记忆功能**
+- 持续捕获用户屏幕内容构建记忆上下文，隐私争议随之而来。
+[来源: @OpenAIDevs](https://x.com/OpenAIDevs/status/2046288243768082699)
 
-**3. 苏度科技发布具身模型Sudo R1，零样本实现98%抓取成功率**
-[来源: 量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247884737&idx=1&sn=4d25e5574e4e1d2dee56c592ed59099f)
-
-**4. Moonshot与vLLM团队合作实现Kimi K2.6 day-0支持**
-- 该模型为1T总参数/32B活跃参数的MoE架构，包含384个专家、8个路由专家和1个共享专家，采用MLA注意力机制。
-[来源: @vllm_project](https://x.com/vllm_project/status/2046251287206035759#m)
-
-**5. Claude在Cowork中支持构建实时数据看板和追踪器**
-[来源: @claudeai](https://x.com/claudeai/status/2046328619249684989#m)
+**6. SpaceX与Cursor合作开发编程AI，获600亿美元收购期权**
+- SpaceX可今年晚些时候以$60B收购Cursor，或支付$10B合作费。Cursor至今仍依赖Claude和GPT模型。
+[来源: TechCrunch](https://techcrunch.com/2026/04/21/spacex-is-working-with-cursor-and-has-an-option-to-buy-the-startup-for-60-billion/)
 
 ### 算力追踪
-**6. NVIDIA与Adobe、WPP合作展示AI Agent在创意产业的大规模应用**
-- 该合作将NVIDIA的AI技术与Adobe的创意工具和WPP的行业专业知识结合，实现内容创作和决策流程的自动化加速。
-[来源: NVIDIA Blog](https://blogs.nvidia.com/blog/adobe-ai-agents-nvidia-wpp/)
-
-**7. NVIDIA与合作伙伴在汉诺威工业展展示AI驱动的制造业未来**
-- 制造业正处于转折点，AI技术正在帮助企业实现降本增效。
-[来源: NVIDIA Blog](https://blogs.nvidia.com/blog/ai-manufacturing-hannover-messe/)
-
-**8. NUS、复旦等发布首篇Latent Space大模型系统综述**
-[来源: PaperWeekly](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw==&mid=2247719707&idx=2&sn=1423a6767f8cfb128e90e99d47c74893)
-
-**9. Claude Opus 4.7登陆Amazon Bedrock，支持百万token上下文**
-- AWS Interconnect也正式发布GA版本。
-[来源: AWS Blog](https://aws.amazon.com/blogs/aws/aws-weekly-roundup-claude-opus-4-7-in-amazon-bedrock-aws-interconnect-ga-and-more-april-20-2026/)
+**7. AMD与GlobalFoundries合作开发MI500 CPO光互连方案**
+- 基于MRM的CPO解决方案，PIC交GlobalFoundries制造，日月光封装。CPO将光互连集成在芯片封装内。
+[来源: 36氪/财联社](https://36kr.com/newsflashes/3776438293005064?f=rss)
 
 ### 初创&融资
-**10. AI芯片企业曦望Sunrise获超10亿元融资**
-- 该公司致力于提供成本降低十倍、能效比突破的智能算力，已完成超10亿元融资。
-[来源: IT桔子](https://www.itjuzi.com/investevent/14696038)
+**8. 自变量机器人完成近20亿元B轮融资，四家互联网大厂齐聚**
+- 小米战投和红杉中国领投。此前美团、阿里、字节分别领投，成国内唯一四家大厂同时投资的具身智能企业。
+[来源: 36氪](https://36kr.com/newsflashes/3776193532281346?f=rss)
 
-**11. 具身智能公司影身智能完成数千万元PreA轮融资**
-- 该公司累计融资近亿元，天使及天使+轮由恒生电子领投。
-[来源: IT桔子](https://www.itjuzi.com/investevent/14695973)
-
-### 研究关注
-**12. 北大联合南科大提出QuatRoPE，突破大模型3D空间推理瓶颈**
-- 北京大学王选计算机研究所刘洋团队提出QuatRoPE，通过引入四元数旋转位置编码来增强模型对三维物体空间关系的理解能力，解决现有方法在3D空间推理中的精度不足问题。
-[来源: 机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651028728&idx=3&sn=47e0887d67e1f7a1368bb26e66f6b74d&chksm=8591426347e8ccaf89e39e221c1bce53deb9111f60f5f0d8f9ba4ae7fede5cd4f27426c502fb&scene=0&xtrack=1#rd)
+**9. NeoCognition获4000万美元种子轮，构建自学习Agent**
+- OSU教授Yu Su创办，Cambium和Walden领投，Vista、Intel CEO Lip-Bu Tan参投。核心思路：让Agent通过自主学习成为任何领域专家。
+[来源: TechCrunch](https://techcrunch.com/2026/04/21/ai-research-lab-neocognition-lands-40m-seed-to-build-agents-that-learn-like-humans/)
 
 ### X讨论
-**13. 阿里发布Qwen3.6-Max-Preview，预告下一代旗舰模型**
-- 该模型在agentic coding能力上相比Qwen3.6有所提升。
-[来源: @alibaba_qwen](https://x.com/Alibaba_Qwen/status/2046227759475921291#m)
+**10. PrismML发布首个商用1-bit LLM：8.2B参数仅1.15GB，可运行于iPhone**
+- 端到端1-bit量化，iPhone 17 Pro 40 tok/s，智能密度是Qwen3 8B的10倍。Apache 2.0开源。
+[来源: @prismml](https://x.com/ronaldmannak/status/2046612331350962666#m)
 
-**14. Google AI Pro和Ultra订阅用户获得更高使用限额和新模型访问权限**
-[来源: @googleai](https://x.com/GoogleAI/status/2046338574811853069#m)
+**11. OpenAI Codex两周内用户从300万增至400万**
+- 两周增长33%，三个月5x，MoM 70%+。增速超越Cursor和Copilot历史曲线。
+[来源: @sama](https://x.com/sama/status/2046604989527912590)
 
-**15. Positron 18个月出货首款AI芯片，三年内获得Oracle客户**
-- 通常初创公司获得甲骨文这类客户需要更长时间。
-[来源: @semianalysis_](https://x.com/SemiAnalysis_/status/2046333401381130551#m)
-
-**16. Anthropic扩大与Amazon合作，获最多5千兆瓦算力**
-- 算力将逐步上线。
-[来源: @anthropicai](https://x.com/AnthropicAI/status/2046327624092487688#m)
-
-**17. Amazon追加对Anthropic 50亿美元投资，总额可达200亿美元**
-- 这是Amazon在AI领域的重要战略布局。
-[来源: @anthropicai](https://x.com/AnthropicAI/status/2046327625367625773#m)
-
-**18. Luma Agents支持多平台视频创作自动化**
-[来源: @lumalabsai](https://x.com/LumaLabsAI/status/2046322648679166088#m)
-
-**19. Luma Agents实现视频素材自动剪辑和音频合成**
-[来源: @lumalabsai](https://x.com/LumaLabsAI/status/2046273405859811717#m)
+**12. SemiAnalysis发布AI网络模型分析报告**
+- 聚焦万卡集群网络架构、通信瓶颈、光互连成本曲线。网络设备占集群CapEx 20-30%。
+[来源: @semianalysis_](https://x.com/SemiAnalysis_/status/2046635103351079339#m)
 
 ---
-*更新时间: 2026-04-21 06:06*
+*更新时间: 2026-04-22 (已修订)*
