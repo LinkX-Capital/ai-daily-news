@@ -318,13 +318,13 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True):
 
         :root {{
             --bg: #ffffff;
-            --bg-page: #ffffff;
+            --bg-page: #FAF9F6;
             --text: #1a1a1a;
             --text-2: #444444;
             --text-3: #888888;
             --border: #D9D8D6;
             --note-bg: #f4eff5;
-            --pill-bg: #f5f5f5;
+            --pill-bg: #EFEDEA;
             --purple: #660874;
             --purple-80: #843990;
             --purple-60: #a36bac;
@@ -342,7 +342,7 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True):
                 --text-3: #666666;
                 --border: #1e1e1e;
                 --note-bg: #1a111b;
-                --pill-bg: #141414;
+                --pill-bg: #161412;
                 --purple: #b87cc4;
                 --purple-80: #a06aad;
                 --purple-60: #8a5d96;
@@ -360,6 +360,14 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True):
             line-height: 1.7;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+        }}
+
+        /* ========== Particle BG ========== */
+        #particle-bg {{
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
         }}
 
         /* ========== Top Bar ========== */
@@ -829,11 +837,12 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True):
     </style>
 </head>
 <body>
+    <canvas id="particle-bg"></canvas>
     <!-- Top bar -->
     <div class="topbar">
         <div class="topbar-left">
             <span class="topbar-brand">AI Daily News</span>
-            <span class="topbar-tagline">Keep Informed with Link-X Cap</span>
+            <span class="topbar-tagline">Keep Informed with Link-X Capital</span>
         </div>
         <div class="topbar-right">
             <div class="topbar-search">
@@ -881,7 +890,7 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True):
                 {issue_nav_html}
             </div>
             <div class="footer">
-                <span class="footer-copy">&copy; 2026 &middot; AI Daily News by Link-X Cap</span>
+                <span class="footer-copy">&copy; 2026 &middot; AI Daily News by Link-X Capital</span>
                 <a href="#" class="footer-top">Back to top &uarr;</a>
             </div>
         </div>
@@ -1023,6 +1032,64 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True):
         input.addEventListener('keydown', function(e) {{
             if (e.key === 'Escape') {{ dropdown.classList.remove('active'); input.blur(); }}
         }});
+    }})();
+
+    // Particle background
+    (function() {{
+        const canvas = document.getElementById('particle-bg');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        let W, H;
+        function resize() {{ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }}
+        resize();
+        window.addEventListener('resize', resize);
+
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const rgb = isDark ? '184,124,196' : '102,8,116';
+
+        const COUNT = 40, MAX_D = 180;
+        const pts = [];
+        for (let i = 0; i < COUNT; i++) {{
+            pts.push({{
+                x: Math.random() * W, y: Math.random() * H,
+                vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35,
+                r: Math.random() * 2 + 1
+            }});
+        }}
+
+        function loop() {{
+            ctx.clearRect(0, 0, W, H);
+            for (const p of pts) {{
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > W) p.vx *= -1;
+                if (p.y < 0 || p.y > H) p.vy *= -1;
+            }}
+            for (let i = 0; i < pts.length; i++) {{
+                for (let j = i + 1; j < pts.length; j++) {{
+                    const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+                    const d = Math.sqrt(dx*dx + dy*dy);
+                    if (d < MAX_D) {{
+                        const a = (1 - d / MAX_D) * 0.15;
+                        ctx.strokeStyle = 'rgba(' + rgb + ',' + a + ')';
+                        ctx.lineWidth = 0.6;
+                        ctx.beginPath();
+                        ctx.moveTo(pts[i].x, pts[i].y);
+                        ctx.lineTo(pts[j].x, pts[j].y);
+                        ctx.stroke();
+                    }}
+                }}
+            }}
+            for (const p of pts) {{
+                ctx.fillStyle = 'rgba(' + rgb + ',0.30)';
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fill();
+            }}
+            requestAnimationFrame(loop);
+        }}
+        loop();
     }})();
     </script>
 </body>
