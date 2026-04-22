@@ -1,124 +1,117 @@
 # Twitter 动态预览
-**日期**：2026-04-22 07:15
-**总计**：29 条推文
+**日期**：2026-04-23 07:15
+**总计**：31 条推文
 
 ---
 
 ## 📋 过滤说明
 
 **抓取规则**：24小时内、去除重复账号、内容 >30字符
-**存疑过滤**：5条（公司账号自我回复/转发，标注⚠️）
+**存疑过滤**：4条（公司账号自我回复/转发，标注⚠️）
 
 ---
 
-## ⭐ 今日重点（LLM 提炼）
+## 🏢 公司发布（27条）
 
-1. **Codex突破400万活跃用户**
-   @sama
-2. **ChatGPT Images 2.0可生成漫画**
-   @sama
-3. **Arena趋势：Google DeepMind与OpenAI在Text-to-Image领域激烈竞争**
-   @openai
-4. **ChatGPT Images 2.0多语言与文字渲染能力**
-   @openai
-5. **ChatGPT Images 2.0纵横比与分辨率支持**
-   @openai
-6. **vLLM recipes网站重大改版，支持点击式查询**
-   @vllm_project
+### @alibaba_qwen | Model
 
----
+- R to @Alibaba_Qwen: VLM Performance：Qwen3.6-27B is natively multimodal, supporting both vision-language thinking and non-thinking modes in a single un...
+  [查看](https://x.com/Alibaba_Qwen/status/2046939788184547610#m)
+- R to @Alibaba_Qwen: LM Performance：With only 27B parameters, Qwen3.6-27B outperforms the Qwen3.5-397B-A17B (397B total / 17B active, ~15x larger!) on ...
+  [查看](https://x.com/Alibaba_Qwen/status/2046939775924584577#m)
+- Pinned: 🚀 Meet Qwen3.6-27B, our latest dense, open-source model, packing flagship-level coding power!  Yes, 27B, and Qwen3.6-27B punches way above its...
+  [查看](https://x.com/Alibaba_Qwen/status/2046939764428009914#m)
 
-## 🏢 公司发布（22条）
+### @anthropicai | Model
+
+- R to @AnthropicAI: To truly understand AI’s economic impact, we’ll need to collect much more qualitative data like this.  That’s why we’re launching t...
+  [查看](https://x.com/AnthropicAI/status/2047006557183897664#m)
+- R to @AnthropicAI: And those in occupations that show high Claude usage—like software engineering—were more worried about displacement than those in l...
+  [查看](https://x.com/AnthropicAI/status/2047006554403057776#m)
+- R to @AnthropicAI: In the study, we find that respondents in both the highest- and the lowest-paid occupations report the largest productivity gains f...
+  [查看](https://x.com/AnthropicAI/status/2047006550859125228#m)
+- Last month, we published our look into what 81,000 people told us they want from AI.  In new research, we’ve investigated the economic hopes and worri...
+  [查看](https://x.com/AnthropicAI/status/2047006548149289017#m)
+
+### @claudeai | Model
+
+- Interactive charts and diagrams are now in Claude Cowork.  Available in beta on all paid plans.
+  [查看](https://x.com/claudeai/status/2047047633416397076#m)
 
 ### @kimi_moonshot | Model
 
-- We're open-sourcing FlashKDA — our high-performance CUTLASS-based implementation of Kimi Delta Attention kernels. Achieves 1.72×–2.22× prefill speedup...
-  [查看](https://x.com/Kimi_Moonshot/status/2046607915424034839#m)
-- R to @Kimi_Moonshot: Kimi K2.6 autonomously overhauled exchange-core, an 8-year-old open-source financial matching engine.   Over a 13-hour execution,...
-  [查看](https://x.com/Kimi_Moonshot/status/2046531057147933137#m)
-- Kimi K2.6 demonstrates strong long-horizon coding in complex engineering tasks:  Kimi K2.6 successfully downloaded and deployed the Qwen3.5-0.8B model...
-  [查看](https://x.com/Kimi_Moonshot/status/2046531052957569211#m)
-- RT by @Kimi_Moonshot: Kimi K2.6 @Kimi_Moonshot is the new leading open-weights agent model, landing at #4 on Claw-Eval (Pass^3: 62.3%).  Key takeaways...
-  [查看](https://x.com/_TobiasLee/status/2046493043285737582#m)
+- Kimi K2.6 is now ranked #1 on OpenRouter's programming leaderboard.
+  [查看](https://x.com/Kimi_Moonshot/status/2046915283206709581#m)
 
 ### @lumalabsai | Research
 
+- Your story. Your style. An audience that’s already waiting.    Luma Agents make sure nothing gets lost between your head and the panel.    Every scrol...
+  [查看](https://x.com/LumaLabsAI/status/2046997743454077233#m)
 - Your story. Full manga treatment. Every speed line, every impact frame, every dramatic silence.    You build the cast. You set the scene. Luma Agents ...
   [查看](https://x.com/LumaLabsAI/status/2046722038606540807#m)
 
 ### @openai | Model
 
-- ⚠️ RT by @OpenAI: Arena Trends: Text-to-Image, Jan 2026 – Apr 2026  For most of the year, @GoogleDeepMind and @OpenAI traded the top spot within a tight ...
-  [查看](https://x.com/arena/status/2046690103515648061#m)
-- ⚠️ R to @OpenAI: Aspect Ratios & Resolution in ChatGPT Images 2.0, demonstrated by @dibyayB
-  [查看](https://x.com/OpenAI/status/2046691653453562341#m)
-- ⚠️ R to @OpenAI: Slides & Infographics in ChatGPT Images 2.0, demonstrated by @yuguang_yang
-  [查看](https://x.com/OpenAI/status/2046691651767476579#m)
-- ⚠️ R to @OpenAI: Multilingual & Text Rendering in ChatGPT Images 2.0, demonstrated by @BoyuanChen0
-  [查看](https://x.com/OpenAI/status/2046691650202902681#m)
-- ⚠️ R to @OpenAI: Instruction Following in ChatGPT Images 2.0, demonstrated by @jianfw
-  [查看](https://x.com/OpenAI/status/2046691648604905588#m)
+- ⚠️ R to @OpenAI: Workspace agents are now available in research preview for ChatGPT Business, Enterprise, Edu, and Teachers plans. https://openai.com/bus...
+  [查看](https://x.com/OpenAI/status/2047008993760137383#m)
+- ⚠️ R to @OpenAI: Workspace agents can work across tools—pulling context from docs, email, chats, code, and systems, and taking approved actions like upda...
+  [查看](https://x.com/OpenAI/status/2047008991944069624#m)
+- ⚠️ R to @OpenAI: Build an agent once, then share it across teams.  Describe the job, and ChatGPT helps turn it into a working agent that can use your tea...
+  [查看](https://x.com/OpenAI/status/2047008990379512047#m)
+- ⚠️ R to @OpenAI: Agents are built to help with the kind of work that takes time, context, and follow-through: coordinating across tools, tracking progres...
+  [查看](https://x.com/OpenAI/status/2047008988970225933#m)
+- Pinned: Introducing workspace agents in ChatGPT—shared agents that can handle complex tasks and long-running workflows across tools and teams.
+  [查看](https://x.com/OpenAI/status/2047008987665809771#m)
 
 ### @openrouter | Infra
 
-- R to @OpenRouter: Special thanks to @novita_labs for hosting during the stealth period and for the partnership on this launch.
-  [查看](https://x.com/OpenRouter/status/2046663569551585394#m)
-- R to @OpenRouter: Read more about the model here:
-  [查看](https://x.com/OpenRouter/status/2046663557899813181#m)
-- R to @OpenRouter: Use it now: https://openrouter.ai/inclusionai/ling-2.6-flash:free
-  [查看](https://x.com/OpenRouter/status/2046663546289963452#m)
-- Stealth model reveal!  The Elephant Alpha model is live now as @AntLingAGI's new Ling-2.6-flash.  Elephant topped the trending charts on OpenRouter th...
-  [查看](https://x.com/OpenRouter/status/2046663534583701506#m)
-- RT by @OpenRouter: OpenRouter is, simply, the easiest way to set up sovereign AI and private inference for all models and providers
-  [查看](https://x.com/alexatallah/status/2046653129157189907#m)
-
-### @prismml | Research
-
-- RT by @PrismML: Huge shoutout to @PrismML  This shouldn’t be possible: a tiny model punching way above its weight.   The largest version is just 1.14 ...
-  [查看](https://x.com/ronaldmannak/status/2046612331350962666#m)
-- RT by @PrismML: Pico Local AI Server 1.4.21 is now available on the Mac App Store. This release adds support for Ternary Bonsai, a lightning-fast mode...
-  [查看](https://x.com/PicoGPT/status/2046381573910700327#m)
+- R to @OpenRouter: Under the hood, GPT-5.4 Image 2 calls the OpenAI Responses API with the GPT-5.4 model having access to the Image Generation server t...
+  [查看](https://x.com/OpenRouter/status/2047055207281090817#m)
+- The incredibly powerful new GPT Image 2 model from @OpenAI is live on OpenRouter as openai/gpt-5.4-image-2  Using OpenRouter's GPT-5.4 Image 2, you ge...
+  [查看](https://x.com/OpenRouter/status/2047055195474145334#m)
+- R to @OpenRouter: And read more about the models from @XiaomiMiMo https://x.com/XiaomiMiMo/status/2046988157888209365?s=20
+  [查看](https://x.com/OpenRouter/status/2046990607898616237#m)
+- R to @OpenRouter: And MiMo-V2.5: https://openrouter.ai/xiaomi/mimo-v2.5
+  [查看](https://x.com/OpenRouter/status/2046990596288782628#m)
+- R to @OpenRouter: Try MiMo-V2.5 Pro: https://openrouter.ai/xiaomi/mimo-v2.5-pro
+  [查看](https://x.com/OpenRouter/status/2046990584691491007#m)
 
 ### @semianalysis_ | Infra
 
-- Hi i'm dwarkesh! Grew up all over the US, now sf-based and always down to nerd out about AI, science & history :) a lil about me:  🟠 Host of the dwark...
-  [查看](https://x.com/SemiAnalysis_/status/2046687942391877852#m)
-- R to @SemiAnalysis_: AI Networking Model Link: https://semianalysis.com/ai-networking-model/
-  [查看](https://x.com/SemiAnalysis_/status/2046635103351079339#m)
-- At OFC 2026 last month,  Cisco's chief architect Rakesh Chopra presented on scale-across networking architectures and key deployment trends driving st...
-  [查看](https://x.com/SemiAnalysis_/status/2046635101769884096#m)
-- Right now, InferenceX benchmarks are showing the worst these chips will actually perform. No prefix caching, no multi-turn, all random data. The real ...
-  [查看](https://x.com/SemiAnalysis_/status/2046393773869941125#m)
+- 100 gigawatts under contract. 10 gigawatts of capacity left through 2030. Pricing up double digits. Competitor literally stopped taking orders. And th...
+  [查看](https://x.com/SemiAnalysis_/status/2047057897490731386#m)
+- NVIDIA knows more about what its customers need than anyone else. They hear the asks directly. That is why disaggregated inference is the future, and ...
+  [查看](https://x.com/SemiAnalysis_/status/2047000151785431105#m)
+- With the new Vera Rubin rack, one can generate AI videos of Toy Jensen giving an dance tutorial faster than before. Video generation inferencing is on...
+  [查看](https://x.com/SemiAnalysis_/status/2046755992763793665#m)
 
 ### @vllm_project | Infra
 
-- 🎉 We just shipped a major redesign of http://recipes.vllm.ai.  "How do I run model X on hardware Y for task Z?" now has a clickable answer.  What's ne...
-  [查看](https://x.com/vllm_project/status/2046592125740142903#m)
+- 🎉 Great to see vLLM powering Google Gemma 4 on NVIDIA Jetson.  The @NVIDIA Jetson team published a tutorial covering the full Gemma 4 family, from E2B...
+  [查看](https://x.com/vllm_project/status/2046987414095503621#m)
+- 🎉 Day-0 vLLM support for Qwen3.6-27B!  Congrats to @Alibaba_Qwen on the new 27B dense model release. Looking forward to more of the Qwen3.6 series. 👀 ...
+  [查看](https://x.com/vllm_project/status/2046943674890871019#m)
 
-## 👤 研究者动态（7条）
+### @zai_org | Model
 
-### @jeffdean [Google] | Infra
+- RT by @Zai_org: Truly sorry for any confusion or frustration caused by unclear, misleading, or inappropriate rules in our moderation system and on our...
+  [查看](https://x.com/ZixuanLi_/status/2046973976744698139#m)
 
-- RT by @JeffDean: The future of computer vision is agentic.  1/ We built Nomadic around a gap we kept seeing in video understanding: VLMs generate chai...
-  [查看](https://x.com/nomadicai/status/2046635685206208533#m)
-
-### @neelnanda5 [Google DeepMind] | Research
-
-- Existential risk from AGI is one of the most important issues right now. If you want to understand more about the topic, and technical work that helps...
-  [查看](https://x.com/NeelNanda5/status/2046658489620234612#m)
+## 👤 研究者动态（4条）
 
 ### @sama [OpenAI] | Model
 
-- Gabe is incredibly talented and a great leader. Happy to see this, but not surprised.
-  [查看](https://x.com/sama/status/2046682384251429279#m)
-- Here is a manga made by ChatGPT Images 2.0 of @gabeeegoooh and me looking for more GPUs:
-  [查看](https://x.com/sama/status/2046672912833458597#m)
-- Codex hit 4M active users, less than two weeks after hitting 3M.  We will reset rate limits today!
-  [查看](https://x.com/sama/status/2046604989527912590#m)
-- Really excited for this week!  Next up, we've got something to show you at 12 pm PT today.
-  [查看](https://x.com/sama/status/2046598595869331894#m)
+- These are cool! I think most companies will want to use them.
+  [查看](https://x.com/sama/status/2047017964105597009#m)
+- We want you to have a lot of AI!
+  [查看](https://x.com/sama/status/2046752492093165708#m)
 
 ### @swyx [AI社区] | App
 
-- do not miss. one of the INSANE gets courtesy of @osanseviero and the @GoogleDeepMind london avengers.   if you always felt out of the loop on the SOTA...
-  [查看](https://x.com/swyx/status/2046680414836715655#m)
+- LS was the first podcast cursor ever did  listen back to baby @amanrsanger when they were 5 people and pre-PMF
+  [查看](https://x.com/swyx/status/2046791964759044504#m)
+
+### @thesephist [Anthropic] | Research
+
+- Hard to unsee the future from demos like this
+  [查看](https://x.com/thesephist/status/2046988455096336711#m)
