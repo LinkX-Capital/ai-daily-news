@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-23 07:15
-**总计**：31 条推文
+**总计**：28 条推文
 
 ---
 
@@ -11,16 +11,16 @@
 
 ---
 
-## 🏢 公司发布（27条）
+## 🏢 公司发布（23条）
 
 ### @alibaba_qwen | Model
 
-- R to @Alibaba_Qwen: VLM Performance：Qwen3.6-27B is natively multimodal, supporting both vision-language thinking and non-thinking modes in a single un...
-  [查看](https://x.com/Alibaba_Qwen/status/2046939788184547610#m)
+- 🚀 Meet Qwen3.6-27B, our latest dense, open-source model, packing flagship-level coding power!  Yes, 27B, and Qwen3.6-27B punches way above its weight....
+  [查看](https://x.com/Alibaba_Qwen/status/2046939764428009914#m)
 - R to @Alibaba_Qwen: LM Performance：With only 27B parameters, Qwen3.6-27B outperforms the Qwen3.5-397B-A17B (397B total / 17B active, ~15x larger!) on ...
   [查看](https://x.com/Alibaba_Qwen/status/2046939775924584577#m)
-- Pinned: 🚀 Meet Qwen3.6-27B, our latest dense, open-source model, packing flagship-level coding power!  Yes, 27B, and Qwen3.6-27B punches way above its...
-  [查看](https://x.com/Alibaba_Qwen/status/2046939764428009914#m)
+- R to @Alibaba_Qwen: VLM Performance：Qwen3.6-27B is natively multimodal, supporting both vision-language thinking and non-thinking modes in a single un...
+  [查看](https://x.com/Alibaba_Qwen/status/2046939788184547610#m)
 
 ### @anthropicai | Model
 
@@ -47,8 +47,6 @@
 
 - Your story. Your style. An audience that’s already waiting.    Luma Agents make sure nothing gets lost between your head and the panel.    Every scrol...
   [查看](https://x.com/LumaLabsAI/status/2046997743454077233#m)
-- Your story. Full manga treatment. Every speed line, every impact frame, every dramatic silence.    You build the cast. You set the scene. Luma Agents ...
-  [查看](https://x.com/LumaLabsAI/status/2046722038606540807#m)
 
 ### @openai | Model
 
@@ -65,16 +63,16 @@
 
 ### @openrouter | Infra
 
-- R to @OpenRouter: Under the hood, GPT-5.4 Image 2 calls the OpenAI Responses API with the GPT-5.4 model having access to the Image Generation server t...
-  [查看](https://x.com/OpenRouter/status/2047055207281090817#m)
 - The incredibly powerful new GPT Image 2 model from @OpenAI is live on OpenRouter as openai/gpt-5.4-image-2  Using OpenRouter's GPT-5.4 Image 2, you ge...
   [查看](https://x.com/OpenRouter/status/2047055195474145334#m)
-- R to @OpenRouter: And read more about the models from @XiaomiMiMo https://x.com/XiaomiMiMo/status/2046988157888209365?s=20
-  [查看](https://x.com/OpenRouter/status/2046990607898616237#m)
+- R to @OpenRouter: Under the hood, GPT-5.4 Image 2 calls the OpenAI Responses API with the GPT-5.4 model having access to the Image Generation server t...
+  [查看](https://x.com/OpenRouter/status/2047055207281090817#m)
+- MiMo-V2.5 series from @XiaomiMiMo is live now on OpenRouter!  Both V2.5 and V2.5-Pro see improvements over V2-Pro and V2-Omni, with a focus on long ru...
+  [查看](https://x.com/OpenRouter/status/2046990572725182964#m)
 - R to @OpenRouter: And MiMo-V2.5: https://openrouter.ai/xiaomi/mimo-v2.5
   [查看](https://x.com/OpenRouter/status/2046990596288782628#m)
-- R to @OpenRouter: Try MiMo-V2.5 Pro: https://openrouter.ai/xiaomi/mimo-v2.5-pro
-  [查看](https://x.com/OpenRouter/status/2046990584691491007#m)
+- R to @OpenRouter: And read more about the models from @XiaomiMiMo https://x.com/XiaomiMiMo/status/2046988157888209365?s=20
+  [查看](https://x.com/OpenRouter/status/2046990607898616237#m)
 
 ### @semianalysis_ | Infra
 
@@ -85,19 +83,7 @@
 - With the new Vera Rubin rack, one can generate AI videos of Toy Jensen giving an dance tutorial faster than before. Video generation inferencing is on...
   [查看](https://x.com/SemiAnalysis_/status/2046755992763793665#m)
 
-### @vllm_project | Infra
-
-- 🎉 Great to see vLLM powering Google Gemma 4 on NVIDIA Jetson.  The @NVIDIA Jetson team published a tutorial covering the full Gemma 4 family, from E2B...
-  [查看](https://x.com/vllm_project/status/2046987414095503621#m)
-- 🎉 Day-0 vLLM support for Qwen3.6-27B!  Congrats to @Alibaba_Qwen on the new 27B dense model release. Looking forward to more of the Qwen3.6 series. 👀 ...
-  [查看](https://x.com/vllm_project/status/2046943674890871019#m)
-
-### @zai_org | Model
-
-- RT by @Zai_org: Truly sorry for any confusion or frustration caused by unclear, misleading, or inappropriate rules in our moderation system and on our...
-  [查看](https://x.com/ZixuanLi_/status/2046973976744698139#m)
-
-## 👤 研究者动态（4条）
+## 👤 研究者动态（5条）
 
 ### @sama [OpenAI] | Model
 
@@ -108,6 +94,8 @@
 
 ### @swyx [AI社区] | App
 
+- Team @Shopify brought some fire to this one; add this to the growing list of “WTF happened in Dec 2025” charts  (this plots token usage across all the...
+  [查看](https://x.com/swyx/status/2047077765581816105#m)
 - LS was the first podcast cursor ever did  listen back to baby @amanrsanger when they were 5 people and pre-PMF
   [查看](https://x.com/swyx/status/2046791964759044504#m)
 
