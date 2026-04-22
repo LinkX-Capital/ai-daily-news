@@ -32,7 +32,7 @@
 手动编辑了 `daily-ai-news.md` 后：
 
 ```bash
-python3 md_to_html.py       # md → HTML + index
+python3 html_generator.py   # md → HTML + index
 python3 gen_screenshot.py   # 手机截图
 python3 notify.py           # 飞书通知
 ```
@@ -48,7 +48,7 @@ python3 publish.py
 往当天日报加一条新闻：
 
 1. 编辑 `daily-ai-news.md`，在对应分类下添加条目
-2. `python3 md_to_html.py` 更新 HTML
+2. `python3 html_generator.py` 更新 HTML
 3. `python3 publish.py` 发布
 
 ## 防覆盖机制
@@ -62,9 +62,10 @@ python3 publish.py
 | 文件 | 作用 | 输入 | 输出 |
 |------|------|------|------|
 | feed_v5.py | 主管线 | RSS + cache.json | archive/news_*.json + daily-ai-news.md |
-| html_generator.py | 自动管线用 | daily-ai-news.md | HTML + index.html |
-| md_to_html.py | 手动发布用 | daily-ai-news.md | HTML |
+| html_generator.py | MD→HTML | daily-ai-news.md | HTML + index.html |
 | publish.py | 一键发布 | daily-ai-news.md | JSON + HTML + 飞书 + git push |
+| qa.py | 质量检查 | daily-ai-news.md | 检查报告 |
+| improve_news.py | 去重 | articles list | 去重后 articles |
 | notify.py | 推送飞书 | daily-ai-news.html | 飞书卡片 |
 | gen_screenshot.py | 生成长图 | daily-ai-news.html | daily-ai-news-mobile.png |
 
@@ -91,7 +92,8 @@ RSS 源          tweet_fetcher
 
 ## 注意事项
 
-1. **HTML 从 md 生成**：使用 html_generator.py 或 md_to_html.py，不要用 generate_html.py（它从 archive JSON 读取）
+1. **HTML 从 md 生成**：使用 html_generator.py，不要手动编辑 HTML
 2. **不要手动编辑 HTML**：每次都从 md 重新生成
 3. **archive 存在即跳过**：run.sh 防覆盖机制确保手动编辑不被 cron 覆盖
 4. **publish.py 是手动发布入口**：编辑完 md 后用 publish.py 一键完成发布
+5. **qa.py 在发布前检查**：`python qa.py` 检查 body/insight 质量

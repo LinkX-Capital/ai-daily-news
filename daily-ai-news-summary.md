@@ -8,7 +8,7 @@
 [来源: Epoch AI](https://epochai.substack.com/p/opus-47-scores-near-frontier-on-eci)
 
 **2. Ant Group发布Ling-2.6-flash：104B/7.4B MoE模型，此前以"Elephant Alpha"匿名霸榜OpenRouter**
-- 104B总参数仅7.4B激活（7%激活率），256K上下文免费使用。匿名发布数周后揭晓身份，先验证效果再公布。
+- 104B总参数仅7.4B激活（7%激活率），256K上下文免费使用。匿名发布数周后揭晓身份。
 [来源: @OpenRouter](https://x.com/OpenRouter/status/2046663557899813181#m)
 
 **3. Kimi K2.6登顶开源智能体模型，Claw-Eval pass³ 62.3%并展示长程编码**
@@ -30,7 +30,7 @@
 
 ### 算力追踪
 **7. AMD与GlobalFoundries合作开发MI500 CPO光互连方案**
-- 基于MRM的CPO解决方案，PIC交GlobalFoundries制造，日月光封装。CPO将光互连集成在芯片封装内。
+- 基于MRM的CPO解决方案，PIC交GlobalFoundries制造，日月光封装。
 [来源: 36氪/财联社](https://36kr.com/newsflashes/3776438293005064?f=rss)
 
 ### 初创&融资
@@ -39,7 +39,7 @@
 [来源: 36氪](https://36kr.com/newsflashes/3776193532281346?f=rss)
 
 **9. NeoCognition获4000万美元种子轮，构建自学习Agent**
-- OSU教授Yu Su创办，Cambium和Walden领投，Vista、Intel CEO Lip-Bu Tan参投。核心思路：让Agent通过自主学习成为任何领域专家。
+- OSU教授Yu Su创办，Cambium和Walden领投，Vista、Intel CEO Lip-Bu Tan参投。
 [来源: TechCrunch](https://techcrunch.com/2026/04/21/ai-research-lab-neocognition-lands-40m-seed-to-build-agents-that-learn-like-humans/)
 
 ### X讨论
@@ -50,10 +50,6 @@
 **11. OpenAI Codex两周内用户从300万增至400万**
 - 两周增长33%，三个月5x，MoM 70%+。增速超越Cursor和Copilot历史曲线。
 [来源: @sama](https://x.com/sama/status/2046604989527912590)
-
-**12. SemiAnalysis发布AI网络模型分析报告**
-- 聚焦万卡集群网络架构、通信瓶颈、光互连成本曲线。网络设备占集群CapEx 20-30%。
-[来源: @semianalysis_](https://x.com/SemiAnalysis_/status/2046635103351079339#m)
 
 ---
 *更新时间: 2026-04-22 (已修订)*

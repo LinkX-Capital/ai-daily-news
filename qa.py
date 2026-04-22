@@ -31,13 +31,18 @@ LOW_VALUE_KEYWORDS = [
     "讲座预告", "直播预告",
 ]
 
-# 过度推断/空洞表达关键词
+# 过度推断/空洞表达关键词（用于 insight 检查）
 OVER_INFER_KEYWORDS = [
     "彻底改变", "开启新纪元", "标志着.*时代的到来", "将颠覆",
     "走在行业前列", "引领行业", "开创先河",
     "革命性突破", "历史性突破", "划时代",
     "重要里程碑", "填补了.*空白",
     "AGI的关键路径", "通向AGI的必经之路",
+    # 过度引申
+    "可能.*重塑", "有望颠覆", "或将引发.*革命",
+    "意味着.*时代的", "标志着一个新",
+    "永远改变", "不可逆转",
+    "正在彻底", "已经彻底",
 ]
 
 # 品牌/公司别称映射（用于同公司去重）
@@ -114,20 +119,24 @@ def check_company_dup(articles):
 
 
 def check_over_inference(articles):
-    """检查 insight 中是否有过度推断/空洞表达"""
+    """检查 insight 中是否有过度推断/空洞表达
+    insight 要务实严谨，基于事实做判断，不过度引申
+    """
     issues = []
     for a in articles:
-        for kp in a.get('key_points', []):
-            for pattern in OVER_INFER_KEYWORDS:
-                if re.search(pattern, kp):
-                    issues.append(('over_infer', a['title'],
-                                  f"insight含过度推断 '{pattern}': {kp[:60]}..."))
-                    break
+        insight_text = ' '.join(a.get('key_points', []))
+        for pattern in OVER_INFER_KEYWORDS:
+            if re.search(pattern, insight_text):
+                issues.append(('over_infer', a['title'],
+                              f"insight含过度推断 '{pattern}': {insight_text[:60]}..."))
+                break
     return issues
 
 
 def check_body_quality(articles):
-    """检查 body 质量：长度、信息密度"""
+    """检查 body 质量：长度、信息密度
+    body 只描述关键事实和关联事件，不做判断/引申（判断放在 insight）
+    """
     issues = []
     for a in articles:
         body = a.get('body', '').strip()
@@ -139,14 +148,24 @@ def check_body_quality(articles):
 
         if not body:
             issues.append(('empty_body', title, "body为空"))
-        elif sent_count < 3:
-            issues.append(('short_body', title, f"body仅{sent_count}句话（建议3-6句）"))
-        elif sent_count > 8:
-            issues.append(('long_body', title, f"body有{sent_count}句话（建议3-6句）"))
+        elif sent_count < 2:
+            issues.append(('short_body', title, f"body仅{sent_count}句话（建议2-5句）"))
+        elif sent_count > 7:
+            issues.append(('long_body', title, f"body有{sent_count}句话（建议2-5句）"))
 
-        # 检查是否有 so what（body 中是否含判断性表达，包含加粗内容）
-        if body and not re.search(r'(意味|表明|反映|说明|关键|重要|影响|竞争|趋势|加速|推动|布局|战略|首次|标志着|独家|专注|核心|突破)', body):
-            issues.append(('no_sowhat', title, "body缺少so-what判断"))
+        # 检查 body 是否包含不应有的判断性表达（判断应在 insight 中）
+        judgment_patterns = [
+            (r'这意味着', 'body含判断性表达'),
+            (r'这表明', 'body含判断性表达'),
+            (r'这标志着', 'body含判断性表达'),
+            (r'这反映出', 'body含判断性表达'),
+            (r'这不仅是.*更是', 'body含判断性表达'),
+        ]
+        for pattern, desc in judgment_patterns:
+            if re.search(pattern, body):
+                issues.append(('body_has_judgment', title,
+                              f"{desc}（判断应放在insight中）: {re.search(pattern, body).group()[:30]}"))
+                break
     return issues
 
 
@@ -572,6 +591,40 @@ def check_insight_quality(articles):
     return issues
 
 
+def check_title_similarity(articles):
+    """检查是否有标题高度相似的重复条目"""
+    issues = []
+
+    def normalize_for_comparison(text):
+        text = text.lower()
+        stopwords = {"the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
+                     "of", "with", "by", "from", "is", "are", "was", "were", "be", "been",
+                     "being", "have", "has", "had", "do", "does", "did", "will", "would",
+                     "could", "should", "may", "might", "can", "this", "that", "these",
+                     "those", "it", "its", "2026", "2025", "2024", "2023", "-", ":", "|",
+                     "now", "new", "pro", "3", "2", "1", "ai", "llm", "model", "google",
+                     "openai", "meta", "microsoft", "anthropic", "deepmind"}
+        english_words = set(w for w in re.findall(r'[a-z]+', text) if w not in stopwords and len(w) > 1)
+        chinese_text = re.sub(r'[a-z0-9\s]', '', text)
+        chinese_bigrams = set(chinese_text[i:i+2] for i in range(len(chinese_text)-1))
+        return english_words | chinese_bigrams
+
+    titles = [(a.get('title', ''), normalize_for_comparison(a.get('title', ''))) for a in articles]
+    for i in range(len(titles)):
+        for j in range(i + 1, len(titles)):
+            t1_set = titles[i][1]
+            t2_set = titles[j][1]
+            if not t1_set or not t2_set:
+                continue
+            intersection = len(t1_set & t2_set)
+            union = len(t1_set | t2_set)
+            sim = intersection / union if union > 0 else 0.0
+            if sim >= 0.4:
+                issues.append(('title_similar', titles[i][0],
+                              f"与'{titles[j][0][:30]}'相似度{sim:.0%}，可能重复"))
+    return issues
+
+
 def run_checks(date_str=None, factcheck=False):
     md_content, path = load_md(date_str)
     articles, summary_items = parse_md(md_content)
@@ -652,9 +705,16 @@ def run_checks(date_str=None, factcheck=False):
     for _, title, detail in issues:
         print(f"    - {title}: {detail}")
 
-    # 10. LLM 事实校验（可选，逐条比对原文）
+    # 10. 标题相似度（重复检测）
+    issues = check_title_similarity(articles)
+    all_issues.extend(issues)
+    print(f"\n[10] 标题相似度: {len(issues)} 个问题")
+    for _, title, detail in issues:
+        print(f"    - {title}: {detail}")
+
+    # 11. LLM 事实校验（可选，逐条比对原文）
     if factcheck:
-        print(f"\n[10] 事实校验(LLM): 逐条对比原文...")
+        print(f"\n[11] 事实校验(LLM): 逐条对比原文...")
         issues = check_fact_llm(articles)
         all_issues.extend(issues)
         if not issues:
@@ -678,8 +738,8 @@ def run_checks(date_str=None, factcheck=False):
 
         # 严重程度
         critical = [i for i in all_issues if i[0] in ('low_value', 'over_infer', 'company_dup', 'fact_error', 'unsupported_claim')]
-        warnings = [i for i in all_issues if i[0] in ('short_body', 'empty_body', 'no_sowhat', 'insight_repeat', 'vague_ref', 'translated_name', 'fact_warning')]
-        minor = [i for i in all_issues if i[0] in ('no_source', 'summary_orphan', 'fetch_fail', 'llm_fail')]
+        warnings = [i for i in all_issues if i[0] in ('short_body', 'empty_body', 'body_has_judgment', 'insight_repeat', 'vague_ref', 'translated_name', 'fact_warning')]
+        minor = [i for i in all_issues if i[0] in ('no_source', 'summary_orphan', 'fetch_fail', 'llm_fail', 'title_similar', 'long_body')]
 
         if critical:
             print(f"\n需要处理 ({len(critical)}):")

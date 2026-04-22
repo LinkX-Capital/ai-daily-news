@@ -1,65 +1,45 @@
 #!/usr/bin/env python3
 """
-快速测试脚本：验证分类和过滤逻辑
+快速测试脚本：验证去重逻辑
 用法: python test_classify.py
 """
 
-import json
 import sys
 sys.path.insert(0, '/Users/shenyalan/ai-daily-news')
 
-from improve_news import is_non_news, fix_category
+from improve_news import improve_news, title_similarity
+
 
 def run_tests():
-    with open('/Users/shenyalan/ai-daily-news/test_cases.json', 'r') as f:
-        data = json.load(f)
-
-    cases = data['cases']
-    passed = 0
-    failed = 0
+    test_articles = [
+        {"title": "OpenAI releases GPT-5 with major reasoning improvements", "priority": 100, "categories": ["模型前沿"]},
+        {"title": "GPT-5 released by OpenAI showing better reasoning", "priority": 90, "categories": ["模型前沿"]},
+        {"title": "Anthropic Claude 4 launches with coding capabilities", "priority": 100, "categories": ["模型前沿"]},
+        {"title": "Claude 4 released: Anthropic's new model excels at coding", "priority": 95, "categories": ["模型前沿"]},
+        {"title": "NVIDIA announces next-gen GPU architecture", "priority": 100, "categories": ["算力追踪"]},
+    ]
 
     print("=" * 50)
-    print("🧪 分类与过滤测试")
+    print("去重测试")
     print("=" * 50)
 
-    for i, c in enumerate(cases, 1):
-        title = c['title']
-        summary = c.get('summary', '')
-        expected_cat = c['expected_category']
-        expected_keep = c['expected_keep']
+    # 测试相似度计算
+    sim = title_similarity(test_articles[0]["title"], test_articles[1]["title"])
+    print(f"\n1. 相似度: '{test_articles[0]['title'][:30]}...' vs '{test_articles[1]['title'][:30]}...'")
+    print(f"   结果: {sim:.2f} (期望 >= 0.4)")
+    assert sim >= 0.4, f"相似度过低: {sim}"
 
-        # 测试过滤
-        should_filter = is_non_news(title, summary)
-        actual_keep = not should_filter
+    # 测试去重
+    result = improve_news(test_articles)
+    print(f"\n2. 去重: {len(test_articles)} -> {len(result)} 条")
+    titles = [a['title'] for a in result]
+    # GPT-5 重复应被合并
+    gpt5_count = sum(1 for t in titles if 'GPT-5' in t or 'gpt-5' in t.lower())
+    assert gpt5_count <= 1, f"GPT-5 重复未去除，剩余 {gpt5_count} 条"
 
-        # 测试分类
-        actual_cat = fix_category(title, summary, "")
+    print("\n全部测试通过!")
+    return True
 
-        # 判断结果
-        keep_ok = actual_keep == expected_keep
-        cat_ok = actual_cat == expected_cat or expected_cat == "其他"
-        ok = keep_ok and cat_ok
-
-        if ok:
-            passed += 1
-            status = "✅"
-        else:
-            failed += 1
-            status = "❌"
-
-        print(f"\n{status} [{i}/{len(cases)}] {title[:40]}...")
-        if not keep_ok:
-            print(f"   过滤: 期望{'保留' if expected_keep else '过滤'}, 实际{'保留' if actual_keep else '过滤'}")
-        if not cat_ok:
-            print(f"   分类: 期望{expected_cat}, 实际{actual_cat}")
-        if not ok and c.get('reason'):
-            print(f"   原因: {c['reason']}")
-
-    print("\n" + "=" * 50)
-    print(f"结果: {passed} 通过, {failed} 失败")
-    print("=" * 50)
-
-    return failed == 0
 
 if __name__ == "__main__":
     success = run_tests()
