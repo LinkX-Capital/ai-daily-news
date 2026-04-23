@@ -3,181 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>AI 前沿动态</title>
     <style>
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+            }
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
         }
-        .container { max-width: 800px; margin: 0 auto; }
-        .header {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-        .header h1 { font-size: 32px; color: #1a1a2e; margin-bottom: 8px; }
-        .header .subtitle { color: #666; font-size: 14px; }
 
-        /* Search bar */
-        .search-bar {
-            margin: 0 0 20px;
-            position: relative;
+        /* Particle BG */
+        #particle-bg {
+            position: fixed; top: 0; left: 0;
+            pointer-events: none;
+            z-index: 0;
+            -webkit-mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            -webkit-mask-composite: source-over;
+            mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            mask-composite: add;
         }
-        .search-bar input {
-            width: 100%;
-            padding: 14px 18px 14px 42px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            background: white;
-            color: #333;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+
+        .page { position: relative; z-index: 1; max-width: 740px; margin: 0 auto; padding: 32px 24px 48px; }
+
+        /* Top bar */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+            margin: -32px -24px 24px;
+        }
+        .topbar a {
+            font-size: 14px; font-weight: 600;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .topbar .brand {
+            color: var(--purple);
+            font-size: 15px; font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        /* Search */
+        .search-wrap { margin-bottom: 28px; position: relative; }
+        .search-wrap input {
+            width: 100%; padding: 12px 16px 12px 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--bg);
+            color: var(--text);
             outline: none;
             font-family: inherit;
+            transition: border-color 0.15s;
         }
-        .search-bar input::placeholder { color: #aaa; }
-        .search-bar input:focus { box-shadow: 0 2px 16px rgba(0,0,0,0.15); }
-        .search-bar .search-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 15px;
-            color: #999;
+        .search-wrap input::placeholder { color: var(--text-3); }
+        .search-wrap input:focus { border-color: var(--purple-60); }
+        .search-wrap .s-icon {
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            font-size: 14px; color: var(--text-3);
         }
-
-        /* Search results */
         .search-results {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             display: none;
             max-height: 70vh;
             overflow-y: auto;
+            margin-top: 4px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
         }
         .search-results.active { display: block; }
-        .search-empty {
-            padding: 24px;
-            text-align: center;
-            color: #999;
-            font-size: 14px;
-        }
+        .search-empty { padding: 24px; text-align: center; color: var(--text-3); font-size: 13px; }
         .search-result {
-            display: flex;
-            align-items: baseline;
-            gap: 10px;
-            padding: 12px 18px;
-            border-bottom: 1px solid #f0f0f0;
+            display: flex; align-items: baseline; gap: 10px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
             text-decoration: none;
-            color: #333;
-            transition: background 0.15s ease;
+            color: var(--text);
+            transition: background 0.12s;
         }
         .search-result:last-child { border-bottom: none; }
-        .search-result:hover { background: #f5f0f7; }
-        .sr-date {
-            font-size: 12px;
-            color: #999;
-            flex-shrink: 0;
-            font-variant-numeric: tabular-nums;
-            min-width: 40px;
-        }
-        .sr-title {
-            flex: 1;
-            font-size: 14px;
-            color: #333;
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .sr-cat {
-            font-size: 11px;
-            color: #660874;
-            flex-shrink: 0;
-            background: #e8dce9;
-            padding: 2px 6px;
-            border-radius: 3px;
-        }
+        .search-result:hover { background: var(--purple-20); }
+        .sr-date { font-size: 12px; color: var(--text-3); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+        .sr-title { flex: 1; font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .sr-cat { font-size: 11px; color: var(--purple); flex-shrink: 0; background: var(--purple-20); padding: 2px 6px; border-radius: 3px; }
 
         /* Sections */
         .section {
-            background: white;
-            padding: 25px;
-            border-radius: 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
         .section.hidden { display: none; }
         .section-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #f0f0f0;
+            display: flex; align-items: center;
+            margin-bottom: 16px; padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
         }
-        .section-header h2 { font-size: 20px; color: #1a1a2e; margin: 0; }
-        .section-header .icon { font-size: 24px; margin-right: 10px; }
-        .archive-list {
-            list-style: none;
-            padding: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
+        .section-header h2 { font-size: 15px; font-weight: 600; color: var(--text); margin: 0; letter-spacing: -0.2px; }
+        .section-header .dot {
+            width: 8px; height: 8px;
+            border-radius: 2px;
+            background: var(--purple);
+            margin-right: 10px;
+            flex-shrink: 0;
         }
+
+        /* Archive list */
+        .archive-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
         .archive-list li { list-style: none; }
         .archive-item {
-            display: flex;
-            align-items: center;
-            padding: 14px 16px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            transition: all 0.2s ease;
+            display: flex; align-items: center;
+            padding: 12px 14px;
+            background: var(--bg-page);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: all 0.15s;
             text-decoration: none;
-            color: #333;
+            color: var(--text);
+            font-size: 13px;
         }
         .archive-item:hover {
-            background: #e8f4fd;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-color: var(--purple-40);
+            background: var(--purple-20);
         }
         .archive-item.featured {
-            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-color: var(--purple-40);
+            background: var(--purple-20);
             font-weight: 600;
         }
-        .archive-item .icon { font-size: 18px; margin-right: 10px; }
-        .archive-item .text { flex: 1; font-size: 14px; }
-        .archive-item .arrow { color: #999; font-size: 16px; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 24px 0 0;
+            color: var(--text-3);
+            font-size: 12px;
+        }
+
         @media (max-width: 600px) {
+            .page { padding: 16px 16px 32px; }
+            .topbar { margin: -16px -16px 16px; }
             .archive-list { grid-template-columns: 1fr; }
-            body { padding: 10px; }
-            .header { padding: 20px; }
-            .header h1 { font-size: 24px; }
-            .section { padding: 16px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #particle-bg { display: none; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📡 AI 前沿动态</h1>
-            <div class="subtitle">每日追踪 AI 行业最新进展</div>
+    <canvas id="particle-bg"></canvas>
+    <div class="page">
+        <div class="topbar">
+            <span class="brand">AI 前沿动态</span>
+            <a href="index.html">Archive</a>
         </div>
 
-        <div class="search-bar">
-            <span class="search-icon">&#128269;</span>
+        <div class="search-wrap">
+            <span class="s-icon">&#128269;</span>
             <input type="text" id="search" placeholder="搜索全库新闻..." autocomplete="off">
         </div>
         <div class="search-results" id="search-results"></div>
 
         <div class="section" id="sec-special">
             <div class="section-header">
-                <span class="icon">📌</span>
+                <span class="dot"></span>
                 <h2>专题报告</h2>
             </div>
             <ul class="archive-list">
@@ -187,7 +216,7 @@
 
         <div class="section" id="sec-archive">
             <div class="section-header">
-                <span class="icon">📅</span>
+                <span class="dot"></span>
                 <h2>日报存档</h2>
             </div>
             <ul class="archive-list" id="daily-archive">
@@ -237,9 +266,54 @@
         <li><a href="daily-ai-news-2026-03-07.html" class="archive-item">2026-03-07 AI前沿动态</a></li>
     </ul>
         </div>
+
+        <div class="footer">每日追踪 AI 行业最新进展</div>
     </div>
 
     <script>
+    // Particle BG (same as daily pages)
+    (function(){
+        var c=document.getElementById('particle-bg'),ctx=c.getContext('2d');
+        var dpr=window.devicePixelRatio||1,W,H;
+        function resize(){W=window.innerWidth;H=window.innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}
+        resize(); window.addEventListener('resize',resize);
+        var N=Math.max(20,Math.floor(W*H/20000));
+        var nodes=[],MAX_D=150;
+        for(var i=0;i<N;i++){
+            var onEdge=Math.random()<0.8,side,onX,onY;
+            if(onEdge){side=Math.floor(Math.random()*4);var t=Math.random();
+                if(side===0){onX=t*W;onY=0;}else if(side===1){onX=W;onY=t*H;}
+                else if(side===2){onX=t*W;onY=H;}else{onX=0;onY=t*H;}
+                nodes.push({x:onX+(Math.random()-0.5)*30,y:onY+(Math.random()-0.5)*30,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,e:0,bs:Math.random()*1.5+0.5});
+            }else{nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,e:0,bs:Math.random()*1.5+0.5});}
+        }
+        var ripples=[];
+        var cR=102,cG=8,cB=116;
+        var prefersReduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if(prefersReduced)return;
+        function animate(){
+            ctx.clearRect(0,0,W,H);
+            if(Math.random()<0.008)ripples.push({x:Math.random()*W,y:Math.random()*H,r:0,speed:80+Math.random()*40,maxR:180+Math.random()*120});
+            for(var i=ripples.length-1;i>=0;i--){var rp=ripples[i];rp.r+=rp.speed*0.016;
+                for(var j=0;j<nodes.length;j++){var nd=nodes[j];var dx=nd.x-rp.x,dy=nd.y-rp.y,d=Math.sqrt(dx*dx+dy*dy);
+                    if(Math.abs(d-rp.r)<25)nd.e=Math.min(1,nd.e+0.4);}
+                if(rp.r>rp.maxR)ripples.splice(i,1);}
+            for(var i=0;i<nodes.length;i++){var n=nodes[i];n.e*=0.94;n.x+=n.vx;n.y+=n.vy;
+                if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;}
+            for(var i=0;i<nodes.length;i++){for(var j=i+1;j<nodes.length;j++){
+                var dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);
+                if(d<MAX_D){var a=(1-d/MAX_D)*0.12*(1+Math.max(nodes[i].e,nodes[j].e));
+                    ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);
+                    ctx.strokeStyle='rgba('+cR+','+cG+','+cB+','+a+')';ctx.lineWidth=0.6;ctx.stroke();}}}
+            for(var i=0;i<nodes.length;i++){var n=nodes[i],sz=n.bs+n.e*2,a=0.25+n.e*0.5;
+                ctx.beginPath();ctx.arc(n.x,n.y,Math.max(0.5,sz),0,Math.PI*2);
+                ctx.fillStyle='rgba('+cR+','+cG+','+cB+','+a+')';ctx.fill();}
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })();
+
+    // Search
     (function() {
         var input = document.getElementById('search');
         var results = document.getElementById('search-results');
@@ -255,14 +329,18 @@
             var dm = url.match(/(\d{4})-(\d{2})-(\d{2})/);
             var date = dm ? dm[2] + '-' + dm[3] : '';
             var articles = [], currentCat = '';
-            var parts = html.split(/<div class="section-title">(.*?)<\/div>/);
-            for (var i = 0; i < parts.length; i++) {
-                if (i % 2 === 1) { currentCat = parts[i].trim(); }
-                else if (i > 0 && currentCat) {
-                    var tRe = /<span class="title">(.*?)<\/span>/g, bRe = /<div class="body">(.*?)<\/div>/g;
+
+            // V2 format: <h2 class="sec-h">...</h2> and <h3 class="card-h">...</h3> + <p class="card-body">...</p>
+            var sectionParts = html.split(/<h2 class="sec-h"[^>]*>(.*?)<\/h2>/);
+            for (var i = 0; i < sectionParts.length; i++) {
+                if (i % 2 === 1) {
+                    currentCat = stripTag(sectionParts[i]).trim();
+                } else if (i > 0 && currentCat) {
+                    var tRe = /<h3 class="card-h"[^>]*>(.*?)<\/h3>/g;
+                    var bRe = /<p class="card-body">(.*?)<\/p>/g;
                     var ts = [], bs = [], m;
-                    while ((m = tRe.exec(parts[i])) !== null) ts.push(m[1]);
-                    while ((m = bRe.exec(parts[i])) !== null) bs.push(m[1]);
+                    while ((m = tRe.exec(sectionParts[i])) !== null) ts.push(m[1]);
+                    while ((m = bRe.exec(sectionParts[i])) !== null) bs.push(m[1]);
                     for (var j = 0; j < ts.length; j++) {
                         var t = stripTag(ts[j]).trim();
                         var b = j < bs.length ? stripTag(bs[j]).trim().slice(0, 120) : '';
