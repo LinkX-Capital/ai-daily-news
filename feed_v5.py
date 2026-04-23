@@ -135,10 +135,14 @@ SOURCE_AUTHORITY = {
     "Figure AI": 10, "Physical Intelligence": 10, "World Labs": 10,
     "Thinking Machines Lab": 10, "The Keyword": 10,
     # Tier 1.5 - 顶级分析 (9)
-    "SemiAnalysis": 9, "The Information": 9,
+    "SemiAnalysis": 9, "The Information": 9, "Epoch AI": 9,
     # Tier 2 - 一手信源 (7-8)
     "TechCrunch": 8, "Wired": 8, "The Verge": 8, "Ars Technica": 8,
-    "36氪": 8, "karpathy": 8,
+    "36氪": 8,
+    # Tier 2.5 - Twitter 官方账号 (7)
+    "@openai": 7, "@anthropicai": 7, "@openrouter": 7,
+    "@alibaba_qwen": 7, "@kimi_moonshot": 7, "@vllm_project": 7,
+    "@googledeepmind": 7, "@googleai": 7, "karpathy": 8,
     # Tier 3 - 行业聚合 (5-6)
     "量子位": 6, "新智元": 6, "机器之心": 6,
     "PaperWeekly": 6, "IT桔子": 5, "Sakana Blog": 6,
@@ -301,10 +305,14 @@ SOURCE_AUTHORITY = {
     "NVIDIA Blog": 10, "Meta AI": 10, "Microsoft Research": 10,
     "HuggingFace Blog": 10, "DeepSeek": 10, "Mistral AI": 10,
     # Tier 1.5 - 顶级分析 (9)
-    "SemiAnalysis": 9, "The Information": 9,
+    "SemiAnalysis": 9, "The Information": 9, "Epoch AI": 9,
     # Tier 2 - 一手信源 (7-8)
     "TechCrunch": 8, "Wired": 8, "The Verge": 8, "Ars Technica": 8,
     "36氪": 8,
+    # Tier 2.5 - Twitter 官方账号 (7)
+    "@openai": 7, "@anthropicai": 7, "@openrouter": 7,
+    "@alibaba_qwen": 7, "@kimi_moonshot": 7, "@vllm_project": 7,
+    "@googledeepmind": 7, "@googleai": 7,
     # Tier 3 - 行业聚合 (5-6)
     "量子位": 6, "新智元": 6, "机器之心": 6,
     "PaperWeekly": 6, "IT桔子": 5,
@@ -1107,9 +1115,32 @@ def process_with_llm(articles, recent_articles=None):
     # 按优先级排序，确保重要新闻优先处理
     sorted_articles = sorted(articles, key=lambda x: x.get('priority', 0), reverse=True)
 
+    # 预过滤：排除明显非AI内容（Tesla财报、NASA、Rivian等）
+    NON_AI_TITLE_KEYWORDS = [
+        "tesla q", "rivian", "nasa ", "apple watch", "iphone case",
+        "linkedin's ceo", "threads is adding", "startup battlefield",
+        "cosmetics giant", "data breach", "rituals confirms",
+        "养虾", "招聘", "内推",
+    ]
+    def is_likely_non_ai(a):
+        title_lower = a.get('title', '').lower()
+        return any(kw in title_lower for kw in NON_AI_TITLE_KEYWORDS)
+
+    ai_filtered = [a for a in sorted_articles if not is_likely_non_ai(a)]
+
+    # 每个来源最多保留3条，避免单一源占满名额
+    from collections import Counter
+    src_count = Counter()
+    diversified = []
+    for a in ai_filtered:
+        src = a.get('source', '')
+        if src_count[src] < 3:
+            diversified.append(a)
+            src_count[src] += 1
+
     # 构建清晰的新闻列表，每条独立
     news_list = []
-    for i, a in enumerate(sorted_articles[:25]):  # 取前25条高优先级新闻
+    for i, a in enumerate(diversified[:40]):  # 取前40条AI相关新闻
         summary = a.get('summary', '') or a.get('content', '')
         news_list.append(f"""【新闻{i+1}】
 标题：{a['title']}
@@ -1600,15 +1631,50 @@ def main():
         researcher_tweets = fetch_researcher_tweets()
         if researcher_tweets:
             print(f"   获取 {len(researcher_tweets)} 条推文")
+
+            # 预分类关键词
+            MODEL_KW = ["model", "发布", "release", "launch", "benchmark", "sota",
+                        "gpt", "claude", "gemini", "llama", "qwen", "mistral",
+                        "开源", "open source", "open-weight", "参数", "parameter",
+                        "性能", "performance", "outperform", "超越",
+                        "multimodal", "多模态", "vision", "image", "video",
+                        "reasoning", "推理", "coding", "agent"]
+            COMPUTE_KW = ["gpu", "tpu", "chip", "芯片", "trainium", "inferentia",
+                         "inference", "推理加速", "serving", "vllm",
+                         "datacenter", "数据中心", "capex", "算力"]
+            RESEARCH_KW = ["paper", "论文", "arxiv", "iclr", "neurips", "icml",
+                          "method", "方法", "propose", "提出", "improve", "改进"]
+            FUNDING_KW = ["funding", "融资", "round", "raise", "valuation", "估值",
+                         "acquire", "收购", "$"]
+
+            company_accounts_lower = {c.lower() for c in COMPANY_ACCOUNTS}
+
             for t in researcher_tweets:
                 source = t.get("source", "")
                 title = t.get("title", "")
-                # 使用新的优先级计算 v2.0
+                source_lower = source.lower().replace("@", "")
+
+                # 公司账号和研究账号：根据内容预分类
+                text_lower = title.lower()
+                if sum(1 for kw in COMPUTE_KW if kw.lower() in text_lower) >= 1:
+                    cat = "算力追踪"
+                elif sum(1 for kw in MODEL_KW if kw.lower() in text_lower) >= 2:
+                    cat = "模型前沿"
+                elif sum(1 for kw in FUNDING_KW if kw.lower() in text_lower) >= 1:
+                    cat = "初创&融资"
+                elif sum(1 for kw in RESEARCH_KW if kw.lower() in text_lower) >= 1:
+                    cat = "研究关注"
+                elif source_lower in company_accounts_lower:
+                    cat = "产业动态"
+                else:
+                    cat = "X讨论"
+
+                # 使用匹配的分类计算优先级
                 priority = calculate_priority_v2({
                     "source": source,
                     "title": title,
                     "summary": title,
-                    "categories": ["X讨论"]
+                    "categories": [cat]
                 })
                 # 推文优先级 boost，确保进入 LLM 处理
                 priority += 15
@@ -1618,7 +1684,7 @@ def main():
                     "summary": title,
                     "content": title,
                     "link": t.get("link", ""),
-                    "categories": ["X讨论"],
+                    "categories": [cat],
                     "is_tweet": True,
                     "source": t.get("source", ""),
                     "published_parsed": parse_tweet_time(t.get("published", "")),

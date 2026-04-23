@@ -1,0 +1,1230 @@
+#!/usr/bin/env python3
+"""HTML 生成模块 V3 — Dark header with ASCII constellation"""
+
+import re
+import os
+import sys
+from datetime import datetime, timedelta
+from collections import defaultdict
+
+# 尝试导入路径配置
+try:
+    sys.path.insert(0, '/Users/shenyalan/ai-daily-news')
+    from config_loader import base_dir, output_md, output_html
+    HAS_CONFIG = True
+except ImportError:
+    HAS_CONFIG = False
+
+# 分类顺序
+CAT_ORDER = ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]
+
+# 分类名称标准化
+CAT_ALIASES = {
+    '算力追踪': '算力追踪',
+    '算力跟踪': '算力追踪',
+    '算力': '算力追踪',
+}
+
+
+def normalize_category(cat):
+    return CAT_ALIASES.get(cat, cat)
+
+
+def parse_md(md_content):
+    """解析 MD 字符串"""
+    articles = []
+    current_cat = None
+    current_body_lines = []
+    summary_items = {}
+    in_summary = False
+
+    lines = md_content.split('\n')
+    for line in lines:
+        original_stripped = line.strip()
+
+        if ('要点汇总' in original_stripped or '要点速览' in original_stripped) and original_stripped.startswith('#'):
+            in_summary = True
+            continue
+        if in_summary and original_stripped.startswith('---'):
+            in_summary = False
+            continue
+        if in_summary and original_stripped.startswith('- '):
+            parts = original_stripped[2:].split('：', 1)
+            if len(parts) == 2:
+                cat = re.sub(r'\*\*', '', parts[0].strip())
+                cat = normalize_category(cat)
+                items = [i.strip() for i in parts[1].split(';') if i.strip()]
+                summary_items[cat] = items
+            continue
+
+        if original_stripped.startswith('### ') or (original_stripped.startswith('## ') and not original_stripped.startswith('### ')):
+            cat_text = original_stripped.lstrip('#').strip()
+            if cat_text not in ['📖 详细参考', '详细参考', '要点汇总', '要点速览', 'AI 前沿动态', '04月05日 AI 前沿动态']:
+                current_cat = normalize_category(cat_text)
+            continue
+
+        if original_stripped.startswith('**') and original_stripped.endswith('**') and len(original_stripped) > 4:
+            if articles and current_body_lines:
+                articles[-1]['body'] = ' '.join(current_body_lines)
+            current_body_lines = []
+            title = original_stripped[2:-2].strip()
+            if title:
+                articles.append({
+                    'title': title,
+                    'categories': [current_cat] if current_cat else [],
+                    'body': '',
+                    'source': '',
+                    'link': '',
+                    'key_points': [],
+                    'priority': 100
+                })
+            continue
+
+        if articles and (original_stripped.startswith('> ') or original_stripped.startswith('>')):
+            if '> 💡' in original_stripped:
+                insight = original_stripped.split('💡', 1)[1].strip()
+            else:
+                insight = original_stripped.lstrip('> ').strip()
+            if insight:
+                articles[-1]['key_points'].append(insight)
+            continue
+
+        if '来源:' in original_stripped and articles:
+            if current_body_lines:
+                articles[-1]['body'] = ' '.join(current_body_lines)
+                current_body_lines = []
+            source_pairs = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', original_stripped)
+            if source_pairs:
+                articles[-1]['sources'] = source_pairs
+                articles[-1]['source'] = source_pairs[0][0]
+                articles[-1]['link'] = source_pairs[0][1]
+            else:
+                source_match = re.search(r'\[([^\]]+)\]', original_stripped)
+                if source_match:
+                    articles[-1]['source'] = source_match.group(1).strip()
+            continue
+
+        if original_stripped and not original_stripped.startswith('#') and '💡' not in original_stripped and '来源' not in original_stripped and articles:
+            if original_stripped.startswith('---') or original_stripped.startswith('*更新时间'):
+                continue
+            body_text = re.sub(r'^[\-\*•]\s+', '', original_stripped)
+            if body_text:
+                current_body_lines.append(body_text)
+            continue
+
+    if articles and current_body_lines:
+        articles[-1]['body'] = ' '.join(current_body_lines)
+
+    return articles, summary_items
+
+
+# 公司/产品名自动高亮
+ENTITY_NAMES = [
+    "GlobalFoundries", "Anthropic", "OpenAI", "Google", "Microsoft", "Apple",
+    "Amazon", "NVIDIA", "AMD", "Intel", "Qualcomm", "Meta", "ByteDance", "Alibaba",
+    "DeepSeek", "Moonshot AI", "Moonshot", "Ant Group", "inclusionAI",
+    "SpaceX", "xAI", "Cursor", "Replit", "Perplexity", "Cloudflare", "Vercel", "Modal",
+    "PrismML", "NeoCognition",
+    "Claude Opus", "Claude Sonnet", "Claude Code", "ChatGPT",
+    "Codex", "Claude", "Gemini",
+    "GPT-5.4", "GPT-5", "GPT-4",
+    "Kimi K2.6", "Kimi",
+    "Qwen",
+    "SWE-bench", "Claw-Eval", "TerminalBench",
+]
+ENTITY_NAMES.sort(key=len, reverse=True)
+ENTITY_PATTERN = re.compile('(' + '|'.join(re.escape(n) for n in ENTITY_NAMES) + ')')
+
+
+def highlight_entities(text):
+    """高亮公司/产品名，跳过已在 HTML 标签属性内的"""
+    parts = re.split(r'(<[^>]+>)', text)
+    for i, part in enumerate(parts):
+        if not part.startswith('<'):
+            parts[i] = ENTITY_PATTERN.sub(r'<span class="ent">\1</span>', part)
+    return ''.join(parts)
+
+
+def convert_bold(text):
+    text = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', text)
+    return text
+
+
+def _truncate(text, max_len=36):
+    """截断标题用于侧边栏"""
+    if len(text) <= max_len:
+        return text
+    return text[:max_len].rstrip('，。、；：') + '…'
+
+
+def generate_html(articles, summary_items, month_day=None, is_latest=True):
+    """Header + Briefing above, sidebar + content below"""
+    if month_day is None:
+        month_day = datetime.now().strftime("%m月%d日")
+
+    today_iso = datetime.now().strftime("%Y-%m-%d")
+    today_time = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    by_cat = defaultdict(list)
+    for a in articles:
+        for c in a.get("categories", []):
+            by_cat[c].append(a)
+
+    total = len(articles)
+
+    # Top headline
+    top_headline = "较平静的一天"
+    for cat in CAT_ORDER:
+        cat_articles = by_cat.get(cat, [])
+        if cat_articles:
+            top_headline = cat_articles[0]['title']
+            break
+
+    # Prev/next dates
+    prev_date = next_date = None
+    try:
+        dt = datetime.strptime(today_iso, "%Y-%m-%d")
+        prev_date = (dt - timedelta(days=1)).strftime("%Y-%m-%d")
+        next_date = (dt + timedelta(days=1)).strftime("%Y-%m-%d")
+    except ValueError:
+        pass
+
+    # Build sidebar nav HTML
+    nav_items = ""
+    for cat in CAT_ORDER:
+        cat_articles = by_cat.get(cat, [])
+        if not cat_articles:
+            continue
+        cls = cat.replace("&", "and").replace(" ", "-")
+        nav_items += f"""
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>{cat}</span>
+                <span class="nav-count">{len(cat_articles)}</span>
+            </summary>
+            <div class="nav-articles">"""
+        for i, a in enumerate(cat_articles):
+            short = _truncate(a['title'])
+            nav_items += f"""
+                <a href="#c-{cls}-{i}" class="nav-item">{short}</a>"""
+        nav_items += """
+            </div>
+        </details>"""
+
+    # Build mobile TOC
+    mobile_toc = ""
+    for cat in CAT_ORDER:
+        cat_articles = by_cat.get(cat, [])
+        if not cat_articles:
+            continue
+        cls = cat.replace("&", "and").replace(" ", "-")
+        mobile_toc += f'<a href="#s-{cls}">{cat}</a>'
+
+    # Build summary — pill/tag style like V1
+    summary_html = ""
+    if summary_items:
+        summary_html = """
+            <div class="summary">
+                <div class="sum-label">Briefing</div>"""
+        for cat in CAT_ORDER:
+            items = summary_items.get(cat, [])
+            if not items:
+                continue
+            summary_html += f"""
+                <div class="sum-cat">
+                    <span class="sum-cat-name">{cat}</span>"""
+            for item in items:
+                summary_html += f"""
+                    <span class="sum-item">{item}</span>"""
+            summary_html += """
+                </div>"""
+        summary_html += """
+            </div>"""
+
+    # Build content sections
+    sections_html = ""
+    for cat in CAT_ORDER:
+        cat_articles = by_cat.get(cat, [])
+        if not cat_articles:
+            continue
+
+        cls = cat.replace("&", "and").replace(" ", "-")
+
+        sections_html += f"""
+        <section class="sec" id="s-{cls}">
+            <h2 class="sec-h">{cat}</h2>"""
+
+        for i, a in enumerate(cat_articles):
+            card_id = f"c-{cls}-{i}"
+            title_html = highlight_entities(a['title'])
+            body_text = a.get('body', '')
+            has_insight = bool(a.get('key_points'))
+
+            sources = a.get('sources', [])
+            if sources:
+                src_html = ' / '.join(
+                    f'<a href="{url}" target="_blank">{name}</a>' for name, url in sources
+                )
+            elif a.get('link'):
+                src_html = f'<a href="{a["link"]}" target="_blank">{a.get("source", "来源")}</a>'
+            elif a.get('source'):
+                src_html = a["source"]
+            else:
+                src_html = ''
+
+            sections_html += f"""
+        <article class="card" id="{card_id}">
+            <h3 class="card-h">{title_html}</h3>"""
+
+            if body_text:
+                sections_html += f"""
+            <p class="card-body">{highlight_entities(convert_bold(body_text))}</p>"""
+
+            if has_insight:
+                for point in a['key_points']:
+                    sections_html += f"""
+            <div class="card-note"><span class="note-label">Insight by AI</span> {highlight_entities(convert_bold(point))}</div>"""
+
+            if src_html:
+                sections_html += f"""
+            <div class="card-src">{src_html}</div>"""
+
+            sections_html += """
+        </article>"""
+
+        sections_html += """
+        </section>"""
+
+    # Bottom nav: prev/next
+    issue_nav_html = ""
+    if prev_date:
+        issue_nav_html += f'<a href="daily-ai-news-{prev_date}.html" class="issue-prev">&larr; 上一期</a>'
+    else:
+        issue_nav_html += '<span></span>'
+    if not is_latest and next_date:
+        issue_nav_html += f'\n            <a href="daily-ai-news-{next_date}.html" class="issue-next">下一期 &rarr;</a>'
+    else:
+        issue_nav_html += '<span></span>'
+
+    html = f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>{month_day} AI前沿动态</title>
+    <style>
+        html {{ scroll-behavior: smooth; }}
+
+        :root {{
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --note-bg: #f4eff5;
+            --pill-bg: #EFEDEA;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --sidebar-w: 220px;
+            --max-w: 740px;
+        }}
+        @media (prefers-color-scheme: dark) {{
+            :root {{
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --note-bg: #1a111b;
+                --pill-bg: #161412;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+            }}
+        }}
+
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }}
+
+        /* ========== Particle BG ========== */
+        #particle-bg {{
+            position: fixed; top: 0; left: 0;
+            pointer-events: none;
+            z-index: 0;
+            -webkit-mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            -webkit-mask-composite: source-over;
+            mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            mask-composite: add;
+        }}
+
+        /* ========== Top Bar ========== */
+        .topbar {{
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }}
+        .topbar-left {{
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }}
+        .topbar-brand {{
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--purple);
+            letter-spacing: -0.3px;
+        }}
+        .topbar-tagline {{
+            font-size: 11px;
+            color: var(--text-3);
+            letter-spacing: 0.2px;
+        }}
+        .topbar-right {{
+            display: flex;
+            gap: 8px;
+        }}
+        .topbar-btn {{
+            font-size: 12px;
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }}
+        .topbar-btn:hover {{
+            color: var(--text);
+            border-color: var(--text-3);
+        }}
+        .topbar-search {{
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 0 8px;
+            height: 28px;
+            margin-right: 4px;
+        }}
+        .topbar-search input {{
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 12px;
+            color: var(--text);
+            width: 100px;
+            font-family: inherit;
+        }}
+        .topbar-search input::placeholder {{
+            color: var(--text-3);
+        }}
+        .topbar-search .search-icon {{
+            font-size: 11px;
+            color: var(--text-3);
+            margin-right: 4px;
+        }}
+
+        /* ========== Search Dropdown ========== */
+        .search-dropdown {{
+            position: fixed;
+            top: 52px;
+            right: 32px;
+            width: 440px;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 200;
+        }}
+        .search-dropdown.active {{ display: block; }}
+        .search-empty {{
+            padding: 20px 16px;
+            font-size: 13px;
+            color: var(--text-3);
+            text-align: center;
+        }}
+        .search-result {{
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.4;
+        }}
+        .search-result:last-child {{ border-bottom: none; }}
+        .search-result:hover {{ background: var(--purple-20); }}
+        .search-result-date {{
+            font-size: 11px;
+            color: var(--text-3);
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }}
+        .search-result-title {{
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }}
+        .search-result-cat {{
+            font-size: 11px;
+            color: var(--purple-80);
+            flex-shrink: 0;
+        }}
+
+        /* ========== Page wrapper ========== */
+        .page {{
+            max-width: calc(var(--max-w) + var(--sidebar-w) + 80px);
+            margin: 0 auto;
+            padding: 0 32px;
+        }}
+
+        /* --- Header (above layout) --- */
+        .header {{
+            padding: 28px 0 24px;
+            border-bottom: 1px solid var(--border);
+        }}
+        .header-date {{
+            font-size: 12px;
+            color: var(--text-3);
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 8px;
+        }}
+        .header h1 {{
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1.4;
+            color: var(--text);
+        }}
+        .header-sub {{
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-3);
+        }}
+
+        /* --- Summary / Briefing (above layout) --- */
+        .summary {{
+            padding: 20px 0 24px;
+            border-bottom: 1px solid var(--border);
+        }}
+        .sum-label {{
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+        }}
+        .sum-cat {{
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 6px;
+            margin-bottom: 10px;
+        }}
+        .sum-cat:last-child {{
+            margin-bottom: 0;
+        }}
+        .sum-cat-name {{
+            display: inline-block;
+            background: var(--purple-20);
+            color: var(--purple);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }}
+        .sum-item {{
+            background: var(--pill-bg);
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 13px;
+            color: var(--text-2);
+            line-height: 1.5;
+        }}
+
+        /* ========== Layout (sidebar + content) ========== */
+        .layout {{
+            display: flex;
+        }}
+
+        /* ========== Sidebar ========== */
+        .sidebar {{
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            padding: 20px 16px 20px 0;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }}
+        .sidebar::-webkit-scrollbar {{ width: 0; }}
+
+        .nav-label {{
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 16px;
+        }}
+
+        .nav-details {{
+            margin-bottom: 2px;
+        }}
+        .nav-details summary {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }}
+        .nav-details summary::-webkit-details-marker {{ display: none; }}
+        .nav-details summary::before {{
+            content: "\\25BE";
+            font-size: 9px;
+            color: var(--text-3);
+            margin-right: 5px;
+            display: inline-block;
+            transition: transform 0.15s ease;
+        }}
+        .nav-details:not([open]) summary::before {{
+            transform: rotate(-90deg);
+        }}
+        .nav-count {{
+            font-size: 10px;
+            color: var(--text-3);
+            font-variant-numeric: tabular-nums;
+            margin-left: auto;
+            padding-left: 4px;
+        }}
+
+        .nav-articles {{
+            padding-left: 14px;
+            border-left: 1px solid var(--border);
+            margin: 2px 0 12px;
+        }}
+        .nav-item {{
+            display: block;
+            padding: 3px 8px;
+            font-size: 12px;
+            color: var(--text-3);
+            text-decoration: none;
+            line-height: 1.45;
+            transition: color 0.15s ease;
+        }}
+        .nav-item:hover {{
+            color: var(--text-2);
+        }}
+        .nav-item.active {{
+            color: var(--purple);
+            font-weight: 500;
+        }}
+
+        /* ========== Main ========== */
+        .main {{
+            flex: 1;
+            max-width: var(--max-w);
+            padding: 20px 0 0 24px;
+            min-width: 0;
+        }}
+
+        /* --- Section --- */
+        .sec {{
+            margin-bottom: 32px;
+            scroll-margin-top: 64px;
+        }}
+        .sec-h {{
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }}
+
+        /* --- Card --- */
+        .card {{
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            scroll-margin-top: 64px;
+            cursor: default;
+        }}
+        .card:last-child {{ border-bottom: none; }}
+        .card-h {{
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: var(--text);
+            letter-spacing: -0.2px;
+            margin-bottom: 8px;
+        }}
+
+        .ent {{
+            font-weight: 500;
+        }}
+
+        .card-body {{
+            font-size: 14px;
+            line-height: 1.75;
+            color: var(--text-2);
+        }}
+        .card-body strong {{
+            color: var(--text);
+            font-weight: 600;
+        }}
+
+        .card-note {{
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: var(--note-bg);
+            font-size: 13px;
+            line-height: 1.75;
+            color: var(--text-2);
+            border-radius: 2px;
+        }}
+        .note-label {{
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--purple-80);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 6px;
+        }}
+
+        .card-src {{
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-3);
+        }}
+        .card-src a {{
+            color: var(--text-3);
+            text-decoration: none;
+        }}
+        .card-src a:hover {{
+            color: var(--text);
+        }}
+
+        /* ========== Bottom (independent) ========== */
+        .bottom {{
+            border-top: 1px solid var(--border);
+            margin-top: 16px;
+            padding: 20px 0 32px;
+        }}
+
+        /* --- Issue Navigation --- */
+        .issue-nav {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }}
+        .issue-nav a {{
+            font-size: 13px;
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }}
+        .issue-nav a:hover {{
+            color: var(--text);
+            border-color: var(--text-3);
+        }}
+
+        /* --- Footer --- */
+        .footer {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }}
+        .footer-copy {{
+            font-size: 12px;
+            color: var(--text-3);
+        }}
+        .footer-top {{
+            font-size: 12px;
+            color: var(--text-3);
+            text-decoration: none;
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: all 0.15s ease;
+        }}
+        .footer-top:hover {{
+            color: var(--text);
+            border-color: var(--text-3);
+        }}
+
+        /* ========== Mobile TOC ========== */
+        .mob-toc {{
+            display: none;
+            overflow-x: auto;
+            gap: 0;
+            padding: 0 16px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 48px; z-index: 50;
+            height: 40px;
+            align-items: center;
+        }}
+        .mob-toc::-webkit-scrollbar {{ display: none; }}
+        .mob-toc a {{
+            flex-shrink: 0;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-3);
+            white-space: nowrap;
+        }}
+        .mob-toc a:hover {{ color: var(--text); }}
+
+        /* ========== Responsive ========== */
+        @media (max-width: 768px) {{
+            .sidebar {{ display: none; }}
+            .mob-toc {{ display: flex !important; }}
+            .main {{
+                max-width: 100%;
+                padding: 24px 20px 48px;
+            }}
+            .header {{ padding: 20px 0 16px; }}
+            .header h1 {{ font-size: 20px; }}
+        }}
+        @media (max-width: 480px) {{
+            .main {{ padding: 20px 16px 40px; }}
+            .header {{ padding: 16px 0 12px; }}
+            .header h1 {{ font-size: 18px; }}
+            .card-h {{ font-size: 15px; }}
+            .topbar-tagline {{ display: none; }}
+            .topbar-search {{ display: none; }}
+            .search-dropdown {{ display: none !important; }}
+        }}
+    </style>
+</head>
+<body>
+    <canvas id="particle-bg"></canvas>
+    <!-- Top bar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <span class="topbar-brand">AI Daily News</span>
+            <span class="topbar-tagline">Keep Informed with Link-X Capital</span>
+        </div>
+        <div class="topbar-right">
+            <div class="topbar-search">
+                <span class="search-icon">&#128269;</span>
+                <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
+            </div>
+            <a href="index.html" class="topbar-btn">往期动态</a>
+            <a href="GTC-2026-Official-Report.html" class="topbar-btn">专题报告</a>
+        </div>
+    </div>
+
+    <div class="search-dropdown" id="search-dropdown"></div>
+
+    <!-- Mobile TOC -->
+    <div class="mob-toc" id="mob-toc">
+        {mobile_toc}
+    </div>
+
+    <!-- Page wrapper: header + briefing above, sidebar + content below -->
+    <div class="page">
+        <header class="header">
+            <div class="header-date">{today_iso}</div>
+            <h1>{top_headline}</h1>
+            <div class="header-sub">{total} stories, 24h window</div>
+        </header>
+
+        {summary_html}
+
+        <div class="layout">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <div class="nav-label">Contents</div>
+                {nav_items}
+            </nav>
+
+            <!-- Main content -->
+            <div class="main">
+                {sections_html}
+            </div>
+        </div>
+
+        <!-- Bottom: independent of layout -->
+        <div class="bottom">
+            <div class="issue-nav">
+                {issue_nav_html}
+            </div>
+            <div class="footer">
+                <span class="footer-copy">&copy; 2026 &middot; AI Daily News by Link-X Capital</span>
+                <a href="#" class="footer-top">Back to top &uarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll spy -->
+    <script>
+    (function() {{
+        const cards = document.querySelectorAll('.card[id]');
+        const navs = document.querySelectorAll('.nav-item[href^="#c-"]');
+        if (!cards.length || !navs.length) return;
+        const obs = new IntersectionObserver(entries => {{
+            entries.forEach(e => {{
+                if (e.isIntersecting) {{
+                    navs.forEach(n => n.classList.remove('active'));
+                    const hit = document.querySelector('.nav-item[href="#' + e.target.id + '"]');
+                    if (hit) hit.classList.add('active');
+                }}
+            }});
+        }}, {{ rootMargin: '-80px 0px -65% 0px' }});
+        cards.forEach(c => obs.observe(c));
+    }})();
+
+    // Search — real-time, fetches HTML pages in browser
+    (function() {{
+        const input = document.getElementById('search');
+        const dropdown = document.getElementById('search-dropdown');
+        if (!input || !dropdown) return;
+
+        const cards = document.querySelectorAll('.card');
+        const sections = document.querySelectorAll('.sec[id]');
+        const details = document.querySelectorAll('.nav-details');
+
+        let searchData = [];
+        let totalFiles = 0, loadedCount = 0, started = false;
+
+        function stripTag(s) {{ return s.replace(/<[^>]+>/g, ''); }}
+
+        function parseHtml(html, url) {{
+            const dm = url.match(/(\d{{4}})-(\d{{2}})-(\d{{2}})/);
+            const date = dm ? dm[2] + '-' + dm[3] : '';
+            let articles = [], currentCat = '';
+            const parts = html.split(/<div class="section-title">(.*?)<\/div>/);
+            for (let i = 0; i < parts.length; i++) {{
+                if (i % 2 === 1) currentCat = parts[i].trim();
+                else if (i > 0 && currentCat) {{
+                    const tRe = /<span class="title">(.*?)<\/span>/g, bRe = /<div class="body">(.*?)<\/div>/g;
+                    const ts = [], bs = [];
+                    let m;
+                    while ((m = tRe.exec(parts[i])) !== null) ts.push(m[1]);
+                    while ((m = bRe.exec(parts[i])) !== null) bs.push(m[1]);
+                    for (let j = 0; j < ts.length; j++) {{
+                        const t = stripTag(ts[j]).trim();
+                        const b = j < bs.length ? stripTag(bs[j]).trim().slice(0, 120) : '';
+                        if (t) articles.push({{ d: date, t, b, c: currentCat, f: url }});
+                    }}
+                }}
+            }}
+            return articles;
+        }}
+
+        function startLoad() {{
+            if (started) return;
+            started = true;
+            // Fetch index.html to get the file list
+            fetch('index.html').then(r => r.text()).then(html => {{
+                const re = /href="(daily-ai-news-20\d{{2}}-[^"]+\.html)"/g;
+                const files = []; let m;
+                while ((m = re.exec(html)) !== null) files.push(m[1]);
+                totalFiles = files.length;
+                files.forEach(url => {{
+                    fetch(url).then(r => r.text()).then(h => {{
+                        searchData = searchData.concat(parseHtml(h, url));
+                        loadedCount++;
+                    }}).catch(() => {{ loadedCount++; }});
+                }});
+            }}).catch(() => {{}});
+        }}
+
+        input.addEventListener('focus', startLoad);
+
+        input.addEventListener('input', function() {{
+            const q = this.value.toLowerCase().trim();
+
+            if (!q) {{
+                cards.forEach(c => c.style.display = '');
+                sections.forEach(s => s.style.display = '');
+                details.forEach(d => d.style.display = '');
+                dropdown.classList.remove('active');
+                return;
+            }}
+
+            // In-page filter
+            cards.forEach(card => {{
+                card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+            }});
+            sections.forEach(sec => {{
+                const vis = sec.querySelectorAll('.card:not([style*="none"])');
+                sec.style.display = vis.length ? '' : 'none';
+            }});
+            details.forEach(det => {{
+                const link = det.querySelector('.nav-item');
+                if (!link) return;
+                const sec = document.querySelector(link.getAttribute('href'));
+                det.style.display = (sec && sec.style.display !== 'none') ? '' : 'none';
+            }});
+
+            // Cross-archive dropdown
+            if (!searchData.length) {{
+                if (started) {{
+                    dropdown.innerHTML = '<div class="search-empty">正在加载 (' + loadedCount + '/' + totalFiles + ')...</div>';
+                    dropdown.classList.add('active');
+                }}
+                return;
+            }}
+            const results = searchData.filter(item =>
+                item.t.toLowerCase().includes(q) || item.b.toLowerCase().includes(q)
+            ).slice(0, 15);
+
+            if (!results.length) {{
+                dropdown.innerHTML = '<div class="search-empty">无匹配结果</div>';
+            }} else {{
+                dropdown.innerHTML = results.map(r =>
+                    '<a href="' + r.f + '" class="search-result">' +
+                    '<span class="search-result-date">' + r.d + '</span>' +
+                    '<span class="search-result-title">' + r.t + '</span>' +
+                    '<span class="search-result-cat">' + r.c + '</span>' +
+                    '</a>'
+                ).join('');
+            }}
+            dropdown.classList.add('active');
+        }});
+
+        document.addEventListener('click', function(e) {{
+            if (!e.target.closest('.topbar-search') && !e.target.closest('.search-dropdown')) {{
+                dropdown.classList.remove('active');
+            }}
+        }});
+        input.addEventListener('keydown', function(e) {{
+            if (e.key === 'Escape') {{ dropdown.classList.remove('active'); input.blur(); }}
+        }});
+    }})();
+
+    // Full-page ASCII Constellation with diamond frame + mask
+    (function() {{
+        const canvas = document.getElementById('particle-bg');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        let W, H, cols, rows;
+        const CW = 8, CH = 9;
+        // Deep purple for ivory background contrast
+        const cR = 102, cG = 8, cB = 116;
+        const hR = 160, hG = 60, hB = 180;
+
+        let nodes = [], ripples = [];
+
+        function resize() {{
+            W = window.innerWidth; H = window.innerHeight;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            cols = Math.ceil(W / CW);
+            rows = Math.ceil(H / CH);
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            canvas.style.width = W + 'px';
+            canvas.style.height = H + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.font = '8px "SF Mono","Fira Code",ui-monospace,monospace';
+            ctx.textBaseline = 'top';
+
+            // Diamond frame distribution
+            const cx = cols / 2, cy = rows / 2;
+            const dw = cols * 0.42, dh = rows * 0.42;
+            const dEdges = [
+                [cx, cy - dh, cx + dw, cy],
+                [cx + dw, cy, cx, cy + dh],
+                [cx, cy + dh, cx - dw, cy],
+                [cx - dw, cy, cx, cy - dh]
+            ];
+            const count = Math.max(20, Math.round(50 * (W * H) / (1600 * 900)));
+            nodes = [];
+            for (let i = 0; i < count; i++) {{
+                let x, y;
+                if (Math.random() < 0.80) {{
+                    const ei = Math.random() * 4 | 0;
+                    const t = Math.random();
+                    const e = dEdges[ei];
+                    x = e[0] + (e[2] - e[0]) * t + (Math.random() - 0.5) * 4;
+                    y = e[1] + (e[3] - e[1]) * t + (Math.random() - 0.5) * 4;
+                }} else {{
+                    x = Math.random() * cols;
+                    y = Math.random() * rows;
+                }}
+                nodes.push({{
+                    x, y,
+                    vx: (Math.random() - 0.5) * 0.10,
+                    vy: (Math.random() - 0.5) * 0.06,
+                    energy: 0
+                }});
+            }}
+            ripples = [];
+        }}
+
+        let t0 = performance.now(), lastF = 0, fc = 0;
+
+        function loop(now) {{
+            requestAnimationFrame(loop);
+            if (now - lastF < 16.67) return;
+            lastF = now;
+            const t = (now - t0) / 1000;
+            fc++;
+
+            if (fc % 100 === 0 && nodes.length) {{
+                const s = nodes[Math.random() * nodes.length | 0];
+                ripples.push({{ x: s.x, y: s.y, born: t }});
+            }}
+            for (let i = ripples.length - 1; i >= 0; i--) {{
+                if (t - ripples[i].born > 3.5) ripples.splice(i, 1);
+            }}
+
+            for (const n of nodes) {{
+                n.x += n.vx; n.y += n.vy;
+                if (n.x < 1 || n.x > cols - 1) n.vx *= -1;
+                if (n.y < 1 || n.y > rows - 1) n.vy *= -1;
+                n.energy *= 0.93;
+                for (const r of ripples) {{
+                    const dx = n.x - r.x, dy = (n.y - r.y) * 1.8;
+                    const d = Math.sqrt(dx*dx + dy*dy);
+                    if (Math.abs(d - 20 * (t - r.born)) < 3) n.energy = 1;
+                }}
+            }}
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Ripple rings
+            for (const r of ripples) {{
+                const age = t - r.born;
+                const radius = 20 * age;
+                const alpha = 0.35 * Math.max(0, 1 - age / 3.5);
+                if (radius < 1) continue;
+                ctx.fillStyle = 'rgba(' + cR + ',' + cG + ',' + cB + ',' + alpha + ')';
+                const pts = Math.max(20, Math.floor(2.2 * radius));
+                for (let i = 0; i < pts; i++) {{
+                    const a = (i / pts) * Math.PI * 2;
+                    const cx = Math.round(r.x + Math.cos(a) * radius);
+                    const cy = Math.round(r.y + Math.sin(a) * radius / 1.8);
+                    if (cx >= 0 && cx < cols && cy >= 0 && cy < rows)
+                        ctx.fillText('\u00b7', cx * CW, cy * CH);
+                }}
+            }}
+
+            // Connections
+            for (let i = 0; i < nodes.length; i++) {{
+                for (let j = i + 1; j < nodes.length; j++) {{
+                    const a = nodes[i], b = nodes[j];
+                    const dx = b.x - a.x, dy = (b.y - a.y) * 1.8;
+                    const d = Math.sqrt(dx*dx + dy*dy);
+                    if (d > 28) continue;
+                    const close = 1 - d / 28;
+                    const maxE = Math.max(a.energy, b.energy);
+                    const adx = Math.abs(b.x - a.x), ady = Math.abs(b.y - a.y);
+                    let ch = '-';
+                    if (ady > 2 * adx) ch = '|';
+                    else if ((b.x-a.x)*(b.y-a.y) > 0) ch = '\\\\';
+                    else ch = '/';
+                    const r = Math.round(cR + (hR - cR) * maxE);
+                    const g = Math.round(cG + (hG - cG) * maxE);
+                    const b2 = Math.round(cB + (hB - cB) * maxE);
+                    const alpha = Math.min(0.60, 0.15 + 0.20 * close + 0.30 * maxE);
+                    ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b2 + ',' + alpha + ')';
+                    const steps = Math.max(1, Math.ceil(Math.max(adx, ady)));
+                    for (let s = 1; s < steps; s++) {{
+                        const f = s / steps;
+                        const cx = Math.round(a.x + (b.x - a.x) * f);
+                        const cy = Math.round(a.y + (b.y - a.y) * f);
+                        if (cx >= 0 && cx < cols && cy >= 0 && cy < rows)
+                            ctx.fillText(ch, cx * CW, cy * CH);
+                    }}
+                }}
+            }}
+
+            // Nodes
+            for (const n of nodes) {{
+                const cx = Math.round(n.x), cy = Math.round(n.y);
+                if (cx < 0 || cx >= cols || cy < 0 || cy >= rows) continue;
+                const r = Math.round(cR + (hR - cR) * n.energy);
+                const g = Math.round(cG + (hG - cG) * n.energy);
+                const b = Math.round(cB + (hB - cB) * n.energy);
+                const alpha = 0.35 + 0.50 * n.energy;
+                ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+                ctx.fillText(n.energy > 0.4 ? 'O' : 'o', cx * CW, cy * CH);
+            }}
+        }}
+
+        resize();
+        window.addEventListener('resize', resize);
+        requestAnimationFrame(loop);
+    }})();
+    </script>
+</body>
+</html>"""
+
+    return html
+
+
+def md_to_html(md_file, output_html=None, is_latest=True):
+    """从 MD 文件生成 HTML（V2）"""
+    with open(md_file, 'r', encoding='utf-8') as f:
+        md_content = f.read()
+
+    articles, summary_items = parse_md(md_content)
+    html = generate_html(articles, summary_items, is_latest=is_latest)
+
+    if output_html is None:
+        output_html = md_file.replace('.md', '-v3.html')
+
+    with open(output_html, 'w', encoding='utf-8') as f:
+        f.write(html)
+    print(f"V3 generated: {output_html}")
+    return articles
+
+
+if __name__ == "__main__":
+    BASE_DIR = "/Users/shenyalan/ai-daily-news"
+    MD_FILE = os.path.join(BASE_DIR, "daily-ai-news.md")
+    OUTPUT = os.path.join(BASE_DIR, "daily-ai-news-v3.html")
+
+    articles = md_to_html(MD_FILE, OUTPUT, is_latest=True)
+    print(f"Parsed {len(articles)} articles")
