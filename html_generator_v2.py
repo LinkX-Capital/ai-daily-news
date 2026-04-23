@@ -365,9 +365,16 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True):
         /* ========== Particle BG ========== */
         #particle-bg {{
             position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
+            -webkit-mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            -webkit-mask-composite: source-over;
+            mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            mask-composite: add;
         }}
 
         /* ========== Top Bar ========== */
@@ -1034,62 +1041,136 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True):
         }});
     }})();
 
-    // Particle background
+    // Diamond-frame particle network with ripple energy
     (function() {{
         const canvas = document.getElementById('particle-bg');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-        let W, H;
-        function resize() {{ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }}
-        resize();
-        window.addEventListener('resize', resize);
-
         const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const rgb = isDark ? '184,124,196' : '102,8,116';
 
-        const COUNT = 40, MAX_D = 180;
-        const pts = [];
-        for (let i = 0; i < COUNT; i++) {{
-            pts.push({{
-                x: Math.random() * W, y: Math.random() * H,
-                vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35,
-                r: Math.random() * 2 + 1
-            }});
+        let W, H;
+        const MAX_D = 160, RIPPLE_SPEED = 80, RIPPLE_LIFE = 3.5;
+        let nodes = [], ripples = [];
+
+        function resize() {{
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+            // Diamond frame distribution
+            const cx = W / 2, cy = H / 2;
+            const dw = W * 0.42, dh = H * 0.42;
+            const dEdges = [
+                [cx, cy - dh, cx + dw, cy],
+                [cx + dw, cy, cx, cy + dh],
+                [cx, cy + dh, cx - dw, cy],
+                [cx - dw, cy, cx, cy - dh]
+            ];
+            const count = Math.max(20, Math.round(50 * (W * H) / (1600 * 900)));
+            nodes = [];
+            for (let i = 0; i < count; i++) {{
+                let x, y;
+                if (Math.random() < 0.80) {{
+                    const ei = Math.random() * 4 | 0;
+                    const t = Math.random();
+                    const e = dEdges[ei];
+                    x = e[0] + (e[2] - e[0]) * t + (Math.random() - 0.5) * 20;
+                    y = e[1] + (e[3] - e[1]) * t + (Math.random() - 0.5) * 20;
+                }} else {{
+                    x = Math.random() * W;
+                    y = Math.random() * H;
+                }}
+                nodes.push({{
+                    x, y,
+                    vx: (Math.random() - 0.5) * 0.25,
+                    vy: (Math.random() - 0.5) * 0.20,
+                    r: 1.2 + Math.random() * 1.8,
+                    energy: 0
+                }});
+            }}
+            ripples = [];
         }}
 
-        function loop() {{
-            ctx.clearRect(0, 0, W, H);
-            for (const p of pts) {{
-                p.x += p.vx; p.y += p.vy;
-                if (p.x < 0 || p.x > W) p.vx *= -1;
-                if (p.y < 0 || p.y > H) p.vy *= -1;
+        let t0 = performance.now(), lastF = 0, fc = 0;
+
+        function loop(now) {{
+            requestAnimationFrame(loop);
+            if (now - lastF < 16.67) return;
+            lastF = now;
+            const t = (now - t0) / 1000;
+            fc++;
+
+            // Spawn ripple every ~2s
+            if (fc % 120 === 0 && nodes.length) {{
+                const s = nodes[Math.random() * nodes.length | 0];
+                ripples.push({{ x: s.x, y: s.y, born: t }});
             }}
-            for (let i = 0; i < pts.length; i++) {{
-                for (let j = i + 1; j < pts.length; j++) {{
-                    const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-                    const d = Math.sqrt(dx*dx + dy*dy);
-                    if (d < MAX_D) {{
-                        const a = (1 - d / MAX_D) * 0.15;
-                        ctx.strokeStyle = 'rgba(' + rgb + ',' + a + ')';
-                        ctx.lineWidth = 0.6;
-                        ctx.beginPath();
-                        ctx.moveTo(pts[i].x, pts[i].y);
-                        ctx.lineTo(pts[j].x, pts[j].y);
-                        ctx.stroke();
-                    }}
+            for (let i = ripples.length - 1; i >= 0; i--) {{
+                if (t - ripples[i].born > RIPPLE_LIFE) ripples.splice(i, 1);
+            }}
+
+            // Move & energy
+            for (const n of nodes) {{
+                n.x += n.vx; n.y += n.vy;
+                if (n.x < 0 || n.x > W) n.vx *= -1;
+                if (n.y < 0 || n.y > H) n.vy *= -1;
+                n.energy *= 0.94;
+                for (const r of ripples) {{
+                    const dx = n.x - r.x, dy = n.y - r.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const ringR = RIPPLE_SPEED * (t - r.born);
+                    if (Math.abs(dist - ringR) < 18) n.energy = Math.min(1, n.energy + 0.5);
                 }}
             }}
-            for (const p of pts) {{
-                ctx.fillStyle = 'rgba(' + rgb + ',0.30)';
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Ripple rings
+            for (const r of ripples) {{
+                const age = t - r.born;
+                const radius = RIPPLE_SPEED * age;
+                const alpha = 0.12 * Math.max(0, 1 - age / RIPPLE_LIFE);
+                ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.arc(r.x, r.y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }}
+
+            // Connections
+            for (let i = 0; i < nodes.length; i++) {{
+                for (let j = i + 1; j < nodes.length; j++) {{
+                    const a = nodes[i], b = nodes[j];
+                    const dx = a.x - b.x, dy = a.y - b.y;
+                    const d = Math.sqrt(dx*dx + dy*dy);
+                    if (d > MAX_D) continue;
+                    const distA = 1 - d / MAX_D;
+                    const maxE = Math.max(a.energy, b.energy);
+                    const alpha = distA * (0.08 + 0.22 * maxE);
+                    ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                    ctx.lineWidth = 0.6;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }}
+            }}
+
+            // Nodes (dots)
+            for (const n of nodes) {{
+                const alpha = 0.22 + 0.40 * n.energy;
+                const r = n.r + n.energy * 1.5;
+                ctx.fillStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
                 ctx.fill();
             }}
-            requestAnimationFrame(loop);
         }}
-        loop();
+
+        resize();
+        window.addEventListener('resize', resize);
+        requestAnimationFrame(loop);
     }})();
     </script>
 </body>
