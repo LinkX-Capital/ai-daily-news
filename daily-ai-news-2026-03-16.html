@@ -3,227 +3,1025 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>03月16日 AI前沿动态</title>
     <style>
+        html { scroll-behavior: smooth; }
+
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --note-bg: #f4eff5;
+            --pill-bg: #EFEDEA;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --sidebar-w: 220px;
+            --max-w: 740px;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --note-bg: #1a111b;
+                --pill-bg: #161412;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+            }
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+
+        /* ========== Particle BG ========== */
+        #particle-bg {
+            position: fixed; top: 0; left: 0;
+            pointer-events: none;
+            z-index: 0;
+            -webkit-mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            -webkit-mask-composite: source-over;
+            mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            mask-composite: add;
         }
-        .header {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+
+        /* ========== Top Bar ========== */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
         }
-        .header h1 { font-size: 32px; color: #1a1a2e; margin-bottom: 8px; }
-        .header .subtitle { color: #666; font-size: 14px; }
-        .section {
-            background: white;
-            padding: 25px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        .topbar-left {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
         }
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #1a1a2e;
-            margin: 0 0 20px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #0066cc;
-        }
-        .card {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-        }
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a2e;
-            margin-bottom: 12px;
-        }
-        .card-body {
-            font-size: 15px;
-            color: #333;
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-        .card-insight {
-            background: #fff9e6;
-            padding: 12px;
-            border-radius: 8px;
+        .topbar-brand {
             font-size: 14px;
-            color: #d46b08;
-            margin-bottom: 12px;
+            font-weight: 700;
+            color: var(--purple);
+            letter-spacing: -0.3px;
         }
-        .card-source {
-            font-size: 13px;
-            color: #999;
+        .topbar-tagline {
+            font-size: 11px;
+            color: var(--text-3);
+            letter-spacing: 0.2px;
         }
-        .summary {
-            background: white;
-            padding: 16px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        .topbar-right {
+            display: flex;
+            gap: 8px;
         }
-        .summary h2 {
-            font-size: 16px;
-            margin-bottom: 12px;
-            color: #1a1a2e;
-            font-weight: 600;
-        }
-        .cat-tag {
-            display: inline-block;
-            background: #e8f4fd;
-            color: #0066cc;
-            padding: 2px 8px;
-            border-radius: 4px;
+        .topbar-btn {
             font-size: 12px;
-            margin-right: 8px;
-            flex-shrink: 0;
-            font-weight: 600;
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: all 0.15s ease;
         }
-        .summary-item {
+        .topbar-btn:hover {
+            color: var(--text);
+            border-color: var(--text-3);
+        }
+        .topbar-search {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 0 8px;
+            height: 28px;
+            margin-right: 4px;
+        }
+        .topbar-search input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 12px;
+            color: var(--text);
+            width: 100px;
+            font-family: inherit;
+        }
+        .topbar-search input::placeholder {
+            color: var(--text-3);
+        }
+        .topbar-search .search-icon {
+            font-size: 11px;
+            color: var(--text-3);
+            margin-right: 4px;
+        }
+
+        /* ========== Search Dropdown ========== */
+        .search-dropdown {
+            position: fixed;
+            top: 52px;
+            right: 32px;
+            width: 440px;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 200;
+        }
+        .search-dropdown.active { display: block; }
+        .search-empty {
+            padding: 20px 16px;
+            font-size: 13px;
+            color: var(--text-3);
+            text-align: center;
+        }
+        .search-result {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .search-result:last-child { border-bottom: none; }
+        .search-result:hover { background: var(--purple-20); }
+        .search-result-date {
+            font-size: 11px;
+            color: var(--text-3);
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .search-result-title {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .search-result-cat {
+            font-size: 11px;
+            color: var(--purple-80);
+            flex-shrink: 0;
+        }
+
+        /* ========== Page wrapper ========== */
+        .page {
+            max-width: calc(var(--max-w) + var(--sidebar-w) + 80px);
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* --- Header (above layout) --- */
+        .header {
+            padding: 28px 0 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .header-date {
+            font-size: 12px;
+            color: var(--text-3);
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 8px;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1.4;
+            color: var(--text);
+        }
+        .header-sub {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-3);
+        }
+
+        /* --- Summary / Briefing (above layout) --- */
+        .summary {
+            padding: 20px 0 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sum-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+        }
+        .sum-cat {
             display: flex;
             flex-wrap: wrap;
             align-items: flex-start;
-            margin-bottom: 10px;
             gap: 6px;
+            margin-bottom: 10px;
         }
-        .summary-title {
+        .sum-cat:last-child {
+            margin-bottom: 0;
+        }
+        .sum-cat-name {
             display: inline-block;
-            background: #f5f5f5;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 13px;
-            color: #333;
-            margin-right: 6px;
-            margin-bottom: 4px;
-        }
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: rgba(255,255,255,0.7);
+            background: var(--purple-20);
+            color: var(--purple);
+            padding: 2px 8px;
+            border-radius: 3px;
             font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .sum-item {
+            background: var(--pill-bg);
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 13px;
+            color: var(--text-2);
+            line-height: 1.5;
+        }
+
+        /* ========== Layout (sidebar + content) ========== */
+        .layout {
+            display: flex;
+        }
+
+        /* ========== Sidebar ========== */
+        .sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            padding: 20px 16px 20px 0;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+        .sidebar::-webkit-scrollbar { width: 0; }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 16px;
+        }
+
+        .nav-details {
+            margin-bottom: 2px;
+        }
+        .nav-details summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }
+        .nav-details summary::-webkit-details-marker { display: none; }
+        .nav-details summary::before {
+            content: "\25BE";
+            font-size: 9px;
+            color: var(--text-3);
+            margin-right: 5px;
+            display: inline-block;
+            transition: transform 0.15s ease;
+        }
+        .nav-details:not([open]) summary::before {
+            transform: rotate(-90deg);
+        }
+        .nav-count {
+            font-size: 10px;
+            color: var(--text-3);
+            font-variant-numeric: tabular-nums;
+            margin-left: auto;
+            padding-left: 4px;
+        }
+
+        .nav-articles {
+            padding-left: 14px;
+            border-left: 1px solid var(--border);
+            margin: 2px 0 12px;
+        }
+        .nav-item {
+            display: block;
+            padding: 3px 8px;
+            font-size: 12px;
+            color: var(--text-3);
+            text-decoration: none;
+            line-height: 1.45;
+            transition: color 0.15s ease;
+        }
+        .nav-item:hover {
+            color: var(--text-2);
+        }
+        .nav-item.active {
+            color: var(--purple);
+            font-weight: 500;
+        }
+
+        /* ========== Main ========== */
+        .main {
+            flex: 1;
+            max-width: var(--max-w);
+            padding: 20px 0 0 24px;
+            min-width: 0;
+        }
+
+        /* --- Section --- */
+        .sec {
+            margin-bottom: 32px;
+            scroll-margin-top: 64px;
+        }
+        .sec-h {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        /* --- Card --- */
+        .card {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            scroll-margin-top: 64px;
+            cursor: default;
+        }
+        .card:last-child { border-bottom: none; }
+        .card-h {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: var(--text);
+            letter-spacing: -0.2px;
+            margin-bottom: 8px;
+        }
+
+        .ent {
+            font-weight: 500;
+        }
+
+        .card-body {
+            font-size: 14px;
+            line-height: 1.75;
+            color: var(--text-2);
+        }
+        .card-body strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .card-note {
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: var(--note-bg);
+            font-size: 13px;
+            line-height: 1.75;
+            color: var(--text-2);
+            border-radius: 2px;
+        }
+        .note-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--purple-80);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 6px;
+        }
+
+        .card-src {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-3);
+        }
+        .card-src a {
+            color: var(--text-3);
+            text-decoration: none;
+        }
+        .card-src a:hover {
+            color: var(--text);
+        }
+
+        /* ========== Bottom (independent) ========== */
+        .bottom {
+            border-top: 1px solid var(--border);
+            margin-top: 16px;
+            padding: 20px 0 32px;
+        }
+
+        /* --- Issue Navigation --- */
+        .issue-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .issue-nav a {
+            font-size: 13px;
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        .issue-nav a:hover {
+            color: var(--text);
+            border-color: var(--text-3);
+        }
+
+        /* --- Footer --- */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+        .footer-copy {
+            font-size: 12px;
+            color: var(--text-3);
+        }
+        .footer-top {
+            font-size: 12px;
+            color: var(--text-3);
+            text-decoration: none;
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: all 0.15s ease;
+        }
+        .footer-top:hover {
+            color: var(--text);
+            border-color: var(--text-3);
+        }
+
+        /* ========== Mobile TOC ========== */
+        .mob-toc {
+            display: none;
+            overflow-x: auto;
+            gap: 0;
+            padding: 0 16px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 48px; z-index: 50;
+            height: 40px;
+            align-items: center;
+        }
+        .mob-toc::-webkit-scrollbar { display: none; }
+        .mob-toc a {
+            flex-shrink: 0;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-3);
+            white-space: nowrap;
+        }
+        .mob-toc a:hover { color: var(--text); }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .mob-toc { display: flex !important; }
+            .main {
+                max-width: 100%;
+                padding: 24px 20px 48px;
+            }
+            .header { padding: 20px 0 16px; }
+            .header h1 { font-size: 20px; }
+        }
+        @media (max-width: 480px) {
+            .main { padding: 20px 16px 40px; }
+            .header { padding: 16px 0 12px; }
+            .header h1 { font-size: 18px; }
+            .card-h { font-size: 15px; }
+            .topbar-tagline { display: none; }
+            .topbar-search { display: none; }
+            .search-dropdown { display: none !important; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📡 03月16日 AI前沿动态</h1>
-            <div class="subtitle">自动汇总｜24h 共12条</div>
+    <canvas id="particle-bg"></canvas>
+    <!-- Top bar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <span class="topbar-brand">AI Daily News</span>
+            <span class="topbar-tagline">Keep Informed with Link-X Capital</span>
         </div>
-<div class="summary">
-<h2>📌 要点速览</h2>
-<div class="summary-item"><span class="cat-tag">模型前沿</span><span class="summary-title">NVIDIA发布Nemotron-3 Super模型</span><span class="summary-title">Anthropic用3万字文档训练Claude</span></div>
-<div class="summary-item"><span class="cat-tag">产业动态</span><span class="summary-title">vLLM支持本地模型部署OpenClaw Agent</span><span class="summary-title">Meta公布自研AI芯片MTIA发展路线图</span></div>
-<div class="summary-item"><span class="cat-tag">算力追踪</span><span class="summary-title">OpenClaw开放长期记忆功能</span></div>
-<div class="summary-item"><span class="cat-tag">研究关注</span><span class="summary-title">斯坦福普林斯顿联合发布科研编程框架</span><span class="summary-title">北大开源摄影指导大模型Venus</span><span class="summary-title">CVPR 2026接收：以机器人为中心的ToM推理框架</span><span class="summary-title">ICLR 2026论文评估多模态大模型情绪理解能力</span><span class="summary-title">OpenClaw解决Agent记忆衰减问题</span></div>
-<div class="summary-item"><span class="cat-tag">X讨论</span><span class="summary-title">研究者发布上下文外推理primer</span><span class="summary-title">跨本体训练新发现：配对数据比多样化数据更有利于泛化</span></div>
-</div>
-<div class="section">
-<div class="section-title">模型前沿</div>
-<div class="card">
-<div class="card-title">NVIDIA发布Nemotron-3 Super模型 vLLM v0.17.1同步支持</div>
-<div class="card-body">NVIDIA发布了Nemotron-3 Super模型，这是一款<strong>120B参数的混合MoE模型</strong>，活跃参数仅12B。vLLM在发布当天即实现了对该模型的支持，经验证可在NVIDIA GPU上运行。这种超大参数规模与高效推理的组合，<strong>意味着企业可以在合理成本下部署顶尖水平的AI模型</strong>。</div>
-<div class="card-insight">💡 大模型推理效率竞争加剧，vLLM的快速适配能力成为生态关键节点。</div>
-<div class="card-source">📌 <a href="https://x.com/vllm_project/status/2031779213527957732#m" target="_blank">@vllm_project</a></div>
-</div>
-<div class="card">
-<div class="card-title">Anthropic用3万字文档训练Claude遵循指令 实测居然有效</div>
-<div class="card-body">Anthropic发布了一份3万字的复杂文档，声称Claude是按照这份文档进行训练的。研究者NeelNanda对此持怀疑态度，但经过实际测试后发现Claude确实能够遵循这份文档中的指令。这意味着<strong>长上下文文档训练可能成为AI对齐的新方法</strong>，为构建更可靠、可控的AI系统提供了新思路。</div>
-<div class="card-insight">💡 长上下文文档训练打开了AI对齐的新思路，但也意味着需要重新审视AI的上下文理解能力边界。</div>
-<div class="card-source">📌 <a href="https://x.com/NeelNanda5/status/2031888505518076225#m" target="_blank">@NeelNanda5</a></div>
-</div>
-</div>
-<div class="section">
-<div class="section-title">产业动态</div>
-<div class="card">
-<div class="card-title">vLLM支持本地模型部署OpenClaw Agent 教程发布</div>
-<div class="card-body">vLLM发布了使用教程，指导用户如何用自己的模型通过vLLM运行OpenClaw。具体步骤包括：用vLLM部署模型、暴露OpenAI兼容API、安装OpenClaw即可。这一集成<strong>让开发者能够更灵活地构建私有Agent助手</strong>，大幅降低了自建AI Agent的门槛。</div>
-<div class="card-insight">💡 开源工具链的完善正在降低AI Agent开发门槛，生态系统价值凸显。</div>
-<div class="card-source">📌 <a href="https://x.com/vllm_project/status/2033204070882984198#m" target="_blank">@vllm_project</a></div>
-</div>
-<div class="card">
-<div class="card-title">Meta公布自研AI芯片MTIA发展路线图 强调定制化算力重要性</div>
-<div class="card-body">Meta详细介绍了自研AI芯片MTIA（Meta Training and Inference Accelerator）的演进历程，强调定制化芯片对扩展下一代AI的重要性。MTIA是Meta专为AI训练和推理设计的定制硬件，<strong>自研芯片可以让科技巨头摆脱对商业芯片的依赖</strong>，同时针对自身AI工作负载进行深度优化。</div>
-<div class="card-insight">💡 算力自主可控成为AI竞争核心要素，科技巨头自研芯片趋势加速。</div>
-<div class="card-source">📌 <a href="https://x.com/AIatMeta/status/2031735560948068790#m" target="_blank">@AIatMeta</a></div>
-</div>
-</div>
-<div class="section">
-<div class="section-title">算力追踪</div>
-<div class="card">
-<div class="card-title">OpenClaw开放长期记忆功能 Agent可记住数万Token上下文</div>
-<div class="card-body">全球爆火的Agent私人助手OpenClaw在两天内连续更新两个版本，其长期记忆能力是核心亮点。Agent能够记住数万Token的上下文信息，解决了传统Agent「失忆」的痛点。这一突破<strong>意味着AI Agent真正具备了持续交互的可行性</strong>，为构建个人AI助手奠定了技术基础。</div>
-<div class="card-insight">💡 记忆能力成为AI Agent竞争焦点，长期记忆技术路径逐渐清晰。</div>
-<div class="card-source">📌 <a href="http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651021511&idx=2&sn=e5194bc09c7ddbdeb96f773132df10e5&chksm=852d2ad1c9ac0403da2698767251d15710ac8f7a7246a75c8ea70a44a3cfdee9aa6fe8fd9537&scene=0&xtrack=1#rd" target="_blank">机器之心</a></div>
-</div>
-</div>
-<div class="section">
-<div class="section-title">研究关注</div>
-<div class="card">
-<div class="card-title">斯坦福普林斯顿联合发布科研编程框架 只需一行指令</div>
-<div class="card-body">斯坦福大学和普林斯顿大学联合发布了最新开源项目，让科研人员可以用一行指令完成复杂的数据处理和实验任务。该项目获得了英伟达的支持，<strong>降低了科研编程的门槛</strong>，让研究者可以更专注于科学问题本身而非工程实现。</div>
-<div class="card-insight">💡 AI工具民主化向科研领域延伸，科学计算门槛持续降低。</div>
-<div class="card-source">📌 <a href="https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247874486&idx=2&sn=529c6408a94fd4803f72b7dd8944b9cd" target="_blank">量子位</a></div>
-</div>
-<div class="card">
-<div class="card-title">北大开源摄影指导大模型Venus 可提供美学建议</div>
-<div class="card-body">北京大学彭宇新团队开源了首个美学指导大模型Venus，能够对拍摄的照片提供专业的美学建议和指导。该论文已被CVPR 2026接收。与传统只会「夸夸」的模型不同，Venus<strong>真正理解摄影美学并能给出具体改进建议</strong>，让AI从观赏者变为创作者。</div>
-<div class="card-insight">💡 AI从被动理解向主动创作延伸，垂直领域专业化模型成为新趋势。</div>
-<div class="card-source">📌 <a href="https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247874486&idx=3&sn=cd5c18e3c988576ca798652573504695" target="_blank">量子位</a></div>
-</div>
-<div class="card">
-<div class="card-title">CVPR 2026接收：以机器人为中心的ToM推理框架发布</div>
-<div class="card-body">CVPR 2026接收了一篇关于以机器人为中心的ToM（心智理论）推理框架的论文，该框架从心智推理延伸到决策行动。该研究<strong>将ToM与机器人决策深度结合</strong>，推动AI理解人类意图的能力向前迈进。</div>
-<div class="card-insight">💡 心智理论与机器人决策结合，人机协作智能再升级。</div>
-<div class="card-source">📌 <a href="https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652683211&idx=3&sn=a00ca0aceff649d7a741f0b115b2e0ab" target="_blank">新智元</a></div>
-</div>
-<div class="card">
-<div class="card-title">ICLR 2026论文评估多模态大模型情绪理解能力</div>
-<div class="card-body">ICLR 2026接收的论文MME-Emotion对多模态大模型的情绪理解能力进行了系统性评估。研究发现当前主流多模态模型在情绪识别方面仍有显著局限，<strong>为未来多模态AI发展指明了改进方向</strong>。</div>
-<div class="card-insight">💡 多模态AI仍需突破情感理解瓶颈，人机交互体验提升空间巨大。</div>
-<div class="card-source">📌 <a href="http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651021511&idx=3&sn=08a96e73521c602bd5066af107cdd9ff&chksm=85a8633ad860606a7e27c35a349848b7177f937e3f0d37eeb34fa6e7d98b3fb0d11fb1842c84&scene=0&xtrack=1#rd" target="_blank">机器之心</a></div>
-</div>
-<div class="card">
-<div class="card-title">OpenClaw解决Agent记忆衰减问题 长期记忆不再失效</div>
-<div class="card-body">近期全网热议的OpenClaw Agent被指出存在「失忆」问题，开发者亲自下场修复了这一致命痛点。记忆衰减曾是AI Agent的最大短板，此次修复<strong>意味着长期记忆技术取得了实质性突破</strong>，为构建真正可持续的AI助手扫清了障碍。</div>
-<div class="card-insight">💡 记忆模块成为Agent产品化关键，技术迭代速度超预期。</div>
-<div class="card-source">📌 <a href="https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652683211&idx=1&sn=03aaece4e7a0fd149f30205ce0a40875" target="_blank">新智元</a></div>
-</div>
-</div>
-<div class="section">
-<div class="section-title">X讨论</div>
-<div class="card">
-<div class="card-title">研究者发布上下文外推理primer 揭示LLM工作原理新发现</div>
-<div class="card-body">上下文外推理被认为是LLM工作原理中最令人着迷的发展之一。研究者OwainEvans_UK发布了相关入门指南，解释了这一现象——模型能够在不重新训练的情况下，利用预训练期间学到的知识进行推理。这<strong>刷新了我们对大模型能力边界的理解</strong>，为研究AI泛化能力提供了新视角。</div>
-<div class="card-insight">💡 上下文外推理揭示了预训练的更深层价值，AI泛化机制研究进入新阶段。</div>
-<div class="card-source">📌 <a href="https://x.com/NeelNanda5/status/2032749947733557691#m" target="_blank">@NeelNanda5</a></div>
-</div>
-<div class="card">
-<div class="card-title">跨本体训练新发现 配对数据比多样化数据更有利于泛化</div>
-<div class="card-body">研究表明，在跨本体迁移学习中，来自不同本体的配对数据比单纯的多样化数据更有利于模型泛化。通常认为数据越多样化越好，但这项发现<strong>挑战了这一传统认知</strong>，为机器人学习和跨场景AI训练提供了新思路。</div>
-<div class="card-insight">💡 数据策略需要重新审视，配对数据的价值被低估。</div>
-<div class="card-source">📌 <a href="https://x.com/chelseabfinn/status/2033339098694631427#m" target="_blank">@chelseabfinn</a></div>
-</div>
-</div>
+        <div class="topbar-right">
+            <div class="topbar-search">
+                <span class="search-icon">&#128269;</span>
+                <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
+            </div>
+            <a href="index.html" class="topbar-btn">往期动态</a>
+            <a href="GTC-2026-Official-Report.html" class="topbar-btn">专题报告</a>
+        </div>
     </div>
-    <div class="footer">
-        更新时间: 2026-03-16
+
+    <div class="search-dropdown" id="search-dropdown"></div>
+
+    <!-- Mobile TOC -->
+    <div class="mob-toc" id="mob-toc">
+        <a href="#s-模型前沿">模型前沿</a><a href="#s-产业动态">产业动态</a><a href="#s-算力追踪">算力追踪</a><a href="#s-研究关注">研究关注</a><a href="#s-X讨论">X讨论</a>
     </div>
+
+    <!-- Page wrapper: header + briefing above, sidebar + content below -->
+    <div class="page">
+        <header class="header">
+            <div class="header-date">2026-03-16</div>
+            <h1>NVIDIA发布Nemotron-3 Super模型 vLLM v0.17.1同步支持</h1>
+            <div class="header-sub">12 stories, 24h window</div>
+        </header>
+
+        
+            <div class="summary">
+                <div class="sum-label">Briefing</div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">模型前沿</span>
+                    <span class="sum-item">NVIDIA发布Nemotron-3 Super模型</span>
+                    <span class="sum-item">Anthropic用3万字文档训练Claude</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">产业动态</span>
+                    <span class="sum-item">vLLM支持本地模型部署OpenClaw Agent</span>
+                    <span class="sum-item">Meta公布自研AI芯片MTIA发展路线图</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">算力追踪</span>
+                    <span class="sum-item">OpenClaw开放长期记忆功能</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">研究关注</span>
+                    <span class="sum-item">斯坦福普林斯顿联合发布科研编程框架</span>
+                    <span class="sum-item">北大开源摄影指导大模型Venus</span>
+                    <span class="sum-item">CVPR 2026接收：以机器人为中心的ToM推理框架</span>
+                    <span class="sum-item">ICLR 2026论文评估多模态大模型情绪理解能力</span>
+                    <span class="sum-item">OpenClaw解决Agent记忆衰减问题</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">X讨论</span>
+                    <span class="sum-item">研究者发布上下文外推理primer</span>
+                    <span class="sum-item">跨本体训练新发现：配对数据比多样化数据更有利于泛化</span>
+                </div>
+            </div>
+
+        <div class="layout">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <div class="nav-label">Contents</div>
+                
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>模型前沿</span>
+                <span class="nav-count">2</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-模型前沿-0" class="nav-item">NVIDIA发布Nemotron-3 Super模型 vLLM v0.1…</a>
+                <a href="#c-模型前沿-1" class="nav-item">Anthropic用3万字文档训练Claude遵循指令 实测居然有效</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>产业动态</span>
+                <span class="nav-count">2</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-产业动态-0" class="nav-item">vLLM支持本地模型部署OpenClaw Agent 教程发布</a>
+                <a href="#c-产业动态-1" class="nav-item">Meta公布自研AI芯片MTIA发展路线图 强调定制化算力重要性</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>算力追踪</span>
+                <span class="nav-count">1</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-算力追踪-0" class="nav-item">OpenClaw开放长期记忆功能 Agent可记住数万Token上下文</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>研究关注</span>
+                <span class="nav-count">5</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-研究关注-0" class="nav-item">斯坦福普林斯顿联合发布科研编程框架 只需一行指令</a>
+                <a href="#c-研究关注-1" class="nav-item">北大开源摄影指导大模型Venus 可提供美学建议</a>
+                <a href="#c-研究关注-2" class="nav-item">CVPR 2026接收：以机器人为中心的ToM推理框架发布</a>
+                <a href="#c-研究关注-3" class="nav-item">ICLR 2026论文评估多模态大模型情绪理解能力</a>
+                <a href="#c-研究关注-4" class="nav-item">OpenClaw解决Agent记忆衰减问题 长期记忆不再失效</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>X讨论</span>
+                <span class="nav-count">2</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-X讨论-0" class="nav-item">研究者发布上下文外推理primer 揭示LLM工作原理新发现</a>
+                <a href="#c-X讨论-1" class="nav-item">跨本体训练新发现 配对数据比多样化数据更有利于泛化</a>
+            </div>
+        </details>
+            </nav>
+
+            <!-- Main content -->
+            <div class="main">
+                
+        <section class="sec" id="s-模型前沿">
+            <h2 class="sec-h">模型前沿</h2>
+        <article class="card" id="c-模型前沿-0">
+            <h3 class="card-h"><span class="ent">NVIDIA</span>发布Nemotron-3 Super模型 vLLM v0.17.1同步支持</h3>
+            <p class="card-body"><span class="ent">NVIDIA</span>发布了Nemotron-3 Super模型，这是一款<strong>120B参数的混合MoE模型</strong>，活跃参数仅12B。vLLM在发布当天即实现了对该模型的支持，经验证可在<span class="ent">NVIDIA</span> GPU上运行。这种超大参数规模与高效推理的组合，<strong>意味着企业可以在合理成本下部署顶尖水平的AI模型</strong>。</p>
+            <div class="card-src"><a href="https://x.com/vllm_project/status/2031779213527957732#m" target="_blank">@vllm_project</a></div>
+        </article>
+        <article class="card" id="c-模型前沿-1">
+            <h3 class="card-h"><span class="ent">Anthropic</span>用3万字文档训练<span class="ent">Claude</span>遵循指令 实测居然有效</h3>
+            <p class="card-body"><span class="ent">Anthropic</span>发布了一份3万字的复杂文档，声称<span class="ent">Claude</span>是按照这份文档进行训练的。研究者NeelNanda对此持怀疑态度，但经过实际测试后发现<span class="ent">Claude</span>确实能够遵循这份文档中的指令。这意味着<strong>长上下文文档训练可能成为AI对齐的新方法</strong>，为构建更可靠、可控的AI系统提供了新思路。</p>
+            <div class="card-src"><a href="https://x.com/NeelNanda5/status/2031888505518076225#m" target="_blank">@NeelNanda5</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-产业动态">
+            <h2 class="sec-h">产业动态</h2>
+        <article class="card" id="c-产业动态-0">
+            <h3 class="card-h">vLLM支持本地模型部署OpenClaw Agent 教程发布</h3>
+            <p class="card-body">vLLM发布了使用教程，指导用户如何用自己的模型通过vLLM运行OpenClaw。具体步骤包括：用vLLM部署模型、暴露<span class="ent">OpenAI</span>兼容API、安装OpenClaw即可。这一集成<strong>让开发者能够更灵活地构建私有Agent助手</strong>，大幅降低了自建AI Agent的门槛。</p>
+            <div class="card-src"><a href="https://x.com/vllm_project/status/2033204070882984198#m" target="_blank">@vllm_project</a></div>
+        </article>
+        <article class="card" id="c-产业动态-1">
+            <h3 class="card-h"><span class="ent">Meta</span>公布自研AI芯片MTIA发展路线图 强调定制化算力重要性</h3>
+            <p class="card-body"><span class="ent">Meta</span>详细介绍了自研AI芯片MTIA（<span class="ent">Meta</span> Training and Inference Accelerator）的演进历程，强调定制化芯片对扩展下一代AI的重要性。MTIA是<span class="ent">Meta</span>专为AI训练和推理设计的定制硬件，<strong>自研芯片可以让科技巨头摆脱对商业芯片的依赖</strong>，同时针对自身AI工作负载进行深度优化。</p>
+            <div class="card-src"><a href="https://x.com/AIatMeta/status/2031735560948068790#m" target="_blank">@AIatMeta</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-算力追踪">
+            <h2 class="sec-h">算力追踪</h2>
+        <article class="card" id="c-算力追踪-0">
+            <h3 class="card-h">OpenClaw开放长期记忆功能 Agent可记住数万Token上下文</h3>
+            <p class="card-body">全球爆火的Agent私人助手OpenClaw在两天内连续更新两个版本，其长期记忆能力是核心亮点。Agent能够记住数万Token的上下文信息，解决了传统Agent「失忆」的痛点。这一突破<strong>意味着AI Agent真正具备了持续交互的可行性</strong>，为构建个人AI助手奠定了技术基础。</p>
+            <div class="card-src"><a href="http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651021511&idx=2&sn=e5194bc09c7ddbdeb96f773132df10e5&chksm=852d2ad1c9ac0403da2698767251d15710ac8f7a7246a75c8ea70a44a3cfdee9aa6fe8fd9537&scene=0&xtrack=1#rd" target="_blank">机器之心</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-研究关注">
+            <h2 class="sec-h">研究关注</h2>
+        <article class="card" id="c-研究关注-0">
+            <h3 class="card-h">斯坦福普林斯顿联合发布科研编程框架 只需一行指令</h3>
+            <p class="card-body">斯坦福大学和普林斯顿大学联合发布了最新开源项目，让科研人员可以用一行指令完成复杂的数据处理和实验任务。该项目获得了英伟达的支持，<strong>降低了科研编程的门槛</strong>，让研究者可以更专注于科学问题本身而非工程实现。</p>
+            <div class="card-src"><a href="https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247874486&idx=2&sn=529c6408a94fd4803f72b7dd8944b9cd" target="_blank">量子位</a></div>
+        </article>
+        <article class="card" id="c-研究关注-1">
+            <h3 class="card-h">北大开源摄影指导大模型Venus 可提供美学建议</h3>
+            <p class="card-body">北京大学彭宇新团队开源了首个美学指导大模型Venus，能够对拍摄的照片提供专业的美学建议和指导。该论文已被CVPR 2026接收。与传统只会「夸夸」的模型不同，Venus<strong>真正理解摄影美学并能给出具体改进建议</strong>，让AI从观赏者变为创作者。</p>
+            <div class="card-src"><a href="https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247874486&idx=3&sn=cd5c18e3c988576ca798652573504695" target="_blank">量子位</a></div>
+        </article>
+        <article class="card" id="c-研究关注-2">
+            <h3 class="card-h">CVPR 2026接收：以机器人为中心的ToM推理框架发布</h3>
+            <p class="card-body">CVPR 2026接收了一篇关于以机器人为中心的ToM（心智理论）推理框架的论文，该框架从心智推理延伸到决策行动。该研究<strong>将ToM与机器人决策深度结合</strong>，推动AI理解人类意图的能力向前迈进。</p>
+            <div class="card-src"><a href="https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652683211&idx=3&sn=a00ca0aceff649d7a741f0b115b2e0ab" target="_blank">新智元</a></div>
+        </article>
+        <article class="card" id="c-研究关注-3">
+            <h3 class="card-h">ICLR 2026论文评估多模态大模型情绪理解能力</h3>
+            <p class="card-body">ICLR 2026接收的论文MME-Emotion对多模态大模型的情绪理解能力进行了系统性评估。研究发现当前主流多模态模型在情绪识别方面仍有显著局限，<strong>为未来多模态AI发展指明了改进方向</strong>。</p>
+            <div class="card-src"><a href="http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651021511&idx=3&sn=08a96e73521c602bd5066af107cdd9ff&chksm=85a8633ad860606a7e27c35a349848b7177f937e3f0d37eeb34fa6e7d98b3fb0d11fb1842c84&scene=0&xtrack=1#rd" target="_blank">机器之心</a></div>
+        </article>
+        <article class="card" id="c-研究关注-4">
+            <h3 class="card-h">OpenClaw解决Agent记忆衰减问题 长期记忆不再失效</h3>
+            <p class="card-body">近期全网热议的OpenClaw Agent被指出存在「失忆」问题，开发者亲自下场修复了这一致命痛点。记忆衰减曾是AI Agent的最大短板，此次修复<strong>意味着长期记忆技术取得了实质性突破</strong>，为构建真正可持续的AI助手扫清了障碍。</p>
+            <div class="card-src"><a href="https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652683211&idx=1&sn=03aaece4e7a0fd149f30205ce0a40875" target="_blank">新智元</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-X讨论">
+            <h2 class="sec-h">X讨论</h2>
+        <article class="card" id="c-X讨论-0">
+            <h3 class="card-h">研究者发布上下文外推理primer 揭示LLM工作原理新发现</h3>
+            <p class="card-body">上下文外推理被认为是LLM工作原理中最令人着迷的发展之一。研究者OwainEvans_UK发布了相关入门指南，解释了这一现象——模型能够在不重新训练的情况下，利用预训练期间学到的知识进行推理。这<strong>刷新了我们对大模型能力边界的理解</strong>，为研究AI泛化能力提供了新视角。</p>
+            <div class="card-src"><a href="https://x.com/NeelNanda5/status/2032749947733557691#m" target="_blank">@NeelNanda5</a></div>
+        </article>
+        <article class="card" id="c-X讨论-1">
+            <h3 class="card-h">跨本体训练新发现 配对数据比多样化数据更有利于泛化</h3>
+            <p class="card-body">研究表明，在跨本体迁移学习中，来自不同本体的配对数据比单纯的多样化数据更有利于模型泛化。通常认为数据越多样化越好，但这项发现<strong>挑战了这一传统认知</strong>，为机器人学习和跨场景AI训练提供了新思路。</p>
+            <div class="card-src"><a href="https://x.com/chelseabfinn/status/2033339098694631427#m" target="_blank">@chelseabfinn</a></div>
+        </article>
+        </section>
+            </div>
+        </div>
+
+        <!-- Bottom: independent of layout -->
+        <div class="bottom">
+            <div class="issue-nav">
+                <a href="daily-ai-news-2026-03-15.html" class="issue-prev">&larr; 上一期</a>
+            <a href="daily-ai-news-2026-03-17.html" class="issue-next">下一期 &rarr;</a>
+            </div>
+            <div class="footer">
+                <span class="footer-copy">&copy; 2026 &middot; AI Daily News by Link-X Capital</span>
+                <a href="#" class="footer-top">Back to top &uarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll spy -->
+    <script>
+    (function() {
+        const cards = document.querySelectorAll('.card[id]');
+        const navs = document.querySelectorAll('.nav-item[href^="#c-"]');
+        if (!cards.length || !navs.length) return;
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    navs.forEach(n => n.classList.remove('active'));
+                    const hit = document.querySelector('.nav-item[href="#' + e.target.id + '"]');
+                    if (hit) hit.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-80px 0px -65% 0px' });
+        cards.forEach(c => obs.observe(c));
+    })();
+
+    // Search — real-time, fetches HTML pages in browser
+    (function() {
+        const input = document.getElementById('search');
+        const dropdown = document.getElementById('search-dropdown');
+        if (!input || !dropdown) return;
+
+        const cards = document.querySelectorAll('.card');
+        const sections = document.querySelectorAll('.sec[id]');
+        const details = document.querySelectorAll('.nav-details');
+
+        let searchData = [];
+        let totalFiles = 0, loadedCount = 0, started = false;
+
+        function stripTag(s) { return s.replace(/<[^>]+>/g, ''); }
+
+        function parseHtml(html, url) {
+            const dm = url.match(/(\d{4})-(\d{2})-(\d{2})/);
+            const date = dm ? dm[2] + '-' + dm[3] : '';
+            let articles = [], currentCat = '';
+            const parts = html.split(/<div class="section-title">(.*?)<\/div>/);
+            for (let i = 0; i < parts.length; i++) {
+                if (i % 2 === 1) currentCat = parts[i].trim();
+                else if (i > 0 && currentCat) {
+                    const tRe = /<span class="title">(.*?)<\/span>/g, bRe = /<div class="body">(.*?)<\/div>/g;
+                    const ts = [], bs = [];
+                    let m;
+                    while ((m = tRe.exec(parts[i])) !== null) ts.push(m[1]);
+                    while ((m = bRe.exec(parts[i])) !== null) bs.push(m[1]);
+                    for (let j = 0; j < ts.length; j++) {
+                        const t = stripTag(ts[j]).trim();
+                        const b = j < bs.length ? stripTag(bs[j]).trim().slice(0, 120) : '';
+                        if (t) articles.push({ d: date, t, b, c: currentCat, f: url });
+                    }
+                }
+            }
+            return articles;
+        }
+
+        function startLoad() {
+            if (started) return;
+            started = true;
+            // Fetch index.html to get the file list
+            fetch('index.html').then(r => r.text()).then(html => {
+                const re = /href="(daily-ai-news-20\d{2}-[^"]+\.html)"/g;
+                const files = []; let m;
+                while ((m = re.exec(html)) !== null) files.push(m[1]);
+                totalFiles = files.length;
+                files.forEach(url => {
+                    fetch(url).then(r => r.text()).then(h => {
+                        searchData = searchData.concat(parseHtml(h, url));
+                        loadedCount++;
+                    }).catch(() => { loadedCount++; });
+                });
+            }).catch(() => {});
+        }
+
+        input.addEventListener('focus', startLoad);
+
+        input.addEventListener('input', function() {
+            const q = this.value.toLowerCase().trim();
+
+            if (!q) {
+                cards.forEach(c => c.style.display = '');
+                sections.forEach(s => s.style.display = '');
+                details.forEach(d => d.style.display = '');
+                dropdown.classList.remove('active');
+                return;
+            }
+
+            // In-page filter
+            cards.forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+            sections.forEach(sec => {
+                const vis = sec.querySelectorAll('.card:not([style*="none"])');
+                sec.style.display = vis.length ? '' : 'none';
+            });
+            details.forEach(det => {
+                const link = det.querySelector('.nav-item');
+                if (!link) return;
+                const sec = document.querySelector(link.getAttribute('href'));
+                det.style.display = (sec && sec.style.display !== 'none') ? '' : 'none';
+            });
+
+            // Cross-archive dropdown
+            if (!searchData.length) {
+                if (started) {
+                    dropdown.innerHTML = '<div class="search-empty">正在加载 (' + loadedCount + '/' + totalFiles + ')...</div>';
+                    dropdown.classList.add('active');
+                }
+                return;
+            }
+            const results = searchData.filter(item =>
+                item.t.toLowerCase().includes(q) || item.b.toLowerCase().includes(q)
+            ).slice(0, 15);
+
+            if (!results.length) {
+                dropdown.innerHTML = '<div class="search-empty">无匹配结果</div>';
+            } else {
+                dropdown.innerHTML = results.map(r =>
+                    '<a href="' + r.f + '" class="search-result">' +
+                    '<span class="search-result-date">' + r.d + '</span>' +
+                    '<span class="search-result-title">' + r.t + '</span>' +
+                    '<span class="search-result-cat">' + r.c + '</span>' +
+                    '</a>'
+                ).join('');
+            }
+            dropdown.classList.add('active');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.topbar-search') && !e.target.closest('.search-dropdown')) {
+                dropdown.classList.remove('active');
+            }
+        });
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { dropdown.classList.remove('active'); input.blur(); }
+        });
+    })();
+
+    // Diamond-frame particle network with ripple energy
+    (function() {
+        const canvas = document.getElementById('particle-bg');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const rgb = isDark ? '184,124,196' : '102,8,116';
+
+        let W, H;
+        const MAX_D = 160, RIPPLE_SPEED = 80, RIPPLE_LIFE = 3.5;
+        let nodes = [], ripples = [];
+
+        function resize() {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+            // Diamond frame distribution
+            const cx = W / 2, cy = H / 2;
+            const dw = W * 0.42, dh = H * 0.42;
+            const dEdges = [
+                [cx, cy - dh, cx + dw, cy],
+                [cx + dw, cy, cx, cy + dh],
+                [cx, cy + dh, cx - dw, cy],
+                [cx - dw, cy, cx, cy - dh]
+            ];
+            const count = Math.max(20, Math.round(50 * (W * H) / (1600 * 900)));
+            nodes = [];
+            for (let i = 0; i < count; i++) {
+                let x, y;
+                if (Math.random() < 0.80) {
+                    const ei = Math.random() * 4 | 0;
+                    const t = Math.random();
+                    const e = dEdges[ei];
+                    x = e[0] + (e[2] - e[0]) * t + (Math.random() - 0.5) * 20;
+                    y = e[1] + (e[3] - e[1]) * t + (Math.random() - 0.5) * 20;
+                } else {
+                    x = Math.random() * W;
+                    y = Math.random() * H;
+                }
+                nodes.push({
+                    x, y,
+                    vx: (Math.random() - 0.5) * 0.25,
+                    vy: (Math.random() - 0.5) * 0.20,
+                    r: 1.2 + Math.random() * 1.8,
+                    energy: 0
+                });
+            }
+            ripples = [];
+        }
+
+        let t0 = performance.now(), lastF = 0, fc = 0;
+
+        function loop(now) {
+            requestAnimationFrame(loop);
+            if (now - lastF < 16.67) return;
+            lastF = now;
+            const t = (now - t0) / 1000;
+            fc++;
+
+            // Spawn ripple every ~2s
+            if (fc % 120 === 0 && nodes.length) {
+                const s = nodes[Math.random() * nodes.length | 0];
+                ripples.push({ x: s.x, y: s.y, born: t });
+            }
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                if (t - ripples[i].born > RIPPLE_LIFE) ripples.splice(i, 1);
+            }
+
+            // Move & energy
+            for (const n of nodes) {
+                n.x += n.vx; n.y += n.vy;
+                if (n.x < 0 || n.x > W) n.vx *= -1;
+                if (n.y < 0 || n.y > H) n.vy *= -1;
+                n.energy *= 0.94;
+                for (const r of ripples) {
+                    const dx = n.x - r.x, dy = n.y - r.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const ringR = RIPPLE_SPEED * (t - r.born);
+                    if (Math.abs(dist - ringR) < 18) n.energy = Math.min(1, n.energy + 0.5);
+                }
+            }
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Ripple rings
+            for (const r of ripples) {
+                const age = t - r.born;
+                const radius = RIPPLE_SPEED * age;
+                const alpha = 0.12 * Math.max(0, 1 - age / RIPPLE_LIFE);
+                ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Connections
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const a = nodes[i], b = nodes[j];
+                    const dx = a.x - b.x, dy = a.y - b.y;
+                    const d = Math.sqrt(dx*dx + dy*dy);
+                    if (d > MAX_D) continue;
+                    const distA = 1 - d / MAX_D;
+                    const maxE = Math.max(a.energy, b.energy);
+                    const alpha = distA * (0.08 + 0.22 * maxE);
+                    ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                    ctx.lineWidth = 0.6;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            }
+
+            // Nodes (dots)
+            for (const n of nodes) {
+                const alpha = 0.22 + 0.40 * n.energy;
+                const r = n.r + n.energy * 1.5;
+                ctx.fillStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+        requestAnimationFrame(loop);
+    })();
+    </script>
 </body>
 </html>

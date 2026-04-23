@@ -157,13 +157,28 @@ def _truncate(text, max_len=36):
     return text[:max_len].rstrip('，。、；：') + '…'
 
 
-def generate_html(articles, summary_items, month_day=None, is_latest=True):
-    """Header + Briefing above, sidebar + content below"""
-    if month_day is None:
-        month_day = datetime.now().strftime("%m月%d日")
+def generate_html(articles, summary_items, month_day=None, is_latest=True,
+                   file_date=None, prev_file=None, next_file=None):
+    """Header + Briefing above, sidebar + content below
 
-    today_iso = datetime.now().strftime("%Y-%m-%d")
-    today_time = datetime.now().strftime("%Y-%m-%d %H:%M")
+    file_date: ISO date string like '2026-03-07' or '2026-03-28+29'
+    prev_file: filename stem of previous issue, e.g. '2026-03-06'
+    next_file: filename stem of next issue, e.g. '2026-03-08'
+    """
+    if file_date:
+        today_iso = file_date
+        # parse display month_day from file_date
+        dm = re.match(r'(\d{4})-(\d{2})-(\d{2})', file_date)
+        if dm:
+            month_day = f"{dm.group(2)}月{dm.group(3)}日"
+        elif month_day is None:
+            month_day = datetime.now().strftime("%m月%d日")
+    else:
+        today_iso = datetime.now().strftime("%Y-%m-%d")
+        if month_day is None:
+            month_day = datetime.now().strftime("%m月%d日")
+
+    today_time = today_iso  # for batch conversion, no time needed
 
     by_cat = defaultdict(list)
     for a in articles:
@@ -181,13 +196,17 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True):
             break
 
     # Prev/next dates
-    prev_date = next_date = None
-    try:
-        dt = datetime.strptime(today_iso, "%Y-%m-%d")
-        prev_date = (dt - timedelta(days=1)).strftime("%Y-%m-%d")
-        next_date = (dt + timedelta(days=1)).strftime("%Y-%m-%d")
-    except ValueError:
-        pass
+    if prev_file is not None or next_file is not None:
+        prev_date = prev_file
+        next_date = next_file
+    else:
+        prev_date = next_date = None
+        try:
+            dt = datetime.strptime(today_iso, "%Y-%m-%d")
+            prev_date = (dt - timedelta(days=1)).strftime("%Y-%m-%d")
+            next_date = (dt + timedelta(days=1)).strftime("%Y-%m-%d")
+        except ValueError:
+            pass
 
     # Build sidebar nav HTML
     nav_items = ""
