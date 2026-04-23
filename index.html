@@ -46,8 +46,7 @@
         /* Particle BG */
         #particle-bg {
             position: fixed; top: 0; left: 0;
-            pointer-events: none;
-            z-index: 0;
+            pointer-events: none; z-index: 0;
             -webkit-mask-image:
                 linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
                 linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
@@ -67,17 +66,9 @@
             display: flex; align-items: center; justify-content: space-between;
             max-width: 100vw;
         }
-        .topbar-left {
-            display: flex; align-items: baseline; gap: 10px;
-        }
-        .topbar-brand {
-            font-size: 14px; font-weight: 700;
-            color: var(--purple);
-        }
-        .topbar-tagline {
-            font-size: 11px; color: var(--text-3);
-            letter-spacing: 0.2px;
-        }
+        .topbar-left { display: flex; align-items: baseline; gap: 10px; }
+        .topbar-brand { font-size: 14px; font-weight: 700; color: var(--purple); }
+        .topbar-tagline { font-size: 11px; color: var(--text-3); letter-spacing: 0.2px; }
         .topbar-right { display: flex; gap: 8px; align-items: center; }
         .topbar-search {
             display: flex; align-items: center;
@@ -85,38 +76,23 @@
             border-radius: 6px; padding: 0 8px;
         }
         .topbar-search input {
-            border: none; outline: none;
-            background: transparent;
-            font-size: 12px; color: var(--text);
-            width: 140px; padding: 5px 4px;
-            font-family: inherit;
+            border: none; outline: none; background: transparent;
+            font-size: 12px; color: var(--text); width: 140px; padding: 5px 4px; font-family: inherit;
         }
         .topbar-search input::placeholder { color: var(--text-3); }
-        .topbar-search .search-icon {
-            font-size: 11px; color: var(--text-3);
-            margin-right: 4px;
-        }
+        .topbar-search .search-icon { font-size: 11px; color: var(--text-3); margin-right: 4px; }
         .search-dropdown {
-            position: absolute; top: 46px; right: 24px;
-            width: 320px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            display: none;
-            max-height: 70vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-            z-index: 200;
+            position: absolute; top: 46px; right: 24px; width: 320px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+            display: none; max-height: 70vh; overflow-y: auto;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08); z-index: 200;
         }
         .search-dropdown.active { display: block; }
         .search-empty { padding: 24px; text-align: center; color: var(--text-3); font-size: 13px; }
         .search-result {
             display: flex; align-items: baseline; gap: 10px;
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border);
-            text-decoration: none;
-            color: var(--text);
-            transition: background 0.12s;
+            padding: 10px 16px; border-bottom: 1px solid var(--border);
+            text-decoration: none; color: var(--text); transition: background 0.12s;
         }
         .search-result:last-child { border-bottom: none; }
         .search-result:hover { background: var(--purple-20); }
@@ -124,133 +100,154 @@
         .sr-title { flex: 1; font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .sr-cat { font-size: 11px; color: var(--purple); flex-shrink: 0; background: var(--purple-20); padding: 2px 6px; border-radius: 3px; }
 
-        .page { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 32px 24px 48px; }
+        /* Layout: sidebar + content */
+        .layout {
+            position: relative; z-index: 1;
+            max-width: 960px; margin: 0 auto;
+            display: flex; gap: 32px;
+            padding: 32px 24px 0;
+        }
 
-        /* Sections */
-        .section.hidden { display: none; }
+        /* Sidebar */
+        .sidebar {
+            position: sticky; top: 80px;
+            width: 180px; flex-shrink: 0;
+            align-self: flex-start;
+            max-height: calc(100vh - 96px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .nav-label {
+            font-size: 11px; font-weight: 600; color: var(--text-3);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            padding-bottom: 8px; margin-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-details { margin-bottom: 4px; }
+        .nav-details summary {
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 12px; font-weight: 600; color: var(--text);
+            padding: 5px 6px; border-radius: 4px; cursor: pointer;
+            list-style: none; transition: background 0.1s;
+        }
+        .nav-details summary::-webkit-details-marker { display: none; }
+        .nav-details summary::before {
+            content: "\25BE"; font-size: 9px; color: var(--text-3);
+            margin-right: 4px; display: inline-block; transition: transform 0.15s;
+        }
+        .nav-details:not([open]) summary::before { transform: rotate(-90deg); }
+        .nav-details summary:hover { background: var(--purple-20); }
+        .nav-count {
+            font-size: 10px; color: var(--text-3); font-weight: 400;
+            background: var(--bg-page); padding: 1px 5px; border-radius: 3px;
+        }
+        .nav-articles { padding: 2px 0 6px 16px; }
+        .nav-item {
+            display: block; font-size: 11px; color: var(--text-3);
+            text-decoration: none; padding: 2px 6px; border-radius: 3px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            transition: color 0.1s, background 0.1s;
+        }
+        .nav-item:hover { color: var(--text); background: var(--purple-20); }
+
+        /* Main content */
+        .content { flex: 1; min-width: 0; padding-bottom: 0; }
 
         /* Section label */
         .section-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--purple);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            padding: 0 0 12px;
-            margin-bottom: 16px;
+            font-size: 12px; font-weight: 600; color: var(--purple);
+            text-transform: uppercase; letter-spacing: 0.8px;
+            padding: 0 0 12px; margin-bottom: 16px;
             border-bottom: 2px solid var(--purple-40);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            display: flex; align-items: center; gap: 8px;
         }
         .section-label .sec-dot {
-            width: 6px; height: 6px;
-            background: var(--purple);
-            border-radius: 2px;
+            width: 6px; height: 6px; background: var(--purple); border-radius: 2px;
         }
 
         /* Special items */
         .special-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
         .special-item {
-            display: block;
-            padding: 14px 18px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--text);
-            transition: all 0.15s;
+            display: block; padding: 14px 18px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+            text-decoration: none; color: var(--text); transition: all 0.15s;
         }
-        .special-item:hover {
-            border-color: var(--purple-40);
-            background: var(--purple-20);
-        }
-        .special-item .sp-title {
-            font-size: 14px; font-weight: 600;
-        }
-        .special-item .sp-desc {
-            font-size: 12px; color: var(--text-3); margin-top: 4px;
-        }
+        .special-item:hover { border-color: var(--purple-40); background: var(--purple-20); }
+        .special-item .sp-title { font-size: 14px; font-weight: 600; }
+        .special-item .sp-desc { font-size: 12px; color: var(--text-3); margin-top: 4px; }
 
-        /* Month header */
-        .month-header {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-3);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 20px 0 10px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 8px;
+        /* Collapsible month */
+        .month-group { margin-bottom: 8px; }
+        .month-toggle {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; border: none; background: none; cursor: pointer;
+            font-size: 13px; font-weight: 600; color: var(--text-3);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 14px 0 8px; border-bottom: 1px solid var(--border);
+            font-family: inherit;
         }
-        .month-header:first-child { padding-top: 0; }
+        .month-toggle .toggle-arrow {
+            font-size: 10px; transition: transform 0.15s; color: var(--text-3);
+        }
+        .month-toggle.collapsed .toggle-arrow { transform: rotate(-90deg); }
+        .month-body { overflow: hidden; transition: max-height 0.3s ease; }
+        .month-body.collapsed { max-height: 0 !important; }
 
-        /* Timeline entry - smol.ai style */
+        /* Scroll offset for sticky topbar */
+        .timeline-entry[id] { scroll-margin-top: 64px; }
+
+        /* Timeline entry */
         .timeline-entry {
-            display: block;
-            padding: 16px 0;
+            display: block; padding: 16px 0;
             border-bottom: 1px solid var(--border);
-            text-decoration: none;
-            color: var(--text);
-            transition: opacity 0.12s;
+            text-decoration: none; color: var(--text); transition: opacity 0.12s;
         }
         .timeline-entry:last-child { border-bottom: none; }
         .timeline-entry:hover { opacity: 0.75; }
-
         .te-date {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-3);
-            font-variant-numeric: tabular-nums;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 13px; font-weight: 600; color: var(--text-3);
+            font-variant-numeric: tabular-nums; margin-bottom: 6px;
+            display: flex; align-items: center; gap: 8px;
         }
         .te-badge {
-            font-size: 10px;
-            background: var(--purple-20);
-            color: var(--purple);
-            padding: 1px 6px;
-            border-radius: 3px;
-            font-weight: 600;
+            font-size: 10px; background: var(--purple-20); color: var(--purple);
+            padding: 1px 6px; border-radius: 3px; font-weight: 600;
         }
         .te-summary {
-            font-size: 14px;
-            line-height: 1.7;
-            color: var(--text-2);
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            font-size: 14px; line-height: 1.7; color: var(--text-2);
+            display: -webkit-box; -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical; overflow: hidden;
         }
-        .te-summary strong, .te-summary b {
-            color: var(--text);
-            font-weight: 600;
-        }
-        .te-count {
-            font-size: 11px;
-            color: var(--text-3);
-            margin-top: 4px;
-        }
+        .te-summary strong, .te-summary b { color: var(--text); font-weight: 600; }
+        .te-count { font-size: 11px; color: var(--text-3); margin-top: 4px; }
 
         /* Footer */
         .footer {
-            text-align: center;
-            padding: 32px 0 0;
-            color: var(--text-3);
-            font-size: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-top: 1px solid var(--border);
+            padding: 16px 24px; margin-top: 24px;
+            max-width: 960px; margin-left: auto; margin-right: auto;
         }
+        .footer-copy { font-size: 12px; color: var(--text-3); }
+        .footer-top {
+            font-size: 12px; color: var(--text-3); text-decoration: none;
+            padding: 4px 12px; border: 1px solid var(--border); border-radius: 4px;
+            transition: all 0.12s;
+        }
+        .footer-top:hover { color: var(--text); border-color: var(--text-3); }
 
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .layout { max-width: 680px; }
+        }
         @media (max-width: 600px) {
-            .page { padding: 16px 16px 32px; }
+            .layout { padding: 16px 16px 0; }
             .topbar-tagline { display: none; }
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
+            .footer { padding: 16px; }
         }
-        @media (prefers-reduced-motion: reduce) {
-            #particle-bg { display: none; }
-        }
+        @media (prefers-reduced-motion: reduce) { #particle-bg { display: none; } }
     </style>
 </head>
 <body>
@@ -269,250 +266,378 @@
         <div class="search-dropdown" id="search-results"></div>
     </div>
 
-    <div class="page">
-        <div class="section" id="sec-special">
+    <div class="layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-label">Navigate</div>
+
+            <details class="nav-details" open>
+                <summary><span>专题报告</span><span class="nav-count">1</span></summary>
+                <div class="nav-articles">
+                    <a href="GTC-2026-Official-Report.html" class="nav-item">GTC 2026 官方报告</a>
+                </div>
+            </details>
+
+            <details class="nav-details" open>
+                <summary><span>2026 年 4 月</span><span class="nav-count">21</span></summary>
+                <div class="nav-articles">
+                    <a href="#apr-23" class="nav-item">Apr 23</a>
+                    <a href="#apr-22" class="nav-item">Apr 22</a>
+                    <a href="#apr-21" class="nav-item">Apr 21</a>
+                    <a href="#apr-20" class="nav-item">Apr 20</a>
+                    <a href="#apr-19" class="nav-item">Apr 19</a>
+                    <a href="#apr-17" class="nav-item">Apr 17</a>
+                    <a href="#apr-16" class="nav-item">Apr 16</a>
+                    <a href="#apr-15" class="nav-item">Apr 15</a>
+                    <a href="#apr-14" class="nav-item">Apr 14</a>
+                    <a href="#apr-13" class="nav-item">Apr 13</a>
+                    <a href="#apr-12" class="nav-item">Apr 12</a>
+                    <a href="#apr-11" class="nav-item">Apr 11</a>
+                    <a href="#apr-10" class="nav-item">Apr 10</a>
+                    <a href="#apr-09" class="nav-item">Apr 09</a>
+                    <a href="#apr-08" class="nav-item">Apr 08</a>
+                    <a href="#apr-07" class="nav-item">Apr 07</a>
+                    <a href="#apr-05" class="nav-item">Apr 05</a>
+                    <a href="#apr-04" class="nav-item">Apr 04</a>
+                    <a href="#apr-03" class="nav-item">Apr 03</a>
+                    <a href="#apr-02" class="nav-item">Apr 02</a>
+                    <a href="#apr-01" class="nav-item">Apr 01</a>
+                </div>
+            </details>
+
+            <details class="nav-details">
+                <summary><span>2026 年 3 月</span><span class="nav-count">23</span></summary>
+                <div class="nav-articles">
+                    <a href="#mar-31" class="nav-item">Mar 31</a>
+                    <a href="#mar-30" class="nav-item">Mar 30</a>
+                    <a href="#mar-28" class="nav-item">Mar 28</a>
+                    <a href="#mar-27" class="nav-item">Mar 27</a>
+                    <a href="#mar-26" class="nav-item">Mar 26</a>
+                    <a href="#mar-25" class="nav-item">Mar 25</a>
+                    <a href="#mar-24" class="nav-item">Mar 24</a>
+                    <a href="#mar-23" class="nav-item">Mar 23</a>
+                    <a href="#mar-22" class="nav-item">Mar 22</a>
+                    <a href="#mar-21" class="nav-item">Mar 21</a>
+                    <a href="#mar-20" class="nav-item">Mar 20</a>
+                    <a href="#mar-19" class="nav-item">Mar 19</a>
+                    <a href="#mar-18" class="nav-item">Mar 18</a>
+                    <a href="#mar-17" class="nav-item">Mar 17</a>
+                    <a href="#mar-16" class="nav-item">Mar 16</a>
+                    <a href="#mar-15" class="nav-item">Mar 15</a>
+                    <a href="#mar-14" class="nav-item">Mar 14</a>
+                    <a href="#mar-13" class="nav-item">Mar 13</a>
+                    <a href="#mar-12" class="nav-item">Mar 12</a>
+                    <a href="#mar-10" class="nav-item">Mar 10</a>
+                    <a href="#mar-09" class="nav-item">Mar 09</a>
+                    <a href="#mar-08" class="nav-item">Mar 08</a>
+                    <a href="#mar-07" class="nav-item">Mar 07</a>
+                </div>
+            </details>
+        </nav>
+
+        <!-- Main content -->
+        <div class="content">
             <div class="section-label"><span class="sec-dot"></span>专题报告</div>
             <div class="special-list">
-            <a href="GTC-2026-Official-Report.html" class="special-item">
-                <div class="sp-title">GTC 2026 官方报告</div>
-                <div class="sp-desc">NVIDIA GTC 2026 大会专题</div>
-            </a>
+                <a href="GTC-2026-Official-Report.html" class="special-item">
+                    <div class="sp-title">GTC 2026 官方报告</div>
+                    <div class="sp-desc">NVIDIA GTC 2026 大会专题</div>
+                </a>
             </div>
-        </div>
 
-        <div class="section" id="sec-archive">
             <div class="section-label"><span class="sec-dot"></span>日报存档</div>
 
-        <div class="month-header">2026 年 4 月</div>
-        <a href="daily-ai-news-2026-04-23.html" class="timeline-entry">
+            <!-- April 2026 -->
+            <div class="month-group">
+                <button class="month-toggle" onclick="toggleMonth(this)">
+                    2026 年 4 月 <span class="toggle-arrow">&#9662;</span>
+                </button>
+                <div class="month-body" id="month-apr">
+        <a href="daily-ai-news-2026-04-23.html" class="timeline-entry" id="apr-23">
             <div class="te-date">Apr 23 <span class="te-badge">最新</span></div>
             <div class="te-summary"><strong>OpenAI</strong>发布ChatGPT工作空间智能体功能；<strong>Meta</strong>记录员工键鼠操作用于AI训练；<strong>小米</strong>发布MiMo-V2.5原生多模态+Agentic能力；<strong>NVIDIA</strong>与Google Cloud达成十年合作；<strong>商汤绝影</strong>发布Sage端侧多模态模型</div>
             <div class="te-count">13 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-22.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-22.html" class="timeline-entry" id="apr-22">
             <div class="te-date">Apr 22</div>
             <div class="te-summary"><strong>Claude Opus 4.7</strong>在ECI评测并列第三，<strong>GPT-5.4 Pro</strong>以158分领先；<strong>Ant Group</strong>发布Ling-2.6-flash；<strong>Kimi K2.6</strong>登顶开源智能体模型；<strong>Google</strong>发布Gemini Deep Research Max；<strong>OpenAI Codex</strong>推出Chronicle屏幕记忆功能</div>
             <div class="te-count">11 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-21.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-21.html" class="timeline-entry" id="apr-21">
             <div class="te-date">Apr 21</div>
             <div class="te-summary"><strong>阿里</strong>发布Qwen3.6-Max-Preview预告下一代旗舰；<strong>GPT-5.5</strong> Spud"几周内"发布；<strong>Google DeepMind</strong>组建"突击小组"追Claude编程，Sergey Brin亲自参与；<strong>Kimi K2.6</strong>上线OpenRouter支持长程Agent编程</div>
             <div class="te-count">15 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-20.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-20.html" class="timeline-entry" id="apr-20">
             <div class="te-date">Apr 20</div>
             <div class="te-summary"><strong>Meta</strong>从Thinking Machines Lab挖走第5位创始成员；<strong>高德</strong>发布全栈具身技术体系ABot及智能导盲犬途途；<strong>Epoch AI</strong>调查Stargate全部7个数据中心正在建设；<strong>Google</strong>与Marvell洽谈合作开发AI推理芯片</div>
             <div class="te-count">12 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-19.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-19.html" class="timeline-entry" id="apr-19">
             <div class="te-date">Apr 19</div>
             <div class="te-summary"><strong>OpenAI</strong>高管Kevin Weil和Bill Peebles离职；<strong>xAI</strong>推出Grok语音转文本API；<strong>Anthropic</strong>推出Claude Design和Claude for Word加速覆盖办公场景；<strong>Netflix</strong>推出TikTok式垂直视频feed；<strong>DeepSeek</strong>更新DeepGEMM引入Mega MoE和FP4</div>
             <div class="te-count">21 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-17.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-17.html" class="timeline-entry" id="apr-17">
             <div class="te-date">Apr 17</div>
             <div class="te-summary"><strong>Anthropic</strong>发布Claude Opus 4.7最强Opus模型，长任务+自验证；<strong>OpenAI</strong>发布GPT-Rosalind生命科学专用推理模型；<strong>Physical Intelligence</strong>发布π0.7组合泛化能力突破；<strong>Epoch AI</strong>调查Claude美国使用量增长超40%</div>
             <div class="te-count">13 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-16.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-16.html" class="timeline-entry" id="apr-16">
             <div class="te-date">Apr 16</div>
             <div class="te-summary"><strong>OpenAI</strong>发布GPT-5.4-Cyber扩大网络安全防御者可信访问计划；<strong>OpenAI</strong>发布新一代Agents SDK原生沙盒执行；<strong>Google</strong>加速桌面AI布局原生Gemini Mac应用+Chrome Skills；<strong>Anthropic</strong>拒绝8000亿美元以上估值融资要约；<strong>NVIDIA</strong>发布Ising全球首个开源量子AI模型家族</div>
             <div class="te-count">15 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-15.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-15.html" class="timeline-entry" id="apr-15">
             <div class="te-date">Apr 15</div>
             <div class="te-summary"><strong>Anthropic</strong>发布Claude Code重大更新桌面版支持多会话并行，新增Routines定时自动化任务；<strong>Google</strong>发布Gemini Robotics-ER 1.6提升机器人推理能力；<strong>The World Labs</strong>发布Spark 2.0高保真3DGS进入网页</div>
             <div class="te-count">13 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-14.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-14.html" class="timeline-entry" id="apr-14">
             <div class="te-date">Apr 14</div>
             <div class="te-summary"><strong>OpenRouter</strong>上线100B参数模型Elephant Alpha对标同规模SOTA；<strong>Cloudflare</strong> Agent Cloud集成OpenAI GPT-5.4和Codex；<strong>吴翼</strong>加盟Meta MSL参与超级智能攻坚；<strong>Atlassian</strong>和<strong>Figma</strong>在AI研发投入上领跑，华尔街恐慌性抛售企业软件股</div>
             <div class="te-count">13 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-13.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-13.html" class="timeline-entry" id="apr-13">
             <div class="te-date">Apr 13</div>
             <div class="te-summary"><strong>HumanX</strong>大会Claude成最大赢家，OpenAI被指"掉队"；Physical AI领域爆发人才争夺战，自动驾驶工程师薪资飙至$300K-$500K；<strong>灵初智能</strong>发布Psi-MobiDex具身智能数据集10万小时真人操作数据</div>
             <div class="te-count">6 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-12.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-12.html" class="timeline-entry" id="apr-12">
             <div class="te-date">Apr 12</div>
             <div class="te-summary"><strong>京东</strong>开源JoyAI-Image-Edit 240亿参数图像模型；<strong>英伟达</strong>支持的SiFive估值达36.5亿美元布局RISC-V开源AI芯片；<strong>刘壮陈丹琦</strong>开源视觉推理RL框架刷新SOTA；<strong>上海AI Lab</strong> GEMS框架让6B生图模型超越Nano Banana 2</div>
             <div class="te-count">7 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-11.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-11.html" class="timeline-entry" id="apr-11">
             <div class="te-date">Apr 11</div>
             <div class="te-summary"><strong>OpenAI</strong>星门计划三位核心负责人离职；<strong>Anthropic</strong>暂时封禁OpenClaw创始人Claude账号；<strong>Claude AI</strong>推出Word集成beta版本；<strong>阿里</strong>Qwen Code推出定时任务功能</div>
             <div class="te-count">11 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-10.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-10.html" class="timeline-entry" id="apr-10">
             <div class="te-date">Apr 10</div>
             <div class="te-summary"><strong>NVIDIA</strong>联合vLLM提交首个MLPerf视觉语言模型性能基准测试；<strong>Meta AI</strong>应用排名跃升至App Store第5位；开源项目推出Claude Agent服务平替方案快速获得2.6k Star；<strong>OpenAI</strong>推出100美元ChatGPT Pro订阅服务</div>
             <div class="te-count">11 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-09.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-09.html" class="timeline-entry" id="apr-09">
             <div class="te-date">Apr 09</div>
             <div class="te-summary">神秘模型<strong>HappyHorse</strong>匿名登顶AI Video Arena后消失身世成谜；<strong>World Labs</strong>发布Marble和Haven模型更新；<strong>Meta</strong>发布Muse Spark模型Artificial Analysis智商指数52位列全球第四；<strong>Anthropic</strong>发布Managed Agents工程博客</div>
             <div class="te-count">17 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-08.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-08.html" class="timeline-entry" id="apr-08">
             <div class="te-date">Apr 08</div>
             <div class="te-summary"><strong>贝索斯</strong>AI新公司Project Prometheus从OpenAI挖走xAI联合创始人Kyle Kosic；<strong>GLM-5.1</strong>上线OpenRouter长程任务完成能力显著提升；<strong>Epoch AI</strong>：Google持有全球约25% AI算力，75%来自自研TPU；Nvidia投资的AI数据中心公司Firmus估值达55亿美元</div>
             <div class="te-count">10 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-07.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-07.html" class="timeline-entry" id="apr-07">
             <div class="te-date">Apr 07</div>
             <div class="te-summary"><strong>OpenAI</strong>发布智能时代产业政策框架；<strong>Google</strong>推出离线优先AI听写应用使用Gemma模型；<strong>Anthropic</strong>联手Google与Broadcom签约数GW级TPU算力2027年上线；<strong>NVIDIA</strong>盘点物理AI机器人研究突破推动AI进入现实物理世界</div>
             <div class="te-count">14 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-05+06.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-05+06.html" class="timeline-entry" id="apr-05">
             <div class="te-date">Apr 05</div>
             <div class="te-summary"><strong>OpenAI</strong> GPT-6曝光，奥特曼押注下一代模型；<strong>vLLM</strong>采用TorchSpec开源EAGLE3模型用于Kimi 2.5低延迟推理；<strong>Epoch AI</strong>发布多项AI基础设施数据洞察，内存带宽年增4.1倍；<strong>上海交大</strong>团队提出多智能体动态协作编程方案</div>
             <div class="te-count">6 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-04.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-04.html" class="timeline-entry" id="apr-04">
             <div class="te-date">Apr 04</div>
             <div class="te-summary"><strong>港科大阿里</strong>联合提出RL冷启动新范式揭示SFT与RL潜力差异；<strong>Anthropic</strong>为全量Claude订阅用户开放Microsoft 365连接器；<strong>Bespoke Labs</strong>建议简化Agent设计减少MCP工具依赖；<strong>Anthropic</strong>在私募市场热度空前二级市场交易活跃</div>
             <div class="te-count">11 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-03.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-03.html" class="timeline-entry" id="apr-03">
             <div class="te-date">Apr 03</div>
             <div class="te-summary"><strong>Google</strong>发布Gemma 4开放基础模型系列基于Gemini 3技术；<strong>Microsoft</strong>旗下MAI发布三个基础模型涵盖语音/音频/图像生成；<strong>Z.ai</strong>发布GLM-5V-Turbo原生多模态编程模型；<strong>YC W26</strong> Demo Day</div>
             <div class="te-count">15 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-02.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-02.html" class="timeline-entry" id="apr-02">
             <div class="te-date">Apr 02</div>
             <div class="te-summary"><strong>Holo3</strong>突破计算机使用前沿；<strong>Gradient Labs</strong>用GPT-4.1和GPT-5.4为银行客户提供AI账户管理器；<strong>SpaceX</strong>秘密提交IPO注册文件估值超1.75万亿美元；Q1初创公司融资创纪录，OpenAI/Anthropic/xAI/Waymo获得大额融资</div>
             <div class="te-count">6 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-04-01.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-04-01.html" class="timeline-entry" id="apr-01">
             <div class="te-date">Apr 01</div>
             <div class="te-summary"><strong>Google</strong>推出Gemini API Docs MCP和Agent Skills编程任务96.3%通过率；<strong>IBM</strong>发布Granite 4.0 3B Vision紧凑多模态模型；<strong>智谱</strong>上市后首份财报超7.24亿元；<strong>NVIDIA</strong>与能源公司合作建设电力弹性AI工厂</div>
             <div class="te-count">13 条动态</div>
         </a>
+                </div>
+            </div>
 
-        <div class="month-header">2026 年 3 月</div>
-        <a href="daily-ai-news-2026-03-31.html" class="timeline-entry">
+            <!-- March 2026 -->
+            <div class="month-group">
+                <button class="month-toggle collapsed" onclick="toggleMonth(this)">
+                    2026 年 3 月 <span class="toggle-arrow">&#9662;</span>
+                </button>
+                <div class="month-body collapsed" id="month-mar">
+        <a href="daily-ai-news-2026-03-31.html" class="timeline-entry" id="mar-31">
             <div class="te-date">Mar 31</div>
             <div class="te-summary"><strong>阿里</strong>发布Qwen3.5-Omni原生多模态模型，支持语音和多模态Vibe Coding；<strong>SemiAnalysis</strong>预告Qwen 3.6即将发布专注Agentic Coding；<strong>Mistral AI</strong>融资$830M；<strong>OpenAI</strong>推出OpenAI Academy</div>
             <div class="te-count">19 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-30.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-30.html" class="timeline-entry" id="mar-30">
             <div class="te-date">Mar 30</div>
             <div class="te-summary"><strong>Anthropic</strong>疑似新旗舰模型Mythos泄露；<strong>OpenAI</strong>关闭Sora API服务引发AI视频行业洗牌讨论；<strong>Claude 5.0</strong>内测展现强大漏洞挖掘能力；<strong>Yann LeCun</strong>团队揭示AI缺乏规划能力的根源</div>
             <div class="te-count">14 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-28+29.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-28+29.html" class="timeline-entry" id="mar-28">
             <div class="te-date">Mar 28</div>
             <div class="te-summary"><strong>硅心科技</strong>aiX-apply-4B单卡推理速度提升15倍；<strong>Meta</strong> SAM 3.1引入多目标追踪；<strong>GPT-5.4</strong>在USAMO数学基准达95%；<strong>智谱</strong>GLM-5.1登陆Coding Plan；<strong>钉钉</strong>CLI开源10项企业能力</div>
             <div class="te-count">23 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-27.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-27.html" class="timeline-entry" id="mar-27">
             <div class="te-date">Mar 27</div>
             <div class="te-summary"><strong>Cohere</strong>发布Transcribe语音识别模型支持14种语言；<strong>Google</strong>发布Gemini 3.1 Flash Live支持实时对话式AI编程；<strong>Google</strong>实时耳机翻译功能扩展至iOS；<strong>Google Search Live</strong>全球上线支持实时视觉搜索与对话</div>
             <div class="te-count">9 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-26.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-26.html" class="timeline-entry" id="mar-26">
             <div class="te-date">Mar 26</div>
             <div class="te-summary"><strong>LumaLabsAI</strong>发布Uni-1视频生成模型强调文化素养与导演能力；<strong>Google</strong>发布Lyria 3 Pro音乐生成模型；<strong>OpenAI</strong>发布Model Spec框架平衡安全性、用户自由与问责制；<strong>Meta</strong>裁减数百名员工</div>
             <div class="te-count">15 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-25.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-25.html" class="timeline-entry" id="mar-25">
             <div class="te-date">Mar 25</div>
             <div class="te-summary"><strong>Sora</strong>官方宣布关闭应用；<strong>ChatGPT</strong>推出Agentic Commerce Protocol支持购物；<strong>Anthropic</strong>为Claude Code推出自动执行模式；<strong>HuggingFace</strong>发布语音代理评估框架EVA</div>
             <div class="te-count">18 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-24.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-24.html" class="timeline-entry" id="mar-24">
             <div class="te-date">Mar 24</div>
             <div class="te-summary"><strong>Meta</strong>裁员1.6万人押注AI，扎克伯格打造AI分身；<strong>Lovable</strong>估值66亿美元寻求收购扩张ARR翻倍至4亿美元；<strong>Gimlet Labs</strong>获8000万美元融资实现跨芯片异构推理；<strong>DocuSign</strong>收购Lexion强化AI合同管理</div>
             <div class="te-count">12 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-23.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-23.html" class="timeline-entry" id="mar-23">
             <div class="te-date">Mar 23</div>
             <div class="te-summary"><strong>微信</strong>推出官方ClawBot插件；<strong>马斯克</strong>发布TERAFAB项目万亿瓦算力工厂；<strong>杨立昆</strong>等联合发文探讨AI自主学习缺陷；<strong>浙大</strong>团队解决多模态模型过度自信问题</div>
             <div class="te-count">7 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-22.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-22.html" class="timeline-entry" id="mar-22">
             <div class="te-date">Mar 22</div>
             <div class="te-summary">法院文件显示五角大楼曾告知<strong>Anthropic</strong>双方几乎达成一致；<strong>光轮智能</strong>定义Physical AI基础设施；<strong>xAI</strong>宣布Terafab项目；<strong>创智×复旦</strong>提出让大模型拥有科研品味的RL新范式</div>
             <div class="te-count">5 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-21.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-21.html" class="timeline-entry" id="mar-21">
             <div class="te-date">Mar 21</div>
             <div class="te-summary"><strong>Nvidia GTC</strong>发布NeMoClaw和Robot Olaf押注万亿美元AI算力市场；<strong>亚马逊</strong>研发以Alexa为核心的新智能手机；<strong>浙大</strong>百卡团队开源实时世界模型视频秒转可交互4D世界</div>
             <div class="te-count">11 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-20.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-20.html" class="timeline-entry" id="mar-20">
             <div class="te-date">Mar 20</div>
             <div class="te-summary"><strong>OpenAI</strong>发布内部编码代理对齐监控方法通过思维链检测风险；<strong>Meta</strong>推出新一代AI内容审核系统减少第三方依赖；<strong>OpenAI</strong>收购Python工具商Astral；<strong>亚马逊</strong>收购苏黎世机器人公司Rivr</div>
             <div class="te-count">12 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-19.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-19.html" class="timeline-entry" id="mar-19">
             <div class="te-date">Mar 19</div>
             <div class="te-summary"><strong>Mamba</strong>系列发布新模型；<strong>小米</strong>MiMo-V2-Pro评分49；<strong>Cursor</strong> Composer通过RL自我总结；<strong>Claude Cowork</strong>发布Dispatch功能；<strong>阿里钉钉</strong>上线企业AI产品"悟空"</div>
             <div class="te-count">16 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-18.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-18.html" class="timeline-entry" id="mar-18">
             <div class="te-date">Mar 18</div>
             <div class="te-summary"><strong>OpenAI</strong>发布GPT-5.4 mini和nano；<strong>MiniMax 2.7</strong>展示编程和游戏开发能力；<strong>NVIDIA</strong>展示RTX PC和DGX Spark本地运行能力；<strong>HuggingFace</strong>发布Holotron-12B</div>
             <div class="te-count">15 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-17.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-17.html" class="timeline-entry" id="mar-17">
             <div class="te-date">Mar 17</div>
             <div class="te-summary"><strong>智谱</strong>发布GLM-5-Turbo；<strong>Sebastian Raschka</strong>整理大模型架构图收藏集；<strong>Google</strong>推出Gemini API成本透明度和控制功能；<strong>Google</strong> AI版Chrome正式推出</div>
             <div class="te-count">8 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-16.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-16.html" class="timeline-entry" id="mar-16">
             <div class="te-date">Mar 16</div>
             <div class="te-summary"><strong>NVIDIA</strong>发布Nemotron-3 Super模型；<strong>Anthropic</strong>用3万字文档训练Claude；<strong>vLLM</strong>支持本地模型部署OpenClaw Agent；<strong>Meta</strong>公布自研AI芯片MTIA发展路线图</div>
             <div class="te-count">12 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-15.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-15.html" class="timeline-entry" id="mar-15">
             <div class="te-date">Mar 15</div>
             <div class="te-summary"><strong>Meta</strong>千亿参数Avocado大模型延期发布，性能不及预期且内测落后Gemini；<strong>Karpathy</strong>论AI编程未来</div>
             <div class="te-count">2 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-14.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-14.html" class="timeline-entry" id="mar-14">
             <div class="te-date">Mar 14</div>
             <div class="te-summary"><strong>Claude Opus 4.6</strong>和Sonnet 4.6获得100万token上下文窗口；<strong>Claude</strong>推出交互式图表和可视化功能；<strong>Google Maps</strong>推出Ask Maps和Immersive Navigation用Gemini重构地图体验</div>
             <div class="te-count">8 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-13.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-13.html" class="timeline-entry" id="mar-13">
             <div class="te-date">Mar 13</div>
             <div class="te-summary"><strong>Meta AI</strong>为Facebook Marketplace提供自动回复功能；<strong>Google DeepMind</strong>在伦敦开设AI Exchange创新空间；<strong>Anthropic</strong>登上时代封面；<strong>NVIDIA</strong> Omniverse推动工业AI与数字孪生应用</div>
             <div class="te-count">12 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-12.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-12.html" class="timeline-entry" id="mar-12">
             <div class="te-date">Mar 12</div>
             <div class="te-summary"><strong>NVIDIA</strong>发布Nemotron 3 Super；<strong>谷歌</strong>发布Gemini Embedding 2首个原生全模态嵌入模型达成全模态SOTA；<strong>OpenAI</strong>为Responses API构建Agent运行时支持文件工具与状态管理</div>
             <div class="te-count">15 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-10.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-10.html" class="timeline-entry" id="mar-10">
             <div class="te-date">Mar 10</div>
             <div class="te-summary"><strong>IBM</strong>推出Granite 4.0 1B语音模型；<strong>World Labs</strong>举办黑客松活动聚焦世界模型与空间智能；<strong>Anthropic</strong>与Mozilla合作测试Claude安全漏洞发现能力；<strong>ABB Robotics</strong>联合NVIDIA Omniverse实现工业级物理AI规模化部署</div>
             <div class="te-count">13 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-09.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-09.html" class="timeline-entry" id="mar-09">
             <div class="te-date">Mar 09</div>
             <div class="te-summary"><strong>Anthropic</strong>发布Claude Opus 4.6在BrowseComp评测中的表现；<strong>OpenAI</strong>发布Codex Security；五角大楼与<strong>Anthropic</strong>争议引发担忧；<strong>大连理工</strong>联合快手可灵推出MultiShotMaster</div>
             <div class="te-count">13 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-08.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-08.html" class="timeline-entry" id="mar-08">
             <div class="te-date">Mar 08</div>
             <div class="te-summary"><strong>谢赛宁</strong>团队开源多人游戏视角世界模型；<strong>OpenAI</strong>再次推迟ChatGPT成人模式发布；谷歌CEO皮查伊获得6.92亿美元薪酬套餐</div>
             <div class="te-count">10 条动态</div>
         </a>
-        <a href="daily-ai-news-2026-03-07.html" class="timeline-entry">
+        <a href="daily-ai-news-2026-03-07.html" class="timeline-entry" id="mar-07">
             <div class="te-date">Mar 07</div>
             <div class="te-summary"><strong>FlashAttention-4</strong>正式发布；<strong>Claude</strong>消费者增长持续加速；<strong>商汤</strong>发布新多模态架构；硅谷巨头自研芯片「叛逃」<strong>英伟达</strong>；<strong>Science</strong>完成2.3亿美元C轮融资</div>
             <div class="te-count">10 条动态</div>
         </a>
+                </div>
+            </div>
 
         </div>
+    </div>
 
-        <div class="footer">每日追踪 AI 行业最新进展</div>
+    <!-- Footer -->
+    <div class="footer">
+        <span class="footer-copy">&copy; 2026 &middot; AI Daily News by Link-X Capital</span>
+        <a href="#" class="footer-top">Back to top &uarr;</a>
     </div>
 
     <script>
+    // Month toggle
+    function toggleMonth(btn) {
+        var body = btn.nextElementSibling;
+        var wasCollapsed = body.classList.contains('collapsed');
+        if (wasCollapsed) {
+            body.style.maxHeight = body.scrollHeight + 'px';
+            body.classList.remove('collapsed');
+            btn.classList.remove('collapsed');
+        } else {
+            body.style.maxHeight = body.scrollHeight + 'px';
+            requestAnimationFrame(function() {
+                body.classList.add('collapsed');
+                btn.classList.add('collapsed');
+            });
+        }
+    }
+    // Init: set max-height on open months
+    document.querySelectorAll('.month-body:not(.collapsed)').forEach(function(el) {
+        el.style.maxHeight = el.scrollHeight + 'px';
+    });
+
+    // Sidebar smooth scroll
+    document.querySelectorAll('.nav-item[href^="#"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = this.getAttribute('href').slice(1);
+            var target = document.getElementById(id);
+            if (!target) return;
+            // Ensure parent month is expanded
+            var mg = target.closest('.month-group');
+            if (mg) {
+                var body = mg.querySelector('.month-body');
+                var btn = mg.querySelector('.month-toggle');
+                if (body && body.classList.contains('collapsed')) {
+                    body.classList.remove('collapsed');
+                    body.style.maxHeight = body.scrollHeight + 'px';
+                    if (btn) btn.classList.remove('collapsed');
+                }
+            }
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
     // Particle BG
     (function(){
         var c=document.getElementById('particle-bg'),ctx=c.getContext('2d');
@@ -529,8 +654,7 @@
                 nodes.push({x:onX+(Math.random()-0.5)*30,y:onY+(Math.random()-0.5)*30,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,e:0,bs:Math.random()*1.5+0.5});
             }else{nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,e:0,bs:Math.random()*1.5+0.5});}
         }
-        var ripples=[];
-        var cR=102,cG=8,cB=116;
+        var ripples=[];var cR=102,cG=8,cB=116;
         var prefersReduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if(prefersReduced)return;
         function animate(){
@@ -559,7 +683,6 @@
     (function() {
         var input = document.getElementById('search');
         var dropdown = document.getElementById('search-results');
-        var sections = document.querySelectorAll('.section');
         if (!input || !dropdown) return;
 
         var searchData = [];
@@ -571,12 +694,10 @@
             var dm = url.match(/(\d{4})-(\d{2})-(\d{2})/);
             var date = dm ? dm[2] + '-' + dm[3] : '';
             var articles = [], currentCat = '';
-
             var sectionParts = html.split(/<h2 class="sec-h"[^>]*>(.*?)<\/h2>/);
             for (var i = 0; i < sectionParts.length; i++) {
-                if (i % 2 === 1) {
-                    currentCat = stripTag(sectionParts[i]).trim();
-                } else if (i > 0 && currentCat) {
+                if (i % 2 === 1) { currentCat = stripTag(sectionParts[i]).trim(); }
+                else if (i > 0 && currentCat) {
                     var tRe = /<h3 class="card-h"[^>]*>(.*?)<\/h3>/g;
                     var bRe = /<p class="card-body">(.*?)<\/p>/g;
                     var ts = [], bs = [], m;
@@ -598,7 +719,7 @@
             var files = [];
             document.querySelectorAll('.timeline-entry').forEach(function(a) {
                 var href = a.getAttribute('href');
-                if (href) files.push(href);
+                if (href && files.indexOf(href) === -1) files.push(href);
             });
             totalFiles = files.length;
             files.forEach(function(url) {
@@ -611,12 +732,7 @@
         }
 
         function doSearch(q) {
-            if (!q) {
-                dropdown.classList.remove('active'); dropdown.innerHTML = '';
-                sections.forEach(function(s) { s.classList.remove('hidden'); });
-                return;
-            }
-            sections.forEach(function(s) { s.classList.add('hidden'); });
+            if (!q) { dropdown.classList.remove('active'); dropdown.innerHTML = ''; return; }
             if (!searchData.length) {
                 dropdown.innerHTML = '<div class="search-empty">正在加载 (' + loadedCount + '/' + totalFiles + ')...</div>';
                 dropdown.classList.add('active'); return;
@@ -638,10 +754,7 @@
         input.addEventListener('focus', startLoad);
         input.addEventListener('input', function() { doSearch(this.value.toLowerCase().trim()); });
         input.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                dropdown.classList.remove('active'); input.value = '';
-                sections.forEach(function(s) { s.classList.remove('hidden'); }); input.blur();
-            }
+            if (e.key === 'Escape') { dropdown.classList.remove('active'); input.value = ''; input.blur(); }
         });
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.topbar-search') && !e.target.closest('.search-dropdown')) {
