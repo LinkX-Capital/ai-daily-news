@@ -1,34 +1,43 @@
 # Twitter 动态预览
 **日期**：2026-04-24 07:15
-**总计**：32 条推文
+**总计**：41 条推文
 
 ---
 
 ## 📋 过滤说明
 
 **抓取规则**：24小时内、去除重复账号、内容 >30字符
-**存疑过滤**：无
+**存疑过滤**：4条（公司账号自我回复/转发，标注⚠️）
 
 ---
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **NVIDIA and Sam Altman rollout Codex across companies**
-   @sama
-2. **Essential Voice: speaking 4x faster than typing (36 wpm)**
-   @essential
-3. **Claude Managed Agents Memory now in public beta**
+1. **Run Qwen3.6-27B locally with vLLM support**
+   @alibaba_qwen
+2. **Claude Managed Agents memory now in public beta**
    @claudeai
-4. **Claude expands integrations to Tripadvisor, Booking.com, Resy, Instacart, Spotify, Audible**
+3. **Claude integrates with Tripadvisor, Booking.com, Resy, Instacart, Spotify and more**
    @claudeai
-5. **NVIDIA Jensen Huang 30 years ago: convinced TSMC to supply wafers for the emerging cat**
-   @semianalysis_
-6. **The World Jam: Marble 1.1 + Spark LoD released**
-   @theworldlabs
+4. **GPT-5.5 rolling out for Plus, Pro, Business and Enterprise users**
+   @openai
+5. **GPT-5.5 delivers intelligence without compromising speed**
+   @openai
+6. **GPT-5.5 excels at writing, debugging code, researching, analyzing data**
+   @openai
+7. **Introducing GPT-5.5: A new class of intelligence for real work and powering agents**
+   @openai
 
 ---
 
-## 🏢 公司发布（19条）
+## 🏢 公司发布（28条）
+
+### @alibaba_qwen | Model
+
+- ⚡️⚡️Run Qwen3.6-27B locally! @UnslothAI
+  [查看](https://x.com/Alibaba_Qwen/status/2047201183987900648#m)
+- Day 0 vLLM support for Qwen3.6-27B! @vllm_project  ♥️❤️
+  [查看](https://x.com/Alibaba_Qwen/status/2047200782009991377#m)
 
 ### @claudeai | Model
 
@@ -60,6 +69,24 @@
 - R to @Kimi_Moonshot: One 🔹prompt → 10 tabloid-style magazine covers (real history, real headlines)
   [查看](https://x.com/Kimi_Moonshot/status/2047190589360521526#m)
 
+### @lumalabsai | Research
+
+- The product is ready. Let’s make sure the pitch is too.  Set your audience, define your narrative, and let Luma Agents handle the build. Problem. Solu...
+  [查看](https://x.com/LumaLabsAI/status/2047383221038641447#m)
+
+### @openai | Model
+
+- ⚠️ R to @OpenAI: GPT-5.5 is rolling out today for Plus, Pro, Business and Enterprise users across ChatGPT and Codex.  We’re also introducing GPT-5.5 Pro ...
+  [查看](https://x.com/OpenAI/status/2047376568809636017#m)
+- ⚠️ R to @OpenAI: In ChatGPT, full-stack inference improvements enable a more capable model at faster speed. This efficiency is a game-changer for GPT-5.5...
+  [查看](https://x.com/OpenAI/status/2047376567559668222#m)
+- ⚠️ R to @OpenAI: GPT-5.5 delivers this step up in intelligence without compromising on speed.  GPT-5.5 matches GPT-5.4 per-token latency in real-world se...
+  [查看](https://x.com/OpenAI/status/2047376564309115134#m)
+- ⚠️ R to @OpenAI: GPT-5.5 excels at writing and debugging code, researching online, analyzing data, creating documents and spreadsheets, operating softwar...
+  [查看](https://x.com/OpenAI/status/2047376562916581513#m)
+- Pinned: Introducing GPT-5.5  A new class of intelligence for real work and powering agents, built to understand complex goals, use tools, check its wo...
+  [查看](https://x.com/OpenAI/status/2047376561205325845#m)
+
 ### @openrouter | Infra
 
 - R to @OpenRouter: And find the model on HuggingFace: https://huggingface.co/tencent/Hy3-preview
@@ -73,14 +100,17 @@
 - R to @OpenRouter: Read the full announcement here! http://openrouter.ai/announcements/introducing-workspaces
   [查看](https://x.com/OpenRouter/status/2047352742482743470#m)
 
+### @prismml | Research
+
+- RT by @PrismML: Training gets the headlines. Inference gets the bill. As agents move from novelty to default workload, the hard problem isn't the mode...
+  [查看](https://x.com/AICouncilConf/status/2047359955146101066#m)
+
 ### @semianalysis_ | Infra
 
 - The more things change the more they stay the same. 30 years ago Jensen Huang tried desperately to convince TSMC to supply wafers for the emerging cat...
   [查看](https://x.com/SemiAnalysis_/status/2047360086276751864#m)
 - R to @SemiAnalysis_: Full article here: https://newsletter.semianalysis.com/p/asml-dilemma-high-na-euv-is-worse
   [查看](https://x.com/SemiAnalysis_/status/2047164873541386340#m)
-- Since Jensen is already collaborating with @GroqInc for low latency decode inferencing, Should NVIDIA also collaborate with Korean Kpop idol @katseyew...
-  [查看](https://x.com/SemiAnalysis_/status/2047118327437238599#m)
 
 ### @theworldlabs | Research
 
@@ -91,6 +121,11 @@
 
 - 🎉 Day-0 support for Tencent Hy3 preview in vLLM! Congrats to the @TencentHunyuan team on the first step of their foundation model rebuild.  A hybrid f...
   [查看](https://x.com/vllm_project/status/2047349857011327209#m)
+
+### @xai | Model
+
+- Introducing Grok Voice Think Fast 1.0  A state-of-the-art voice model built for complex, multi-step workflows with snappy responses and high accuracy....
+  [查看](https://x.com/xai/status/2047441173569216721#m)
 
 ## 👤 研究者动态（13条）
 
@@ -128,9 +163,12 @@
 - We tried a new thing with NVIDIA to roll out Codex across a whole company and it was awesome to see it work.  Let us know if you'd like to do it at yo...
   [查看](https://x.com/sama/status/2047395562501411058#m)
 
+### @shunyuyao12 [Stanford] | Research
+
+- Our goal is to build practical models with comprehensive capabilities beyond open benchmarks. And the only way to do it to co-design with diverse prod...
+  [查看](https://x.com/ShunyuYao12/status/2047355369878650898#m)
+
 ### @swyx [AI社区] | App
 
 - looks like new Pareto frontiers across everything:   - Context: 400K context in Codex and a 1M in API - API Pricing: $5/m input and $30/m output token...
   [查看](https://x.com/swyx/status/2047378670986342685#m)
-- GPT 5.5 tomorrow would be the best damn birthday gift I could ever ask for
-  [查看](https://x.com/swyx/status/2047137849539956862#m)
