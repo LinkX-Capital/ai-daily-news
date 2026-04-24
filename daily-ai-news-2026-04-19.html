@@ -870,11 +870,11 @@
             const dm = url.match(/(\d{4})-(\d{2})-(\d{2})/);
             const date = dm ? dm[2] + '-' + dm[3] : '';
             let articles = [], currentCat = '';
-            const parts = html.split(/<div class="section-title">(.*?)<\/div>/);
+            const parts = html.split(/<h2 class="sec-h"[^>]*>(.*?)<\/h2>/);
             for (let i = 0; i < parts.length; i++) {
-                if (i % 2 === 1) currentCat = parts[i].trim();
+                if (i % 2 === 1) currentCat = stripTag(parts[i]).trim();
                 else if (i > 0 && currentCat) {
-                    const tRe = /<span class="title">(.*?)<\/span>/g, bRe = /<div class="body">(.*?)<\/div>/g;
+                    const tRe = /<h3 class="card-h"[^>]*>(.*?)<\/h3>/g, bRe = /<p class="card-body">(.*?)<\/p>/g;
                     const ts = [], bs = [];
                     let m;
                     while ((m = tRe.exec(parts[i])) !== null) ts.push(m[1]);
