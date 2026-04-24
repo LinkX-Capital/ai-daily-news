@@ -149,30 +149,55 @@ def send_feishu(report):
     elements = []
 
     # 如果成功读取 HTML，解析要点速览
-    if html_content and "要点速览" in html_content:
-        # 提取摘要部分 - 从 <div class="summary"> 到 <div class="content">
+    if html_content and ("要点速览" in html_content or "Briefing" in html_content or "sum-cat-name" in html_content):
+        # 提取摘要部分 - 从 <div class="summary"> 到下一个主要区块
         start = html_content.find('<div class="summary">')
-        content_start = html_content.find('<div class="content">', start)
+        # V2 用 <div class="layout">，V1 用 <div class="content">
+        content_start = html_content.find('<div class="layout">', start)
+        if content_start < 0:
+            content_start = html_content.find('<div class="content">', start)
         if start >= 0 and content_start >= 0:
             summary_html = html_content[start:content_start]
 
-            # 按summary-item分割
-            items_html = re.split(r'<div class="summary-item">', summary_html)
-            for item_html in items_html[1:]:
-                cat_match = re.search(r'<span class="cat-tag[^"]*">([^<]+)</span>', item_html)
-                if not cat_match:
-                    continue
-                cat = unescape(cat_match.group(1))
+            # 按sum-cat分割（兼容 V2 和 V1）
+            # V2: <div class="sum-cat"> ... <span class="sum-cat-name"> ... <span class="sum-item">
+            # V1: <div class="summary-item"> ... <span class="cat-tag"> ... <span class="summary-title">
+            if 'sum-cat-name' in summary_html:
+                # V2 format
+                items_html = re.split(r'<div class="sum-cat">', summary_html)
+                for item_html in items_html[1:]:
+                    cat_match = re.search(r'<span class="sum-cat-name">([^<]+)</span>', item_html)
+                    if not cat_match:
+                        continue
+                    cat = unescape(cat_match.group(1))
 
-                titles = re.findall(r'<span class="summary-title">(.*?)</span>', item_html)
-                titles = [re.sub(r'<[^>]+>', '', unescape(t)).strip() for t in titles if re.sub(r'<[^>]+>', '', t).strip()]
+                    titles = re.findall(r'<span class="sum-item">(.*?)</span>', item_html)
+                    titles = [re.sub(r'<[^>]+>', '', unescape(t)).strip() for t in titles if re.sub(r'<[^>]+>', '', t).strip()]
 
-                if titles:
-                    titles_str = "；".join(titles)
-                    elements.append({
-                        "tag": "div",
-                        "text": {"tag": "lark_md", "content": f"**{cat}**：{titles_str}"}
-                    })
+                    if titles:
+                        titles_str = "；".join(titles)
+                        elements.append({
+                            "tag": "div",
+                            "text": {"tag": "lark_md", "content": f"**{cat}**：{titles_str}"}
+                        })
+            else:
+                # V1 format
+                items_html = re.split(r'<div class="summary-item">', summary_html)
+                for item_html in items_html[1:]:
+                    cat_match = re.search(r'<span class="cat-tag[^"]*">([^<]+)</span>', item_html)
+                    if not cat_match:
+                        continue
+                    cat = unescape(cat_match.group(1))
+
+                    titles = re.findall(r'<span class="summary-title">(.*?)</span>', item_html)
+                    titles = [re.sub(r'<[^>]+>', '', unescape(t)).strip() for t in titles if re.sub(r'<[^>]+>', '', t).strip()]
+
+                    if titles:
+                        titles_str = "；".join(titles)
+                        elements.append({
+                            "tag": "div",
+                            "text": {"tag": "lark_md", "content": f"**{cat}**：{titles_str}"}
+                        })
     else:
         # 备用：从 report 解析
         summary_lines = report.get('summary', '').split('\n')

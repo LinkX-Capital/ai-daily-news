@@ -1,84 +1,60 @@
-## 04月23日 AI 前沿动态
+## 04月24日 AI 前沿动态
 
 ---
 
 ### 模型前沿
-**1. 商汤绝影发布Sage端侧多模态模型，3B参数性能超越GPT-5.4**
-- 该模型支持在车载场景下实现复杂的多模态交互，展现了端侧AI的可行性。
-[来源: 量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247885436&idx=4&sn=adbc0d1af7ada4cbd1c729dbf4ed563f)
+**1. OpenAI发布GPT-5.5模型，能力覆盖多领域**
+- 同日NVIDIA Blog披露GPT-5.5驱动Codex在NVIDIA基础设施上运行，NVIDIA自身已在公司内部部署该模型用于开发工作。
+- Sam Altman透露与NVIDIA合作在整家公司范围内推广Codex，效果超出预期。
+[来源: TechCrunch](https://techcrunch.com/2026/04/23/openai-chatgpt-gpt-5-5-ai-model-superapp/)
 
-**2. OpenRouter揭示GPT-5.4 Image 2调用OpenAI Responses API**
-- 该技术细节揭示了OpenAI最新图像模型的后端架构。
-[来源: @openrouter](https://x.com/OpenRouter/status/2047055207281090817#m)
+**2. 腾讯发布Hy3-preview开源模型，295B MoE**
+- vLLM团队实现day-0支持。
+[来源: @openrouter](https://x.com/OpenRouter/status/2047356098764808289#m)
 
-**3. GPT-5.4 Image 2在OpenRouter上线**
-- 该模型延续了OpenAI在图像生成领域的技术优势。
-[来源: @openrouter](https://x.com/OpenRouter/status/2047055195474145334#m)
-
-**4. OpenRouter接入小米MiMo模型系列**
-- 小米在端侧模型领域持续投入，此次接入将进一步扩大其模型覆盖范围。
-[来源: @openrouter](https://x.com/OpenRouter/status/2046990607898616237#m)
-
-**5. OpenRouter上线小米MiMo-V2.5模型**
-[来源: @openrouter](https://x.com/OpenRouter/status/2046990596288782628#m)
+**3. Claude Managed Agents测试记忆功能**
+[来源: @claudeai](https://x.com/claudeai/status/2047421844311949513#m)
 
 ### 产业动态
-**6. NVIDIA展示AI在环保领域应用：涵盖气候保护、灾害监测、回收利用**
-- 这些应用利用NVIDIA AI技术实现环境保护目标，涵盖气候保护、 conservation、灾害监测和回收等领域。
-[来源: NVIDIA Blog](https://blogs.nvidia.com/blog/earth-day-2026-ai-accelerated-computing/)
-
-**7. OpenAI为ChatGPT企业版推出Workspace agents**
-- 该功能可自动执行重复性工作流程，连接各种工具并简化团队操作。
-[来源: @openai](https://x.com/OpenAI/status/2047008993760137383#m)
-
-**8. OpenAI发布ChatGPT工作空间智能体功能**
-- 该功能可自动执行重复性工作流程，连接工具并简化团队运营。
-[来源: OpenAI News](https://openai.com/academy/workspace-agents)
-
-### 算力追踪
-**9. NVIDIA与Google Cloud达成十年合作，推进智能体和物理AI**
-- 此次合作旨在推进智能体AI和物理AI的发展，双方在云服务、硬件和软件层面深度集成。
-[来源: NVIDIA Blog](https://blogs.nvidia.com/blog/google-cloud-agentic-physical-ai-factories/)
-
-**10. Google在Jetson Orin Nano上演示Gemma 4 VLA模型**
-- 该演示展示了Google多模态模型在边缘设备上的运行能力。
-[来源: HuggingFace Blog](https://huggingface.co/blog/nvidia/gemma4)
-
-**11. Google Cloud发布新一代TPU芯片，与NVIDIA竞争**
-- 尽管推出自研芯片，Google Cloud仍在其云服务中保留NVIDIA GPU产品线，体现双轨策略。
-[来源: TechCrunch](https://techcrunch.com/2026/04/22/google-cloud-next-new-tpu-ai-chips-compete-with-nvidia/)
-
-**12. vLLM发布首日支持阿里Qwen3.6-27B模型**
-- 阿里Qwen3.6-27B具备旗舰级编程能力，性能远超同参数规模模型。
-[来源: @vllm_project](https://x.com/vllm_project/status/2046943674890871019#m)
-
-**13. OpenAI通过WebSocket优化Agent工作流响应速度**
-- 该技术优化针对智能体工作流的性能提升。
-[来源: OpenAI News](https://openai.com/index/speeding-up-agentic-workflows-with-websockets)
+**4. Claude扩展外部应用连接，支持生活场景**
+[来源: @claudeai](https://x.com/claudeai/status/2047383764347572389#m)
 
 ### 初创&融资
-**14. Anthropic竞争对手Cursor因SpaceX收购要约放弃2亿美元融资**
-- SpaceX的介入导致该AI编程独角兽的融资计划生变。
-[来源: TechCrunch](https://techcrunch.com/2026/04/22/how-spacex-preempted-a-2b-fundraise-with-a-60b-buyout-offer/)
+**5. 勇芯科技获近亿元A轮融资，专注Chiplet AIoT芯片**
+- 公司面向AIoT市场，提供Chiplet芯片级解决方案，通过先进封装将多颗裸die封装，可用于医疗、工业、家居等百亿连接数场景。
+[来源: IT桔子](https://www.itjuzi.com/investevent/14695441)
+
+**6. 红杉高瓴4.55亿美元投资大脑科技公司**
+[来源: 新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652694613&idx=1&sn=644ab59a452c979ef20262ae537a69a4)
 
 ### 研究关注
-**15. 合肥工业大学提出ProSafePrune方法，解决大模型过度防御问题**
-- 该方法通过剪枝技术提升模型在拒绝回答上的精准度，一作陈紫军为合肥工业大学博士生，通讯作者为副教授胡文波。
-- 该论文已被ICLR 2026接收。
-[来源: 机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651029279&idx=3&sn=02bdb72b39ffa9f625eb23a58db2e4e7&chksm=850b439601ba20fac25a0294df64d3754b65d1db7f18aabba31bdf73cd0fda45da6cf002190c&scene=0&xtrack=1#rd)
+**7. AI和GPU帮助天文学家处理海量宇宙数据**
+[来源: NVIDIA Blog](https://blogs.nvidia.com/blog/ai-gpu-early-universe-astronomy/)
 
 ### X讨论
-**16. Anthropic发布81,000人AI期望调查报告**
-- 该研究旨在了解用户对AI技术的态度和期待。
-[来源: @anthropicai](https://x.com/AnthropicAI/status/2047006548149289017#m)
+**8. Google发布Gemini 3.1 TTS，引入音频标签引导**
+- 新模型引入[awe]等音频标签，提供直观方式引导语音生成。
+[来源: @googleai](https://x.com/GoogleAI/status/2047377023656436013#m)
 
-**17. 阿里发布Qwen3.6-27B开源模型，定位旗舰级编程能力**
-- 尽管只有27B参数，性能远超同参数规模模型，展现了阿里在开源大模型领域的技术实力。
-[来源: @alibaba_qwen](https://x.com/Alibaba_Qwen/status/2046939764428009914#m)
+**9. Google发布TPU 8i，专为低延迟推理设计**
+- 大缓存等特性满足推理需求。
+- TPU 8t则针对大规模训练和推理吞吐量设计，pod规模略有提升。
+[来源: @jeffdean](https://x.com/JeffDean/status/2047407537566495033#m)
 
-**18. 月之暗面Kimi K2.6登顶OpenRouter编程榜单**
-- 该成绩展示了中国AI模型在编程能力上的竞争力。
-[来源: @kimi_moonshot](https://x.com/Kimi_Moonshot/status/2046915283206709581#m)
+**10. Kimi将1篇天体物理论文转化为40页报告和2万行数据集**
+[来源: @kimi_moonshot](https://x.com/Kimi_Moonshot/status/2047190593634463817#m)
+
+**11. Kimi K2.6开源模型登顶MathArena榜单**
+[来源: @kimi_moonshot](https://x.com/j_dekoninck/status/2047282510015471908#m)
+
+**12. Poly-EPO解决RL微调过早崩溃问题**
+[来源: @chelseabfinn](https://x.com/chelseabfinn/status/2047155228546638026#m)
+
+**13. FASTER降低扩散模型RL算法计算成本**
+[来源: @chelseabfinn](https://x.com/chelseabfinn/status/2047151949607530787#m)
+
+**14. GiantsBench评估LLM科学发现能力**
+[来源: @chelseabfinn](https://x.com/chelseabfinn/status/2047158378028568699#m)
 
 ---
-*更新时间: 2026-04-23 06:04*
+*更新时间: 2026-04-24 06:04*
