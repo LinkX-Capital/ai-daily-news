@@ -1538,7 +1538,7 @@ def md_to_html_from_file(md_file=None, output_html=None):
 
     date_str = datetime.now().strftime("%Y-%m-%d")
     dated_html = f"{base_dir()}/daily-ai-news-{date_str}.html"
-    md_to_html(md_file, output_html, dated_html)
+    md_to_html(md_file, output_html, dated_html=dated_html)
 
 # ========== 主函数 ==========
 def load_recent_archives(days=3):

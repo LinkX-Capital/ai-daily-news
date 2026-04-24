@@ -1198,13 +1198,48 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True,
     return html
 
 
-def md_to_html(md_file, output_html=None, is_latest=True):
-    """从 MD 文件生成 HTML（V2）"""
+def _patch_prev_day_next_link(today_date_str):
+    """Patch previous day's HTML to add 'next' link pointing to today."""
+    try:
+        dt = datetime.strptime(today_date_str, "%Y-%m-%d")
+        prev_date = (dt - timedelta(days=1)).strftime("%Y-%m-%d")
+    except ValueError:
+        return
+
+    prev_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             f"daily-ai-news-{prev_date}.html")
+    if not os.path.exists(prev_path):
+        return
+
+    with open(prev_path, 'r', encoding='utf-8') as f:
+        html = f.read()
+
+    # Replace empty <span></span> after 上一期 with next link
+    next_link = f'<a href="daily-ai-news-{today_date_str}.html" class="issue-next">下一期 &rarr;</a>'
+    # Match the issue-nav section: after 上一期 link, replace trailing <span></span>
+    old_pattern = f'<a href="daily-ai-news-{prev_date}.html" class="issue-prev">&larr; 上一期</a><span></span>'
+    new_pattern = f'<a href="daily-ai-news-{prev_date}.html" class="issue-prev">&larr; 上一期</a>\n                {next_link}'
+    if old_pattern in html:
+        html = html.replace(old_pattern, new_pattern)
+        with open(prev_path, 'w', encoding='utf-8') as f:
+            f.write(html)
+        print(f"Patched prev-next in: daily-ai-news-{prev_date}.html")
+
+
+def md_to_html(md_file, output_html=None, dated_html=None):
+    """从 MD 文件生成 HTML
+
+    Args:
+        md_file: 输入 MD 文件路径
+        output_html: 主 HTML 输出路径 (如 daily-ai-news.html)
+        dated_html: 日期归档 HTML 输出路径 (如 daily-ai-news-2026-04-24.html)
+    """
     with open(md_file, 'r', encoding='utf-8') as f:
         md_content = f.read()
 
     articles, summary_items = parse_md(md_content)
-    html = generate_html(articles, summary_items, is_latest=is_latest)
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    html = generate_html(articles, summary_items, is_latest=True, file_date=date_str)
 
     if output_html is None:
         output_html = md_file.replace('.md', '-v2.html')
@@ -1212,14 +1247,23 @@ def md_to_html(md_file, output_html=None, is_latest=True):
     with open(output_html, 'w', encoding='utf-8') as f:
         f.write(html)
     print(f"V2 generated: {output_html}")
+
+    # Generate dated archive HTML
+    if dated_html:
+        with open(dated_html, 'w', encoding='utf-8') as f:
+            f.write(html)
+        print(f"Dated HTML generated: {dated_html}")
+        _patch_prev_day_next_link(date_str)
+
     return articles
 
 
 if __name__ == "__main__":
     BASE_DIR = "/Users/shenyalan/ai-daily-news"
     today = datetime.now().strftime('%Y-%m-%d')
-    MD_FILE = os.path.join(BASE_DIR, f"daily-ai-news-{today}.md")
-    OUTPUT = os.path.join(BASE_DIR, f"daily-ai-news-{today}.html")
+    MD_FILE = os.path.join(BASE_DIR, "daily-ai-news.md")
+    OUTPUT = os.path.join(BASE_DIR, "daily-ai-news.html")
+    DATED = os.path.join(BASE_DIR, f"daily-ai-news-{today}.html")
 
-    articles = md_to_html(MD_FILE, OUTPUT, is_latest=True)
+    articles = md_to_html(MD_FILE, OUTPUT, dated_html=DATED)
     print(f"Parsed {len(articles)} articles")
