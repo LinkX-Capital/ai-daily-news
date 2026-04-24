@@ -401,9 +401,7 @@ html, body {{
 
 async def generate_screenshot():
     today = datetime.now().strftime('%Y-%m-%d')
-    md_dated = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{today}.md"
-    md_default = "/Users/shenyalan/ai-daily-news/daily-ai-news.md"
-    md_file = md_dated if os.path.exists(md_dated) else md_default
+    md_file = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{today}.md"
     output_file = "/Users/shenyalan/ai-daily-news/daily-ai-news-mobile.png"
 
     with open(md_file, 'r', encoding='utf-8') as f:

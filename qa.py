@@ -65,7 +65,8 @@ def load_md(date_str=None):
     if date_str:
         path = os.path.join(base, f"daily-ai-news-{date_str}.md")
     else:
-        path = os.path.join(base, "daily-ai-news.md")
+        date_str = datetime.now().strftime('%Y-%m-%d')
+        path = os.path.join(base, f"daily-ai-news-{date_str}.md")
     if not os.path.exists(path):
         print(f"文件不存在: {path}")
         sys.exit(1)

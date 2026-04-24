@@ -28,7 +28,8 @@ SLACK_WEBHOOK = os.environ.get("SLACK_WEBHOOK", "")
 DINGTALK_WEBHOOK = os.environ.get("DINGTALK_WEBHOOK", "")
 FEISHU_WEBHOOK = os.environ.get("FEISHU_WEBHOOK", "")
 
-REPORT_FILE = "/Users/shenyalan/ai-daily-news/daily-ai-news.md"
+BASE_DIR = "/Users/shenyalan/ai-daily-news"
+REPORT_FILE = os.path.join(BASE_DIR, f"daily-ai-news-{datetime.now().strftime('%Y-%m-%d')}.md")
 
 
 def read_report():

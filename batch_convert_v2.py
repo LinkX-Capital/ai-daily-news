@@ -11,7 +11,7 @@ import sys
 from html import unescape
 
 # Import from v2 generator
-from html_generator_v2 import generate_html, CAT_ORDER
+from html_generator import generate_html, CAT_ORDER
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
