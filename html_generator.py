@@ -104,7 +104,7 @@ def parse_md(md_content):
                     articles[-1]['source'] = source_match.group(1).strip()
             continue
 
-        if original_stripped and not original_stripped.startswith('#') and '💡' not in original_stripped and '来源' not in original_stripped and articles:
+        if original_stripped and not original_stripped.startswith('#') and '💡' not in original_stripped and '来源:' not in original_stripped and articles:
             if original_stripped.startswith('---') or original_stripped.startswith('*更新时间'):
                 continue
             body_text = re.sub(r'^[\-\*•]\s+', '', original_stripped)
