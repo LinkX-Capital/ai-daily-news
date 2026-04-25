@@ -8,7 +8,7 @@
 
 - 模型前沿：DeepSeek-V4发布：1.6T参数、1M上下文、开源SOTA; xAI发布Grok Voice Think Fast 1.0：登顶语音Agent排行榜
 - 产业动态：Anthropic发布Claude Code降智事后复盘，确认由三个Bug叠加导致; NVIDIA在公司范围内部署Codex
-- 算力追踪：Meta签订数千万Graviton核心大单，用于Agent推理工作负载
+- 算力追踪：Google DeepMind发布Decoupled DiLoCo：跨数据中心训练提速20倍; Meta签订数千万Graviton核心大单，用于Agent推理工作负载
 - 研究关注：复旦大学等提出HERMES框架：流式视频理解提速10倍
 - X讨论：姚顺雨谈实用模型目标：超越开放基准; Jeff Dean回顾Google 14年跨集群异步训练积累
 
@@ -39,6 +39,11 @@
    - 来源: [@sama](https://x.com/sama/status/2047395562501411058#m)
 
 ### 算力追踪
+**Google DeepMind发布Decoupled DiLoCo：跨数据中心训练提速20倍**
+- Google DeepMind发布Decoupled DiLoCo，将大型训练任务拆分为解耦的计算"孤岛"（learner units），各单元异步运行，局部硬件故障不影响整体训练。基于Pathways异步数据流和DiLoCo低通信架构，在**四个美国区域**使用**2-5 Gbps广域网**成功训练**120亿参数模型**，比传统同步方法**快20倍以上**。通过"混沌工程"验证自愈能力：丢失整个learner unit后系统继续训练，恢复后无缝重新集成。在Gemma 4模型上测试，ML性能与传统训练持平。还支持**混合硬件世代**（TPU v6e + TPU v5p）在同一训练任务中使用，不同速度芯片仍能达到单一芯片类型的性能。核心贡献者包括Arthur Douillard、Keith Rush等，Jeff Dean和Marc'Aurelio Ranzato担任顾问。（关联：Jeff Dean同日回顾了Google自2012年以来的跨集群训练积累）
+  > 💡 Decoupled DiLoCo使跨数据中心训练从理论走向生产可用，20倍加速和硬件混用能力意味着Google可以将全球闲置算力转化为有效训练容量，对依赖单一超大数据中心的训练范式形成挑战。无需专用网络设施（2-5 Gbps即可）大幅降低了分布式训练的门槛。
+   - 来源: [Google DeepMind Blog](https://deepmind.google/blog/decoupled-diloco/) | [@JeffDean](https://x.com/JeffDean/status/2047339995682529313#m)
+
 **Meta签订数千万Graviton核心大单，用于Agent推理工作负载**
 - Meta与AWS签署协议，部署**数千万个Graviton核心**（非GPU），用于AI智能体的CPU密集型工作负载，包括实时推理、代码生成和多步骤任务编排。Meta由此成为全球最大的Graviton客户之一。Graviton5基于**3nm工艺**，192核心，缓存比上代大5倍，核心间通信延迟降低33%。Meta基础设施负责人Santosh Janardhan表示，多元化算力来源是战略必需。
   > 💡 Agent场景的推理阶段大量依赖CPU而非GPU，这打破了"AI=GPU"的单一叙事。AWS自研芯片获得Meta级别的大客户背书，对NVIDIA在AI推理市场的垄断地位形成实质挑战。
@@ -57,7 +62,7 @@
    - 来源: [@shunyuyao12](https://x.com/ShunyuYao12/status/2047355369878650898#m)
 
 **Jeff Dean回顾Google 14年跨集群异步训练积累**
-- Jeff Dean发文回顾Google在大规模分布式训练上的技术积累：从**NeurIPS 2012论文**开始，展示了跨数千台机器的异步容错训练方法，训练的网络比当时最大模型还大**30倍**。他特别提到这篇论文"因为当时忘记发arXiv而没有得到足够关注"。这些异步训练技术是今天TPU v8t等跨集群训练能力的底层基础。
+- Jeff Dean发文回顾Google在大规模分布式训练上的技术积累：从**NeurIPS 2012论文**开始，展示了跨数千台机器的异步容错训练方法，训练的网络比当时最大模型还大**30倍**。他特别提到这篇论文"因为当时忘记发arXiv而没有得到足够关注"。这些异步训练技术是今天TPU v8t等跨集群训练能力的底层基础。同日Jeff Dean还推荐了团队发布的Decoupled DiLoCo跨数据中心训练系统（见算力追踪）。
   > 💡 大规模分布式训练不是近年才出现的课题，Google早在2012年就在探索跨集群异步训练。这篇被遗忘的论文预示了当前万亿参数模型训练的基础架构方向。
    - 来源: [@JeffDean](https://x.com/JeffDean/status/2047408945950802186#m)
 
