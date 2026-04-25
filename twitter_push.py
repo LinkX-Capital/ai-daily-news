@@ -351,7 +351,7 @@ def push_to_feishu(cache, webhook_url, highlights=None):
                     'actions': [{
                         'tag': 'button',
                         'text': {'tag': 'plain_text', 'content': '📖 查看详情'},
-                        'url': 'https://yl0223-ai.github.io/ai-daily-news/twitter_preview.md',
+                        'url': f'https://yl0223-ai.github.io/ai-daily-news/twitter-preview-{datetime.now().strftime("%Y-%m-%d")}.md',
                         'type': 'primary'
                     }]
                 }
@@ -365,7 +365,8 @@ def push_to_feishu(cache, webhook_url, highlights=None):
 
 def main():
     webhook = 'https://open.feishu.cn/open-apis/bot/v2/hook/362a7cc7-5bce-4184-9ae3-7d6b6c0c429a'
-    preview_path = Path(__file__).parent / 'twitter_preview.md'
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    preview_path = Path(__file__).parent / f'twitter-preview-{date_str}.md'
 
     # 1. 抓取
     print('📡 抓取 Twitter...')
@@ -394,7 +395,7 @@ def main():
     import subprocess
     date_str_for_git = datetime.now().strftime("%Y-%m-%d")
     try:
-        subprocess.run(['git', 'add', 'twitter_preview.md'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
+        subprocess.run(['git', 'add', f'twitter-preview-{date_str_for_git}.md'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
         subprocess.run(['git', 'commit', '-m', f'twitter preview {date_str_for_git}'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
         subprocess.run(['git', 'push'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
         print('   ✅ GitHub push 成功')

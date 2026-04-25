@@ -1,5 +1,21 @@
 # AI Daily News Pipeline
 
+## Feedback Log
+
+Read `feedback.md` at the start of each session. It contains accumulated corrections from user reviews. When the user corrects a news item, append a new entry using the format defined in that file. The `rule_hint` field is especially important — it captures generalizable rules for future prompt optimization.
+
+Key patterns from feedback so far:
+- Title should be the most impactful story, not just the first one
+- Body = facts + data + so what; Insight = AI judgments only
+- Key points / Insight = AI's own analysis and judgments only (facts/data go in body)
+- No exclamation marks or sensational language in titles
+- Keep foreign company/person names in English
+- Every article must have at least 1 key_point/insight
+- Summary briefing items should only show key facts, no descriptive filler
+- Check source link availability (replace nitter.net)
+
+---
+
 ## Skills
 
 ### improve-news
@@ -55,8 +71,8 @@ LLM 处理新闻时的格式规范。
 ```
 {
   "title": "事件主体+做什么+为什么重要",
-  "body": "3-6句话完整摘要，说明发生了什么+为什么重要（必须有so what）",
-  "key_points": ["关键判断/数据1", "关键判断/数据2"],
+  "body": "3-6句话完整摘要，说明发生了什么+基于事实的so why it matters",
+  "key_points": ["AI判断/分析1", "AI判断/分析2"],
   "is_ai_related": true/false,
   "category": "分类"
 }
@@ -64,24 +80,24 @@ LLM 处理新闻时的格式规范。
 
 **Title rules:**
 - 格式：事件主体 + 做什么/发布什么 + 为什么重要
+- 取当天最有影响力的动态，不是简单取第一条
 - 不用感叹号、不用媒体夸张口吻
 - 错误示例：「彻底告别VE与VAE！商汤硬核重构多模态」「GPU时代落幕？硅谷巨头集体叛逃」
 - 正确示例：「商汤发布新多模态架构：砍掉中间编码器，2B参数超越传统范式」「英伟达投入1500亿自研芯片：应对巨头叛逃，GPU时代或终结」
 
 **Body rules (2026-03 重大升级):**
 - **3-6句话**，信息密度要高
-- **必须有 so what**：不只是「发生了什么」，还要说「为什么重要」或「意味着什么」
-- 关键句子、关键判断加粗
-- 要有判断，不是纯新闻聚合
+- **关键事实/数据**：是什么、关键突破/创新、具体数字、关键事件和关联信息
+- **基于事实的 so what**：说明发生了什么 + 为什么这件事重要（基于事实分析，不是 AI 主观判断，主观判断放在 insight）
+- 关键事实/数据加粗
+- 不是纯新闻聚合
 - 读完能了解来龙去脉，不点进原文也能跟人聊
 - 如果只能写出一句slogan级别描述（模糊空洞），要么去原文挖更多信息，要么不收录
-- 每条都可以有一句点评或判断，但所有条目保持一致
-- 相关条目要串联：同一故事的不同面要指出关联
 
-**Key points rules:**
-- 只写关键事实：是什么、关键突破/创新/关注点、为什么或什么影响（如果有）
-- 不要写核心判断，不要重复标题已说的内容
-- 数据、具体细节优先
+**Key points / Insight rules:**
+- **AI 判断/分析**：意味着什么、有什么影响、趋势判断（放在 insight 里，不放 body）
+- 每条新闻必须至少有 1 条 insight
+- 不重复标题已说的内容
 
 **Summary md 格式:**
 - 不要生成 `> 展开阐释 + 关键细节 + 为什么重要 + 来源链接` 这行描述文字
@@ -94,7 +110,8 @@ LLM 处理新闻时的格式规范。
 - 禁止模糊称呼（如"AI研究者"、"研究人员"），必须具体到人名或公司名
 - 海外公司/人名不翻译为中文，保持英文（如 OpenAI、Google、Anthropic、NVIDIA、Sam Altman）
 - 链接必须与内容匹配，确保来源链接正确指向文章
+- nitter.net 链接不可用，需替换为正确的 x.com 链接
 
 **要点速览 rules:**
-- 只显示"是什么"（取冒号之前的部分）
+- 只显示"是什么"（取冒号之前的部分），不截断标题
 - 例如：「FlashAttention-4发布」「Claude消费者增长加速」

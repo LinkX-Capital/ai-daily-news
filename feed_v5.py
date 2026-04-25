@@ -17,12 +17,12 @@ import urllib3
 # 导入规范化模块
 import sys
 sys.path.insert(0, '/Users/shenyalan/ai-daily-news')
-from improve_news import improve_news
+from improve_news import improve_news, title_similarity
 from config_loader import (
     twitter_company_accounts, twitter_researcher_accounts,
     tier1_ai_companies, research_subfields, top_conferences,
     high_citation_authors, official_sources,
-    base_dir, archive_dir, output_md, output_html, output_html_path, summary_md, cache_file, tweet_cache, opml_file
+    base_dir, archive_dir, output_md, output_html, output_html_path, cache_file, tweet_cache, opml_file
 )
 from html_generator import md_to_html
 
@@ -56,7 +56,6 @@ API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
 OPML_FILE = opml_file()
 ARCHIVE_DIR = archive_dir()
 OUTPUT_FILE = output_md()
-SUMMARY_FILE = summary_md()
 CACHE_FILE = cache_file()
 
 os.makedirs(ARCHIVE_DIR, exist_ok=True)
@@ -965,21 +964,107 @@ def calc_similarity(title1, title2):
     union = len(kw1 | kw2)
     return intersection / union if union > 0 else 0
 
+def _extract_product_entities(title):
+    """从标题中提取「公司+产品」实体对，用于跨天去重。"""
+    # 公司名映射（英文→标准名）
+    company_map = {
+        "OpenAI": "OpenAI", "GPT": "OpenAI", "Codex": "OpenAI", "ChatGPT": "OpenAI",
+        "Google": "Google", "Gemini": "Google", "TPU": "Google", "Gemma": "Google",
+        "Anthropic": "Anthropic", "Claude": "Anthropic",
+        "NVIDIA": "NVIDIA",
+        "Meta": "Meta", "Llama": "Meta",
+        "DeepSeek": "DeepSeek",
+        "xAI": "xAI", "Grok": "xAI",
+        "Apple": "Apple",
+        "阿里": "阿里", "Qwen": "阿里", "通义": "阿里",
+        "腾讯": "腾讯", "混元": "腾讯", "Hunyuan": "腾讯", "Hy3": "腾讯",
+        "字节": "字节", "ByteDance": "字节",
+        "月之暗面": "月之暗面", "Kimi": "月之暗面", "Moonshot": "月之暗面",
+        "复旦": "复旦",
+        "SemiAnalysis": "SemiAnalysis",
+    }
+    # 产品名模式：版本号（GPT-5.5, Qwen3.6, V4）
+    product_pattern = re.compile(
+        r'(GPT[\s\-]?\d+(?:\.\d+)?)'
+        r'|(Claude[\s\-]?\w*)'
+        r'|(Gemini[\s\-]?\d+(?:\.\d+)?)'
+        r'|(Qwen[\s\-]?\d+(?:\.\d+)?)'
+        r'|(DeepSeek[\s\-]?\w*(?:\d+)?)'
+        r'|(Hy[\d][\-\w]*)'
+        r'|(Kimi[\s\-]?\w*(?:\d+(?:\.\d+)?)?)'
+        r'|(TPU[\s\-]?\w*\d+)'
+        r'|(Grok[\s\-]?\w*)',
+        re.IGNORECASE
+    )
+    companies = set()
+    for name, standard in company_map.items():
+        if name in title:
+            companies.add(standard)
+
+    products = set()
+    for m in product_pattern.finditer(title):
+        products.add(m.group(0).replace(" ", "").replace("－", "-"))
+
+    # 返回 (company, product) 组合列表
+    result = []
+    for c in companies:
+        for p in products:
+            result.append((c, p))
+    # 如果只有公司没有产品，也返回
+    if not products and companies:
+        for c in companies:
+            result.append((c, ""))
+    return result
+
+
 def dedup_articles(articles):
-    """基于 URL 精确匹配的跨天去重：过滤已在近期存档中出现的文章"""
+    """跨天去重：URL 精确匹配 + 实体匹配 + 标题语义去重"""
     try:
         recent = load_recent_archives(days=3)
         seen_links = {a.get("link", "").rstrip("/").split("#")[0] for a in recent if a.get("link")}
+        recent_titles = [a.get("title", "") for a in recent if a.get("title")]
     except Exception:
         seen_links = set()
+        recent_titles = []
+
+    # 预计算近3天标题的实体对
+    recent_entities = set()
+    for rt in recent_titles:
+        for pair in _extract_product_entities(rt):
+            recent_entities.add(pair)
 
     filtered = []
     for a in articles:
         link = a.get("link", "").rstrip("/").split("#")[0]
+        title = a.get("title", "")
+
+        # 1. URL 精确匹配
         if link and link in seen_links:
-            print(f"   [跨天去重] '{a.get('title', '')[:40]}...' 已在前几天发布，跳过")
-        else:
-            filtered.append(a)
+            print(f"   [跨天去重-URL] '{title[:40]}...' 已在前几天发布，跳过")
+            continue
+
+        # 2. 实体匹配：同公司+同产品 → 重复
+        entities = _extract_product_entities(title)
+        entity_dup = False
+        for company, product in entities:
+            if product and (company, product) in recent_entities:
+                print(f"   [跨天去重-实体] '{title[:40]}...' ({company}+{product}) 已报过，跳过")
+                entity_dup = True
+                break
+        if entity_dup:
+            continue
+
+        # 3. 标题语义去重
+        is_dup = False
+        for rt in recent_titles:
+            if title_similarity(title, rt) >= 0.45:
+                print(f"   [跨天去重-语义] '{title[:40]}...' ~ '{rt[:40]}...', 跳过")
+                is_dup = True
+                break
+        if is_dup:
+            continue
+
+        filtered.append(a)
     return filtered
 
 # ========== LLM ==========
@@ -991,94 +1076,20 @@ def call_llm(prompt):
         "Content-Type": "application/json",
         "anthropic-version": "2023-06-01"
     }
+    # 从外部文件加载 system prompt（自进化：修改 prompts/news_processor.md 即可）
+    _prompt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts", "news_processor.md")
+    try:
+        with open(_prompt_path, "r", encoding="utf-8") as f:
+            system_prompt = f.read().strip()
+    except FileNotFoundError:
+        # fallback: 如果 prompt 文件不存在，使用空 prompt 避免崩溃
+        print(f"   ⚠️ Prompt 文件不存在: {_prompt_path}")
+        return None
+
     data = {
         "model": "MiniMax-M2.5", "temperature": 0.2,
         "max_tokens": 8000,
-        "system": """你是一个顶尖AI新闻分析师。
-
-## 任务
-处理下方的新闻列表，严格按【新闻1】、【新闻2】的顺序输出结果。
-
-## 判断规则
-### 保留条件（is_ai_related=true）
-- AI/大模型、模型发布、模型评测
-- 量子、脑机接口、核聚变、半导体
-- AI+行业、智慧城市、机器人研究
-- AI相关产业链的科技融资
-- 算力芯片、数据中心、云厂商AI投资
-- 顶会论文（CVPR/ICML/NeurIPS/Nature/Science）
-- 学术机构研究（清华/北大/浙大/中科院/MIT/Stanford/Berkeley）
-- 重要公司动态（x.ai、Terafab、Sakana AI、Cursor、Cognition）
-- 芯片发布/投资计划（SpaceX/Tesla/Apple/Amazon）
-- 监管政策、安全事件（涉及AI公司）
-
-### 过滤条件（is_ai_related=false）
-- 纯汽车销量、纯安全事故（与AI无关）
-- 娱乐圈、房地产、招聘
-- 纯活动预告、会议邀请（无实质性发布内容）
-- 纯RT转发（无个人评论的转发）
-- Pinned推文
-- 已发布很久的技术介绍（炒冷饭）
-- 明显与AI无关的新闻
-- 一般性的版权纠纷/诉讼（除非是重大突破性判决）
-- 非关键公司的一般性产品采用案例
-- 一般性的政策/监管/安全指南（非重大突破）
-
-### 分类规则
-- 模型前沿：模型发布、模型能力更新、模型评测/benchmark、多模态、视频生成、模型开源、世界模型、VLA、Agent架构、公司发布的研究论文（如OpenAI/Google发论文 → 模型前沿）
-- 算力追踪：算力芯片(GPU/NPU/TPU)、云服务、数据中心、AI Capex、算力需求/缺口、算力供应链、SemiAnalysis、推理框架优化(vLLM/TGI等)
-- 产业动态：用户增长、营收、战略合作、高管变动、安全事件、非模型类产品更新、监管政策、公司组织调整
-- 初创&融资：融资、收购、IPO、估值变化
-- 研究关注：学术论文、顶会(Nature/Science/ICML/NeurIPS/CVPR/ACL)、学术机构研究成果、新数据集/基准测试发布、新评估框架、学术研究发现（如"揭示XX机制""首次系统评估XX"）
-- X讨论：个人观点、日常动态、非正式分享、推特讨论
-
-### 分类边界
-- NVIDIA发布GPU → 算力追踪；NVIDIA发布模型 → 模型前沿
-- OpenAI发布GPT-5 → 模型前沿；OpenAI用户数增长 → 产业动态
-- Stanford发论文 → 研究关注；OpenAI发论文 → 模型前沿（公司研究核心是模型）
-- SemiAnalysis芯片/算力分析 → 算力追踪；SemiAnalysis行业观点/趋势分析 → X讨论
-- 消费电子(PC/手机/手表) → 过滤，不属于算力追踪
-- 公司发布新数据集/基准 → 研究关注（如"美团发布LARY Bench"）
-- 论文标题含"揭示/评估/框架/机制/Bench/Dataset" → 研究关注
-- 推理框架性能优化(vLLM/KV Cache等) → 算力追踪
-
-## 重要规则
-- title格式：中文标题，事件主体+做什么/发布什么+为什么重要
-  - 把"是什么"放在前面，产品名放在后面
-  - 海外公司/人名保持英文（OpenAI、Google、Anthropic、NVIDIA等）
-  - 禁止感叹号、问号结尾
-  - 禁止模糊称呼，必须具体到人名或公司名
-  - 禁止媒体夸张词汇（彻底告别、炸裂、暴击等）
-- body规则：
-  - 2-5句话，只写关键事实：是什么、关键数据、突破/创新、关联事件、事实影响
-  - 不重复标题已说内容，关键数据/事实可以加粗
-  - 读完能了解来龙去脉，不点进原文也能跟人聊
-  - 禁止主观判断和过度推断（如"标志着全面转向""将颠覆XX"），判断放在insight里
-  - 只陈述原文可以支撑的事实，不确定的信息不加或标注"据报道"
-  - 海外公司/人名保持英文
-  - 分类侧重点：
-    - 模型前沿：能力突破点、关键数据（成本、benchmark）、适用场景
-    - 算力追踪：规模（芯片型号、数量）、产能、成本变化、供应链影响
-    - 研究关注：方法创新点、实验结果、局限性
-    - 产业动态：具体发生了什么、涉及哪些人/产品、影响范围
-    - 初创&融资：领域、商业逻辑、金额，投资方背书
-    - X讨论：观点核心、论据
-- insight规则：
-  - 一句话务实判断：具体趋势、竞争动态或实际影响
-  - 必须基于原文事实，禁止无依据推测
-  - 禁止空洞宏大叙事（"标志着XX时代的到来""将彻底改变XX""开启XX新纪元"）
-  - 好的insight：描述一个具体的趋势或实际影响
-  - 差的insight：空泛建议、过度推断
-  - 分类侧重点：
-    - 模型前沿：技术代差、具体商业影响
-    - 算力追踪：供需关系、格局变化
-    - 研究关注：创新性、对后续研究/应用的实际影响
-    - 产业动态：市场影响、竞争定位
-    - 初创&融资：商业逻辑、团队或项目亮点
-    - X讨论：观点质量、值得关注程度
-- 如果多条新闻属于同一故事的不同面，在body中简要关联
-- 只返回is_ai_related=true的新闻
-- 所有输出必须用中文""",
+        "system": system_prompt,
         "messages": [{"role": "user", "content": prompt}]
     }
     try:
@@ -1405,6 +1416,11 @@ def generate_report(articles):
         for a in research_items:
             priority = a.get("priority", 0)
             priority_emoji = "🔥" if priority > 150 else "📰" if priority > 100 else "📄"
+            link = a.get("link", "")
+            if link:
+                source_line = f"   - 来源: [{a['source']}]({link})"
+            else:
+                source_line = f"   - 来源: {a['source']}"
             lines.append(f"**{a['title']}**")
             # 正文
             if a.get('body'):
@@ -1412,7 +1428,7 @@ def generate_report(articles):
             # 一句话点评
             if a.get('insight'):
                 lines.append(f"  > 💡 {a['insight']}")
-            lines.append(f"   - 来源: {a['source']}")
+            lines.append(source_line)
             lines.append("")
 
     # X讨论 (按优先级排序)
@@ -1437,53 +1453,112 @@ def generate_report(articles):
     lines.extend(["", "---", f"*更新时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}*"])
     return "\n".join(lines)
 
-def generate_summary_report(articles):
-    """生成简洁版报告：序号标题 + 关键事实 + 来源链接"""
-    month_day = END_BJ.strftime("%m月%d日")
-    by_cat = defaultdict(list)
+
+def _log_quality(articles):
+    """每次运行后记录质量元数据到 quality_log.jsonl（自进化数据源）"""
+    from collections import Counter
+    log_path = os.path.join(ARCHIVE_DIR, "..", "quality_log.jsonl")
+    log_path = os.path.normpath(log_path)
+
+    cat_counts = Counter()
+    body_lens = []
+    insight_count = 0
     for a in articles:
-        for c in a["categories"]: by_cat[c].append(a)
+        cats = a.get("categories", [])
+        if cats:
+            cat_counts[cats[0]] += 1
+        body = a.get("body", "") or a.get("summary", "")
+        if body:
+            body_lens.append(len(body))
+        if a.get("insight"):
+            insight_count += 1
 
-    for cat in by_cat:
-        by_cat[cat] = sorted(by_cat[cat], key=lambda x: x.get("priority", 0), reverse=True)[:MAX_PER_CATEGORY]
+    entry = {
+        "date": END_BJ.strftime("%Y-%m-%d"),
+        "total": len(articles),
+        "categories": dict(cat_counts),
+        "body_avg_len": round(sum(body_lens) / len(body_lens), 1) if body_lens else 0,
+        "insight_count": insight_count,
+        "insight_ratio": round(insight_count / len(articles), 2) if articles else 0,
+        "prompt_hash": _prompt_hash(),
+    }
 
-    lines = [f"## {month_day} AI 前沿动态", "",
-             "---", ""]
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
-    # 全局序号
-    seq = 0
 
-    for cat in ["模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"]:
-        items = by_cat.get(cat, [])
-        if not items: continue
-        lines.append(f"### {cat}")
+def _prompt_hash():
+    """记录当前 prompt 文件的哈希，用于追踪哪版 prompt 产出了什么质量"""
+    import hashlib
+    prompt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts", "news_processor.md")
+    try:
+        content = open(prompt_path, "r", encoding="utf-8").read()
+        return hashlib.md5(content.encode()).hexdigest()[:8]
+    except FileNotFoundError:
+        return "missing"
 
-        for a in items:
-            seq += 1
-            lines.append(f"**{seq}. {a['title']}**")
 
-            # 获取 body 的句子
-            sentences = [s.strip() for s in a.get('body', '').split('。') if s.strip()] if a.get('body') else []
+def _check_feedback():
+    """管线启动时检查 feedback.md 是否有未处理的新修正，打印提醒。"""
+    feedback_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "feedback.md")
+    state_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".feedback_state.json")
 
-            # 关键事实 - key_points 或 body 第二句起（跳过与标题重复的第一句）
-            if a.get('key_points'):
-                for point in a['key_points'][:3]:
-                    lines.append(f"- {point}")
-            elif len(sentences) > 1:
-                for s in sentences[1:3]:
-                    lines.append(f"- {s}。")
+    if not os.path.exists(feedback_path):
+        return
 
-            # 来源链接
-            link = a.get('link', '')
-            source = a.get('source', '')
-            if link:
-                lines.append(f"[来源: {source}]({link})")
-            else:
-                lines.append(f"[来源: {source}]")
-            lines.append("")
+    # 解析 feedback.md 中所有 ### 条目
+    entries = []
+    current = {}
+    for line in open(feedback_path, "r", encoding="utf-8"):
+        m = re.match(r'^### \[([\d-]+)\] #(\d+)', line)
+        if m:
+            if current:
+                entries.append(current)
+            current = {"date": m.group(1), "num": int(m.group(2)), "hints": []}
+        hm = re.match(r'^- \*\*rule_hint\*\*: (.+)', line)
+        if hm and current:
+            current["hints"].append(hm.group(1).strip())
+    if current:
+        entries.append(current)
 
-    lines.extend(["---", f"*更新时间: {datetime.now().strftime('%Y-%m-%d %H:%M')}*"])
-    return "\n".join(lines)
+    if not entries:
+        return
+
+    # 读取上次已处理的条目数
+    last_seen = 0
+    if os.path.exists(state_path):
+        try:
+            with open(state_path, "r") as f:
+                last_seen = json.load(f).get("last_seen_count", 0)
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    new_count = len(entries) - last_seen
+    if new_count <= 0:
+        return
+
+    # 有新修正，打印提醒
+    print(f"📋 feedback.md 有 {new_count} 条新修正（总计 {len(entries)} 条）:")
+    for entry in entries[last_seen:]:
+        label = f"  #{entry['num']} [{entry['date']}]"
+        for h in entry["hints"]:
+            print(f"{label} → {h}")
+            label = "            "
+    print(f"   提示: 审视 rule_hint 是否需要反映到 prompts/news_processor.md")
+    print()
+
+
+def _mark_feedback_seen():
+    """管线成功完成后标记所有 feedback 条目为已处理。"""
+    feedback_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "feedback.md")
+    state_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".feedback_state.json")
+    if not os.path.exists(feedback_path):
+        return
+    count = sum(1 for line in open(feedback_path, "r", encoding="utf-8")
+                if re.match(r'^### \[', line))
+    with open(state_path, "w") as f:
+        json.dump({"last_seen_count": count}, f)
+
 
 def save_archive(articles):
     # 使用 END_BJ（窗口结束日期）命名存档，与 run.sh skip 检查一致
@@ -1585,6 +1660,10 @@ def main():
 
     print(f"🤖 AI前沿动态 v5.1")
     print(f"   时间窗口: {START_BJ.strftime('%Y-%m-%d %H:%M')} - {END_BJ.strftime('%Y-%m-%d %H:%M')} 北京时间")
+
+    # 检查是否有未处理的 feedback 修正
+    _check_feedback()
+
     if args.from_cache:
         print(f"   模式: 从缓存读取")
     elif args.cache:
@@ -1773,18 +1852,16 @@ def main():
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             f.write(report)
 
-    if args.no_overwrite and os.path.exists(SUMMARY_FILE):
-        print(f"⚠️ {SUMMARY_FILE} 已存在且 --no-overwrite，跳过覆盖")
-    else:
-        # 生成简洁版报告
-        summary_report = generate_summary_report(merged)
-        with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
-            f.write(summary_report)
-        print(f"✅ 简洁版: {SUMMARY_FILE}")
 
     # 保存归档
     save_archive(merged)
     print(f"✅ 已输出: {OUTPUT_FILE}")
+
+    # 质量日志（自进化数据源）
+    _log_quality(merged)
+
+    # 标记 feedback 已处理（本轮已看过这些提醒）
+    _mark_feedback_seen()
 
     # 生成HTML
     try:

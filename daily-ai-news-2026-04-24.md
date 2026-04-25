@@ -64,9 +64,9 @@ Anthropic正积极推进在欧洲达成数据中心合作协议，以六位数�
 
 **腾讯、阿里巴巴洽谈投资DeepSeek，估值从100亿美元上调至200亿+**
 
-The Information独家报道：腾讯和阿里巴巴正在与DeepSeek洽谈投资，这是DeepSeek首次接受外部融资。目标融资额超过3亿美元，估值从最初的约100亿美元因市场热度上调至200亿美元以上（部分报道达255亿）。**值得注意的是，DeepSeek至今未产生实质性收入，模型完全开源——这意味着资本在下注"开源模型的技术溢价和生态影响力"，而非当前商业化能力。** 
+The Information独家报道：腾讯和阿里巴巴正在与DeepSeek洽谈投资，这是DeepSeek首次接受外部融资。目标融资额超过3亿美元，估值从最初的约100亿美元因市场热度上调至200亿美元以上（部分报道达255亿）。**DeepSeek至今未产生实质性收入，模型完全开源。**
 
-> 💡 DeepSeek首次接受外部融资是行业信号事件。估值从100亿快速上调至200亿+反映资本抢筹心态。对中国AI格局而言，DeepSeek获得巨头背书可能重塑"国家队"版图。
+> 💡 DeepSeek首次接受外部融资是行业信号事件。无收入+全开源获200亿+估值，说明资本在下注开源模型的技术溢价和生态影响力，而非当前商业化能力。对中国AI格局而言，DeepSeek获得巨头背书可能重塑"国家队"版图。
 
 📌 来源: [The Information](https://www.theinformation.com/articles/tencent-alibaba-talks-invest-deepseek-20-billion-plus-valuation)
 

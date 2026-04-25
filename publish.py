@@ -14,7 +14,7 @@ import os
 from datetime import datetime
 
 # 配置
-MD_FILE = "/Users/shenyalan/ai-daily-news/daily-ai-news.md"
+MD_FILE = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{datetime.now().strftime('%Y-%m-%d')}.md"
 ARCHIVE_DIR = "/Users/shenyalan/ai-daily-news/archive"
 ARCHIVE_FILE = None  # 自动从日期提取
 
@@ -235,6 +235,26 @@ def main():
         by_cat[cat] = by_cat.get(cat, 0) + 1
 
     print(f"   分类: {', '.join(f'{k}:{v}' for k, v in sorted(by_cat.items()))}")
+
+    # 信息补充
+    print("\n🔍 运行信息补充...")
+    enrich_result = subprocess.run(
+        ['python3', os.path.join(os.path.dirname(__file__), 'enrich.py'), date_str],
+        capture_output=True, text=True,
+        cwd='/Users/shenyalan/ai-daily-news'
+    )
+    print(enrich_result.stdout)
+
+    # QA 检查
+    print("\n🔍 运行 QA 检查...")
+    qa_result = subprocess.run(
+        ['python3', os.path.join(os.path.dirname(__file__), 'qa.py'), date_str],
+        capture_output=True, text=True,
+        cwd='/Users/shenyalan/ai-daily-news'
+    )
+    print(qa_result.stdout)
+    if qa_result.returncode != 0:
+        print(f"⚠️ QA 发现问题（详见上方），但仍继续发布。如需修复请 Ctrl+C 中断。")
 
     # 保存存档
     save_archive(articles, date_str)

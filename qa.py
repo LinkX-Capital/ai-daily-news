@@ -156,11 +156,19 @@ def check_body_quality(articles):
 
         # 检查 body 是否包含不应有的判断性表达（判断应在 insight 中）
         judgment_patterns = [
-            (r'这意味着', 'body含判断性表达'),
-            (r'这表明', 'body含判断性表达'),
-            (r'这标志着', 'body含判断性表达'),
-            (r'这反映出', 'body含判断性表达'),
-            (r'这不仅是.*更是', 'body含判断性表达'),
+            (r'这意味着', 'body含判断'),
+            (r'这表明', 'body含判断'),
+            (r'这标志着', 'body含判断'),
+            (r'这反映出', 'body含判断'),
+            (r'这不仅是.*更是', 'body含判断'),
+            (r'这意味着', 'body含判断'),
+            (r'标志着', 'body含判断'),
+            (r'意味着.*时代的', 'body含判断'),
+            (r'信号意义', 'body含判断'),
+            (r'折射出', 'body含判断'),
+            (r'凸显了', 'body含判断'),
+            (r'印证了', 'body含判断'),
+            (r'释放了.*信号', 'body含判断'),
         ]
         for pattern, desc in judgment_patterns:
             if re.search(pattern, body):
