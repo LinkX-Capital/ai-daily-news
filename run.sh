@@ -32,7 +32,7 @@ python3 gen_screenshot.py
 python3 notify.py
 
 # 5. Git push HTML 文件到 GitHub
-git add daily-ai-news.html daily-ai-news-${DATE_STR}.html index.html daily-ai-news-mobile.png
+git add daily-ai-news-${DATE_STR}.html index.html daily-ai-news-mobile.png
 git diff --cached --quiet || git commit -m "Update: ${DATE_STR}" && git push
 
 echo "✅ 任务完成: $(date)"

@@ -158,7 +158,6 @@ def git_push(date_str):
 
     html_files = [
         f"daily-ai-news-{date_str}.html",
-        "daily-ai-news.html",
         "index.html"
     ]
 

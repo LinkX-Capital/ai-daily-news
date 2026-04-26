@@ -158,7 +158,7 @@ def _truncate(text, max_len=36):
 
 
 def generate_html(articles, summary_items, month_day=None, is_latest=True,
-                   file_date=None, prev_file=None, next_file=None):
+                   file_date=None, prev_file=None, next_file=None, raw_md=None):
     """Header + Briefing above, sidebar + content below
 
     file_date: ISO date string like '2026-03-07' or '2026-03-28+29'
@@ -187,13 +187,23 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True,
 
     total = len(articles)
 
-    # Top headline
+    # Top headline (support <!-- headline: ... --> override in md)
     top_headline = "较平静的一天"
-    for cat in CAT_ORDER:
-        cat_articles = by_cat.get(cat, [])
-        if cat_articles:
-            top_headline = cat_articles[0]['title']
-            break
+    headline_override = None
+    if raw_md:
+        for line in raw_md.split('\n'):
+            if line.strip().startswith('<!-- headline:'):
+                headline_override = line.strip()
+                headline_override = headline_override.replace('<!-- headline:', '').replace('-->', '').strip()
+                break
+    if headline_override:
+        top_headline = headline_override
+    else:
+        for cat in CAT_ORDER:
+            cat_articles = by_cat.get(cat, [])
+            if cat_articles:
+                top_headline = cat_articles[0]['title']
+                break
 
     # Prev/next dates
     if prev_file is not None or next_file is not None:
@@ -1198,6 +1208,77 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True,
     return html
 
 
+def _update_index_html(today_date_str, articles):
+    """在 index.html 中插入今天的条目（如果不存在），并移动'最新'标签。"""
+    import re
+    from datetime import datetime
+
+    index_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "index.html")
+    if not os.path.exists(index_path):
+        return
+
+    with open(index_path, 'r', encoding='utf-8') as f:
+        html = f.read()
+
+    # 如果今天已存在，跳过
+    if f'daily-ai-news-{today_date_str}.html' in html:
+        print(f"index.html already has {today_date_str}, skipping")
+        return
+
+    # 从日期算月份和日
+    dt = datetime.strptime(today_date_str, "%Y-%m-%d")
+    month_key = dt.strftime("%b").lower()  # apr
+    day_num = dt.day
+    month_label = dt.strftime("%b")       # Apr
+    month_body_id = f"month-{month_key}"
+
+    # 构建摘要：从 articles 取前5条标题，格式：<strong>主体</strong>做了什么
+    summary_parts = []
+    for a in articles[:5]:
+        title = a.get('title', '')
+        # 尝试在标题中找到冒号或逗号作为主体/描述的分界
+        sep_pos = len(title)
+        for sep_char in ['：', ':', '，']:
+            pos = title.find(sep_char)
+            if pos > 0 and pos < sep_pos:
+                sep_pos = pos
+        if sep_pos < len(title):
+            entity = title[:sep_pos]
+            desc = title[sep_pos+1:].strip()[:40]
+            summary_parts.append(f"<strong>{entity}</strong>{desc}")
+        else:
+            summary_parts.append(f"<strong>{title[:15]}</strong>{title[15:40]}")
+    summary_text = "；".join(summary_parts)
+    count = len(articles)
+
+    # 新条目 HTML
+    new_entry = (
+        f'        <a href="daily-ai-news-{today_date_str}.html" class="timeline-entry" id="{month_key}-{day_num}">\n'
+        f'            <div class="te-date">{month_label} {day_num} <span class="te-badge">最新</span></div>\n'
+        f'            <div class="te-summary">{summary_text}</div>\n'
+        f'            <div class="te-count">{count} 条动态</div>\n'
+        f'        </a>\n'
+    )
+
+    # 移除旧的"最新"标签
+    html = html.replace(' <span class="te-badge">最新</span>', '')
+
+    # 在对应月份的 month-body 开头插入
+    month_start = html.find(f'id="{month_body_id}"')
+    if month_start == -1:
+        print(f"Warning: month body '{month_body_id}' not found in index.html")
+        return
+
+    # 找到 month-body div 后面的 >
+    insert_pos = html.find('>', month_start) + 1
+    html = html[:insert_pos] + '\n' + new_entry + html[insert_pos:]
+
+    with open(index_path, 'w', encoding='utf-8') as f:
+        f.write(html)
+    print(f"Updated index.html with {today_date_str}")
+
+
+
 def _patch_prev_day_next_link(today_date_str):
     """Patch previous day's HTML to add 'next' link pointing to today."""
     try:
@@ -1216,11 +1297,12 @@ def _patch_prev_day_next_link(today_date_str):
 
     # Replace empty <span></span> after 上一期 with next link
     next_link = f'<a href="daily-ai-news-{today_date_str}.html" class="issue-next">下一期 &rarr;</a>'
-    # Match the issue-nav section: after 上一期 link, replace trailing <span></span>
-    old_pattern = f'<a href="daily-ai-news-{prev_date}.html" class="issue-prev">&larr; 上一期</a><span></span>'
-    new_pattern = f'<a href="daily-ai-news-{prev_date}.html" class="issue-prev">&larr; 上一期</a>\n                {next_link}'
-    if old_pattern in html:
-        html = html.replace(old_pattern, new_pattern)
+    # Match any 上一期 link followed by empty <span></span>
+    import re
+    old_pattern = r'class="issue-prev">&larr; 上一期</a><span></span>'
+    new_pattern = f'class="issue-prev">&larr; 上一期</a>\\n                {next_link}'
+    if re.search(old_pattern, html):
+        html = re.sub(old_pattern, new_pattern, html)
         with open(prev_path, 'w', encoding='utf-8') as f:
             f.write(html)
         print(f"Patched prev-next in: daily-ai-news-{prev_date}.html")
@@ -1239,7 +1321,7 @@ def md_to_html(md_file, output_html=None, dated_html=None):
 
     articles, summary_items = parse_md(md_content)
     date_str = datetime.now().strftime("%Y-%m-%d")
-    html = generate_html(articles, summary_items, is_latest=True, file_date=date_str)
+    html = generate_html(articles, summary_items, is_latest=True, file_date=date_str, raw_md=md_content)
 
     if output_html is None:
         output_html = md_file.replace('.md', '-v2.html')
@@ -1261,9 +1343,9 @@ def md_to_html(md_file, output_html=None, dated_html=None):
 if __name__ == "__main__":
     BASE_DIR = "/Users/shenyalan/ai-daily-news"
     today = datetime.now().strftime('%Y-%m-%d')
-    MD_FILE = os.path.join(BASE_DIR, "daily-ai-news.md")
-    OUTPUT = os.path.join(BASE_DIR, "daily-ai-news.html")
+    MD_FILE = os.path.join(BASE_DIR, f"daily-ai-news-{today}.md")
     DATED = os.path.join(BASE_DIR, f"daily-ai-news-{today}.html")
 
-    articles = md_to_html(MD_FILE, OUTPUT, dated_html=DATED)
+    articles = md_to_html(MD_FILE, output_html=DATED, dated_html=DATED)
+    _update_index_html(today, articles)
     print(f"Parsed {len(articles)} articles")
