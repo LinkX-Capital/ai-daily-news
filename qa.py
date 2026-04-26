@@ -763,10 +763,60 @@ def run_checks(date_str=None, factcheck=False):
             for _, title, detail in minor:
                 print(f"  ~ {title}: {detail}")
 
+    # 追加 QA 得分到历史 log
+    _log_score(date_str or datetime.now().strftime("%Y-%m-%d"), articles, all_issues)
+
     return len(all_issues)
 
 
-if __name__ == "__main__":
+def _log_score(date_str, articles, all_issues):
+    """追加 QA 得分到 qa_history.csv，用于追踪质量趋势"""
+    log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qa_history.csv")
+
+    # 去重：如果当天+当前 prompt 版本已有记录，跳过
+    if os.path.exists(log_path):
+        _prompt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts", "news_processor.md")
+        try:
+            import hashlib
+            _ver = hashlib.md5(open(_prompt_path, encoding="utf-8").read().encode()).hexdigest()[:8]
+        except FileNotFoundError:
+            _ver = "unknown"
+        _key = f"{date_str},{_ver}"
+        with open(log_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith(_key):
+                    return  # 已有记录，跳过
+    total = len(articles)
+    issue_count = len(all_issues)
+    by_type = defaultdict(int)
+    for issue in all_issues:
+        by_type[issue[0]] += 1
+
+    header = "date,total_articles,issues,low_value,category,company_dup,over_infer,short_body,empty_body,body_judgment,no_source,summary_orphan,vague_ref,translated_name,title_similar,prompt_version\n"
+    row = (f"{date_str},{total},{issue_count},"
+           f"{by_type['low_value']},{by_type['invalid_category']+by_type['no_category']},"
+           f"{by_type['company_dup']},{by_type['over_infer']},"
+           f"{by_type['short_body']},{by_type['empty_body']},"
+           f"{by_type['body_has_judgment']},{by_type['no_source']},"
+           f"{by_type['summary_orphan']},{by_type['vague_ref']},"
+           f"{by_type['translated_name']},{by_type['title_similar']},")
+
+    # 读取 prompt hash 作为版本标识
+    _prompt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts", "news_processor.md")
+    prompt_ver = ""
+    try:
+        import hashlib
+        prompt_ver = hashlib.md5(open(_prompt_path, encoding="utf-8").read().encode()).hexdigest()[:8]
+    except FileNotFoundError:
+        pass
+
+    row += f"{prompt_ver}\n"
+
+    if not os.path.exists(log_path):
+        with open(log_path, "w", encoding="utf-8") as f:
+            f.write(header)
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(row)
     args = sys.argv[1:]
     factcheck = '--factcheck' in args
     args = [a for a in args if a != '--factcheck']
