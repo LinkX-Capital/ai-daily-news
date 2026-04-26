@@ -1076,11 +1076,47 @@ def call_llm(prompt):
         "Content-Type": "application/json",
         "anthropic-version": "2023-06-01"
     }
+    # 从 feedback.md 加载最近的修正作为 few-shot 示例
+    _fb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "feedback.md")
+    _feedback_examples = ""
+    try:
+        _examples = []
+        _entry = {}
+        for _line in open(_fb_path, encoding="utf-8"):
+            _line = _line.strip()
+            if _line.startswith("### ["):
+                if _entry.get("before") and _entry.get("after"):
+                    _examples.append(_entry)
+                _entry = {}
+            elif _line.startswith("- **field**:"):
+                _entry["field"] = _line.replace("- **field**:", "").strip()
+            elif _line.startswith("- **before**:"):
+                _entry["before"] = _line.replace("- **before**:", "").strip()
+            elif _line.startswith("- **after**:"):
+                _entry["after"] = _line.replace("- **after**:", "").strip()
+            elif _line.startswith("- **reason**:"):
+                _entry["reason"] = _line.replace("- **reason**:", "").strip()
+        if _entry.get("before") and _entry.get("after"):
+            _examples.append(_entry)
+        # 只取最近5条有效示例
+        _examples = [e for e in _examples if len(e.get("before", "")) > 5 and len(e.get("after", "")) > 5][-5:]
+        if _examples:
+            _lines = ["\n## 过往修正示例（不要犯同样的错）"]
+            for _i, _e in enumerate(_examples, 1):
+                _lines.append(f"\n### 示例{_i}（{_e.get('field', 'unknown')}）")
+                _lines.append(f"- 错误: {_e['before'][:200]}")
+                _lines.append(f"- 正确: {_e['after'][:200]}")
+                if _e.get("reason"):
+                    _lines.append(f"- 原因: {_e['reason'][:100]}")
+            _feedback_examples = "\n".join(_lines)
+    except FileNotFoundError:
+        pass
+
     # 从外部文件加载 system prompt（自进化：修改 prompts/news_processor.md 即可）
     _prompt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts", "news_processor.md")
     try:
         with open(_prompt_path, "r", encoding="utf-8") as f:
-            system_prompt = f.read().strip()
+            system_prompt = f.read().strip() + _feedback_examples
     except FileNotFoundError:
         # fallback: 如果 prompt 文件不存在，使用空 prompt 避免崩溃
         print(f"   ⚠️ Prompt 文件不存在: {_prompt_path}")

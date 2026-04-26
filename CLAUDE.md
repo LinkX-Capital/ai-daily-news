@@ -13,6 +13,10 @@ Key patterns from feedback so far:
 - Every article must have at least 1 key_point/insight
 - Summary briefing items should only show key facts, no descriptive filler
 - Check source link availability (replace nitter.net)
+- Body must have quantifiable data; fetch from official sources if vague
+- Official first-hand source preferred (arXiv > media reporting)
+- Verify "首次发布/透露" claims — check if model/product was already released earlier
+- Merge multiple sources for the same event: take the richest data from all sources
 
 ---
 
