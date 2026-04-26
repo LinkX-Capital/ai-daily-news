@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-27 07:15
-**总计**：13 条推文
+**总计**：12 条推文
 
 ---
 
@@ -11,7 +11,25 @@
 
 ---
 
+## ⭐ 今日重点（LLM 提炼）
+
+1. **World record: First person breaks 2 hours in marathon**
+   @jeffdean
+2. **Small Harness released as open source by getsmallai**
+   @openrouter
+3. **Bespoke Labs welcomes Rohan Rao as Head of Data Operations**
+   @bespokelabsai
+4. **Workshop on World Models at ICLR in Rio**
+   @svlevine
+
+---
+
 ## 🏢 公司发布（6条）
+
+### @bespokelabsai | App
+
+- We are excited to welcome Rohan Rao as Head of Data Operations in Bespoke Labs! Rohan joins us after spending 7 years in Grammarly as General Manager ...
+  [查看](https://x.com/bespokelabsai/status/2048259319544824006#m)
 
 ### @openrouter | Infra
 
@@ -28,10 +46,8 @@
 
 - Excited for the annual volleyball game in Dallas with my cousin Sholto Patel ( @_sholtodouglas ) & Dwarkesh Patel ( @dwarkesh_sp )! 🏐 The food here is...
   [查看](https://x.com/SemiAnalysis_/status/2048205454858170603#m)
-- Plot twist: the most valuable part of a 35-page semiconductor data report isn't the 200+ datasets or monthly charts. It's the one-page executive summa...
-  [查看](https://x.com/SemiAnalysis_/status/2048175224664015000#m)
 
-## 👤 研究者动态（7条）
+## 👤 研究者动态（6条）
 
 ### @chelseabfinn [Stanford] | Research
 
@@ -49,8 +65,6 @@
   [查看](https://x.com/sama/status/2048428561481265539#m)
 - "post-AGI, no one is going to work and the economy is going to collapse"  "i am switching to polyphasic sleep because GPT-5.5 in codex is so good that...
   [查看](https://x.com/sama/status/2048426122854228141#m)
-- how can they write code so fast?!
-  [查看](https://x.com/sama/status/2048165186482389253#m)
 
 ### @svlevine [UCB] | Research
 
