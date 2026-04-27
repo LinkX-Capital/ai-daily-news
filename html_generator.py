@@ -1220,11 +1220,6 @@ def _update_index_html(today_date_str, articles):
     with open(index_path, 'r', encoding='utf-8') as f:
         html = f.read()
 
-    # 如果今天已存在，跳过
-    if f'daily-ai-news-{today_date_str}.html' in html:
-        print(f"index.html already has {today_date_str}, skipping")
-        return
-
     # 从日期算月份和日
     dt = datetime.strptime(today_date_str, "%Y-%m-%d")
     month_key = dt.strftime("%b").lower()  # apr
@@ -1263,15 +1258,25 @@ def _update_index_html(today_date_str, articles):
     # 移除旧的"最新"标签
     html = html.replace(' <span class="te-badge">最新</span>', '')
 
-    # 在对应月份的 month-body 开头插入
-    month_start = html.find(f'id="{month_body_id}"')
-    if month_start == -1:
-        print(f"Warning: month body '{month_body_id}' not found in index.html")
-        return
+    # 检查今天的条目是否已存在：存在则替换，不存在则插入
+    entry_id = f'{month_key}-{day_num}'
+    existing_pattern = rf'        <a href="daily-ai-news-{today_date_str}\.html" class="timeline-entry" id="{entry_id}">.*?</a>\n'
+    match = re.search(existing_pattern, html, re.DOTALL)
 
-    # 找到 month-body div 后面的 >
-    insert_pos = html.find('>', month_start) + 1
-    html = html[:insert_pos] + '\n' + new_entry + html[insert_pos:]
+    if match:
+        # 替换已有条目
+        html = html[:match.start()] + new_entry + html[match.end():]
+        print(f"Replaced existing entry for {today_date_str}")
+    else:
+        # 在对应月份的 month-body 开头插入
+        month_start = html.find(f'id="{month_body_id}"')
+        if month_start == -1:
+            print(f"Warning: month body '{month_body_id}' not found in index.html")
+            return
+
+        # 找到 month-body div 后面的 >
+        insert_pos = html.find('>', month_start) + 1
+        html = html[:insert_pos] + '\n' + new_entry + html[insert_pos:]
 
     with open(index_path, 'w', encoding='utf-8') as f:
         f.write(html)

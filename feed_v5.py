@@ -28,25 +28,60 @@ from html_generator import md_to_html
 
 # 导入研究者推文抓取
 def fetch_researcher_tweets():
-    """抓取前沿研究者推文，优先使用缓存"""
+    """抓取前沿研究者推文：缓存超过30分钟则触发新抓取，否则用缓存"""
+    import json
+    import os
+    from datetime import datetime, timezone
+
+    cache_path = tweet_cache()
+    CACHE_MAX_AGE_MINUTES = 30
+
+    def _load_cache():
+        if not os.path.exists(cache_path):
+            return None
+        with open(cache_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        tweets = data.get("tweets", data) if isinstance(data, dict) else data
+        cached_at = data.get("cached_at", "") if isinstance(data, dict) else ""
+        return tweets, cached_at
+
+    # 检查缓存新鲜度
     try:
-        # 直接使用缓存，跳过网络抓取（nitter经常超时）
-        cache_file = tweet_cache()
-        import json
-        import os
-        if os.path.exists(cache_file):
-            with open(cache_file, 'r') as f:
-                data = json.load(f)
-            # 支持两种格式：直接 list 或 {"tweets": [...], "cached_at": "..."}
-            tweets = data.get("tweets", data) if isinstance(data, dict) else data
-            if tweets and isinstance(tweets, list):
-                print(f"   📦 使用缓存: {len(tweets)} 条推文")
-                return tweets
-        print(f"   ⚠️ 无缓存，跳过推文抓取")
-        return []
+        cached = _load_cache()
+        if cached:
+            tweets, cached_at = cached
+            if cached_at:
+                cache_time = datetime.fromisoformat(cached_at).replace(tzinfo=None)
+                age_minutes = (datetime.now() - cache_time).total_seconds() / 60
+                if age_minutes <= CACHE_MAX_AGE_MINUTES:
+                    print(f"   📦 使用缓存: {len(tweets)} 条推文（{age_minutes:.0f} 分钟前抓取）")
+                    return tweets
+                else:
+                    print(f"   ⚠️ 缓存已过期（{age_minutes:.0f} 分钟前），尝试重新抓取...")
     except Exception as e:
-        print(f"   ⚠️ 读取推文缓存失败: {e}")
-        return []
+        print(f"   ⚠️ 缓存检查失败: {e}")
+
+    # 缓存过期或不存在，尝试实时抓取
+    try:
+        from tweet_fetcher import fetch_all_tweets
+        fresh_tweets = fetch_all_tweets()
+        if fresh_tweets:
+            print(f"   ✅ 实时抓取: {len(fresh_tweets)} 条推文")
+            return fresh_tweets
+    except Exception as e:
+        print(f"   ⚠️ 实时抓取失败: {e}")
+
+    # 抓取失败，回退到过期缓存
+    try:
+        cached = _load_cache()
+        if cached and cached[0]:
+            print(f"   📦 回退到过期缓存: {len(cached[0])} 条推文")
+            return cached[0]
+    except Exception:
+        pass
+
+    print(f"   ⚠️ 无可用推文数据")
+    return []
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -1917,6 +1952,15 @@ def main():
 
     # 质量日志（自进化数据源）
     _log_quality(merged)
+
+    # 自动 QA 检查
+    try:
+        from qa import run_checks
+        print("\n📋 自动 QA 检查...")
+        date_str = args.date if args.date else datetime.now().strftime("%Y-%m-%d")
+        run_checks(date_str)
+    except Exception as e:
+        print(f"   ⚠️ QA检查失败: {e}")
 
     # 标记 feedback 已处理（本轮已看过这些提醒）
     _mark_feedback_seen()
