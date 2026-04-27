@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-28 07:15
-**总计**：25 条推文
+**总计**：26 条推文
 
 ---
 
@@ -11,7 +11,24 @@
 
 ---
 
-## 🏢 公司发布（17条）
+## ⭐ 今日重点（LLM 提炼）
+
+1. **OpenAI 发布核心原则：民主化、赋权、普世繁荣、韧性、适应性**
+   @openai
+2. **Andrew Ng：AI原生软件工程团队与传统团队运作方式显著不同**
+   @andrewyng
+3. **Intel转向自研产品：Diamond Rapids将弃用EMIB**
+   @semianalysis_
+4. **InferenceX在B300上新增DeepSeekv4 MTP支持**
+   @semianalysis_
+5. **OpenRouter完成6智能体团队全构建测试，集成GLM 5.1 + Deepseek V4**
+   @openrouter
+6. **Anthropic可能需通过Claude或传统客户经理扩大账户支持规模**
+   @soumithchintala
+
+---
+
+## 🏢 公司发布（18条）
 
 ### @essential | App
 
@@ -44,6 +61,8 @@
 
 ### @openrouter | Infra
 
+- RT by @OpenRouter: Went pretty hard on a full build test today.  - Hooked in @OpenRouter (GLM 5.1 + Deepseek V4) - Ran it up to a 6-agent team buildin...
+  [查看](https://x.com/tomosman/status/2048878869432721808#m)
 - RT by @OpenRouter: @OpenRouter  kimi model with @badlogicgames pi has brought back so much of that neovim feeling that I was missing  engineering is a...
   [查看](https://x.com/int32max/status/2048833455232795091#m)
 - RT by @OpenRouter: Tested @OpenRouter ’s “create headless agent” skill for a narrow Hermes worker.  2 URLs in. Strict JSON + X/Markdown artifacts out....
