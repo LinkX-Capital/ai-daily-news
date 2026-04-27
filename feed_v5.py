@@ -1017,8 +1017,27 @@ def _extract_product_entities(title):
     return result
 
 
+def _load_recent_tweet_links(days=3):
+    """从近几天的 twitter preview 文件中提取 tweet URL，用于推文级去重"""
+    seen = set()
+    base = os.path.dirname(ARCHIVE_DIR)  # archive 的父目录
+    for i in range(1, days + 1):
+        date = (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
+        tp_file = os.path.join(base, f"twitter-preview-{date}.md")
+        if os.path.exists(tp_file):
+            try:
+                with open(tp_file, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        for m in re.finditer(r'https://x\.com/\S+/status/(\d+)', line):
+                            url = m.group(0).rstrip("/").split("#")[0]
+                            seen.add(url)
+            except Exception:
+                pass
+    return seen
+
+
 def dedup_articles(articles):
-    """跨天去重：URL 精确匹配 + 实体匹配 + 标题语义去重"""
+    """跨天去重：URL 精确匹配 + 推文去重 + 实体匹配 + 标题语义去重"""
     try:
         recent = load_recent_archives(days=3)
         seen_links = {a.get("link", "").rstrip("/").split("#")[0] for a in recent if a.get("link")}
@@ -1026,6 +1045,9 @@ def dedup_articles(articles):
     except Exception:
         seen_links = set()
         recent_titles = []
+
+    # 补充推文去重：从 twitter preview 文件中提取已抓取的 tweet URL
+    seen_links.update(_load_recent_tweet_links(days=3))
 
     # 预计算近3天标题的实体对
     recent_entities = set()
