@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>前沿模型周报 · 专题集合 | AI Research</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --bg-card: #ffffff;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --green: #0d8050;
+            --green-bg: #e6f5ed;
+            --red: #c03030;
+            --red-bg: #fce8e8;
+            --blue: #2563eb;
+            --blue-bg: #eff4ff;
+            --orange: #c05000;
+            --orange-bg: #fff3e6;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --bg-card: #141414;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+                --green: #34d399;
+                --green-bg: #0d2818;
+                --red: #f87171;
+                --red-bg: #2a1212;
+                --blue: #60a5fa;
+                --blue-bg: #0c1a33;
+                --orange: #fbbf24;
+                --orange-bg: #2a1f0c;
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-left { display: flex; align-items: baseline; gap: 10px; }
+        .topbar-brand { font-size: 14px; font-weight: 700; color: var(--purple); text-decoration: none; }
+        .topbar-tagline { font-size: 11px; color: var(--text-3); letter-spacing: 0.2px; }
+        .topbar-right { display: flex; gap: 12px; align-items: center; }
+        .topbar-nav { font-size: 12px; color: var(--text-3); text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: all 0.12s; }
+        .topbar-nav:hover { color: var(--text); background: var(--purple-20); }
+        .topbar-nav.active { color: var(--purple); font-weight: 600; }
+
+        /* Container */
+        .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+        /* Hero */
+        .hero {
+            text-align: center; padding: 40px 0 32px;
+            border-bottom: 1px solid var(--border); margin-bottom: 40px;
+        }
+        .hero-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--purple); margin-bottom: 8px; }
+        .hero-title { font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+        .hero-sub { font-size: 15px; color: var(--text-2); max-width: 580px; margin: 0 auto 20px; line-height: 1.7; }
+        .hero-meta { font-size: 12px; color: var(--text-3); }
+
+        /* Edition cards */
+        .section-head {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 16px; padding-bottom: 8px;
+            border-bottom: 2px solid var(--purple-40);
+        }
+        .sec-dot { width: 6px; height: 6px; background: var(--purple); border-radius: 2px; }
+        .sec-title { font-size: 14px; font-weight: 600; color: var(--purple); text-transform: uppercase; letter-spacing: 0.8px; }
+
+        .edition-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+
+        .edition-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: start;
+            transition: border-color 0.15s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .edition-card:hover { border-color: var(--purple-60); }
+        .edition-card.latest { border-color: var(--purple-40); background: var(--purple-20); }
+
+        .edition-date-col { text-align: center; min-width: 80px; }
+        .edition-date-label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+        .edition-date-val { font-size: 22px; font-weight: 700; color: var(--purple); line-height: 1.1; font-variant-numeric: tabular-nums; }
+        .edition-date-month { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+        .edition-info-col { }
+        .edition-tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 3px; display: inline-block; margin-bottom: 6px; }
+        .edition-tag-latest { background: var(--purple); color: #fff; }
+        .edition-tag-past { background: var(--bg-page); color: var(--text-3); border: 1px solid var(--border); }
+        .edition-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+        .edition-sub { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+        .edition-models { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .model-chip { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+        .chip-openai { background: var(--green-bg); color: var(--green); }
+        .chip-deepseek { background: var(--blue-bg); color: var(--blue); }
+        .chip-kimi { background: var(--orange-bg); color: var(--orange); }
+        .chip-qwen { background: var(--red-bg); color: var(--red); }
+        .chip-new { background: var(--purple-20); color: var(--purple); }
+
+        .edition-arrow-col { display: flex; align-items: center; color: var(--purple-40); font-size: 20px; align-self: center; }
+        .edition-card:hover .edition-arrow-col { color: var(--purple); }
+
+        /* About section */
+        .about-section { margin-top: 32px; }
+        .about-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 24px;
+        }
+        .about-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+        .about-card p { font-size: 13px; color: var(--text-2); line-height: 1.7; margin-bottom: 8px; }
+        .about-card p:last-child { margin-bottom: 0; }
+        .about-card strong { color: var(--text); }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 20px 24px; margin-top: 40px;
+            max-width: 960px; margin-left: auto; margin-right: auto;
+        }
+        .footer-copy { font-size: 12px; color: var(--text-3); line-height: 1.6; }
+        .footer-copy a { color: var(--purple-80); text-decoration: none; }
+        .footer-copy a:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 16px; }
+            .hero-title { font-size: 22px; }
+            .edition-card { grid-template-columns: 1fr; gap: 12px; }
+            .edition-arrow-col { display: none; }
+            .edition-date-col { text-align: left; display: flex; align-items: baseline; gap: 8px; }
+        }
+        @media (max-width: 480px) {
+            .topbar-tagline { display: none; }
+        }
+    </style>
+<body>
+
+<div class="topbar">
+    <div class="topbar-left">
+        <a href="index.html" class="topbar-brand">← AI 前沿动态</a>
+        <span class="topbar-tagline">AI Research</span>
+    </div>
+    <div class="topbar-right">
+        <span class="topbar-nav active">专题集合</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-eyebrow">Special Report</div>
+        <h1 class="hero-title">前沿模型周报</h1>
+        <p class="hero-sub">追踪 LLM 前沿格局变化，每周汇总重大模型发布、基准测试、定价演进与厂商迭代信号。</p>
+        <div class="hero-meta">覆盖 OpenAI / Google DeepMind / Anthropic / DeepSeek / Moonshot AI / 阿里通义</div>
+    </div>
+
+    <!-- All editions -->
+    <div class="section-head">
+        <span class="sec-dot"></span>
+        <span class="sec-title">往期周报</span>
+    </div>
+
+    <div class="edition-list">
+
+        <!-- Edition 3: Latest (2026.04.27) -->
+        <a href="topic-frontier-models-archive/frontier-models-2026-04-27.html" class="edition-card latest">
+            <div class="edition-date-col">
+                <div class="edition-date-label">04.27</div>
+                <div class="edition-date-val">2026</div>
+                <div class="edition-date-month">Apr</div>
+            </div>
+            <div class="edition-info-col">
+                <span class="edition-tag edition-tag-latest">最新</span>
+                <div class="edition-title">前沿模型周报 · 第3期</div>
+                <div class="edition-sub">L2 模型层信号密度达近年峰值——四个前沿模型同周发布，编程 Agent 出现三极分化。开源首次追平闭源，但开源叙事本身正在崩塌。</div>
+                <div class="edition-models">
+                    <span class="model-chip chip-new">GPT-5.5</span>
+                    <span class="model-chip chip-deepseek">DeepSeek V4-Pro</span>
+                    <span class="model-chip chip-kimi">Kimi K2.6</span>
+                    <span class="model-chip chip-qwen">Qwen3.6-Max</span>
+                </div>
+            </div>
+            <div class="edition-arrow-col">→</div>
+        </a>
+
+        <!-- Edition 2: 2026.04.25 -->
+        <a href="topic-frontier-models-archive/frontier-models-2026-04-25.html" class="edition-card">
+            <div class="edition-date-col">
+                <div class="edition-date-label">04.25</div>
+                <div class="edition-date-val">2026</div>
+                <div class="edition-date-month">Apr</div>
+            </div>
+            <div class="edition-info-col">
+                <span class="edition-tag edition-tag-past">存档</span>
+                <div class="edition-title">前沿模型周报 · 第2期</div>
+                <div class="edition-sub">L2 模型层信号密度达近年峰值——四个前沿模型同周发布，编程 Agent 出现三极分化。开源首次追平闭源，但开源叙事本身正在崩塌。</div>
+                <div class="edition-models">
+                    <span class="model-chip chip-new">GPT-5.5</span>
+                    <span class="model-chip chip-deepseek">DeepSeek V4-Pro</span>
+                    <span class="model-chip chip-kimi">Kimi K2.6</span>
+                    <span class="model-chip chip-qwen">Qwen3.6-Max</span>
+                </div>
+            </div>
+            <div class="edition-arrow-col">→</div>
+        </a>
+
+    </div>
+
+    <!-- About -->
+    <div class="about-section">
+        <div class="about-card">
+            <h3>关于前沿模型周报</h3>
+            <p>本专题基于 <strong>AI Research Agent</strong> 多Agent情报系统生产，覆盖 <strong>L2 模型架构层</strong>的前沿动态。</p>
+            <p>每期聚焦：重大模型发布与benchmark、厂商迭代速度排名、开源vs闭源格局变化、定价演进信号。</p>
+            <p>更新频率：每周一期，通常于周日发布。</p>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <div class="footer-copy">
+        <a href="index.html">← 返回 AI 前沿动态</a>
+    </div>
+</div>
+
+</body>
+</html>
