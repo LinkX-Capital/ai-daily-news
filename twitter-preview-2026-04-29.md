@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-29 07:15
-**总计**：26 条推文
+**总计**：27 条推文
 
 ---
 
@@ -11,7 +11,28 @@
 
 ---
 
-## 🏢 公司发布（20条）
+## ⭐ 今日重点（LLM 提炼）
+
+1. **Welcome KenTheRogers to the team**
+   @openrouter
+2. **NVIDIA Nemotron™ 3 Nano Omni is live on OpenRouter**
+   @openrouter
+3. **CPUs are back - the datacenter CPU**
+   @semianalysis
+4. **CPU economics are no longer just about cost per core**
+   @semianalysis
+5. **CPU requirement per unit of AI compute is lagging**
+   @semianalysis
+6. **Modern AI infrastructure does far more than just matrix multiplication**
+   @semianalysis
+7. **CPUs were left for dead in the AI boom**
+   @semianalysis
+8. **Google DeepMind expanding education program into Latin America**
+   @googledeepmind
+
+---
+
+## 🏢 公司发布（21条）
 
 ### @bespokelabsai | App
 
@@ -25,15 +46,17 @@
 
 ### @googledeepmind | Research
 
-- As AI evolves, education must keep pace. 🍎  Since 2023, the Experience AI program – developed in collaboration with @RaspberryPi_org – has offered fre...
-  [查看](https://x.com/GoogleDeepMind/status/2049174327124263379#m)
-- R to @GoogleDeepMind: ✏️ 93% of educators say the training increased their knowledge of AI concepts ✏️ 87% feel more confident teaching these complex ...
-  [查看](https://x.com/GoogleDeepMind/status/2049174330064470022#m)
 - R to @GoogleDeepMind: As AI continues to evolve, our commitment to education remains.  The program is expanding into Latin America this year, with the...
   [查看](https://x.com/GoogleDeepMind/status/2049174334057611585#m)
+- R to @GoogleDeepMind: ✏️ 93% of educators say the training increased their knowledge of AI concepts ✏️ 87% feel more confident teaching these complex ...
+  [查看](https://x.com/GoogleDeepMind/status/2049174330064470022#m)
+- As AI evolves, education must keep pace. 🍎  Since 2023, the Experience AI program – developed in collaboration with @RaspberryPi_org – has offered fre...
+  [查看](https://x.com/GoogleDeepMind/status/2049174327124263379#m)
 
 ### @lumalabsai | Research
 
+- Every great idea starts as a sketch. Now it doesn't have to stop there.  Upload your reference, set the aesthetic, and watch Luma Agents transform you...
+  [查看](https://x.com/LumaLabsAI/status/2049251553568313373#m)
 - Colors. Typography. Packaging. Campaign assets. All of it, consistent.   Set your brand direction and let Luma Agents build out the full system from t...
   [查看](https://x.com/LumaLabsAI/status/2049215484621357403#m)
 - The Last Foxurai. Some debts don't forgive. Some foxes don't forget.   Direct a cinematic artistic piece with character identity, intentional motion, ...
