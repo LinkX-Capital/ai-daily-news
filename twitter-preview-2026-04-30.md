@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-04-30 07:15
-**总计**：34 条推文
+**总计**：35 条推文
 
 ---
 
@@ -11,14 +11,7 @@
 
 ---
 
-## ⭐ 今日重点（LLM 提炼）
-
-1. **标题**
-   @来源
-
----
-
-## 🏢 公司发布（27条）
+## 🏢 公司发布（28条）
 
 ### @alibaba_qwen | Model
 
@@ -31,6 +24,10 @@
 
 ### @anthropicai | Model
 
+- R to @AnthropicAI: BioMysteryBench, our new bioinformatics eval, tests whether Claude can devise creative solutions to open-ended research problems.  ...
+  [查看](https://x.com/AnthropicAI/status/2049624602486383078#m)
+- New on the Science Blog: We gave Claude 99 problems analyzing real biological data and compared its performance against an expert panel.  On 23 proble...
+  [查看](https://x.com/AnthropicAI/status/2049624600741560340#m)
 - In new Anthropic Fellows research, we discuss “introspection adapters": a tool that allows language models to self-report behaviors they've learned du...
   [查看](https://x.com/AnthropicAI/status/2049576143653929153#m)
 
@@ -39,19 +36,14 @@
 - Pinned: x.com/i/article/204954614493…
   [查看](https://x.com/GoogleAI/status/2049546885371670895#m)
 
-### @kimi_moonshot | Model
-
-- RT by @Kimi_Moonshot: Results on the remainder of our benchmarks are in for Kimi K2.6, the new #1 open-weight model on the Vals Index (#8 overall)  Ki...
-  [查看](https://x.com/ValsAI/status/2049256017402433991#m)
-
 ### @lumalabsai | Research
 
+- Great content deserves a global audience.   Upload your video. Set the languages. Luma Agents handle translation, lip sync, and localization across ev...
+  [查看](https://x.com/LumaLabsAI/status/2049611935973536235#m)
 - Your subject nailed it. The background didn't. Fix it in seconds.   Upload your reference, set the scene, and let Luma Agents drop your subject into a...
   [查看](https://x.com/LumaLabsAI/status/2049582004883337711#m)
 - Behind the blade. A look at how the fox samurai came to life with Luma.  Character. Motion. Cinematic style. Here is how every element came together f...
   [查看](https://x.com/LumaLabsAI/status/2049543205633573259#m)
-- Every great idea starts as a sketch. Now it doesn't have to stop there.  Upload your reference, set the aesthetic, and watch Luma Agents transform you...
-  [查看](https://x.com/LumaLabsAI/status/2049251553568313373#m)
 
 ### @openai | Model
 
