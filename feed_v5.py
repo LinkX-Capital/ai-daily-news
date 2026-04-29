@@ -1259,7 +1259,7 @@ def process_with_llm(articles, recent_articles=None):
   {
     "original_title": "原始标题（必须和输入完全一致）",
     "title": "中文标题，事件主体+做什么+为什么重要，禁止感叹号/问号结尾",
-    "body": "2-5句话，只写关键事实：是什么、关键数据、突破/创新、关联事件、事实影响。禁止判断和引申（判断放insight）",
+    "body": "3-6句话，只写关键事实：是什么、关键数据、突破/创新、关联事件、事实影响。硬性下限3句。禁止AI自己的判断和引申（判断放insight）",
     "insight": "一句话务实判断：具体趋势、竞争动态或实际影响。禁止空洞宏大叙事",
     "category": "分类"
   }
@@ -1391,6 +1391,120 @@ def process_with_llm(articles, recent_articles=None):
             print(f"✅ LLM处理了 {len(llm_results)} 条新闻，过滤后 {len(articles)} 条")
     except Exception as e:
         print(f"⚠️ 解析LLM结果失败: {e}")
+    return articles
+
+# ========== 论文自动溯源 + Body 校验 ==========
+_ARXIV_CACHE = {}
+
+def _fetch_arxiv(arxiv_id):
+    """从 arXiv 获取论文 abstract"""
+    if arxiv_id in _ARXIV_CACHE:
+        return _ARXIV_CACHE[arxiv_id]
+    try:
+        import urllib.request
+        url = f"https://arxiv.org/abs/{arxiv_id}"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            html = resp.read().decode("utf-8")
+        title = re.findall(r'<meta name="citation_title" content="([^"]+)"', html)
+        abstract = re.findall(r'<blockquote class="abstract mathjax">\s*<span class="descriptor">Abstract:</span>\s*(.*?)</blockquote>', html, re.DOTALL)
+        result = {}
+        if title: result["title"] = title[0]
+        if abstract:
+            text = re.sub(r'<[^>]*>', '', abstract[0]).strip()
+            result["abstract"] = re.sub(r'\s+', ' ', text)[:1200]
+        _ARXIV_CACHE[arxiv_id] = result
+        return result
+    except Exception:
+        return None
+
+def _find_arxiv_id(article):
+    """从文章 link/body/title 中提取 arXiv 编号"""
+    for field in [article.get("link", ""), article.get("body", ""), article.get("title", "")]:
+        m = re.search(r'(\d{4}\.\d{4,5})', field)
+        if m and "arxiv" in field.lower():
+            return m.group(1)
+    return None
+
+def _count_sentences(text):
+    """计算中英文句数"""
+    if not text:
+        return 0
+    sentences = re.split(r'[。.!?！？]', text)
+    return len([s for s in sentences if s.strip()])
+
+def _has_quantifiable_data(text):
+    """检查是否有可量化数据"""
+    if not text:
+        return False
+    return bool(re.search(r'\d+\.?\d*%|\$\d+|\d+x|\d+倍|\d+亿|\d+万|\d{2,}B|\d{2,}M', text))
+
+def post_validate_and_enrich(articles):
+    """后处理：论文溯源 + body 校验"""
+    enriched_count = 0
+    warnings = []
+
+    for a in articles:
+        title_short = a.get("title", "")[:40]
+        body = a.get("body", "")
+        sent_count = _count_sentences(body)
+
+        # 1. 论文溯源：研究类条目且 body 缺数据 → 尝试从 arXiv 补充
+        cats = a.get("categories", [])
+        is_research = any(c in ["研究关注", "模型前沿"] for c in cats)
+        link = a.get("link", "")
+
+        if is_research or "论文" in body or "arxiv" in (link + body).lower():
+            arxiv_id = _find_arxiv_id(a)
+            if not arxiv_id:
+                # 尝试从 link 中提取
+                m = re.search(r'(\d{4}\.\d{4,5})', link)
+                if m:
+                    arxiv_id = m.group(1)
+
+            if arxiv_id and (sent_count < 3 or not _has_quantifiable_data(body)):
+                paper = _fetch_arxiv(arxiv_id)
+                if paper and "abstract" in paper:
+                    abstract = paper["abstract"]
+                    # 提取含数字的句子作为补充
+                    data_sents = [s.strip() for s in re.split(r'(?<=[.!?])\s+', abstract)
+                                  if re.search(r'\d', s.strip())]
+                    if data_sents:
+                        supplement = " ".join(data_sents[:3])[:300]
+                        a["body"] = body + " " + supplement if body else supplement
+                        enriched_count += 1
+                        print(f"   📄 arXiv溯源补充: {title_short}")
+
+                    # 确保 arXiv 链接在来源中
+                    if "arxiv.org" not in (a.get("link", "") + a.get("source", "")):
+                        a["arxiv_link"] = f"https://arxiv.org/abs/{arxiv_id}"
+
+        # 2. Body 校验
+        body = a.get("body", "")
+        sent_count = _count_sentences(body)
+
+        if sent_count < 3:
+            warnings.append(f"[{title_short}] body仅{sent_count}句")
+
+        if not _has_quantifiable_data(body) and "融资" not in str(cats):
+            # 融资类不一定都有数据
+            pass  # 仅记录，不强制
+
+        # 模糊称呼检测
+        vague = ["有研究团队", "研究者", "研究人员发布", "有人", "有团队"]
+        for v in vague:
+            if v in body:
+                warnings.append(f"[{title_short}] 模糊称呼: '{v}'")
+                break
+
+    if enriched_count:
+        print(f"   📄 arXiv溯源: 补充了 {enriched_count} 条")
+    if warnings:
+        for w in warnings:
+            print(f"   ⚠️ {w}")
+        print(f"   📋 后处理校验: {len(warnings)} 个警告")
+    else:
+        print(f"   ✅ 后处理校验: 全部通过")
     return articles
 
 # ========== 抓取 ==========
@@ -1899,6 +2013,11 @@ def main():
     # 后规范化
     print("🔧 后规范化...")
     merged = improve_news(merged, do_filter=False)
+
+    # 论文溯源 + Body 校验
+    if not args.skip_llm:
+        print("🔍 论文溯源 + Body 校验...")
+        merged = post_validate_and_enrich(merged)
 
     # 如果跳过了 LLM，用新分类逻辑重新分类
     if args.skip_llm:

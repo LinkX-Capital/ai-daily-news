@@ -7,7 +7,7 @@
 ## 要点速览
 
 - 模型前沿：NVIDIA发布Nemotron 3 Nano Omni（30B MoE，3B active），统一视觉/音频/语言多模态，最高9倍效率提升
-- 产业动态：Lovable上线iOS/Android端vibe-coding应用; Claude新增Blender连接器; 曦智科技港交所上市，发行价183.2港元，首日涨360%
+- 产业动态：Lovable上线iOS/Android端vibe-coding应用; Anthropic发布Claude创意连接器生态（Adobe/Blender/Autodesk/Ableton等8家合作）; 曦智科技港交所上市，发行价183.2港元，首日涨360%
 - 算力追踪：SemiAnalysis分析AI时代CPU经济结构变化，GPU增速远超CPU导致每单位AI计算CPU占比持续下降
 - 初创&融资：David Silver创办Ineffable Intelligence完成$11亿融资（估值$51亿）; MemoraX AI完成千万美元种子轮，用Agentic RL解决大模型"失忆症"（L2F+钟鼎领投）; 希奥端完成数亿元Pre-A+轮研发ARM Server CPU（毅达资本领投）
 - 研究关注：SHAPE实现LLM推理准确率+3%/token消耗-30%（ACL 2026）; MedGRPO发布53万医疗视频标注benchmark，7B模型超越GPT-4.1; Pask提出DD-MM-PAS主动agent范式，IntentFlow匹配Gemini 3 Flash
@@ -29,10 +29,10 @@
   > 💡 Vibe-coding从桌面走向移动端是AI编程工具渗透力提升的信号。Lovable与Bolt、v0等竞品的差异化在于移动优先策略，但移动端受限于屏幕尺寸和交互方式，实际使用场景可能更偏向快速原型而非深度开发。
    - 来源: [TechCrunch](https://techcrunch.com/2026/04/28/lovable-launches-its-vibe-coding-app-on-ios-and-android/)
 
-**Claude新增Blender连接器，支持创意工作流**
-- Claude新增Blender连接器，用户可以通过Claude直接**调试3D场景、构建新工具或批量渲染**，实现与创意专业人士常用工具的深度集成。这是Claude在连接器生态上的最新扩展，此前已支持多种开发工具和数据分析平台。
-  > 💡 Anthropic正通过连接器生态将Claude嵌入专业工作流，与OpenAI的Plugin/Actions路线不同，侧重工具层集成而非平台层开放。
-   - 来源: [@claudeai](https://x.com/claudeai/status/2049143438281445811#m)
+**Anthropic发布Claude创意工具连接器生态：Adobe/Blender/Autodesk/Ableton等8家合作伙伴**
+- Anthropic发布"Claude for Creative Work"，联合**8家创意工具合作伙伴**推出连接器生态：**Adobe**（50+ Creative Cloud工具，含Photoshop/Premiere/Express）、**Blender**（Python API自然语言接口）、**Autodesk Fusion**（对话式3D建模）、**Ableton**（Live/Push文档接入）、**Affinity by Canva**（批量生产任务自动化）、**Resolume**（实时VJ/视觉演出控制）、**SketchUp**（对话生成3D模型）、**Splice**（音乐采样搜索）。连接器让Claude直接读写这些工具的项目文件和API。
+  > 💡 这不是单个连接器更新，而是Anthropic系统性切入创意专业市场的信号。8家合作伙伴覆盖3D建模、视频、音乐、平面设计、实时演出五大创意赛道。与OpenAI的Plugin生态不同，Anthropic选择垂直绑定专业工具而非横向开放平台。
+   - 来源: [Anthropic Blog](https://www.anthropic.com/news/claude-for-creative-work) | [@claudeai](https://x.com/claudeai/status/2049143438281445811#m)
 
 **曦智科技港交所上市，发行价183.2港元，首日涨360%**
 - 2026年4月28日，曦智科技在港交所敲钟上市，代码**01879**，发行价183.2港元，开盘报880港元，截至上午休盘股价842港元，**较发行价上涨360%**。创始人沈亦晨2017年从MIT实验室起步，经历九年发展完成上市。曦智科技是光计算芯片领域的代表企业，光计算被认为是突破传统硅基芯片算力瓶颈的技术路线之一。
