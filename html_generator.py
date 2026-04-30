@@ -898,7 +898,7 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True,
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
             <a href="index.html" class="topbar-btn">往期动态</a>
-            <a href="GTC-2026-Official-Report.html" class="topbar-btn">专题报告</a>
+            <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
     </div>
 
