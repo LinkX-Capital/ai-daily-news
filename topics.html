@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>专题报告集合 | AI 前沿动态</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --bg-card: #ffffff;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --green: #0d8050;
+            --green-bg: #e6f5ed;
+            --red: #c03030;
+            --red-bg: #fce8e8;
+            --blue: #2563eb;
+            --blue-bg: #eff4ff;
+            --orange: #c05000;
+            --orange-bg: #fff3e6;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --bg-card: #141414;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+                --green: #34d399;
+                --green-bg: #0d2818;
+                --red: #f87171;
+                --red-bg: #2a1212;
+                --blue: #60a5fa;
+                --blue-bg: #0c1a33;
+                --orange: #fbbf24;
+                --orange-bg: #2a1f0c;
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-left { display: flex; align-items: baseline; gap: 10px; }
+        .topbar-brand { font-size: 14px; font-weight: 700; color: var(--purple); text-decoration: none; }
+        .topbar-tagline { font-size: 11px; color: var(--text-3); letter-spacing: 0.2px; }
+        .topbar-right { display: flex; gap: 12px; align-items: center; }
+        .topbar-nav { font-size: 12px; color: var(--text-3); text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: all 0.12s; }
+        .topbar-nav:hover { color: var(--text); background: var(--purple-20); }
+        .topbar-nav.active { color: var(--purple); font-weight: 600; }
+
+        /* Container */
+        .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+        /* Hero */
+        .hero {
+            text-align: center; padding: 40px 0 32px;
+            border-bottom: 1px solid var(--border); margin-bottom: 40px;
+        }
+        .hero-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--purple); margin-bottom: 8px; }
+        .hero-title { font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+        .hero-sub { font-size: 15px; color: var(--text-2); max-width: 620px; margin: 0 auto 20px; line-height: 1.7; }
+        .hero-meta { font-size: 12px; color: var(--text-3); }
+        .hero-stat { display: inline-flex; align-items: center; gap: 6px; margin: 0 8px; }
+        .hero-stat-num { font-weight: 700; color: var(--purple); font-variant-numeric: tabular-nums; }
+
+        /* Section head */
+        .section-head {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 20px; padding-bottom: 8px;
+            border-bottom: 2px solid var(--purple-40);
+        }
+        .sec-dot { width: 6px; height: 6px; background: var(--purple); border-radius: 2px; }
+        .sec-title { font-size: 14px; font-weight: 600; color: var(--purple); text-transform: uppercase; letter-spacing: 0.8px; }
+
+        /* Topic cards */
+        .topic-grid { display: flex; flex-direction: column; gap: 20px; margin-bottom: 48px; }
+
+        .topic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            display: grid;
+            grid-template-columns: 56px 1fr auto;
+            gap: 20px;
+            align-items: start;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .topic-card:hover {
+            border-color: var(--purple-60);
+            box-shadow: 0 2px 12px rgba(102, 8, 116, 0.06);
+        }
+        .topic-card.featured {
+            border-color: var(--purple-40);
+            background: var(--purple-20);
+        }
+
+        .topic-icon {
+            width: 56px; height: 56px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 10px;
+            font-size: 22px;
+            background: var(--purple-20);
+            color: var(--purple);
+            flex-shrink: 0;
+        }
+        .topic-card.featured .topic-icon { background: var(--purple); color: #fff; }
+
+        .topic-info { min-width: 0; }
+        .topic-badge {
+            font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 2px 8px; border-radius: 3px; display: inline-block; margin-bottom: 6px;
+        }
+        .badge-series { background: var(--purple); color: #fff; }
+        .badge-single { background: var(--bg-page); color: var(--text-3); border: 1px solid var(--border); }
+
+        .topic-title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+        .topic-desc { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 10px; }
+
+        .topic-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+        .topic-meta-item { font-size: 11px; color: var(--text-3); display: flex; align-items: center; gap: 4px; }
+        .topic-meta-item strong { color: var(--text-2); font-weight: 600; }
+
+        .topic-editions {
+            margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px;
+        }
+        .edition-chip {
+            font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500;
+            background: var(--bg-page); color: var(--text-3); border: 1px solid var(--border);
+        }
+        .edition-chip.latest { background: var(--purple-20); color: var(--purple); border-color: var(--purple-40); }
+
+        .topic-arrow {
+            display: flex; align-items: center; color: var(--purple-40);
+            font-size: 20px; align-self: center;
+            transition: color 0.12s;
+        }
+        .topic-card:hover .topic-arrow { color: var(--purple); }
+
+        /* About section */
+        .about-section { margin-top: 8px; }
+        .about-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 24px;
+        }
+        .about-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+        .about-card p { font-size: 13px; color: var(--text-2); line-height: 1.7; margin-bottom: 8px; }
+        .about-card p:last-child { margin-bottom: 0; }
+        .about-card strong { color: var(--text); }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 20px 24px; margin-top: 40px;
+            max-width: 960px; margin-left: auto; margin-right: auto;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .footer-copy { font-size: 12px; color: var(--text-3); line-height: 1.6; }
+        .footer-copy a { color: var(--purple-80); text-decoration: none; }
+        .footer-copy a:hover { text-decoration: underline; }
+        .footer-top {
+            font-size: 12px; color: var(--text-3); text-decoration: none;
+            padding: 4px 12px; border: 1px solid var(--border); border-radius: 4px;
+            transition: all 0.12s;
+        }
+        .footer-top:hover { color: var(--text); border-color: var(--text-3); }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 16px; }
+            .hero-title { font-size: 22px; }
+            .topic-card { grid-template-columns: 1fr; gap: 12px; padding: 20px; }
+            .topic-icon { width: 40px; height: 40px; font-size: 18px; }
+            .topic-arrow { display: none; }
+        }
+        @media (max-width: 480px) {
+            .topbar-tagline { display: none; }
+            .hero-meta { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-left">
+        <a href="index.html" class="topbar-brand">&larr; AI 前沿动态</a>
+        <span class="topbar-tagline">AI Research</span>
+    </div>
+    <div class="topbar-right">
+        <a href="index.html" class="topbar-nav">日报</a>
+        <span class="topbar-nav active">专题集合</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-eyebrow">Special Reports</div>
+        <h1 class="hero-title">专题报告集合</h1>
+        <p class="hero-sub">深度研究与周期性追踪报告。覆盖前沿模型、算力格局等核心赛道。</p>
+        <div class="hero-meta">
+            <span class="hero-stat"><span class="hero-stat-num">2</span> 个专题</span>
+            <span class="hero-stat">更新至 2026.04</span>
+        </div>
+    </div>
+
+    <!-- Reports -->
+    <div class="section-head">
+        <span class="sec-dot"></span>
+        <span class="sec-title">全部专题</span>
+    </div>
+
+    <div class="topic-grid">
+
+        <!-- 1. 前沿模型周报 -->
+        <a href="topic-frontier-models.html" class="topic-card featured">
+            <div class="topic-icon">L2</div>
+            <div class="topic-info">
+                <span class="topic-badge badge-series">系列</span>
+                <div class="topic-title">前沿模型周报</div>
+                <div class="topic-desc">追踪 LLM 前沿格局变化，每周汇总重大模型发布、基准测试、定价演进与厂商迭代信号。覆盖 OpenAI / Google DeepMind / Anthropic / DeepSeek / Moonshot AI。</div>
+                <div class="topic-meta">
+                    <span class="topic-meta-item"><strong>最新</strong> 2026.04.27</span>
+                    <span class="topic-meta-item"><strong>频率</strong> 每周</span>
+                    <span class="topic-meta-item"><strong>层级</strong> L2 模型架构</span>
+                </div>
+                <div class="topic-editions">
+                    <span class="edition-chip latest">04.27 第1期</span>
+                </div>
+            </div>
+            <div class="topic-arrow">&rarr;</div>
+        </a>
+
+        <!-- 2. GTC 2026 -->
+        <a href="GTC-2026-Official-Report.html" class="topic-card">
+            <div class="topic-icon">&#9889;</div>
+            <div class="topic-info">
+                <span class="topic-badge badge-single">大会</span>
+                <div class="topic-title">GTC 2026 专题报告</div>
+                <div class="topic-desc">NVIDIA GTC 2026 大会全面复盘。黄仁勋宣布 2025-2027 年 1 万亿美元收入预期，聚焦 Token 经济、AI 工厂、技术路线图、智能体 AI、物理 AI 五大主题。</div>
+                <div class="topic-meta">
+                    <span class="topic-meta-item"><strong>发布</strong> 2026.03.18</span>
+                    <span class="topic-meta-item"><strong>大会</strong> 03.16 — 03.19 圣何塞</span>
+                </div>
+            </div>
+            <div class="topic-arrow">&rarr;</div>
+        </a>
+
+    </div>
+
+    <!-- About -->
+    <div class="about-section">
+        <div class="about-card">
+            <h3>关于专题报告</h3>
+            <p>专题报告基于 <strong>AI Daily News</strong> 管线数据 + 外部数据源补充检索生成。新专题持续扩充中。</p>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <div class="footer-copy">
+        <a href="index.html">&larr; 返回 AI 前沿动态</a>
+    </div>
+    <a href="#" class="footer-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Back to top &uarr;</a>
+</div>
+
+</body>
+</html>
