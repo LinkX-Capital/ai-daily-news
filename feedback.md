@@ -77,6 +77,52 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 
 ---
 
+### [2026-04-28] #16
+- **field**: body
+- **before**: FedRAMP仅2句、Brev仅2句、天然气电厂仅2句、TPU仅2句，均未达3句下限
+- **after**: body不足3句的条目要么从源补充更多信息，要么合并到相关条目
+- **reason**: "3-6句话"是已有规则但从未被enforce，body不足3句的条目读完无法跟人聊
+- **rule_hint**: **body硬性下限3句。不足3句时必须执行以下二选一：(1) 去官方源挖更多数据补到3句；(2) 如果确实信息不够，标注⚠️需补充。禁止输出不足3句的body**
+
+### [2026-04-28] #17
+- **field**: body
+- **before**: body规则要求写"基于事实的so what"，导致AI每次往body里塞自己的判断
+- **after**: body只写事实、数据、关键影响、具体人物/公司的评价观点；AI自己的so what/判断全部放insight
+- **reason**: body和insight边界不清，AI的判断混入body降低了事实密度
+- **rule_hint**: **body允许的内容：事实、数据、关键影响（市场反应/股价等）、具体人物或公司的评价观点（需注明谁说的）。body禁止的内容：AI自己的判断/so what/趋势预测，这些全部放insight**
+
+---
+
+### [2026-04-30] #18
+- **field**: title
+- **before**: Ling-2.6-1T 正文写"26B参数"
+- **after**: 改为"万亿参数"（模型名1T=1 Trillion）
+- **reason**: 模型名中的规模标识与正文参数量描述矛盾
+- **rule_hint**: **模型名中的数字（如1T=万亿参数、7B=70亿参数）必须与正文参数量描述交叉验证，不能只看部分信息源**
+
+### [2026-04-30] #19
+- **field**: filter
+- **before**: OpenAI网络安全方案和Codex决策对比各占一条独立条目
+- **after**: 合并为一条"OpenAI发布网络安全方案+展示Codex决策辅助能力"
+- **reason**: 同公司同日发布的低权重动态各自独立会稀释信息密度
+- **rule_hint**: **同公司同日多条低权重动态（非核心产品发布/财报级）合并为一条，取"公司+多项动态"格式**
+
+### [2026-04-30] #20
+- **field**: filter
+- **before**: GPT-5.5 Pro 159分和Gemini音频前7各占一条
+- **after**: 合并为一条"本周评测动态：GPT-5.5 Pro创Epoch新高159分，Gemini包揽音频前7"
+- **reason**: 同为benchmark评测结果，分开展示增加条目数但不增加信息密度
+- **rule_hint**: **同类型benchmark/评测结果可合并为一条"本周评测动态"，将多个结果并列展示**
+
+### [2026-04-30] #21
+- **field**: category
+- **before**: Google Cloud $200亿营收归入产业动态
+- **after**: 移入算力追踪
+- **reason**: 该条核心信号是"算力供给瓶颈限制增长"，不是一般的产业营收新闻
+- **rule_hint**: **分类由内容的核心信号决定而非表面主题。财报中突出"算力瓶颈/供给限制"的归算力追踪，突出"用户增长/产品收入"的归产业动态**
+
+---
+
 <!-- Future corrections will be appended below -->
 <!-- Format: copy the ### entry template above, fill in details -->
 
