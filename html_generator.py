@@ -95,7 +95,7 @@ def parse_md(md_content):
                 current_body_lines = []
             source_pairs = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', original_stripped)
             if source_pairs:
-                articles[-1]['sources'] = source_pairs
+                articles[-1]['sources'] = [list(pair) for pair in source_pairs]
                 articles[-1]['source'] = source_pairs[0][0]
                 articles[-1]['link'] = source_pairs[0][1]
             else:
@@ -205,7 +205,7 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True,
                 top_headline = cat_articles[0]['title']
                 break
 
-    # Prev/next dates
+    # Prev/next dates — search for actual existing files
     if prev_file is not None or next_file is not None:
         prev_date = prev_file
         next_date = next_file
@@ -213,8 +213,20 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True,
         prev_date = next_date = None
         try:
             dt = datetime.strptime(today_iso, "%Y-%m-%d")
-            prev_date = (dt - timedelta(days=1)).strftime("%Y-%m-%d")
-            next_date = (dt + timedelta(days=1)).strftime("%Y-%m-%d")
+            # Search backwards for prev
+            for delta in range(1, 11):
+                p = (dt - timedelta(days=delta)).strftime("%Y-%m-%d")
+                if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                               f"daily-ai-news-{p}.html")):
+                    prev_date = p
+                    break
+            # Search forwards for next
+            for delta in range(1, 11):
+                n = (dt + timedelta(days=delta)).strftime("%Y-%m-%d")
+                if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                               f"daily-ai-news-{n}.html")):
+                    next_date = n
+                    break
         except ValueError:
             pass
 
@@ -1209,7 +1221,8 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True,
 
 
 def _update_index_html(today_date_str, articles):
-    """在 index.html 中插入今天的条目（如果不存在），并移动'最新'标签。"""
+    """在 index.html 中插入今天的条目（如果不存在），并移动'最新'标签。
+    同时更新侧边栏导航链接和 nav-count。"""
     import re
     from datetime import datetime
 
@@ -1278,23 +1291,93 @@ def _update_index_html(today_date_str, articles):
         insert_pos = html.find('>', month_start) + 1
         html = html[:insert_pos] + '\n' + new_entry + html[insert_pos:]
 
+    # --- 更新侧边栏导航链接 ---
+    nav_link_id = f'#{month_key}-{day_num}'
+    nav_link_text = f'{month_label} {day_num:02d}'
+    new_nav_link = f'                    <a href="{nav_link_id}" class="nav-item">{nav_link_text}</a>'
+
+    if f'href="{nav_link_id}"' not in html:
+        # 找到对应月份的 nav-details 中的 nav-articles div
+        month_cn = f"{dt.year} 年 {dt.month} 月"
+        nav_section_pattern = rf'<summary><span>{month_cn}</span><span class="nav-count">\d+</span></summary>\s*<div class="nav-articles">'
+        nav_match = re.search(nav_section_pattern, html)
+        if nav_match:
+            # 找到正确的插入位置（按日期降序）
+            nav_start = nav_match.end()
+            # 找到该 nav-articles 的结束 </div>
+            nav_end = html.find('</div>', nav_start)
+            nav_block = html[nav_start:nav_end]
+            # 提取已有的日期链接
+            existing_days = re.findall(rf'href="#{month_key}-(\d+)"', nav_block)
+            existing_days_int = [int(d) for d in existing_days]
+
+            # 找到第一个比当前日期小的位置，在其前面插入
+            insert_pos = nav_start  # 默认插入到开头
+            for i, existing_day in enumerate(existing_days_int):
+                if existing_day < day_num:
+                    # 找到这个链接在 html 中的位置
+                    link_pattern = rf'<a href="#{month_key}-{existing_day}" class="nav-item">'
+                    link_match = re.search(link_pattern, html[nav_start:nav_end])
+                    if link_match:
+                        insert_pos = nav_start + link_match.start()
+                    break
+            else:
+                # 所有已有日期都比当前大，插入到末尾
+                insert_pos = nav_end
+
+            # 插入时确保换行
+            if insert_pos == nav_start or insert_pos == nav_end:
+                html = html[:insert_pos] + '\n' + new_nav_link + html[insert_pos:]
+            else:
+                html = html[:insert_pos] + new_nav_link + '\n' + html[insert_pos:]
+            print(f"Added sidebar nav link for {nav_link_text}")
+
+    # --- 更新 nav-count ---
+    # 统计该月份实际的 timeline-entry 数量
+    month_entries = re.findall(rf'id="{month_key}-\d+"', html)
+    actual_count = len(month_entries)
+    month_cn = f"{dt.year} 年 {dt.month} 月"
+    count_pattern = rf'(<summary><span>{month_cn}</span><span class="nav-count">)\d+(</span></summary>)'
+    html = re.sub(count_pattern, rf'\g<1>{actual_count}\g<2>', html)
+
     with open(index_path, 'w', encoding='utf-8') as f:
         f.write(html)
-    print(f"Updated index.html with {today_date_str}")
+    print(f"Updated index.html with {today_date_str} (nav-count: {actual_count})")
 
+
+
+def _find_prev_file(today_date_str):
+    """Find the actual previous daily HTML file (handles gaps and combined dates)."""
+    base = os.path.dirname(os.path.abspath(__file__))
+    try:
+        dt = datetime.strptime(today_date_str, "%Y-%m-%d")
+    except ValueError:
+        return None, None
+
+    # Search backwards up to 10 days for the previous file
+    for delta in range(1, 11):
+        prev_dt = dt - timedelta(days=delta)
+        prev_date = prev_dt.strftime("%Y-%m-%d")
+        prev_path = os.path.join(base, f"daily-ai-news-{prev_date}.html")
+        if os.path.exists(prev_path):
+            return prev_date, prev_path
+        # Check combined date format (e.g., 2026-03-28+29, 2026-04-05+06)
+        import glob
+        combined = glob.glob(os.path.join(base, f"daily-ai-news-{prev_date}+*.html"))
+        if combined:
+            basename = os.path.basename(combined[0])
+            date_part = basename.replace('daily-ai-news-', '').replace('.html', '')
+            return date_part, combined[0]
+    return None, None
 
 
 def _patch_prev_day_next_link(today_date_str):
-    """Patch previous day's HTML to add 'next' link pointing to today."""
-    try:
-        dt = datetime.strptime(today_date_str, "%Y-%m-%d")
-        prev_date = (dt - timedelta(days=1)).strftime("%Y-%m-%d")
-    except ValueError:
-        return
+    """Patch previous file's HTML to add 'next' link pointing to today.
+    Handles non-consecutive dates by searching for the actual previous file."""
+    import re as _re
 
-    prev_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             f"daily-ai-news-{prev_date}.html")
-    if not os.path.exists(prev_path):
+    prev_date, prev_path = _find_prev_file(today_date_str)
+    if not prev_path:
         return
 
     with open(prev_path, 'r', encoding='utf-8') as f:
@@ -1303,11 +1386,10 @@ def _patch_prev_day_next_link(today_date_str):
     # Replace empty <span></span> after 上一期 with next link
     next_link = f'<a href="daily-ai-news-{today_date_str}.html" class="issue-next">下一期 &rarr;</a>'
     # Match any 上一期 link followed by empty <span></span>
-    import re
-    old_pattern = r'class="issue-prev">&larr; 上一期</a><span></span>'
+    old_pattern = r'class="issue-prev">&larr; 上一期</a>\s*<span></span>'
     new_pattern = f'class="issue-prev">&larr; 上一期</a>\\n                {next_link}'
-    if re.search(old_pattern, html):
-        html = re.sub(old_pattern, new_pattern, html)
+    if _re.search(old_pattern, html):
+        html = _re.sub(old_pattern, new_pattern, html)
         with open(prev_path, 'w', encoding='utf-8') as f:
             f.write(html)
         print(f"Patched prev-next in: daily-ai-news-{prev_date}.html")
