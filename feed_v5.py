@@ -1861,9 +1861,10 @@ def main():
         return
 
     # 使用指定日期重新计算时间窗口
-    global START_UTC, END_UTC, START_BJ, END_BJ
+    global START_UTC, END_UTC, START_BJ, END_BJ, OUTPUT_FILE
     if args.date:
         START_UTC, END_UTC, START_BJ, END_BJ = get_time_window(args.date)
+        OUTPUT_FILE = output_md(args.date)
 
     print(f"🤖 AI前沿动态 v5.1")
     print(f"   时间窗口: {START_BJ.strftime('%Y-%m-%d %H:%M')} - {END_BJ.strftime('%Y-%m-%d %H:%M')} 北京时间")
@@ -2087,7 +2088,10 @@ def main():
     # 生成HTML
     try:
         import subprocess
-        subprocess.run(['python', 'html_generator.py'], check=True, capture_output=True)
+        env = os.environ.copy()
+        news_date = args.date if args.date else datetime.now().strftime("%Y-%m-%d")
+        env["NEWS_DATE"] = news_date
+        subprocess.run(['python', 'html_generator.py'], check=True, capture_output=True, env=env)
     except Exception as e:
         print(f"   ⚠️ HTML生成失败: {e}")
 

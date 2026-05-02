@@ -89,11 +89,11 @@ def base_dir():
 def archive_dir():
     return get("paths.archive_dir", "/Users/shenyalan/ai-daily-news/archive")
 
-def output_md():
+def output_md(date_str=None):
     from datetime import datetime as _dt
     base = get("paths.base_dir", "/Users/shenyalan/ai-daily-news")
-    today = _dt.now().strftime('%Y-%m-%d')
-    return os.path.join(base, f"daily-ai-news-{today}.md")
+    day = date_str if date_str else _dt.now().strftime('%Y-%m-%d')
+    return os.path.join(base, f"daily-ai-news-{day}.md")
 
 def output_html():
     return get("paths.output_html", "/Users/shenyalan/ai-daily-news/daily-ai-news.html")

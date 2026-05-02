@@ -1429,7 +1429,7 @@ def md_to_html(md_file, output_html=None, dated_html=None):
 
 if __name__ == "__main__":
     BASE_DIR = "/Users/shenyalan/ai-daily-news"
-    today = datetime.now().strftime('%Y-%m-%d')
+    today = os.environ.get("NEWS_DATE") or datetime.now().strftime('%Y-%m-%d')
     MD_FILE = os.path.join(BASE_DIR, f"daily-ai-news-{today}.md")
     DATED = os.path.join(BASE_DIR, f"daily-ai-news-{today}.html")
 
