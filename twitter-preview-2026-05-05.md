@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-05-05 07:15
-**总计**：13 条推文
+**总计**：14 条推文
 
 ---
 
@@ -11,27 +11,12 @@
 
 ---
 
-## ⭐ 今日重点（LLM 提炼）
-
-1. **Opus 4.7 vs 4.6性能对比：回归问题尚无定论**
-   @swyx
-2. **OpenRouter支持免费生成100M tokens，Owl-Alpha助力**
-   @openrouter
-3. **OpenRouter推出免费LLM响应缓存功能**
-   @openrouter
-4. **软件或可被视为Agent的缓存层**
-   @hyhieu226
-5. **GB300 Ultra NVL72比GB200 NVL72快2.7倍**
-   @semianalysis_
-6. **Luma Agents帮助构建客户推广方案**
-   @lumalabsai
-
----
-
-## 🏢 公司发布（8条）
+## 🏢 公司发布（10条）
 
 ### @lumalabsai | Research
 
+- Define the concept. Set the direction.   Let Luma Agents turn your ideas into a full ad system.  See the concept → http://lumalabs.ai/app
+  [查看](https://x.com/LumaLabsAI/status/2051432354753982700#m)
 - The idea is strong. Now make sure the pitch is too.  Set the brief. Define the aesthetic. Luma Agents builds winning client pitch boards so you can fo...
   [查看](https://x.com/LumaLabsAI/status/2051391604536328323#m)
 
@@ -55,7 +40,12 @@
 - RT by @SemiAnalysis_: Down payment on a EUV machine!
   [查看](https://x.com/dylan522p/status/2051109332750835754#m)
 
-## 👤 研究者动态（5条）
+### @xai | Model
+
+- Two voices. One human. One AI. Can you guess the AI clone? 👇  Voice cloning, rich with natural emotion, is now live on the Grok Voice API.  http://x.a...
+  [查看](https://x.com/xai/status/2051438210065322244#m)
+
+## 👤 研究者动态（4条）
 
 ### @hyhieu226 | Research
 
@@ -71,7 +61,5 @@
 
 ### @swyx [AI社区] | App
 
-- seeing lot of people saying that Opus 4.7 is a net regression vs 4.6, but it seems quite anecdotal.  offline and online evals point towards a clean st...
-  [查看](https://x.com/swyx/status/2051401321744605450#m)
 - this one is doing v well btw if you want the popular vote filter on the firehose of all the things  @patrickdebois was one of the track keynotes i gav...
   [查看](https://x.com/swyx/status/2051329252344369626#m)
