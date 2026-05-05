@@ -11,7 +11,7 @@
 - 算力追踪：SemiAnalysis深度拆解NVIDIA Vera Rubin VR NVL72，推理性能3.3倍于Blackwell
 - 研究关注：SIGIR'26论文DIGER提出语义ID可微分联合优化，突破推荐系统关键难题; 复旦、北大等提出AHE：让Coding Agent的Harness自动进化，Terminal-Bench首次超越人工设计; IKP方法通过测量模型"知道多少"反推闭源LLM参数量，揭示Scaling远未饱和
 - 初创&融资：Anthropic拟以$9000亿估值融资$500亿，预计两周内close; 法律AI创业公司Legora估值达$56亿，ARR破$1亿直追Harvey
-- X讨论：Karpathy谈LLM本质：不仅是语言任务，需构建世界模型; Anthropic公布Claude Opus 4.7测评，谄媚率相比4.5降低50%
+- X讨论：Karpathy分享Sequoia Ascent 2026对话要点：LLM开启全新功能类别、能力"锯齿状"现象、Agent-native economy; Anthropic公布Claude Opus 4.7测评，谄媚率相比4.5降低50%
 
 ---
 
@@ -78,9 +78,9 @@
    - 来源: [TechCrunch](https://techcrunch.com/2026/04/30/legal-ai-startup-legora-hits-5-6-valuation-and-its-battle-with-harvey-just-got-hotter/)
 
 ### X讨论
-**Karpathy谈LLM本质：不仅是语言任务，需构建世界模型**
-- Karpathy在近期的Sequoia Ascent 2026炉边对话中分享核心观点：LLM绝不仅仅是语言模型，它们的潜力远超出自然语言处理范畴。真正的智能需要构建世界模型，使AI能够理解和模拟物理世界。Karpathy强调研究者和开发者需要跳出纯文本任务的思维定式。这是其近期频繁引用的观点。
-  > 💡 世界模型成下一步必争之地
+**Karpathy分享Sequoia Ascent 2026对话要点：LLM开启全新功能类别、能力"锯齿化"、Agent-native economy**
+- Karpathy分享了约一周前在Sequoia Ascent 2026炉边对话的三个主题。**第一**：LLM不只是加速已有任务，而是能创造传统代码无法实现的功能——如纯LLM驱动的图像应用（menugen）、用**.md文档替代.sh安装脚本**（LLM作为自然语言解释器智能适配环境并调试）、以及处理任意格式非结构化数据的LLM知识库。**第二**：解释LLM能力的"锯齿状"现象——同一模型既能**重构10万行代码库**又会给出荒谬建议，原因与领域可验证性和训练数据经济学（收入/TAM决定RL训练数据分布）有关，"要么在RL轨道上飞驰，要么拿着砍刀在丛林里开路"。**第三**：展望Agent-native economy，产品服务将被分解为传感器、执行器和逻辑，agentic engineering的技能体系和招聘实践正在快速形成。
+  > 💡 Karpathy将LLM定位为"新范式"而非效率工具，"锯齿状能力"框架为实际部署提供了务实指引——关键是让任务落在RL训练分布的轨道上
    - 来源: [@karpathy](https://x.com/karpathy/status/2049903821095354523)
 
 **Anthropic公布Claude Opus 4.7测评，谄媚率相比4.5降低50%**
