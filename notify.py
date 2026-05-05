@@ -29,7 +29,8 @@ DINGTALK_WEBHOOK = os.environ.get("DINGTALK_WEBHOOK", "")
 FEISHU_WEBHOOK = os.environ.get("FEISHU_WEBHOOK", "")
 
 BASE_DIR = "/Users/shenyalan/ai-daily-news"
-REPORT_FILE = os.path.join(BASE_DIR, f"daily-ai-news-{datetime.now().strftime('%Y-%m-%d')}.md")
+_NEWS_DATE = os.environ.get("NEWS_DATE") or datetime.now().strftime('%Y-%m-%d')
+REPORT_FILE = os.path.join(BASE_DIR, f"daily-ai-news-{_NEWS_DATE}.md")
 
 
 def read_report():
@@ -135,10 +136,12 @@ def send_feishu(report):
     from html import unescape
 
     # 日期
-    date_str = datetime.now().strftime("%m月%d日")
+    from datetime import datetime as _dt
+    _date_obj = _dt.strptime(_NEWS_DATE, '%Y-%m-%d')
+    date_str = _date_obj.strftime("%m月%d日")
 
     # 直接从 HTML 文件读取要点速览
-    html_file = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{datetime.now().strftime('%Y-%m-%d')}.html"
+    html_file = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{_NEWS_DATE}.html"
     try:
         with open(html_file, 'r', encoding='utf-8') as f:
             html_content = f.read()
@@ -220,7 +223,7 @@ def send_feishu(report):
             {
                 "tag": "button",
                 "text": {"tag": "plain_text", "content": "📖 查看详情"},
-                "url": f"https://yl0223-ai.github.io/ai-daily-news/daily-ai-news-{datetime.now().strftime('%Y-%m-%d')}.html",
+                "url": f"https://yl0223-ai.github.io/ai-daily-news/daily-ai-news-{_NEWS_DATE}.html",
                 "type": "primary"
             }
         ]
