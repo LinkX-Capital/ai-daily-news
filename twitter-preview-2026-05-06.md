@@ -11,18 +11,45 @@
 
 ---
 
+## ⭐ 今日重点（LLM 提炼）
+
+1. **vLLM发布Gemma4 MTP支持，Docker镜像即装即用，解码性能提升3倍**
+   @vllm_project
+2. **vLLM为CrusoeAI提供稳定可靠的多GPU推理服务**
+   @vllm_project
+3. **Luma Labs推出Uni-1.1 API：具备推理能力和审美理解的新图像API**
+   @lumalabsai
+4. **Uni-1.1 API应用场景：室内设计工作室、时尚工具、珠宝配置器、故事板生成器**
+   @lumalabsai
+5. **Uni-1.1在图片编辑和文本生成图片榜单中排名第三**
+   @lumalabsai
+6. **Uni-1.1 API以扩散模型的效率和成本实现思考型图像生成**
+   @lumalabsai
+7. **Sam Altman：GPT-5.5在非编码任务上表现出色，频繁带来惊喜**
+   @sama
+8. **Sam Altman：速度、智力、人格和个性化记忆的组合超越各部分之和**
+   @sama
+9. **Sam Altman：ChatGPT新即时模型表现优异，建议尝试体验**
+   @sama
+10. **Sam Altman寻求使用GPT-5.5构建创新案例的开发者交流**
+   @sama
+
+---
+
 ## 🏢 公司发布（24条）
 
 ### @anthropicai | Model
 
-- New Anthropic Fellows research: Model Spec Midtraining (MSM).  Standard alignment methods train AIs on examples of desired behavior. But this can fail...
-  [查看](https://x.com/AnthropicAI/status/2051758528562364902#m)
-- R to @AnthropicAI: Using MSM, we can also empirically study which model specs or constitutions yield the best generalization from alignment training. ...
-  [查看](https://x.com/AnthropicAI/status/2051758541002719734#m)
 - R to @AnthropicAI: Read more about Model Spec Midtraining: https://alignment.anthropic.com/2026/msm  Or read the full study: https://arxiv.org/abs/260...
   [查看](https://x.com/AnthropicAI/status/2051758544999927943#m)
-- As AI takes on work humans can't fully check, a capable model could deliberately hold back—and we'd never know.   New Anthropic Fellows research finds...
-  [查看](https://x.com/AnthropicAI/status/2051718308702081047#m)
+- R to @AnthropicAI: Using MSM, we can also empirically study which model specs or constitutions yield the best generalization from alignment training. ...
+  [查看](https://x.com/AnthropicAI/status/2051758541002719734#m)
+- R to @AnthropicAI: A more realistic example: AIs trained to be harmless chatbots can take unsafe actions in agentic settings. Preceding this training ...
+  [查看](https://x.com/AnthropicAI/status/2051758536271581418#m)
+- R to @AnthropicAI: A toy example: Train an AI only to say it likes certain cheeses.  If we apply MSM with a spec that explains these cheese preference...
+  [查看](https://x.com/AnthropicAI/status/2051758532869910872#m)
+- R to @AnthropicAI: Developers try to align AIs to a constitution, or spec, describing intended AI behavior. But AIs don’t normally know what’s in it. ...
+  [查看](https://x.com/AnthropicAI/status/2051758530051358747#m)
 
 ### @claudeai | Model
 
@@ -82,8 +109,6 @@
 
 - Grok 4.3 is now live on the xAI API. It’s our fastest, most intelligent model to date.  It tops the @ArtificialAnlys leaderboards in agentic tool call...
   [查看](https://x.com/xai/status/2051703217697010103#m)
-- Two voices. One human. One AI. Can you guess the AI clone? 👇  Voice cloning, rich with natural emotion, is now live on the Grok Voice API.  http://x.a...
-  [查看](https://x.com/xai/status/2051438210065322244#m)
 
 ## 👤 研究者动态（8条）
 
@@ -109,11 +134,11 @@
 
 ### @sama [OpenAI] | Model
 
+- 5.5 in codex is so good for non-coding tasks.  i keep assuming it won't be able to do something, but a lot of the time i am pleasantly surprised.
+  [查看](https://x.com/sama/status/2051783339502375418#m)
 - in particular, the combination of improvements to speed, intelligence, personality, and great memory/personalization feels like a more-than-sum-of-the...
   [查看](https://x.com/sama/status/2051758445402223051#m)
 - the new instant model in chatgpt is so good damn  if you have been thinking-model-only for awhile, give it a try!
   [查看](https://x.com/sama/status/2051758152224506203#m)
 - i would like to talk to people who have built amazing things with 5.5 that weren't possible with earlier models. i am especially interested in example...
   [查看](https://x.com/sama/status/2051724685231214650#m)
-- 5.5 instant comes to ChatGPT today!  imo it is a pretty big upgrade, i really like using it.
-  [查看](https://x.com/sama/status/2051716909629153573#m)
