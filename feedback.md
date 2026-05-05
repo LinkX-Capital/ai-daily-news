@@ -82,7 +82,7 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **before**: FedRAMP仅2句、Brev仅2句、天然气电厂仅2句、TPU仅2句，均未达3句下限
 - **after**: body不足3句的条目要么从源补充更多信息，要么合并到相关条目
 - **reason**: "3-6句话"是已有规则但从未被enforce，body不足3句的条目读完无法跟人聊
-- **rule_hint**: **body硬性下限3句。不足3句时必须执行以下二选一：(1) 去官方源挖更多数据补到3句；(2) 如果确实信息不够，标注⚠️需补充。禁止输出不足3句的body**
+- **rule_hint**: **body硬性下限3句。不足3句时：(1) 去官方源挖更多数据补到3句；(2) 如果来源不可达，标注⚠️并只写已确认事实。注意：不足3句时禁止编造内容凑数（参见#22-#25）**
 
 ### [2026-04-28] #17
 - **field**: body
@@ -174,3 +174,37 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 从深科技文章补充后续$300亿业绩目标、Amazon $50亿+$200亿、Anthropic营收$90亿→$300亿、哈佛PON质疑
 - **reason**: 同一事件多条来源时，应合并最丰富的数据维度，而非取单条来源的子集
 - **rule_hint**: 同一事件有多条来源时，合并所有来源的关键数据，取信息密度最高的版本。具体做法：以最早/最权威来源为骨架，从其他来源补充其缺少的数据（金额细节、对比数据、争议观点）
+
+---
+
+### [2026-05-05] #22
+- **file**: daily-ai-news-2026-05-03.md
+- **field**: body
+- **before**: "DeepTech深科技发表分析文章，提出'神经计算机'概念框架。文章将此类比为从'使用工具'到'成为工具'的跃迁，认为这是Agent从tool-use走向tool-creation的理论基础。"
+- **after**: 从arXiv 2604.06425读取准确信息：Meta田渊栋+KAUST诸葛鸣晨+Schmidhuber等提出Neural Computers，将计算/内存/I/O统一到学习的运行时状态中，用视频模型在CLI/GUI环境验证接口原语学习
+- **reason**: 原body存在严重幻觉：(1) 把媒体DeepTech当成概念提出者，实际是Meta+KAUST的论文；(2) "从使用工具到成为工具""tool-use走向tool-creation"等具体表述完全编造，原文无此内容
+- **rule_hint**: **写body前必须读原文。禁止凭pipeline摘要扩写/润色。如果来源是媒体报道研究成果，必须区分"报道者"和"研究者"，去找论文原文确认具体内容。编造具体表述/类比是最严重的质量事故。**
+
+### [2026-05-05] #23
+- **file**: daily-ai-news-2026-05-03.md
+- **field**: body
+- **before**: "北大博士休学创业，自研异构计算架构，通过CPU/GPU/专用加速器协同调度优化Agent推理效率"
+- **after**: 2000年出生的林修醇休学创办荆华密算，联合清华任炬教授实验室推进密态计算商业化，已完成种子轮+天使轮数千万融资
+- **reason**: 原body完全跑偏——实际是密态计算（同态加密），不是异构计算架构。人名、公司名、技术方向全部错误，属于未读原文凭标题臆测内容
+- **rule_hint**: **当来源不可达（如微信反爬）且无法验证内容时，禁止凭标题/摘要臆测body细节。应标注"⚠️ 来源未验证"并只写已确认的最小事实集，或请用户提供更多信息**
+
+### [2026-05-05] #24
+- **file**: daily-ai-news-2026-05-03.md
+- **field**: body
+- **before**: "这是首个针对'Agent网络'而非单个Agent的安全评估框架"
+- **after**: 删除"首个"判断。原文Prior work段明确提到Prompt Infection、ClawWorm、Agents of Chaos等先行工作
+- **reason**: 原文自己列举了prior work，说明不是"首个"。AI编造了"首个"这一绝对性判断
+- **rule_hint**: **禁止无来源的绝对性判断（"首个""首次""最大""首选"等）。这类表述必须有原文明确支撑。如果原文自己提到了prior work/竞品，则绝对不能称"首个"**
+
+### [2026-05-05] #25
+- **file**: daily-ai-news-2026-05-03.md
+- **field**: body
+- **before**: "此前vLLM已是DeepSeek V4推理的首选引擎，本次更新进一步巩固了其在开源推理栈中的核心地位"
+- **after**: 删除该句。vLLM推文只说了"10+ bug fixes and optimizations"，未声称自己是"首选引擎"或"核心地位"
+- **reason**: 无来源的市场地位判断，属于AI自行添加的"拔高"表述
+- **rule_hint**: **body中禁止无来源的市场地位/竞争格局判断（"首选""核心地位""领先"等）。这类判断如果要写，必须放insight且标注是AI分析，不能混入body伪装成事实**
