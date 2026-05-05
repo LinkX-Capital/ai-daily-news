@@ -18,7 +18,7 @@
 
 ### 产业动态
 **视觉AI模型推动应用下载量增长6.5倍，但仅ChatGPT实现收入转化**
-- Appfigures数据显示，图像/视频模型更新带来的增量下载是传统模型发布的**6.5倍**（排除DeepSeek意识驱动型峰值）。ChatGPT 4o图像生成上线28天内增加约**1200万**增量下载和约**$7000万**消费者支出；Gemini Nano Banana 28天增加约**2200万**增量下载，但消费者支出仅增加约$18.1万。Meta AI的Vibes视频功能增加260万下载但几乎无收入。
+- Appfigures数据显示，图像/视频模型更新带来的增量下载是传统模型发布的**6.5倍**。ChatGPT 4o图像生成上线28天内增加约**1200万**增量下载和约**$7000万**消费者支出；Gemini Nano Banana 28天增加约**2200万**增量下载，但消费者支出仅增加约$18.1万。Meta AI的Vibes视频功能增加260万下载但几乎无收入。
   > 💡 视觉模型是获客利器但不是变现利器——Gemini下载量超ChatGPT但收入差386倍，说明付费转化取决于产品生态而非单一功能。视觉AI是目前最有效的移动端获客手段，但只有ChatGPT成功将视觉功能转化为订阅收入。
    - 来源: [Appfigures](https://appfigures.com/resources/insights/image-model-updates-drive-more-ai-app-downloads), [TechCrunch](https://techcrunch.com/2026/05/04/image-ai-models-now-drive-app-growth-beating-chatbot-upgrades/)
 
