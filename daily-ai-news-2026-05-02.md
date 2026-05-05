@@ -6,11 +6,11 @@
 
 ## 要点汇总
 
-- 产业动态：xAI上线Voice Cloning API，2分钟创建自定义语音，支持28种语言
+- 产业动态：xAI上线Voice Cloning API，2分钟创建自定义语音，支持28种语言; Meta收购Assured Robot Intelligence，进军人形机器人
 - 算力追踪：Epoch AI估计29万至160万片H100等效GPU流向中国; SemiAnalysis分析AI价值捕获正从基础设施层向模型层迁移，Anthropic ARR飙升至$440亿; Coatue Ventures计划购买数据中心用地，可能供Anthropic使用; 美国国防部与8家科技巨头签署机密网络AI部署协议，Anthropic未入选
 - 初创&融资：补天石科技获红杉中国领投天使轮融资，聚焦具身数据基础设施; 元臻微电获钲和资本亿元A轮融资，用于xMR量子磁传感材料量产; 超智算获元禾璞华等数亿元A轮融资，致力于先进算力集群平台
-- 研究关注：北大开源OpenWorldLib统一世界模型推理框架
-- X讨论：Oxford和Cambridge团队发布Autodata：用于创建高质量数据的智能体数据科学家; Sam Altman罕见表态工具中立，OpenClaw支持ChatGPT账号登录
+- 研究关注：北大开源OpenWorldLib统一世界模型推理框架; RecursiveMAS：通过潜空间循环扩展多Agent协作
+- X讨论：Meta AI发布Autodata：Agent充当数据科学家，自动创建高质量训练数据; Sam Altman罕见表态工具中立，OpenClaw支持ChatGPT账号登录
 
 ---
 
@@ -21,6 +21,11 @@
 - xAI通过API开放语音克隆功能，用户可在不到2分钟内创建自定义语音，另有80+预制语音可选，覆盖28种语言。该功能延续xAI近期在语音交互领域的密集更新（上月已推出实时语音回答能力），通过API开放吸引开发者集成到第三方应用。结合Grok-4.3的agentic能力，xAI正构建从文本到语音的完整多模态API矩阵。
   > 💡 语音克隆API是xAI多模态差异化的关键一步，与OpenAI Voice Engine形成直接对抗
    - 来源: [@xai](https://x.com/xai/status/2050355373052223585#m)
+
+**Meta收购Assured Robot Intelligence，进军人形机器人**
+- Meta收购圣地亚哥初创公司**Assured Robot Intelligence (ARI)**，该公司专注为人形机器人构建基础模型，使机器人能理解、预测和适应复杂动态环境中的人类行为。两位创始人已并入Meta的**Superintelligence Labs**研究部门。收购金额未披露，此前Meta已在内部组建机器人团队数月。Mark Zuckerberg此前表示Meta的长期目标是构建家用人形机器人，ARI的"机器人大脑"技术是关键拼图。
+  > 💡 Meta从元宇宙转向具身智能，收购ARI获取"机器人大脑"能力，与Figure AI、Physical Intelligence形成直接竞争。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/05/01/meta-buys-robotics-startup-to-bolster-its-humanoid-ai-ambitions/)
 
 ### 算力追踪
 **Epoch AI估计29万至160万片H100等效GPU流向中国**
@@ -65,11 +70,16 @@
   > 💡 世界模型从各自为战走向标准化框架，统一定义和推理接口是生态成熟的前提
    - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247888004&idx=2&sn=df1394c7a8d411439011d14c12233470) | [论文链接](https://arxiv.org/abs/2604.04707)
 
+**RecursiveMAS：通过潜空间循环扩展多Agent协作**
+- UIUC、Stanford、NVIDIA、MIT联合提出**RecursiveMAS**，将递归语言模型的扩展原理从单模型推广到多Agent系统。核心创新是用轻量级**RecursiveLink**模块连接异构Agent，通过潜空间（latent space）直接计算替代传统的文本消息交换，消除了"token税"。Agent间通过迭代精炼共享潜状态实现协作推理，效率和准确率均优于传统MAS。omarsar0（DAIR.AI创始人，前Meta AI）评价："多Agent系统每步传递完整文本消息，导致token膨胀、延迟和上下文稀释随Agent数量增长——RecursiveMAS提出了根本性的解法。"
+  > 💡 多Agent协作从文本交换走向潜空间计算，是MAS效率瓶颈的根本性解法。递归+多Agent的交叉是新的scaling axis。
+   - 来源: [@omarsar0](https://x.com/omarsar0/status/2050261229315477988) | [论文](https://arxiv.org/abs/2604.25917) | [拓展阅读](https://arxiv.org/abs/2601.21343)
+
 ### X讨论
-**Oxford和Cambridge团队发布Autodata：用于创建高质量数据的智能体数据科学家**
-- Autodata是一个用于构建高质量训练数据的智能体系统，由Oxford和Cambridge的研究团队开发。该方法引入了一种构建智能体的方式，能够自主创建高质量的训练数据。该研究发表于arXiv，可能为机器人和AI模型的数据生成提供了新范式。Autodata的核心创新在于让智能体自主完成数据采集、处理和标注流程。
-  > 💡 智能体正从单纯执行任务向自主生成训练数据演进，这是数据瓶颈的新解决方案
-   - 来源: [@jaseweston](https://x.com/jaseweston/status/2050009867830673679#m)
+**Meta AI发布Autodata：Agent充当数据科学家，自动创建高质量训练数据**
+- Meta AI（RAM团队）发布**Autodata**框架，让AI Agent扮演数据科学家角色，迭代式构建高质量训练和评估数据。具体实现"Agentic Self-Instruct"使用主Agent协调4个子Agent（Challenger生成样本、Weak/Strong Solver测试难度、Verifier评判质量），通过弱强模型分离度作为质量信号循环优化。在CS研究问答任务上，弱强模型得分差距从CoT Self-Instruct的**1.9%扩大到34%**。进一步对Agent本身做元优化（meta-optimization），验证通过率从**12.8%提升至42.4%**。团队包括Jason Weston、Jakob Foerster等。
+  > 💡 "用更多推理算力换更高质量训练数据"是新的scaling方向。Autodata将数据创建从人工标注推向Agent自主迭代，是self-improvement闭环的关键一环。
+   - 来源: [@jaseweston](https://x.com/jaseweston/status/2050009867830673679#m) | [博客](https://facebookresearch.github.io/RAM/blogs/autodata/)
 
 **Sam Altman罕见表态工具中立：「use codex or claude code, whatever works best for you」**
 - Sam Altman在X上发表罕见的工具中立言论，称"use codex or claude code or cursor or whatever works best for you"，并表示"grateful we live in a time with such great tools"。同日宣布**OpenClaw现已支持ChatGPT账号登录**，Pro/Plus订阅用户可直接使用。此外GPT-5.5发布一周后，OpenAI称其API收入增速**超过此前任何模型发布的2倍**。
