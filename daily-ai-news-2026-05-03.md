@@ -6,8 +6,8 @@
 
 ## 要点汇总
 
-- 模型前沿：OpenRouter实测主流模型首词延迟：Gemini 2.5 Flash 1.3秒、Kimi K2.6 4.6秒、GPT-5.5 9.1秒; ARC-AGI-3基准测试难倒顶级模型：GPT-5.5与Opus 4.7得分均趋近零，人类满分通过
-- 产业动态：腾讯混元开源440M翻译模型，支持手机离线运行且翻译质量超越Google
+- 模型前沿：ARC-AGI-3基准测试难倒顶级模型：GPT-5.5得分0.43%、Opus 4.7得分0.18%，人类100%通过
+- 产业动态：OpenRouter推出免费Response Caching：缓存命中80-300ms返回，零token费用; 腾讯混元开源440M翻译模型，支持手机离线运行且翻译质量超越Google
 - 算力追踪：SemiAnalysis分析：xAI数据中心仅11% GPU在线运行，数十万显卡处于闲置状态
 - 研究关注：中科院发布SpikingBrain2.0：将Transformer转为脉冲混合架构，4M上下文加速10倍; Epoch AI播客探讨AI benchmarks未来：当前基准测试存在根本性缺陷; 上海交大RouteMoA论文被ACL 2026接收，实现无需预推理的动态智能体路由
 - X讨论：Sam Altman承认更想要模型更便宜更快而非更聪明，但用户仍最看重能力; SemiAnalysis分析：数据中心繁荣驱动ABB电气设备订单激增，低中压设备需求强劲
@@ -17,17 +17,17 @@
 ## 📖 详细参考
 
 ### 模型前沿
-**OpenRouter实测主流模型首词延迟：Gemini 2.5 Flash 1.3秒、Kimi K2.6 4.6秒、GPT-5.5 9.1秒**
-- OpenRouter是一个聚合多种大模型API的平台，其实测数据显示了不同模型生成首个词元（first token）的延迟差异。Gemini 2.5 Flash（非缓存请求）平均首词延迟约1.3秒，Kimi K2.6约4.6秒，GPT-5.5约9.1秒。延迟差异反映了模型的推理速度和架构不同，其中Google的Gemini 2.5 Flash表现最快，可能得益于其TTFT优化。
-  > 💡 首词延迟直接影响用户体验，Google在TTFT优化上的优势可能成为其API竞争力关键，但这也与模型规模和能力存在权衡。
-   - 来源: [@openrouter](https://x.com/OpenRouter/status/2050616593764245666#m)
-
-**ARC-AGI-3基准测试难倒顶级模型：GPT-5.5与Opus 4.7得分均趋近零，人类满分通过**
-- ARC-AGI-3是由Abstraction and Reasoning Corpus (ARC)团队发布的新一代AI推理基准测试，旨在评估模型的抽象泛化能力。测试涵盖352道全新设计的题目，考察AI在未见过的规则下进行推理的能力。然而，在这项基准测试中，GPT-5.5和Anthropic Opus 4.7的得分均趋近零分，而人类受试者平均得分约85分，部分题目满分100。这暴露了当前大模型在真正
-  > 💡 ARC-AGI-3揭示了LLM训练数据泛化的局限性——模型在分布内优秀但分布外极弱，这比benchmark刷分更接近『智能』本质。
-   - 来源: [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651031297&idx=1&sn=41368039c5bd521303caf995c14d0d01&chksm=85b126ae031863e475b92d21c1819044d9869be104eaea4eea6f5235620f804b6411d3d49579&scene=0&xtrack=1#rd)
+**ARC-AGI-3基准测试难倒顶级模型：GPT-5.5得分0.43%、Opus 4.7得分0.18%，人类100%通过**
+- ARC Prize基金会发布ARC-AGI-3新一代推理基准测试，包含**135个**人工设计的新环境，测试者需在无指令情况下探索界面、推断规则、形成假设并跨关卡迁移。GPT-5.5得分**0.43%**，Opus 4.7得分**0.18%**，而人类受试者能**100%**完成。ARC Prize开放了160份replay和推理链分析，发现3种常见失败模式：(1) 局部观察正确但无法构建全局世界模型；(2) 训练数据中的游戏类比（Tetris、Frogger等）劫持行动选择；(3) 偶然过关但未理解规则，错误策略在后续关卡固化。两模型差异：**Opus压缩为自信但错误的理论，GPT-5.5难以压缩**。
+  > 💡 ARC-AGI-3的价值不只是评分——replay分析揭示了LLM失败的具体机制（压缩方式不同），这比benchmark刷分更接近『智能』本质，也为Agent在真实环境中的可靠性提供了预判信号。
+   - 来源: [ARC Prize](https://arcprize.org/blog/arc-agi-3-gpt-5-5-opus-4-7-analysis), [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651031297&idx=1&sn=41368039c5bd521303caf995c14d0d01&chksm=85b126ae031863e475b92d21c1819044d9869be104eaea4eea6f5235620f804b6411d3d49579&scene=0&xtrack=1#rd)
 
 ### 产业动态
+**OpenRouter推出免费Response Caching：缓存命中80-300ms返回，零token费用**
+- OpenRouter推出Response Caching功能，开发者通过添加`X-OpenRouter-Cache: true`请求头即可启用。相同请求首次正常计费，后续缓存命中在**80-300ms**内返回（缓存查询平均**4ms**），**零token费用**。支持streaming/非streaming、多模态输入、tool calls。缓存默认5分钟，可通过TTL头设置1秒至24小时。缓存作用域为单API key，不跨key共享。典型场景：Agent重试（失败步骤免费回放）、测试套件（首次后免费重复运行）、重复上下文处理。文章同时披露了各模型非缓存首词延迟：Gemini 2.5 Flash约**1.3秒**，Kimi K2.6约**4.6秒**，GPT-5.5约**9.1秒**。
+  > 💡 Response Caching与prompt caching不同——prompt caching只减少前缀部分的费用，Response Caching跳过provider直接返回完整响应，对Agent工作流的重试场景价值最大。首词延迟数据也首次从官方角度量化了各模型的TTFT差距。
+   - 来源: [OpenRouter](https://openrouter.ai/announcements/response-caching), [@openrouter](https://x.com/OpenRouter/status/2050616593764245666#m)
+   
 **腾讯混元开源440M翻译模型，支持手机离线运行且翻译质量超越Google**
 - 腾讯混元团队最新开源了一款440M参数的翻译模型，该模型经过极致的量化压缩，可以在手机上离线运行。在WMT系列翻译基准测试上，该模型的翻译质量超越了Google的同等规模模型。这一成果展示了端侧AI的实际应用潜力，用户无需网络连接即可获得高质量翻译服务。模型目前已开源供开发者下载使用。
   > 💡 腾讯的端侧翻译模型说明中国在移动端AI落地上的差异化优势，可能推动翻译应用的新形态。
@@ -41,7 +41,7 @@
 
 ### 研究关注
 **中科院发布SpikingBrain2.0：将Transformer转为脉冲混合架构，4M上下文加速10倍**
-- 中科院自动化所李国齐团队发布SpikingBrain2.0（瞬悉2.0），一个5B参数的类脑基础模型。核心思路是**Transformer-to-Hybrid (T2H)**——将已训练好的Qwen3-4B转换为混合稀疏架构，训练成本不到**7000 A100 GPU小时**即可恢复原模型大部分能力。架构创新为Dual-Space Sparse Attention (DSSA)，在不同层混合Sparse Softmax和Sparse Linear两种注意力。实测在**4M上下文下TTFT加速10.13x**，8张A100支持**10M+ token**（标准Transformer此时OOM）。同时支持INT8脉冲编码（适配类脑芯片，功耗减少46.5%）和FP8 GPU推理（250K上下文加速2.52x）。
+- 中科院自动化所李国齐团队发布SpikingBrain2.0（瞬悉2.0），一个5B参数的类脑基础模型。核心思路是**Transformer-to-Hybrid (T2H)**——将已训练好的Qwen3-4B转换为混合稀疏架构，训练成本不到**7000 A100 GPU小时**即可恢复原模型大部分能力。架构创新为Dual-Space Sparse Attention (DSSA)，在不同层混合Sparse Softmax和Sparse Linear两种注意力。实测在**4M上下文下TTFT加速10.13x**，8张A100支持**10M+ token**（标准Transformer在同等硬件下因显存不足无法运行）。同时支持INT8脉冲编码（适配类脑芯片，功耗减少46.5%）和FP8 GPU推理（250K上下文加速2.52x）。
   > 💡 这不是替代Transformer的工作，而是一个低成本后转换方案——拿开源模型转成能跑超长上下文的端侧版本。5B规模限制了通用能力，更适合长文档/代码库等垂直场景。
    - 来源: [arXiv](https://arxiv.org/abs/2604.22575), [新智元](https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652697384&idx=3&sn=59dcb83752f372f109e4cd5b0693f582)
 

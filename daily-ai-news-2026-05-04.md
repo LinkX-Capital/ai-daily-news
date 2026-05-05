@@ -9,7 +9,7 @@
 - 模型前沿：NIST CAISI评估DeepSeek V4-Pro落后美国前沿约8个月，专家质疑方法论
 - 产业动态：Anthropic考虑以$900B+估值融资$500亿，Claude Code驱动收入两个月翻倍
 - 算力追踪：四大科技巨头2026年AI capex预计达$7,250亿，同比增77%; DeepSeek V4-Pro 75%折扣今日到期，百万token输入仅$0.036
-- 初创&融资：TechCrunch分享21家值得关注的欧洲初创公司; Avoca完成$1.25亿融资晋升独角兽，AI语音Agent切入家庭服务万亿市场; 林修醇休学创办荆华密算，联合清华推进密态计算商业化
+- 初创&融资：TechCrunch分享21家值得关注的欧洲初创公司; Avoca完成$1.25亿融资晋升独角兽，AI语音Agent切入家庭服务万亿市场; 林修醇休学创办荆华密算，联合清华任炬团队推进密态计算商业化
 - 研究关注：Meta与KAUST等提出Neural Computers，用学习运行时状态统一计算、内存和I/O; GS-Playground开源，基于3DGS的具身仿真框架; Microsoft Research发布多Agent红队测试框架
 - X讨论：vLLM v0.20.1发布，针对DeepSeek V4做10+优化
 

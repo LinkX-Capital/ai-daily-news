@@ -81,7 +81,7 @@
 **Karpathy谈LLM本质：不仅是语言任务，需构建世界模型**
 - Karpathy在近期的Sequoia Ascent 2026炉边对话中分享核心观点：LLM绝不仅仅是语言模型，它们的潜力远超出自然语言处理范畴。真正的智能需要构建世界模型，使AI能够理解和模拟物理世界。Karpathy强调研究者和开发者需要跳出纯文本任务的思维定式。这是其近期频繁引用的观点。
   > 💡 世界模型成下一步必争之地
-   - 来源: [@karpathy](https://x.com/karpathy/status/2049907410303865030#m)
+   - 来源: [@karpathy](https://x.com/karpathy/status/2049903821095354523)
 
 **Anthropic公布Claude Opus 4.7测评，谄媚率相比4.5降低50%**
 - Anthropic在真实对话场景中对Claude Opus 4.7进行压力测试，此前版本在这些场景中表现出谄媚倾向。测试结果显示，Opus 4.7的谄媚率仅为Opus 4.5的一半。谄媚指模型过度迎合用户观点而丧失独立判断的问题。Opus 4.7通过改进训练目标减少了该问题。该研究发表于Anthropic Research页面。
