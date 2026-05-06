@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-05-07 07:15
-**总计**：31 条推文
+**总计**：35 条推文
 
 ---
 
@@ -13,30 +13,14 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **Google DeepMind与EVE Online开发商合作探索AI游戏研究**
-   @googledeepmind
-2. **Luma AI品牌更新：定义进化方向，AI代理构建每个元素**
-   @lumalabsai
-3. **Uni-1 API发布：可基于描述生成YouTube缩略图**
-   @lumalabsai
-4. **AI on the Lot大会将于5月27-28日在卡尔弗城举办，2000+参会者**
-   @lumalabsai
-5. **Uni-1.1 API发布：真正理解简报而不仅是处理Token**
-   @lumalabsai
-6. **ChatGPT Futures项目展示年轻开发者的AI创新成果**
+1. **ChatGPT Futures Class of 2026 — 26 honorees from the first graduating class to have had ChatGPT throughout all four years of university**
    @openai
-7. **ChatGPT Futures 2026届毕业生班级：26位荣誉获得者**
-   @openai
-8. **OpenAI播客已在Spotify和Apple Podcasts上线**
-   @openai
-9. **AI超级计算机需要新型网络架构保持大规模同步**
-   @openai
-10. **MRC已部署在OpenAI训练前沿模型的最大超级计算机上**
-   @openai
+2. **Serving Agentic Workloads at Scale with vLLM x Mooncake — Agentic traces grow to 80K+ tokens with 94%+ reusable prefix**
+   @vllm_project
 
 ---
 
-## 🏢 公司发布（24条）
+## 🏢 公司发布（25条）
 
 ### @anthropicai | Model
 
@@ -60,6 +44,8 @@
 
 ### @lumalabsai | Research
 
+- The right message to the right person at the right time. Now you can build every version of it.   Define the audience. Set the variation. Luma Agents ...
+  [查看](https://x.com/LumaLabsAI/status/2052149305981768094#m)
 - A brand refresh isn't about starting over. It's about showing up better.    Define the evolution. Set the direction. Luma Agents build every element o...
   [查看](https://x.com/LumaLabsAI/status/2052124602441367770#m)
 - RT by @LumaLabsAI: Uni-1 is now an API.  I built a simple YouTube thumbnail generator on top of it. You describe a video idea, and it produces thumbna...
@@ -116,14 +102,14 @@
 - SpaceXAI will provide @AnthropicAI with access to Colossus 1, one of the world’s largest and fastest-deployed AI supercomputers, to provide additional...
   [查看](https://x.com/xai/status/2052060350770515978#m)
 
-## 👤 研究者动态（7条）
+## 👤 研究者动态（10条）
 
 ### @jeffdean [Google] | Infra
 
-- Great to see my friend @andykonwinski as one of the keynote dishes at the first @CAISconf later this month!
-  [查看](https://x.com/JeffDean/status/2051844281586131221#m)
 - R to @JeffDean: Bleh.  Talks.  But dishes also works.  The keynotes are like a multicourse tasting menu!
   [查看](https://x.com/JeffDean/status/2051881201926127702#m)
+- Great to see my friend @andykonwinski as one of the keynote dishes at the first @CAISconf later this month!
+  [查看](https://x.com/JeffDean/status/2051844281586131221#m)
 
 ### @sama [OpenAI] | Model
 
@@ -132,6 +118,8 @@
 
 ### @thegregyang [xAI] | Model
 
+- was feeling a strain on my body recently even when my mind can be clear  my sleep has been shorter as well and sometimes I wake up hot or cold  turns ...
+  [查看](https://x.com/TheGregYang/status/2052150836378411195#m)
 - R to @TheGregYang: correction: organic cotton / down for beddings and pillows are great for me  I tried naturepedic organic mattress and they also giv...
   [查看](https://x.com/TheGregYang/status/2052081173393019347#m)
 - I tried eight sleep for a few weeks  unfortunately the material is inflammatory for me so I always wake up kinda tired  organic material is much more ...
@@ -140,3 +128,10 @@
   [查看](https://x.com/TheGregYang/status/2051863269988778170#m)
 - turns out my place has high carbon monoxide!  fire department brought a whole troop  alarm beeped yesterday and today for a period of time  I did wake...
   [查看](https://x.com/TheGregYang/status/2051850616146993540#m)
+
+### @thesephist [Anthropic] | Research
+
+- Genesis  https://youtube.com/watch?v=9P_VAMyb-7k
+  [查看](https://x.com/thesephist/status/2051874548274888756#m)
+- this is your chance to build ideas you don't even know today that you're capabale of having
+  [查看](https://x.com/thesephist/status/2051869765560328703#m)
