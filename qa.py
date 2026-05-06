@@ -817,6 +817,9 @@ def _log_score(date_str, articles, all_issues):
             f.write(header)
     with open(log_path, "a", encoding="utf-8") as f:
         f.write(row)
+
+
+if __name__ == "__main__":
     args = sys.argv[1:]
     factcheck = '--factcheck' in args
     args = [a for a in args if a != '--factcheck']
