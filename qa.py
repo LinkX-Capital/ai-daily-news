@@ -150,7 +150,7 @@ def check_body_quality(articles):
         if not body:
             issues.append(('empty_body', title, "body为空"))
         elif sent_count < 3:
-            issues.append(('short_body', title, f"body仅{sent_count}句话（硬性下限3句）"))
+            issues.append(('short_body', title, f"body仅{sent_count}句话（建议3-6句）"))
         elif sent_count > 7:
             issues.append(('long_body', title, f"body有{sent_count}句话（建议3-6句）"))
 
@@ -747,8 +747,8 @@ def run_checks(date_str=None, factcheck=False):
 
         # 严重程度
         critical = [i for i in all_issues if i[0] in ('low_value', 'over_infer', 'company_dup', 'fact_error', 'unsupported_claim')]
-        warnings = [i for i in all_issues if i[0] in ('short_body', 'empty_body', 'body_has_judgment', 'insight_repeat', 'vague_ref', 'translated_name', 'fact_warning')]
-        minor = [i for i in all_issues if i[0] in ('no_source', 'summary_orphan', 'fetch_fail', 'llm_fail', 'title_similar', 'long_body')]
+        warnings = [i for i in all_issues if i[0] in ('empty_body', 'body_has_judgment', 'insight_repeat', 'vague_ref', 'translated_name', 'fact_warning')]
+        minor = [i for i in all_issues if i[0] in ('short_body', 'no_source', 'summary_orphan', 'fetch_fail', 'llm_fail', 'title_similar', 'long_body')]
 
         if critical:
             print(f"\n需要处理 ({len(critical)}):")
