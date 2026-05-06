@@ -6,7 +6,7 @@
 
 ## 要点汇总
 
-- 模型前沿：OpenAI发布GPT-5.5 Instant系统卡片，替代GPT-5.3 Instant成为ChatGPT默认模型
+- 模型前沿：OpenAI发布GPT-5.5 Instant，高风险领域幻觉减少52.5%，替代GPT-5.3 Instant成为ChatGPT默认模型
 - 产业动态：Apple计划在iOS 27中允许用户选择第三方AI模型驱动设备端功能; Microsoft Copilot Cowork扩展至移动端，新增Skills和插件支持; 斯坦福合并HAI与数据科学计划，李飞飞升任校长顾问; Anthropic发布金融服务业Claude代理模板
 - 算力追踪：OpenRouter实测GPT-5.5成本增加49-92%，但输出token增19-34%; SemiAnalysis分析：InP材料成AI数据中心光通信关键瓶颈
 - 初创&融资：CopilotKit完成2700万美元A轮融资，帮助开发者部署应用原生AI代理; ElevenLabs获得BlackRock等新投资，年度经常性收入达5亿美元; Altara完成700万美元种子轮，构建面向物理世界的科学智能平台
@@ -19,9 +19,9 @@
 
 ### 模型前沿
 **OpenAI发布GPT-5.5 Instant，替代GPT-5.3 Instant成为ChatGPT默认模型**
-- OpenAI发布GPT-5.5 Instant系统卡片，该模型即日起向所有ChatGPT用户推出，替代GPT-5.3 Instant成为默认模型。API端点名为`gpt-5.5-chat-latest`，付费用户仍可在3个月内继续使用GPT-5.3 Instant，之后该版本正式退役。这是首个被OpenAI评定为生物化学和网络安全领域**"High Capability"（高能力）**级别的Instant模型，安全评估标准比前代更严格。记忆功能正在网页端向消费级用户逐步推出，即将在移动端上线。
-  > 💡 Instant模型的安全评级升级意味着即使是轻量级即时模型，能力也已达到需要更严格监管的阈值
-   - 来源: [OpenAI](https://openai.com/index/gpt-5-5-instant-system-card)
+- OpenAI发布GPT-5.5 Instant，即日起向所有ChatGPT用户推出，替代GPT-5.3 Instant成为默认模型。API端点为`chat-latest`，付费用户可在3个月内继续使用GPT-5.3 Instant，之后正式退役。内部评估显示，高风险领域（医学、法律、金融）幻觉减少**52.5%**，用户标记的事实错误对话中不准确声明减少**37.3%**。输出比前代减少**30.2%词数**，去除多余emoji和过度格式化。这是首个被OpenAI评定为网络安全和生物化学领域**"High Capability"（高能力）**级别的Instant模型，安全评估标准比前代更严格。新增Memory Sources功能，用户可查看哪些上下文（历史对话/文件/Gmail）被用于个性化回复，并可删除或修正。增强个性化先向Plus和Pro用户推出，后续扩展至Free/Go/Business/Enterprise。
+  > 💡 Instant模型从"更快"转向"更准+更个性化"，幻觉减半是面向数亿用户的实质性安全改进；High Capability评级意味着即使是轻量级即时模型，能力也已达到需要更严格监管的阈值
+   - 来源: [OpenAI](https://openai.com/index/gpt-5-5-instant/) | [System Card](https://openai.com/index/gpt-5-5-instant-system-card/)
 
 ### 产业动态
 **Apple计划在iOS 27中允许用户选择第三方AI模型驱动设备端功能**
