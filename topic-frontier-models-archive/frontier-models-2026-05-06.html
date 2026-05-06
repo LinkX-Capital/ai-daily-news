@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>前沿模型周报 | AI Research</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --bg-card: #ffffff;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --green: #0d8050;
+            --green-bg: #e6f5ed;
+            --red: #c03030;
+            --red-bg: #fce8e8;
+            --blue: #2563eb;
+            --blue-bg: #eff4ff;
+            --orange: #c05000;
+            --orange-bg: #fff3e6;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --bg-card: #141414;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+                --green: #34d399;
+                --green-bg: #0d2818;
+                --red: #f87171;
+                --red-bg: #2a1212;
+                --blue: #60a5fa;
+                --blue-bg: #0c1a33;
+                --orange: #fbbf24;
+                --orange-bg: #2a1f0c;
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-left { display: flex; align-items: baseline; gap: 10px; }
+        .topbar-brand { font-size: 14px; font-weight: 700; color: var(--purple); text-decoration: none; }
+        .topbar-tagline { font-size: 11px; color: var(--text-3); letter-spacing: 0.2px; }
+        .topbar-nav { font-size: 12px; color: var(--text-3); text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: all 0.12s; }
+        .topbar-nav:hover { color: var(--text); background: var(--purple-20); }
+        .topbar-nav.active { color: var(--purple); font-weight: 600; }
+
+        .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+        .hero {
+            text-align: center; padding: 40px 0 32px;
+            border-bottom: 1px solid var(--border); margin-bottom: 32px;
+        }
+        .hero-date { font-size: 13px; color: var(--text-3); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-title { font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+        .hero-sub { font-size: 15px; color: var(--text-2); max-width: 640px; margin: 0 auto 24px; line-height: 1.7; }
+
+        .section { margin-bottom: 40px; }
+        .section-head {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 16px; padding-bottom: 8px;
+            border-bottom: 2px solid var(--purple-40);
+        }
+        .sec-dot { width: 6px; height: 6px; background: var(--purple); border-radius: 2px; }
+        .sec-title { font-size: 14px; font-weight: 600; color: var(--purple); text-transform: uppercase; letter-spacing: 0.8px; }
+        .sec-count { font-size: 11px; color: var(--text-3); margin-left: auto; }
+
+        .matrix-pre {
+            font-family: "SF Mono", "Fira Code", Consolas, monospace;
+            font-size: 12px; line-height: 1.6;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 16px; overflow-x: auto; color: var(--text);
+        }
+        .matrix-summary {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 16px 20px; margin-top: 16px;
+            font-size: 13.5px; color: var(--text-2); line-height: 1.75;
+        }
+        .matrix-summary strong { color: var(--text); }
+
+        /* Signal Matrix */
+        .matrix-wrap {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 20px; overflow-x: auto;
+        }
+        .matrix-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .matrix-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+        .matrix-table td { padding: 10px; vertical-align: top; border-bottom: 1px solid var(--border); }
+        .matrix-table tr:last-child td { border-bottom: none; }
+        .matrix-layer { font-weight: 700; font-size: 12px; color: var(--purple); white-space: nowrap; }
+        .matrix-signal { font-size: 12px; line-height: 1.6; color: var(--text-2); }
+        .matrix-strength { font-size: 13px; letter-spacing: 2px; white-space: nowrap; text-align: center; }
+
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 20px; transition: border-color 0.15s;
+        }
+        .card:hover { border-color: var(--purple-40); }
+        .card-tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 3px; display: inline-block; margin-bottom: 8px; }
+        .card-tag-high { background: var(--green-bg); color: var(--green); }
+        .card-tag-mid { background: var(--orange-bg); color: var(--orange); }
+        .card-tag-new { background: var(--blue-bg); color: var(--blue); }
+        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .card-sub { font-size: 12px; color: var(--text-3); margin-bottom: 12px; }
+        .card-body { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+        .card-body strong { color: var(--text); }
+        .card-body ul { margin: 8px 0 8px 16px; }
+        .card-body li { margin-bottom: 4px; }
+        .card-footer { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+        .card-footer a { font-size: 11px; color: var(--purple-80); text-decoration: none; margin-right: 10px; }
+        .card-footer a:hover { text-decoration: underline; }
+
+        .mini-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .mini-stat { background: var(--bg-page); border-radius: 6px; padding: 8px 10px; }
+        .mini-stat-val { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .mini-stat-label { font-size: 10px; color: var(--text-3); }
+
+        .data-table-wrap {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            overflow: hidden; margin-bottom: 20px;
+        }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th {
+            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-3); background: var(--bg-page); padding: 10px 12px; text-align: left;
+            border-bottom: 1px solid var(--border); white-space: nowrap;
+        }
+        .data-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover td { background: var(--purple-20); }
+        .data-table .bold { font-weight: 700; }
+        .data-table .highlight { color: var(--purple); font-weight: 600; }
+        .data-table .best { background: var(--purple-20); border-radius: 3px; padding: 1px 4px; font-weight: 700; color: var(--purple); }
+        .data-table .model-name { font-weight: 600; white-space: nowrap; }
+        .data-table .vendor { font-size: 11px; color: var(--text-3); }
+        .data-table .tag-mit { font-size: 10px; background: var(--green-bg); color: var(--green); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+        .data-table .tag-closed { font-size: 10px; background: var(--red-bg); color: var(--red); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+        .data-table .tag-open { font-size: 10px; background: var(--blue-bg); color: var(--blue); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+        .data-table .up { color: var(--green); font-size: 12px; }
+        .data-table .down { color: var(--red); font-size: 12px; }
+        .data-table .new-row td { background: var(--blue-bg); }
+        .data-table .meta { font-size: 11px; color: var(--text-3); font-style: italic; }
+
+        .insight-block {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 20px; margin-bottom: 20px;
+        }
+        .insight-block h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+        .insight-block p { font-size: 13px; color: var(--text-2); line-height: 1.7; margin-bottom: 8px; }
+        .insight-block p:last-child { margin-bottom: 0; }
+        .insight-block strong { color: var(--text); }
+        .insight-block table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+        .insight-block th { background: var(--bg-page); padding: 6px 10px; text-align: left; border: 1px solid var(--border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-3); }
+        .insight-block td { padding: 6px 10px; border: 1px solid var(--border); }
+        .insight-block td:first-child { font-weight: 600; white-space: nowrap; }
+
+        .judgment-list { display: grid; gap: 12px; }
+        .judgment-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 16px 20px;
+        }
+        .judgment-num {
+            font-size: 11px; font-weight: 700; color: var(--purple);
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+        }
+        .judgment-text { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+        .judgment-text strong { color: var(--text); }
+
+        .watch-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+        .watch-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 14px 16px;
+        }
+        .watch-num { font-size: 11px; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .watch-text { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+        .watch-text strong { color: var(--text); }
+
+        .pred-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .pred-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+        .pred-vendor { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+        .pred-model { font-size: 13px; font-weight: 700; color: var(--purple); margin-bottom: 4px; }
+        .pred-meta { font-size: 11px; color: var(--text-3); }
+        .pred-badge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px; margin-left: 6px; font-weight: 600; }
+        .pred-badge-mid { background: var(--orange-bg); color: var(--orange); }
+        .pred-badge-low { background: var(--blue-bg); color: var(--blue); }
+
+        .sub-section { margin-bottom: 20px; }
+        .sub-section-title {
+            font-size: 13px; font-weight: 700; color: var(--text);
+            margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+        }
+
+        .sources { font-size: 11px; color: var(--text-3); line-height: 1.8; margin-top: 8px; }
+        .sources a { color: var(--purple-80); text-decoration: none; }
+        .sources a:hover { text-decoration: underline; }
+
+        .vendor-section { margin-bottom: 24px; }
+        .vendor-name { font-size: 16px; font-weight: 700; color: var(--purple); margin-bottom: 10px; }
+
+        .footer { text-align: center; font-size: 11px; color: var(--text-3); padding: 24px 0; border-top: 1px solid var(--border); margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-left">
+        <a class="topbar-brand" href="../topic-frontier-models.html">← 专题</a>
+        <span class="topbar-tagline">前沿模型周报</span>
+    </div>
+    <div class="topbar-right">
+        <nav>
+            <a class="topbar-nav" href="#signal">信号</a>
+            <a class="topbar-nav" href="#models">模型发布</a>
+            <a class="topbar-nav" href="#industry">行业动态</a>
+            <a class="topbar-nav" href="#insights">趋势洞察</a>
+            <a class="topbar-nav" href="#vendors">厂商视图</a>
+            <a class="topbar-nav" href="#benchmark">Benchmark</a>
+            <a class="topbar-nav" href="#outlook">前瞻</a>
+        </nav>
+    </div>
+</div>
+
+<div class="container">
+
+<!-- Hero -->
+<div class="hero" id="top">
+    <div class="hero-date">2026.04.29 — 05.06</div>
+    <h1 class="hero-title">前沿模型周报</h1>
+    <p class="hero-sub">基于 04.29-05.06 前沿动态的全栈信号分析<br>置信度标注：高 = 多源交叉验证 | 中 = 有数据支撑但需持续观察 | 低 = 单一信号</p>
+</div>
+
+<!-- Signal Matrix -->
+<div class="section" id="signal">
+    <div class="section-head">
+        <span class="sec-dot"></span>
+        <span class="sec-title">信号矩阵</span>
+    </div>
+    <div class="matrix-summary">
+        本周格局：模型层同时出现「天花板暴露」和「地板下压」——<strong>ARC-AGI-3</strong> 证明顶级模型在无指令探索上近乎完全失败（0.43% vs 人类 100%），而 <strong>Grok 4.3</strong> 将前沿闭源模型 API 价格打到 <strong>$1.25/$2.50</strong>。xAI 正在从「追赶者」变为「性价比定义者」。同时 <strong>OpenAI 解除 Azure 独占</strong>（可上 AWS Bedrock）、<strong>GPT-5.5 Pro</strong> 在 FrontierMath 创新高（T1-3 达 52%）并解决 60 年 Erdős 问题——基础设施层和数学推理层都在发生结构性变化。
+    </div>
+    <div class="matrix-wrap">
+        <table class="matrix-table">
+            <thead>
+                <tr>
+                    <th>主线</th>
+                    <th>信号</th>
+                    <th>强度</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="matrix-layer"><strong>主线 A：能力跃迁</strong></td>
+                    <td class="matrix-signal">ARC-AGI-3 暴露推理缺口 / GPT-5.5 0.43% vs 人类 100% / Grok Voice 语音 Agent SOTA / Grok 4.3 GDPval-AA +321 / Tencent Hy3 快慢思考双模式 / IKP: Scaling 远未饱和(复现确认) / Claude Code 质量事故确认 / OpenAI 解除 Azure 独占（L1/L3） / GPT-5.5 Pro 数学突破 + Erdős / GPT-5.5 网络安全追平 Mythos</td>
+                    <td class="matrix-strength">★★★ 极强</td>
+                </tr>
+                <tr>
+                    <td class="matrix-layer"><strong>主线 B：效率革命</strong></td>
+                    <td class="matrix-signal">Grok 4.3 降价 58% / xAI $1.25/$2.50 新底价 / Tencent Hy3 295B/21B 开源 / Grok 4.3 207 tok/s 速度跃升 / DeepSeek V4 Flash $0.07/$0.14 持续 / 开源阵营扩大（+Tencent）</td>
+                    <td class="matrix-strength">★★★ 极强</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 模型发布 -->
+<div class="section" id="models">
+    <div class="section-head">
+        <span class="sec-dot"></span>
+        <span class="sec-title">模型发布</span>
+        <span class="sec-count">5 条</span>
+    </div>
+    <div class="cards">
+
+        <!-- 1. Grok 4.3 -->
+        <div class="card">
+            <span class="card-tag card-tag-high">置信度：高</span>
+            <div class="card-title">Grok 4.3</div>
+            <div class="card-sub">xAI · 4/30 · 从追赶者到性价比定义者</div>
+            <div class="card-body">
+                xAI 于 4/30 悄然推送 Grok 4.3 到 API，同时在价格和速度上做出激进调整。<strong>Input 降 40%，Output 降 58%</strong>——$1.25/$2.50 是当前闭源前沿模型的最低价（仅 DeepSeek V4 系列更便宜，但 DeepSeek 是开源 MIT）。
+                <ul>
+                    <li><strong>GDPval-AA ELO +321</strong>（1179→1500）：迄今最大单次跳跃</li>
+                    <li>GPQA 88.0%、SWE-Verified 70.0%——在编程和推理上仍落后 Opus 4.7</li>
+                    <li>速度 <strong>207 tok/s</strong>；Imagine 代理模式支持图像生成</li>
+                    <li>Anthropic/OpenAI 挤压：高端能力不够但价格极度激进</li>
+                </ul>
+            </div>
+            <div class="mini-stats">
+                <div class="mini-stat"><div class="mini-stat-val">$1.25</div><div class="mini-stat-label">Input $/M</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">$2.50</div><div class="mini-stat-label">Output $/M</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">1500</div><div class="mini-stat-label">ELO (+321)</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">207</div><div class="mini-stat-label">tok/s</div></div>
+            </div>
+            <div class="card-footer">
+                <a href="https://artificialanalysis.ai/articles/xai-launches-grok-4-3-with-improved-agentic-performance-and-lower-pricing" target="_blank">Artificial Analysis</a>
+                <a href="https://www.therift.ai/news-feed/xai-launches-grok-4-3-on-api-as-fastest-reasoning-model" target="_blank">The Rift</a>
+                <a href="https://www.roborhythms.com/grok-4-3-release-april-2026/" target="_blank">Roborhythms</a>
+            </div>
+        </div>
+
+        <!-- 2. Grok Voice -->
+        <div class="card">
+            <span class="card-tag card-tag-new">新发布</span>
+            <div class="card-title">Grok Voice Think Fast 1.0</div>
+            <div class="card-sub">xAI · 4/27 · 语音 Agent SOTA + Starlink 实战</div>
+            <div class="card-body">
+                xAI 首个全双工语音 Agent 模型，<strong>τ-voice Bench 第一（67.3%）</strong>，超越 Gemini 3.1 Flash Live 和 GPT Realtime 1。已部署在 <strong>Starlink 客户支持线</strong>，支持 25 种语言，实测转化率 <strong>20%</strong>。
+                <ul>
+                    <li>语音 Agent 是新的分化维度</li>
+                    <li>从模型发布到大规模商业部署仅数天，xAI 闭环正在闭合</li>
+                    <li>Think Fast 命名暗示存在 Think Slow——快慢双模式可能是产品策略方向</li>
+                </ul>
+            </div>
+            <div class="mini-stats">
+                <div class="mini-stat"><div class="mini-stat-val">67.3%</div><div class="mini-stat-label">τ-voice #1</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">25</div><div class="mini-stat-label">支持语言</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">20%</div><div class="mini-stat-label">Starlink 转化率</div></div>
+            </div>
+            <div class="card-footer">
+                <a href="https://x.ai/news/grok-voice-think-fast-1" target="_blank">xAI 官方</a>
+                <a href="https://techgig.com/news/ai/xais-grok-voice-think-fast-1-0-leads-voice-bench-powers-starlink-operations/130552814" target="_blank">TechGig</a>
+            </div>
+        </div>
+
+        <!-- 3. Tencent Hy3 -->
+        <div class="card">
+            <span class="card-tag card-tag-new">新发布</span>
+            <div class="card-title">Tencent Hy3 Preview</div>
+            <div class="card-sub">Tencent · 4/23 · 重建后首个模型 · 开源</div>
+            <div class="card-body">
+                与 GPT-5.5 同日发布但上期未覆盖。腾讯混元团队 2 月推倒重建预训练和 RL 基础设施后，仅 <strong>10 周</strong>训练并发布。
+                <ul>
+                    <li><strong>295B/21B MoE，256K context</strong>，开源，支持 OpenRouter/vLLM/SGLang</li>
+                    <li>集成<strong>快慢思考双模式</strong>；前 OpenAI 研究科学家姚顺雨主导</li>
+                    <li>已在腾讯元宝、QQ 等产品中替换 DeepSeek</li>
+                    <li>开源阵营扩大；10 周训练周期暗示 AI 基础设施模块化程度正在加速</li>
+                </ul>
+            </div>
+            <div class="mini-stats">
+                <div class="mini-stat"><div class="mini-stat-val">295B/21B</div><div class="mini-stat-label">MoE</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">256K</div><div class="mini-stat-label">context</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">10周</div><div class="mini-stat-label">训练周期</div></div>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.tencent.com/en-us/articles/2202320.html" target="_blank">Tencent 官方</a>
+                <a href="https://www.forbes.com/sites/viviantoh/2026/04/23/hy3-preview-tencents-base-model-play-built-for-the-larger-ecosystem/" target="_blank">Forbes</a>
+            </div>
+        </div>
+
+        <!-- 4. GPT-5.5 Pro 数学 + Erdős -->
+        <div class="card">
+            <span class="card-tag card-tag-high">置信度：高</span>
+            <div class="card-title">GPT-5.5 Pro 数学推理突破 + Erdős</div>
+            <div class="card-sub">OpenAI · 4/28-29 · 独立数学推理转折点</div>
+            <div class="card-body">
+                <strong>FrontierMath 新高：</strong>T1-3 达 <strong>52%</strong>（GPT-5.4 Pro 未披露），T4 达 <strong>40%</strong>，首次有模型解出 2 道 T4 题目。Epoch Capabilities Index 达 <strong>159</strong>（新高）。
+                <ul>
+                    <li><strong>Erdős 1196 问题</strong>：GPT-5.4 Pro 在 23 岁研究者引导下，80 分钟内解决了 64 年未解问题，解法被 Terence Tao 验证为「简洁且优雅」</li>
+                    <li>叙事变化：AI 正在从「数学辅助工具」向「独立数学推理者」转变——前提是人类引导方式需要创新</li>
+                </ul>
+            </div>
+            <div class="mini-stats">
+                <div class="mini-stat"><div class="mini-stat-val">159</div><div class="mini-stat-label">ECI（新高）</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">52%</div><div class="mini-stat-label">FM T1-3</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">40%</div><div class="mini-stat-label">FM T4</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">80min</div><div class="mini-stat-label">Erdős 1196</div></div>
+            </div>
+            <div class="card-footer">
+                <a href="https://x.com/EpochAIResearch/status/2049186851844771888" target="_blank">Epoch AI</a>
+                <a href="https://www.reddit.com/r/ChatGPT/comments/1swn1bs/chatgpt_54_solved_a_64yearold_math_problem/" target="_blank">Reddit / Tao 验证</a>
+            </div>
+        </div>
+
+        <!-- 5. GPT-5.5 网安追平 Mythos -->
+        <div class="card">
+            <span class="card-tag card-tag-high">置信度：高</span>
+            <div class="card-title">GPT-5.5 网络安全追平 Mythos</div>
+            <div class="card-sub">OpenAI · 4/30 · 叙事修正</div>
+            <div class="card-body">
+                UK AI Security Institute 报告：<strong>GPT-5.5 成为第二个</strong>端到端完成多步网络攻击模拟的模型（第一个是 Claude Mythos）。
+                <ul>
+                    <li>GPT-5.5 平均通过率 <strong>71.4%</strong> vs Claude Mythos <strong>68.6%</strong>——追平甚至略微超过</li>
+                    <li>TLO chain 解决率：GPT-5.5 2/10，Claude Mythos 3/10</li>
+                    <li>本报告此前引用的「Anthropic 在网络安全独占领先」叙事被修正</li>
+                    <li>网络安全不再是 Anthropic 的独有护城河</li>
+                </ul>
+            </div>
+            <div class="mini-stats">
+                <div class="mini-stat"><div class="mini-stat-val">71.4%</div><div class="mini-stat-label">GPT-5.5 通过率</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">68.6%</div><div class="mini-stat-label">Mythos 通过率</div></div>
+            </div>
+            <div class="card-footer">
+                <a href="https://x.com/AISecurityInst/status/2049868227740565890" target="_blank">UK AISI</a>
+                <a href="https://x.com/scaling01/status/2049870801998864606" target="_blank">@scaling01</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- 行业动态 -->
+<div class="section" id="industry">
+    <div class="section-head">
+        <span class="sec-dot"></span>
+        <span class="sec-title">行业动态</span>
+        <span class="sec-count">5 条</span>
+    </div>
+    <div class="cards">
+
+        <!-- 1. ARC-AGI-3 -->
+        <div class="card">
+            <span class="card-tag card-tag-high">置信度：高</span>
+            <div class="card-title">ARC-AGI-3 深度分析</div>
+            <div class="card-sub">5/3 · GPT-5.5 和 Opus 4.7 的推理缺陷被解剖</div>
+            <div class="card-body">
+                ARC Prize Foundation 分析了 160 次交互运行，揭示 <strong>三种系统性推理错误</strong>：
+                <ul>
+                    <li>GPT-5.5 <strong>0.43%</strong> vs 人类 100%——233x 差距</li>
+                    <li>Claude Opus 4.7 <strong>0.18%</strong>——556x 差距</li>
+                    <li>Gemini 3.1 Pro 0.37%</li>
+                </ul>
+                <strong>三种错误模式：</strong>
+                <ul>
+                    <li>Opus：<strong>错误模式强加</strong>——将熟悉模式强行套用到不熟悉任务</li>
+                    <li>GPT-5.5：<strong>假设放弃过早</strong>——形成正确假设后过早放弃</li>
+                    <li>两者：<strong>探索不足</strong>——系统性未能充分探索环境</li>
+                </ul>
+                <strong>这不是「分数低」，而是「推理模式根本不同」</strong>——当前模型所有推理建立在「压缩已知模式」上，ARC-AGI-3 要求的是「在无指令环境中从零发现规律」。
+            </div>
+            <div class="card-footer">
+                <a href="https://arcprize.org/blog/arc-agi-3-gpt-5-5-opus-4-7-analysis" target="_blank">ARC Prize</a>
+                <a href="https://the-decoder.com/even-the-latest-ai-models-make-three-systematic-reasoning-errors-arc-agi-3-analysis-shows/" target="_blank">The Decoder</a>
+            </div>
+        </div>
+
+        <!-- 2. IKP 论文 -->
+        <div class="card">
+            <span class="card-tag card-tag-mid">置信度：中</span>
+            <div class="card-title">IKP 论文（5/1）</div>
+            <div class="card-sub">反推闭源模型参数量 · 核心结论成立，数字不可靠</div>
+            <div class="card-body">
+                Pine AI 首席科学家单人论文，利用信息论下界通过 <strong>1,400 道跨 7 个冷僻度等级的事实问答</strong>测量模型知识容量，反推参数量。
+                <ul>
+                    <li><strong>核心结论成立</strong>（LessWrong 独立复现确认）：事实记忆与参数量的对数线性关系斜率稳定在 ~0.15；Densing Law 确实不成立；scaling 远未饱和</li>
+                    <li><strong>但具体数字不可靠</strong>：代码存在 per-tier flooring（论文声称未做），~10% 高难度题目有歧义或答案错误</li>
+                    <li>修正后：GPT-5.5 从 ~9.7T <strong>降至 ~1.5T</strong>；Opus 4.7 从 ~4T <strong>降至 ~1.1T</strong></li>
+                    <li>具体参数量对方法论选择极度敏感，不应作为可靠数字引用</li>
+                </ul>
+            </div>
+            <div class="mini-stats">
+                <div class="mini-stat"><div class="mini-stat-val">0.917</div><div class="mini-stat-label">原论文 R²</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">~1.5T</div><div class="mini-stat-label">GPT-5.5（修正后）</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">~1.1T</div><div class="mini-stat-label">Opus 4.7（修正后）</div></div>
+            </div>
+            <div class="card-footer">
+                <a href="https://arxiv.org/abs/2604.24827" target="_blank">arXiv</a>
+                <a href="https://www.lesswrong.com/posts/veFMEzDDyWaer2Sms/sanity-checking-incompressible-knowledge-probes" target="_blank">LessWrong 复现</a>
+            </div>
+        </div>
+
+        <!-- 3. Claude Code 事故 -->
+        <div class="card">
+            <span class="card-tag card-tag-high">置信度：高</span>
+            <div class="card-title">Claude Code 质量事故</div>
+            <div class="card-sub">Anthropic · 后续影响（事故发生于上期，本周确认修复）</div>
+            <div class="card-body">
+                上期已报道 Claude Code 三个 bug 导致 6 周质量下降。本周后续：
+                <ul>
+                    <li>Anthropic 承诺<strong>更严格质量控制流程</strong>，防止「小改动复合成大事故」</li>
+                    <li>swyx 分析（5/5）：网上「Opus 4.7 退步」说法多为轶事证据，离线和在线评估均指向明确进步</li>
+                    <li>Opus 4.7 谄媚率<strong>降低 50%</strong>（5/1）：相比 4.5 谄媚率减半</li>
+                    <li>但 Forbes/Veracode 报告：Claude 生成代码安全性仍低于竞品，安全护栏信誉尚未完全恢复</li>
+                </ul>
+                benchmark 能力（SWE-Pro 64.3%）和产品可靠性正在<strong>脱钩</strong>。
+            </div>
+            <div class="mini-stats">
+                <div class="mini-stat"><div class="mini-stat-val">6周</div><div class="mini-stat-label">事故时长</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">3个</div><div class="mini-stat-label">Bug 数</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">-50%</div><div class="mini-stat-label">谄媚率变化</div></div>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.theregister.com/2026/04/23/anthropic_says_it_has_fixed/" target="_blank">The Register</a>
+                <a href="https://the-decoder.com/anthropic-confirms-claude-code-problems-and-promises-stricter-quality-controls/" target="_blank">The Decoder</a>
+            </div>
+        </div>
+
+        <!-- 4. OpenAI 解除 Azure 独占 -->
+        <div class="card">
+            <span class="card-tag card-tag-high">置信度：高</span>
+            <div class="card-title">OpenAI 解除 Azure 独占</div>
+            <div class="card-sub">4/27 · 闭源前沿玩家的基础设施策略分化</div>
+            <div class="card-body">
+                OpenAI 更新合作协议：Microsoft 仍是主要云，但 OpenAI 现在可以<strong>跨所有云平台分发模型</strong>。AWS CEO Jassy 确认 OpenAI 模型<strong>数周内登陆 AWS Bedrock</strong>。Simon Willison 指出新条款实质上<strong>废除了旧的 AGI 条款</strong>。
+                <ul>
+                    <li>与 Anthropic 被 Google $40B+5GW 算力绑定形成鲜明对比——两个闭源前沿玩家的基础设施策略正在分化</li>
+                    <li>OpenAI 可使用 Google TPU、AWS Trainium 等非 NVIDIA 基础设施，算力来源多元化</li>
+                    <li>Copilot 6/1 转按用量计费后 Claude 模型 9 倍涨价，可能加速开发者转向 OpenAI 模型</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="https://x.com/sama/status/2048755148361707946" target="_blank">Sam Altman</a>
+                <a href="https://x.com/ajassy/status/2048806022253609115" target="_blank">Jassy</a>
+            </div>
+        </div>
+
+        <!-- 5. CAISI 双重动作 -->
+        <div class="card">
+            <span class="card-tag card-tag-high">置信度：高</span>
+            <div class="card-title">CAISI 双重动作</div>
+            <div class="card-sub">5/1 & 5/5 · 安全审查签约 + DeepSeek 评估 · 监管从审查走向定义</div>
+            <div class="card-body">
+                <strong>动作一（5/5）：</strong>CAISI 与 Google DeepMind、Microsoft、xAI 签署协议，在模型公开发布前进行国家安全评估（OpenAI/Anthropic 已有旧协议）。
+
+                <strong>动作二（5/1）：</strong>CAISI 首次对中国前沿模型发布系统性评估。DeepSeek V4-Pro 总分 ~800 vs GPT-5.5 >1200，差距判定 <strong>≈8 个月前的 GPT-5</strong>。成本优势确认：vs GPT-5.4 mini，7 项中 <strong>5 项更便宜</strong>（41%-53%）。
+
+                <ul>
+                    <li>方法论争议：The Decoder 质疑 CAISI「很可能带有自身政治目的」；Artificial Analysis 认为差距实际在缩小</li>
+                    <li>DeepSeek 自评与 CAISI 评估相差一个版本（V4-Pro vs GPT-5.4 vs CAISI 定为 GPT-5）</li>
+                    <li>CAISI 同时做「安全门控」和「竞争定位」——监管双轨制</li>
+                </ul>
+            </div>
+            <div class="mini-stats">
+                <div class="mini-stat"><div class="mini-stat-val">~800</div><div class="mini-stat-label">V4-Pro 总分</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">>1200</div><div class="mini-stat-label">GPT-5.5 总分</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">~8月</div><div class="mini-stat-label">差距判定</div></div>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.nist.gov/news-events/news/2026/05/caisi-signs-agreements-regarding-frontier-ai-national-security-testing" target="_blank">NIST 安全审查</a>
+                <a href="https://www.nist.gov/news-events/news/2026/05/caisi-evaluation-deepseek-v4-pro" target="_blank">NIST DeepSeek 评估</a>
+                <a href="https://www.cnbc.com/2026/05/05/ai-oversight-trump-google-microsoft-xai.html" target="_blank">CNBC</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- 其他趋势洞察 -->
+<div class="section" id="insights">
+    <div class="section-head">
+        <span class="sec-dot"></span>
+        <span class="sec-title">其他趋势洞察</span>
+    </div>
+    <div class="cards">
+
+        <!-- 新范式：多模型编排 -->
+        <div class="card">
+            <span class="card-tag card-tag-new">新范式</span>
+            <div class="card-title">从「单模型 Scaling」到「多模型编排」</div>
+            <div class="card-sub">Sakana AI · 7B RL 编排器超越池中所有单模型</div>
+            <div class="card-body">
+                Sakana AI 将 ICLR 2026 论文 Conductor 商业化为 <strong>Sakana Fugu</strong>——一个仅 <strong>7B 参数</strong>的 RL 训练模型，学习动态编排多个前沿大模型完成复杂任务，而非自身解决问题。
+                <ul>
+                    <li><strong>Fugu-ultra</strong>（商业化）：GPQA Diamond <strong>95.1%</strong>，LiveCodeBench <strong>93.2%</strong>，SWE-Pro <strong>54.2%</strong></li>
+                    <li><strong>Conductor</strong>（ICLR 2026）：GPQA-Diamond 87.5%，LiveCodeBench 83.9%</li>
+                    <li>7B 编排器在 GPQA Diamond 上超越池中所有单个前沿模型——「不训练更大模型，训练更好的调度器」成为 test-time scaling 新维度</li>
+                    <li><strong>注意：</strong>目前仅有 Sakana 自述数据，第三方验证待观察</li>
+                </ul>
+            </div>
+            <div class="mini-stats">
+                <div class="mini-stat"><div class="mini-stat-val">7B</div><div class="mini-stat-label">编排器参数</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">95.1%</div><div class="mini-stat-label">GPQA Diamond</div></div>
+                <div class="mini-stat"><div class="mini-stat-val">93.2</div><div class="mini-stat-label">LiveCodeBench</div></div>
+            </div>
+            <div class="card-footer">
+                <a href="https://sakana.ai/fugu-beta/" target="_blank">Sakana AI</a>
+            </div>
+        </div>
+
+        <!-- Benchmark 饱和与新前沿 -->
+        <div class="card">
+            <span class="card-tag card-tag-mid">置信度：中</span>
+            <div class="card-title">Benchmark 饱和与新前沿</div>
+            <div class="card-sub">饱和维度 vs 新战场</div>
+            <div class="card-body">
+                <table style="width:100%;border-collapse:collapse;font-size:12px;margin:10px 0;">
+                    <tr style="border-bottom:1px solid var(--border);background:var(--green-bg);"><td style="padding:4px 6px;font-weight:600;color:var(--green);">已饱和</td><td style="padding:4px 6px;">GPQA</td><td style="padding:4px 6px;">Claude Mythos 94.6%</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);background:var(--green-bg);"><td style="padding:4px 6px;font-weight:600;color:var(--green);">已饱和</td><td style="padding:4px 6px;">AIME</td><td style="padding:4px 6px;">GPT-5.2/Gemini 100%</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);background:var(--green-bg);"><td style="padding:4px 6px;font-weight:600;color:var(--green);">已饱和</td><td style="padding:4px 6px;">LiveCodeBench</td><td style="padding:4px 6px;">DeepSeek V4-Pro 93.5</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);background:var(--green-bg);"><td style="padding:4px 6px;font-weight:600;color:var(--green);">饱和</td><td style="padding:4px 6px;">Terminal-Bench 2.0</td><td style="padding:4px 6px;">GPT-5.5 82.7%</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);background:var(--orange-bg);"><td style="padding:4px 6px;font-weight:600;color:var(--orange);">分化</td><td style="padding:4px 6px;">SWE-bench Pro</td><td style="padding:4px 6px;">Claude Mythos 77.8%</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);background:var(--orange-bg);"><td style="padding:4px 6px;font-weight:600;color:var(--orange);">分化</td><td style="padding:4px 6px;">HLE</td><td style="padding:4px 6px;">Claude Mythos 64.7%</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);background:var(--blue-bg);"><td style="padding:4px 6px;font-weight:600;color:var(--blue);">新战场</td><td style="padding:4px 6px;">ARC-AGI-3</td><td style="padding:4px 6px;">GPT-5.5 0.43%（人类100%）</td></tr>
+                    <tr style="background:var(--blue-bg);"><td style="padding:4px 6px;font-weight:600;color:var(--blue);">新战场</td><td style="padding:4px 6px;">τ-voice</td><td style="padding:4px 6px;">Grok Voice 67.3%</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 开源 vs 闭源 -->
+        <div class="card">
+            <span class="card-tag card-tag-high">置信度：高</span>
+            <div class="card-title">开源 vs 闭源：阵营再扩大</div>
+            <div class="card-sub">DeepSeek + Tencent Hy3 + Kimi K2.6 构成中国开源矩阵</div>
+            <div class="card-body">
+                <table style="width:100%;border-collapse:collapse;font-size:12px;margin:10px 0;">
+                    <tr style="border-bottom:1px solid var(--border);"><td style="padding:4px 6px;font-weight:600;">DeepSeek</td><td style="padding:4px 6px;">V4-Pro/Flash</td><td style="padding:4px 6px;"><span class="tag-mit">MIT</span></td><td style="padding:4px 6px;color:var(--green);">坚持开源</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);"><td style="padding:4px 6px;font-weight:600;">Tencent</td><td style="padding:4px 6px;">Hy3 Preview</td><td style="padding:4px 6px;"><span class="tag-mit">MIT</span></td><td style="padding:4px 6px;color:var(--blue);font-weight:600;">新加入开源</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);"><td style="padding:4px 6px;font-weight:600;">Moonshot AI</td><td style="padding:4px 6px;">Kimi K2.6</td><td style="padding:4px 6px;"><span class="tag-open">Modified MIT</span></td><td style="padding:4px 6px;">开源</td></tr>
+                    <tr style="border-bottom:1px solid var(--border);"><td style="padding:4px 6px;font-weight:600;">Meta</td><td style="padding:4px 6px;">Muse Spark</td><td style="padding:4px 6px;"><span class="tag-closed">闭源</span></td><td style="padding:4px 6px;color:var(--red);">转闭源</td></tr>
+                    <tr><td style="padding:4px 6px;font-weight:600;">Alibaba</td><td style="padding:4px 6px;">Qwen3.6-Max</td><td style="padding:4px 6px;"><span class="tag-closed">闭源</span></td><td style="padding:4px 6px;">闭源</td></tr>
+                </table>
+                <strong>净效应：</strong>DeepSeek + Tencent Hy3 + Kimi K2.6 三家中国实验室构成开源矩阵，但 Meta 和阿里转闭源的趋势未变。中美 AI 差距的叙事本身正在成为地缘博弈的一部分。
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- 厂商演进视图 -->
+<div class="section" id="vendors">
+    <div class="section-head">
+        <span class="sec-dot"></span>
+        <span class="sec-title">厂商演进视图</span>
+    </div>
+
+    <!-- OpenAI -->
+    <div class="vendor-section">
+        <div class="vendor-name">OpenAI</div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>模型</th>
+                        <th>发布日期</th>
+                        <th>间隔</th>
+                        <th>SWE-Pro</th>
+                        <th>Terminal-Bench</th>
+                        <th>GPQA</th>
+                        <th>定价 $/M</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-name">GPT-5.2</td>
+                        <td>2025-10-15</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>92.4%</td>
+                        <td>$1.5/$14</td>
+                        <td class="vendor"></td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.3 Codex</td>
+                        <td>2025-12-20</td>
+                        <td>2月</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>$1.75/$14</td>
+                        <td class="vendor">编程特化</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.4</td>
+                        <td>2026-03-05</td>
+                        <td>2月</td>
+                        <td>57.7%</td>
+                        <td>75.1%</td>
+                        <td>92.8%</td>
+                        <td>$2.5/$15</td>
+                        <td class="vendor">1M ctx</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.4 Pro</td>
+                        <td>2026-03-05</td>
+                        <td>0天</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>94.4%</td>
+                        <td>$30/$180</td>
+                        <td class="vendor"></td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.4-Cyber</td>
+                        <td>2026-04-16</td>
+                        <td>1月</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>TAC</td>
+                        <td class="vendor">安全专用</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-Rosalind</td>
+                        <td>2026-04-17</td>
+                        <td>1天</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>TAC</td>
+                        <td class="vendor">生命科学</td>
+                    </tr>
+                    <tr style="background:var(--purple-20);">
+                        <td class="model-name"><strong>GPT-5.5</strong></td>
+                        <td><strong>2026-04-23</strong></td>
+                        <td><strong>48天</strong></td>
+                        <td class="highlight">58.6%</td>
+                        <td class="highlight best">82.7%</td>
+                        <td>93.6%</td>
+                        <td>$5/$30</td>
+                        <td class="vendor">Spud</td>
+                    </tr>
+                    <tr style="background:var(--purple-20);">
+                        <td class="model-name"><strong>GPT-5.5 Pro</strong></td>
+                        <td><strong>2026-04-23</strong></td>
+                        <td>0天</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>$30/$180</td>
+                        <td class="vendor">FM T4 39.6%</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name" style="color:var(--text-3);">GPT-6</td>
+                        <td style="color:var(--text-3);">预期 Q3</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td class="vendor">Polymarket 45%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Anthropic -->
+    <div class="vendor-section">
+        <div class="vendor-name">Anthropic</div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>模型</th>
+                        <th>发布日期</th>
+                        <th>间隔</th>
+                        <th>SWE-Pro</th>
+                        <th>Terminal-Bench</th>
+                        <th>GPQA</th>
+                        <th>定价 $/M</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-name">Claude Opus 4.6</td>
+                        <td>2026-02-05</td>
+                        <td>—</td>
+                        <td>53.4%</td>
+                        <td>65.4%</td>
+                        <td>91.3%</td>
+                        <td>$5/$25</td>
+                        <td class="vendor"></td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Claude Sonnet 4.6</td>
+                        <td>2026-02-17</td>
+                        <td>12天</td>
+                        <td>—</td>
+                        <td>59.1%</td>
+                        <td>89.9%</td>
+                        <td>$3/$15</td>
+                        <td class="vendor">性价比款</td>
+                    </tr>
+                    <tr style="background:var(--purple-20);">
+                        <td class="model-name"><strong>Claude Opus 4.7</strong></td>
+                        <td><strong>2026-04-16</strong></td>
+                        <td>2月</td>
+                        <td class="highlight best">64.3%</td>
+                        <td>69.4%</td>
+                        <td class="highlight">94.2%</td>
+                        <td>$5/$25</td>
+                        <td class="vendor">自验证</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Claude Mythos</td>
+                        <td>受限</td>
+                        <td>—</td>
+                        <td class="bold">77.8%</td>
+                        <td class="bold">82.0%</td>
+                        <td class="bold">94.6%</td>
+                        <td>—</td>
+                        <td class="vendor">不公开发布</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- xAI -->
+    <div class="vendor-section">
+        <div class="vendor-name">xAI</div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>模型</th>
+                        <th>发布日期</th>
+                        <th>间隔</th>
+                        <th>GPQA</th>
+                        <th>GDPval-AA</th>
+                        <th>定价 $/M</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-name">Grok 4.1</td>
+                        <td>2025-12-01</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>$0.2/$0.5</td>
+                        <td class="vendor"></td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Grok 4.20</td>
+                        <td>2026-02-17</td>
+                        <td>2月</td>
+                        <td>—</td>
+                        <td>1179</td>
+                        <td>$2/$6</td>
+                        <td class="vendor">四 Agent 并行</td>
+                    </tr>
+                    <tr style="background:var(--purple-20);">
+                        <td class="model-name"><strong>Grok 4.3</strong></td>
+                        <td><strong>2026-04-30</strong></td>
+                        <td>2月</td>
+                        <td>88.0%</td>
+                        <td class="highlight best">1500 <span style="color:var(--green);">(+321)</span></td>
+                        <td class="highlight">$1.25/$2.50</td>
+                        <td class="vendor">207 tok/s</td>
+                    </tr>
+                    <tr style="background:var(--blue-bg);">
+                        <td class="model-name"><strong>Grok Voice</strong></td>
+                        <td><strong>2026-04-27</strong></td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td class="vendor">τ-voice #1, Starlink</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name" style="color:var(--text-3);">Grok 5</td>
+                        <td style="color:var(--text-3);">预期</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td class="vendor">Musk 预告</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- DeepSeek -->
+    <div class="vendor-section">
+        <div class="vendor-name">DeepSeek</div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>模型</th>
+                        <th>发布日期</th>
+                        <th>间隔</th>
+                        <th>SWE-Verified</th>
+                        <th>LiveCodeBench</th>
+                        <th>定价 $/M</th>
+                        <th>许可证</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-name">V3.2</td>
+                        <td>2025-09</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>$0.28/$0.42</td>
+                        <td><span class="tag-mit">MIT</span></td>
+                    </tr>
+                    <tr style="background:var(--purple-20);">
+                        <td class="model-name"><strong>V4-Pro</strong></td>
+                        <td><strong>2026-04-27</strong></td>
+                        <td>~4月</td>
+                        <td class="highlight best">80.6%</td>
+                        <td class="highlight best">93.5</td>
+                        <td>$1.74/$3.48</td>
+                        <td><span class="tag-mit">MIT</span></td>
+                    </tr>
+                    <tr style="background:var(--blue-bg);">
+                        <td class="model-name"><strong>V4-Flash</strong></td>
+                        <td><strong>2026-04-27</strong></td>
+                        <td>0天</td>
+                        <td>79.0%</td>
+                        <td>91.6</td>
+                        <td class="highlight best">$0.14/$0.28</td>
+                        <td><span class="tag-mit">MIT</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 其他厂商 -->
+    <div class="vendor-section">
+        <div class="vendor-name">其他厂商</div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>厂商</th>
+                        <th>最近模型</th>
+                        <th>发布日期</th>
+                        <th>状态</th>
+                        <th>距今天数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-name">xAI</td>
+                        <td>Grok 4.3</td>
+                        <td>2026-04-30</td>
+                        <td style="color:var(--green);font-weight:600;">活跃</td>
+                        <td>6天</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">DeepSeek</td>
+                        <td>V4-Pro/Flash</td>
+                        <td>2026-04-27</td>
+                        <td style="color:var(--green);font-weight:600;">活跃</td>
+                        <td>9天</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Moonshot AI</td>
+                        <td>Kimi K2.6</td>
+                        <td>2026-04-20</td>
+                        <td style="color:var(--green);font-weight:600;">活跃</td>
+                        <td>16天</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Anthropic</td>
+                        <td>Claude Opus 4.7</td>
+                        <td>2026-04-16</td>
+                        <td style="color:var(--green);font-weight:600;">活跃</td>
+                        <td>20天</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">MiniMax</td>
+                        <td>M2.7</td>
+                        <td>2026-04-12</td>
+                        <td style="color:var(--green);font-weight:600;">活跃</td>
+                        <td>24天</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Meta</td>
+                        <td>Muse Spark</td>
+                        <td>2026-04-08</td>
+                        <td style="color:var(--green);font-weight:600;">活跃</td>
+                        <td>28天</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Tencent</td>
+                        <td>Hy3 Preview</td>
+                        <td>2026-04-23</td>
+                        <td style="color:var(--green);font-weight:600;">活跃</td>
+                        <td>13天</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Zhipu AI</td>
+                        <td>GLM-5.1</td>
+                        <td>2026-03-27</td>
+                        <td style="color:var(--orange);">等待中</td>
+                        <td>40天</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Alibaba</td>
+                        <td>Qwen3.6 Plus</td>
+                        <td>2026-03-01</td>
+                        <td style="color:var(--orange);">等待中</td>
+                        <td>66天</td>
+                    </tr>
+                    <tr style="background:var(--red-bg);">
+                        <td class="model-name"><strong>Google DeepMind</strong></td>
+                        <td>Gemini 3.1 Pro</td>
+                        <td>2026-02-19</td>
+                        <td style="color:var(--red);font-weight:600;">等待中</td>
+                        <td><strong>76天</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Benchmark 横向对比 -->
+<div class="section" id="benchmark">
+    <div class="section-head">
+        <span class="sec-dot"></span>
+        <span class="sec-title">Benchmark 横向对比</span>
+    </div>
+
+    <!-- 编程能力 -->
+    <div class="sub-section">
+        <div class="sub-section-title">编程能力（真实代码库修复 vs 人工编写的测试用例）</div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>模型</th>
+                        <th>SWE-Verified</th>
+                        <th>SWE-Pro</th>
+                        <th>Terminal-Bench</th>
+                        <th>LiveCodeBench</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-name">Claude Mythos</td>
+                        <td class="bold">93.9%<sup>1</sup></td>
+                        <td class="bold best">77.8%</td>
+                        <td>82.0%</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Claude Opus 4.7</td>
+                        <td>87.6%</td>
+                        <td class="highlight">64.3%</td>
+                        <td>69.4%</td>
+                        <td>88.8</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.5</td>
+                        <td>80.0%</td>
+                        <td>58.6%</td>
+                        <td class="best">82.7%</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">DeepSeek V4-Pro</td>
+                        <td>80.6%</td>
+                        <td>55.4%</td>
+                        <td>67.9%</td>
+                        <td class="best">93.5</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Kimi K2.6</td>
+                        <td>80.2%</td>
+                        <td>58.6%</td>
+                        <td>66.7%</td>
+                        <td>89.6</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.4</td>
+                        <td>78.2%</td>
+                        <td>57.7%</td>
+                        <td>75.1%</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GLM-5.1</td>
+                        <td>—</td>
+                        <td>58.4%</td>
+                        <td>69.0%</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Qwen3.6-Max</td>
+                        <td>—</td>
+                        <td>~57.3%</td>
+                        <td>65.4%</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Grok 4.3</td>
+                        <td>70.0%</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Gemini 3.1 Pro</td>
+                        <td>78.8%</td>
+                        <td>54.2%</td>
+                        <td>68.5%</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">MiniMax 2.7</td>
+                        <td>75.0%</td>
+                        <td>56.2%</td>
+                        <td>57.0%</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Muse Spark</td>
+                        <td>—</td>
+                        <td>52.4%</td>
+                        <td>59.0%</td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:20px;">
+            <sup>1</sup> Mythos SWE-Verified 93.9% 来自 Anthropic 官方 system card（非公开 API 测试，受限预览模型数据）
+        </div>
+    </div>
+
+    <!-- 推理 & 知识 -->
+    <div class="sub-section">
+        <div class="sub-section-title">推理 & 知识（无工具/静态问答 + ARC 系列 + 长程执行）</div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>模型</th>
+                        <th>GPQA</th>
+                        <th>ARC-AGI-1</th>
+                        <th>ARC-AGI-2</th>
+                        <th>ARC-AGI-3</th>
+                        <th>HLE (no tools)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-name">Claude Mythos</td>
+                        <td class="best">94.6%</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td class="best">64.7%</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Gemini 3.1 Pro</td>
+                        <td>94.3%</td>
+                        <td class="best">98.0%</td>
+                        <td>77.1%</td>
+                        <td>0.37%</td>
+                        <td>44.4%</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Claude Opus 4.7</td>
+                        <td>94.2%</td>
+                        <td>93.5%</td>
+                        <td>75.8%</td>
+                        <td style="color:var(--red);font-weight:700;">0.18%</td>
+                        <td>46.9%</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.5 Pro</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>43.1%</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.5</td>
+                        <td>93.6%</td>
+                        <td>95.0%</td>
+                        <td class="best">85.0%</td>
+                        <td style="color:var(--red);font-weight:700;">0.43%</td>
+                        <td>41.4%</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">DeepSeek V4-Pro</td>
+                        <td>90.1%</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Grok 4.3</td>
+                        <td>88.0%</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Muse Spark</td>
+                        <td>85.0%</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>58.0%</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name" style="font-weight:700;color:var(--text);">人类</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td style="font-weight:700;color:var(--green);">100%</td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Agent & 工具使用 -->
+    <div class="sub-section">
+        <div class="sub-section-title">Agent & 工具使用（操作系统交互 + 浏览器导航 + 网络安全 + 语音）</div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>模型</th>
+                        <th>OSWorld</th>
+                        <th>GDPval</th>
+                        <th>BrowseComp</th>
+                        <th>CyberGym</th>
+                        <th>τ-voice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-name">GPT-5.5</td>
+                        <td class="best">78.7%</td>
+                        <td>84.9%</td>
+                        <td>84.4%</td>
+                        <td class="best">81.8%</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.5 Pro</td>
+                        <td>—</td>
+                        <td>82.3%</td>
+                        <td class="best">90.1%</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Claude Opus 4.7</td>
+                        <td>78.0%</td>
+                        <td>80.3%</td>
+                        <td>79.3%</td>
+                        <td>73.1%</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Grok 4.3</td>
+                        <td>—</td>
+                        <td class="bold best">ELO 1500</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                    <tr style="background:var(--blue-bg);">
+                        <td class="model-name"><strong>Grok Voice</strong></td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td class="bold best">67.3%</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Gemini 3.1 Pro</td>
+                        <td>—</td>
+                        <td>67.3%</td>
+                        <td>85.9%</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Kimi K2.6 (Swarm)</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>86.3%</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">DeepSeek V4-Pro</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>83.4%</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- API 定价 -->
+    <div class="sub-section">
+        <div class="sub-section-title">API 定价对比（美元/百万 Token）</div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>模型</th>
+                        <th>Input $/M</th>
+                        <th>Output $/M</th>
+                        <th>上下文</th>
+                        <th>许可证</th>
+                        <th>本周变化</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-name">DeepSeek V4-Flash</td>
+                        <td>$0.14</td>
+                        <td class="bold best">$0.28</td>
+                        <td>1M</td>
+                        <td><span class="tag-mit">MIT</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Llama 4 Scout</td>
+                        <td>$0.11</td>
+                        <td>$0.34</td>
+                        <td>10M</td>
+                        <td><span class="tag-open">open-weight</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">DeepSeek V3.2</td>
+                        <td>$0.28</td>
+                        <td>$0.42</td>
+                        <td>128K</td>
+                        <td><span class="tag-mit">MIT</span></td>
+                        <td>7月退役</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">MiniMax 2.7</td>
+                        <td>$0.30</td>
+                        <td>$1.20</td>
+                        <td>1M</td>
+                        <td><span class="tag-closed">闭源</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Kimi K2.6</td>
+                        <td>$0.60</td>
+                        <td>$2.50</td>
+                        <td>262K</td>
+                        <td><span class="tag-open">Modified MIT</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr style="background:var(--blue-bg);">
+                        <td class="model-name"><strong>Grok 4.3</strong></td>
+                        <td class="bold best">$1.25</td>
+                        <td class="bold best">$2.50</td>
+                        <td>1M</td>
+                        <td><span class="tag-closed">闭源</span></td>
+                        <td style="color:var(--green);font-weight:600;">新发布，-58%</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GLM-5</td>
+                        <td>$0.72</td>
+                        <td>$2.30</td>
+                        <td>128K</td>
+                        <td><span class="tag-mit">MIT</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">DeepSeek V4-Pro</td>
+                        <td>$1.74</td>
+                        <td>$3.48</td>
+                        <td>1M</td>
+                        <td><span class="tag-mit">MIT</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Gemini 3.1 Pro</td>
+                        <td>$2.00</td>
+                        <td>$12.00</td>
+                        <td>10M</td>
+                        <td><span class="tag-closed">闭源</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.4</td>
+                        <td>$2.50</td>
+                        <td>$15.00</td>
+                        <td>1M</td>
+                        <td><span class="tag-closed">闭源</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Claude Sonnet 4.6</td>
+                        <td>$3.00</td>
+                        <td>$15.00</td>
+                        <td>200K</td>
+                        <td><span class="tag-closed">闭源</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.5</td>
+                        <td>$5.00</td>
+                        <td>$30.00</td>
+                        <td>1M</td>
+                        <td><span class="tag-closed">闭源</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Claude Opus 4.7</td>
+                        <td>$5.00</td>
+                        <td>$25.00</td>
+                        <td>200K</td>
+                        <td><span class="tag-closed">闭源</span></td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GPT-5.5 Pro</td>
+                        <td>$30.00</td>
+                        <td>$180.00</td>
+                        <td>1M</td>
+                        <td><span class="tag-closed">闭源</span></td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);">
+            Llama 4 Scout 为 open-weight 模型（可下载权重自托管），无 API 服务成本支撑，定价逻辑与商业 API 不可直接比较
+        </div>
+    </div>
+</div>
+
+<!-- 突破方向检测 -->
+<div class="section">
+    <div class="section-head">
+        <span class="sec-dot"></span>
+        <span class="sec-title">突破方向检测</span>
+    </div>
+    <div class="data-table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>维度</th>
+                    <th>状态</th>
+                    <th>领先者</th>
+                    <th>分数</th>
+                    <th>含义</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background:var(--red-bg);">
+                    <td>ARC-AGI-3</td>
+                    <td style="color:var(--red);font-weight:700;">通用推理缺口</td>
+                    <td>GPT-5.5</td>
+                    <td style="font-weight:700;">0.43%</td>
+                    <td>人类 100%，233x 差距，scaling 的硬上限</td>
+                </tr>
+                <tr>
+                    <td>SWE-bench Pro</td>
+                    <td style="color:var(--orange);">分化加剧</td>
+                    <td>Claude Mythos</td>
+                    <td>77.8%</td>
+                    <td>前 2 差 13.5%，Mythos 是否代表新范式？</td>
+                </tr>
+                <tr>
+                    <td>Terminal-Bench 2.0</td>
+                    <td>饱和</td>
+                    <td>GPT-5.5</td>
+                    <td>82.7%</td>
+                    <td>前 2 差 0.7（含 Mythos）</td>
+                </tr>
+                <tr style="background:var(--blue-bg);">
+                    <td>τ-voice</td>
+                    <td style="color:var(--blue);font-weight:700;">新战场</td>
+                    <td>Grok Voice</td>
+                    <td>67.3%</td>
+                    <td>语音 Agent 首个标准 benchmark</td>
+                </tr>
+                <tr>
+                    <td>GDPval-AA</td>
+                    <td style="color:var(--green);">跃升</td>
+                    <td>Grok 4.3</td>
+                    <td style="font-weight:700;">ELO 1500</td>
+                    <td>+321 单次最大跳跃</td>
+                </tr>
+                <tr>
+                    <td>GPQA</td>
+                    <td>饱和</td>
+                    <td>Claude Mythos</td>
+                    <td>94.6%</td>
+                    <td>前 4 差 &lt;0.5%</td>
+                </tr>
+                <tr>
+                    <td>AIME</td>
+                    <td>饱和</td>
+                    <td>GPT-5.2/Gemini</td>
+                    <td>100%</td>
+                    <td>完全失去区分度</td>
+                </tr>
+                <tr>
+                    <td>HLE</td>
+                    <td style="color:var(--orange);">分化</td>
+                    <td>Claude Mythos</td>
+                    <td>64.7%</td>
+                    <td>前 2 差 6.7%</td>
+                </tr>
+                <tr>
+                    <td>CyberGym</td>
+                    <td>新战场</td>
+                    <td>GPT-5.5</td>
+                    <td>81.8%</td>
+                    <td>网络安全成差异化</td>
+                </tr>
+                <tr style="background:var(--purple-20);">
+                    <td>多模型编排</td>
+                    <td style="color:var(--purple);font-weight:700;">新范式</td>
+                    <td>Sakana Fugu</td>
+                    <td>GPQA 95.1, LCB 93.2</td>
+                    <td>7B 编排器超越池中所有单模型</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 前瞻预判 -->
+<div class="section" id="outlook">
+    <div class="section-head">
+        <span class="sec-dot"></span>
+        <span class="sec-title">前瞻预判</span>
+    </div>
+
+    <!-- 近期可能发布 -->
+    <div class="sub-section">
+        <div class="sub-section-title">近期可能发布</div>
+        <div class="pred-grid">
+            <div class="pred-card">
+                <div class="pred-vendor">Google DeepMind</div>
+                <div class="pred-model">Gemini 3.2</div>
+                <div class="pred-meta"><span class="pred-badge pred-badge-mid">中强</span> 76天未发 + 安全审查签约 · Q2 2026</div>
+            </div>
+            <div class="pred-card">
+                <div class="pred-vendor">OpenAI</div>
+                <div class="pred-model">GPT-6</div>
+                <div class="pred-meta"><span class="pred-badge pred-badge-low">弱</span> Polymarket 45% · Q3 2026</div>
+            </div>
+            <div class="pred-card">
+                <div class="pred-vendor">Anthropic</div>
+                <div class="pred-model">Claude Mythos 扩大访问</div>
+                <div class="pred-meta"><span class="pred-badge pred-badge-mid">中</span> 受限预览中 · Q2-Q3</div>
+            </div>
+            <div class="pred-card">
+                <div class="pred-vendor">xAI</div>
+                <div class="pred-model">Grok 5</div>
+                <div class="pred-meta"><span class="pred-badge pred-badge-low">弱</span> Musk 预告 · 未知</div>
+            </div>
+            <div class="pred-card">
+                <div class="pred-vendor">Meta</div>
+                <div class="pred-model">Llama 4 Behemoth</div>
+                <div class="pred-meta"><span class="pred-badge pred-badge-low">弱</span> 长期未发布 · 未知</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 非共识判断 -->
+    <div class="sub-section">
+        <div class="sub-section-title">非共识判断</div>
+        <div class="judgment-list">
+
+            <div class="judgment-card">
+                <div class="judgment-num">判断 1</div>
+                <div class="judgment-text">
+                    <strong>「Benchmark 饱和」的表述可能掩盖了真实结构：</strong>GPQA 饱和不是因为模型接近「智能上限」，而是因为它测的是「压缩已知知识」——这个任务对当前模型基本完成了。ARC-AGI-3 近乎零分也不是因为模型「不够聪明」，而是因为它测的是「在无指令环境中从零发现规律」。用「饱和」描述这两类现象可能掩盖关键差异：在「探索式推理」这个维度上，scaling 的有效性尚未得到验证。
+                </div>
+            </div>
+
+            <div class="judgment-card">
+                <div class="judgment-num">判断 2</div>
+                <div class="judgment-text">
+                    <strong>ARC-AGI-3 的两种失败模式指向不同的推理缺陷：</strong>Opus 4.7 的问题是过度压缩（把不熟悉的任务强行塞进熟悉模式），GPT-5.5 的问题是不压缩（无法收敛到稳定假设）。Mythos 如果在 ARC-AGI-3 上同样接近零（几乎可以确定），暗示当前 LLM 范式在「探索式推理」上可能存在结构性限制——修复是否需要新的训练目标或架构，尚未有定论。
+                </div>
+            </div>
+
+            <div class="judgment-card">
+                <div class="judgment-num">判断 3</div>
+                <div class="judgment-text">
+                    <strong>开发者生态出现「模型能力 ≠ 产品体验」的第一次真实分叉：</strong>OpenAI 解除 Azure 独占（模型可上 AWS Bedrock / Google TPU）降低了接入门槛，但 @theo 的实测发现「GPT-5.5 更聪明，但 Opus 的意图理解和 taste 更好」，且 GPT-5.5 放进 Claude Code harness 后在 PostTrainBench 上未能打赢 Opus。这可能部分来自 harness 优势，也可能部分来自 Opus 在 agent 场景上的特定能力，两者难以拆分——但无论归因为何，对开发者来说结果相同：最强模型 ≠ 最佳体验。Copilot 6/1 转按用量计费后，@theo 展示了 $221/15 messages 的真实账单。三个变化同时发生（多云分发 + 用量计费 + 真实账单冲击），第一次提供了市场价格弹性的真实数据——开发者在「最强模型」「最佳体验」「最具性价比」之间的三角选择，下月就能看到。
+                </div>
+            </div>
+
+            <div class="judgment-card">
+                <div class="judgment-num">判断 4</div>
+                <div class="judgment-text">
+                    <strong>Sakana Fugu 的 SWE-Pro 54.2% 是本周最重要的未验证信号：</strong>如果第三方验证，意味着「训练更好的调度器」在编程任务上可以替代「训练更强的模型」。但目前只有 Sakana 自述数据，GPQA Diamond 和 LiveCodeBench 同样缺乏第三方验证——这两条线都需要等，不应基于未验证数据做结构性判断。
+                </div>
+            </div>
+
+            <div class="judgment-card">
+                <div class="judgment-num">判断 5</div>
+                <div class="judgment-text">
+                    <strong>Grok 4.3 的低价或许是 L1 结构优势 + accuracy 取舍，不是模型效率突破：</strong>拆解 $1.25/$2.50 的定价——xAI 自有 Colossus 集群（100K+ H100）不付云厂商溢价（L1 成本优势）；non-hallucination -8 分、Vending-Bench 2 个重大回退说明低价伴随 accuracy 代价（具体是蒸馏/量化/对齐取舍，原因未公开）。是否低于成本线取决于 xAI 未公开的算力利用率——如果 Colossus 利用率不满，边际成本可能确实很低；如果接近满载，则大概率在亏损抢开发者生态。护城河不在模型层（L2），在算力基础设施（L1）和定价策略——「性价比」需要更精细的定义。
+                </div>
+            </div>
+
+            <div class="judgment-card">
+                <div class="judgment-num">判断 6</div>
+                <div class="judgment-text">
+                    <strong>在 Agent 场景下，系统层（L3）的边际收益正在放大：</strong>三条独立证据线均来自 Terminal-Bench（agent 完成终端任务）——AHE 论文通过自进化 harness 把 Terminal-Bench 从 69.7% 提到 77.0%（+7.3pp），超 Codex-CLI 71.9%，且可跨模型迁移；Mason Drxy 仅通过 prompt 调优把 gpt-5.2-codex Terminal-Bench 从 52.8% 提到 66.5%（+13.7pp）；Sakana Fugu 7B 编排器超越池中所有单模型。<strong>但需要注意：</strong>目前所有证据集中在 Agent/编程这一个场景，Terminal-Bench 恰好是 harness 影响最大的场景——换成数学推理（FrontierMath）或知识问答（GPQA），harness 的边际贡献可能完全不同。从单场景推「L2→L3 竞争焦点全局迁移」跨度太大，更审慎的说法是：<strong>在 Agent 场景，harness engineering 可能比模型选择更能决定效果上限。</strong>这与 SemiAnalysis 观察到的利润向模型层集中是不同维度的现象——SemiAnalysis 说的是产业链利润分配（谁赚更多钱），这里说的是特定场景下的竞争要素权重（什么决定产品效果），两者不宜直接串联。
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 下周关注 -->
+    <div class="sub-section">
+        <div class="sub-section-title">下周关注</div>
+        <div class="watch-list">
+
+            <div class="watch-card">
+                <div class="watch-num">关注 1</div>
+                <div class="watch-text">
+                    <strong>Claude Mythos ARC-AGI-3 结果：</strong>如果 Mythos 在 ARC-AGI-3 上同样接近零（几乎确定），这个数据将成为重要的反事实——暗示最强编程模型在环境探索推理上可能与 GPT-5.5/Opus 4.7 无本质区别，「代码能力」和「探索推理」可能是两套不同的机制。
+                </div>
+            </div>
+
+            <div class="watch-card">
+                <div class="watch-num">关注 2</div>
+                <div class="watch-text">
+                    <strong>Copilot 6/1 调价后的开发者流向：</strong>Claude 涨价 + OpenAI 多云分发 + Azure 解除独占，三个变化同时发生。追踪 Cursor/Copilot/Claude Code 三家产品的周活或收入变化——这是模型层价格弹性第一次有真实市场数据验证。
+                </div>
+            </div>
+
+            <div class="watch-card">
+                <div class="watch-num">关注 3</div>
+                <div class="watch-text">
+                    <strong>Sakana Fugu SWE-Pro 54.2% 第三方验证：</strong>54.2% vs Opus 4.7 的 64.3% 差距已经很小，如果被验证，将意味着「训练更好的调度器」在编程场景下接近可行。
+                </div>
+            </div>
+
+            <div class="watch-card">
+                <div class="watch-num">关注 4</div>
+                <div class="watch-text">
+                    <strong>Anthropic ARR $440 亿和 OpenAI API 2x 增速之后的客户数变化：</strong>两家都在增长说明市场在扩张；一家增长而另一家停滞说明多模型路由已成现实——这是判断模型层竞争格局的最直接数据。
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- 数据来源 & footer -->
+<div class="sources">
+    <strong>数据来源：</strong>
+    <a href="https://artificialanalysis.ai/articles/xai-launches-grok-4-3-with-improved-agentic-performance-and-lower-pricing" target="_blank">Artificial Analysis</a> ·
+    <a href="https://arcprize.org/blog/arc-agi-3-gpt-5-5-opus-4-7-analysis" target="_blank">ARC Prize Foundation</a> ·
+    <a href="https://www.nist.gov/news-events/news/2026/05/caisi-signs-agreements-regarding-frontier-ai-national-security-testing" target="_blank">NIST/CAISI 安全审查</a> ·
+    <a href="https://www.nist.gov/news-events/news/2026/05/caisi-evaluation-deepseek-v4-pro" target="_blank">NIST/CAISI DeepSeek 评估</a> ·
+    <a href="https://x.ai/news/grok-voice-think-fast-1" target="_blank">xAI</a> ·
+    <a href="https://www.tencent.com/en-us/articles/2202320.html" target="_blank">Tencent</a> ·
+    <a href="https://www.theregister.com/2026/04/23/anthropic_says_it_has_fixed/" target="_blank">The Register</a> ·
+    <a href="https://www.forbes.com/sites/viviantoh/2026/04/23/hy3-preview-tencents-base-model-play-built-for-the-larger-ecosystem/" target="_blank">Forbes</a> ·
+    <a href="https://www.roborhythms.com/grok-4-3-release-april-2026/" target="_blank">Roborhythms</a> ·
+    <a href="https://x.com/EpochAIResearch/status/2049186851844771888" target="_blank">Epoch AI</a> ·
+    <a href="https://x.com/AISecurityInst/status/2049868227740565890" target="_blank">UK AISI</a> ·
+    <a href="https://x.com/sama/status/2048755148361707946" target="_blank">Sam Altman</a> ·
+</div>
+
+</div>
+
+<script>
+// Scroll-based topbar nav highlighting
+const sections = ['signal','models','industry','insights','vendors','benchmark','outlook'];
+const navLinks = document.querySelectorAll('.topbar-nav');
+
+function onScroll() {
+    const scrollY = window.scrollY + 80;
+    let current = '';
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollY) current = id;
+    });
+    navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+</script>
+
+<div class="footer">
+    <a href="../topic-frontier-models.html" style="color:var(--purple-80);text-decoration:none;">← 专题合集</a> · 生成时间：2026-05-06 · AI Research Agent
+</div>
+
+</body>
+</html>
