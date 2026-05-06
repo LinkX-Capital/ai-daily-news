@@ -40,13 +40,13 @@
    - 来源: [DeepTech深科技](http://mp.weixin.qq.com/s?__biz=MzA3NTIyODUzNA==&mid=2649796022&idx=1&sn=e4934c537e46d52def69d5000a581d3c&chksm=8699c668d3903b3f605d8f51226ec6b7fe6fff1489fbf04003e52999132d96485418d831a48b&scene=0&xtrack=1#rd)
 
 **Anthropic发布金融服务业Claude代理模板**
-- Anthropic宣布推出面向金融服务业的ready-to-run Claude代理模板，支持制作pitch、进行估值审查、月末结账等金融工作流程。模板基于Claude模型构建，开箱即用，金融机构无需从零搭建即可部署AI代理。模板代码已在GitHub开源，支持自定义扩展。
+- Anthropic宣布推出面向金融服务业的ready-to-run Claude代理模板，共**10个模板**，支持制作pitch、进行估值审查、月末结账等金融工作流程。模板可接入Claude Code、Cowork或通过托管代理运行，金融机构无需从零搭建即可部署AI代理。
   > 💡 垂直领域AI代理竞争加剧， template模式降低落地门槛
    - 来源: [@claudeai](https://x.com/claudeai/status/2051679629488865498#m)
 
 ### 算力追踪
 **OpenRouter实测GPT-5.5成本增加49-92%，但输出token增19-34%**
-- OpenRouter分析GPT-5.5与GPT-5.4的成本差异，发现定价上涨49-92%，但GPT-5.5的输出token增加19-34%。按单次任务实际消耗计算，成本增幅低于标价涨幅。OpenRouter同时提供了两代模型在不同任务类型下的token消耗对比数据。
+- OpenRouter分析GPT-5.5与GPT-5.4的成本差异，发现定价上涨**49-92%**，但GPT-5.5的输出token增加**19-34%**。即同样的prompt，GPT-5.5会生成更长的回复，实际单token价格涨幅与标价涨幅之间存在差异。
   > 💡 大模型定价策略正从纯能力转向性价比，输出长度成关键考量
    - 来源: [@openrouter](https://x.com/OpenRouter/status/2051500175554654467#m)
 
