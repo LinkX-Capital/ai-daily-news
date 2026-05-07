@@ -21,7 +21,7 @@
 **SubQ发布SSA架构 百万token长上下文推理加速52倍**
 - SubQ发布SSA（Subquadratic Sparse Attention）架构，通过内容依赖的选择性注意力实现线性计算复杂度。在1M token上下文中，prefill速度较dense attention加速**52.2×**，注意力FLOP降低**62.5×**。RULER 128K得分**95.0%**（Opus 4.6为94.8%），MRCR v2得分**65.9%**（Opus 4.6为78.3%，GPT 5.5为74.0%），SWE-Bench Verified **81.8%**（Opus 4.6为80.8%）。SSA不是近似注意力，而是精确限制注意力只计算携带信号的位置，跳过无意义的pairwise计算。
   > 💡 SSA在保持检索精度的同时实现线性扩展，直接挑战"dense attention是长上下文唯一解"的假设。如果benchmark持续验证，长上下文推理的成本曲线将被改写。
-   - 来源: [SubQ Blog](https://subq.ai/how-ssa-makes-long-context-practical) | [机器之心](https://mp.weixin.qq.com/s/od_zv90JwoODJVGHNujQmg) | [@alex_whedon](https://x.com/alex_whedon/status/2051663268704636937)
+   - 来源: [SubQ Blog](https://subq.ai/how-ssa-makes-long-context-practical) | [新智元](https://mp.weixin.qq.com/s/od_zv90JwoODJVGHNujQmg) | [@alex_whedon](https://x.com/alex_whedon/status/2051663268704636937)
 
 ### 产业动态
 **OpenAI B2B Signals研究：前沿企业AI使用强度达普通企业3.5倍**
@@ -37,7 +37,7 @@
 **Anthropic正开发Orbit 为Claude Cowork提供主动式助理功能**
 - Anthropic正在开发名为"Orbit"的主动式助理功能，代码中已出现相关设置项。Orbit将作为Claude Cowork的opt-in功能，从Gmail、Slack、GitHub、Calendar、Drive和Figma等连接工具中提取洞察，生成个性化简报。Anthropic于5月6日在旧金山举办"Code with Claude"开发者大会。类似功能已由OpenAI率先推出（ChatGPT Pulse，去年9月），Google Gemini和Perplexity也有类似布局。Anthropic差异化在于GitHub和Figma集成，瞄准开发者和创意工作流。
   > 💡 主动式AI助理正成为标配——OpenAI Pulse、Anthropic Orbit、Google Gemini同步布局，从"被动问答"到"主动推送"的产品范式迁移正在发生。
-   - 来源: [TestingCatalog](https://www.testingcatalog.com/anthropic-is-working-on-orbit-its-upcoming-proactive-assistant/) | [机器之心](https://mp.weixin.qq.com/s/ZlMjAf1jGrCMWAvNjgNXiw)
+   - 来源: [TestingCatalog](https://www.testingcatalog.com/anthropic-is-working-on-orbit-its-upcoming-proactive-assistant/) | [新智元](https://mp.weixin.qq.com/s/ZlMjAf1jGrCMWAvNjgNXiw)
 
 ### 算力追踪
 **SpaceX计划投资最高$119B在德州建设Terafab芯片工厂**
