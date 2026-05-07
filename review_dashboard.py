@@ -306,12 +306,20 @@ def main():
         
         # 加载按钮
         if st.button("🔄 加载日报", type="primary", use_container_width=True):
-            st.session_state.articles, st.session_state.summary_items, st.session_state.md_path = load_articles(date_str)
-            if st.session_state.articles:
-                st.session_state.all_issues = run_qa_checks(st.session_state.articles, st.session_state.summary_items)
+            articles, summary_items, md_path = load_articles(date_str)
+            # 确保 articles 和 summary_items 不为 None（转换为空列表）
+            if articles is None:
+                articles = []
+                summary_items = []
+            st.session_state.articles = articles
+            st.session_state.summary_items = summary_items
+            st.session_state.md_path = md_path
+            if articles:
+                st.session_state.all_issues = run_qa_checks(articles, summary_items)
                 st.session_state.date_str = date_str
-                st.success(f"✅ 已加载 {len(st.session_state.articles)} 条新闻")
+                st.success(f"✅ 已加载 {len(articles)} 条新闻")
             else:
+                st.session_state.all_issues = []
                 st.error(f"❌ 未找到文件: daily-ai-news-{date_str}.md")
         
         st.divider()
@@ -319,8 +327,8 @@ def main():
         # 统计面板
         if "articles" in st.session_state:
             total = len(st.session_state.articles)
-            errors = len([i for i in st.session_state.all_issues if i["severity"] == "error"])
-            warnings = len([i for i in st.session_state.all_issues if i["severity"] == "warning"])
+            errors = len([i for i in st.session_state.get("all_issues", []) if i["severity"] == "error"])
+            warnings = len([i for i in st.session_state.get("all_issues", []) if i["severity"] == "warning"])
             
             st.metric("总条目", total)
             st.metric("❌ 错误", errors, delta_color="inverse")
