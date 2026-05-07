@@ -19,9 +19,9 @@
 
 ### 模型前沿
 **SubQ发布SSA架构 百万token长上下文推理加速52倍**
-- SubQ发布SSA（Subquadratic Sparse Attention）架构，通过内容依赖的选择性注意力实现线性计算复杂度。在1M token上下文中，prefill速度较dense attention加速**52.2×**，注意力FLOP降低**62.5×**。RULER 128K得分**95.0%**（Opus 4.6为94.8%），MRCR v2得分**65.9%**（Opus 4.6为78.3%，GPT 5.5为74.0%），SWE-Bench Verified **81.8%**（Opus 4.6为80.8%）。SSA不是近似注意力，而是精确限制注意力只计算携带信号的位置，跳过无意义的pairwise计算。
+- SubQ发布SSA（Subquadratic Sparse Attention）架构，通过内容依赖的选择性注意力实现线性计算复杂度。在1M token上下文中，prefill速度较dense attention加速**52.2×**，注意力FLOP降低**62.5×**。RULER 128K得分**95.0%**（Opus 4.6为94.8%），MRCR v2得分**65.9%**（Opus 4.6为78.3%，GPT 5.5为74.0%），SWE-Bench Verified **81.8%**（Opus 4.6为80.8%）。SSA不是近似注意力，而是精确限制注意力只计算携带信号的位置，跳过无意义的pairwise计算。值得关注的是，SubQ 的研究模型最多可处理 1200 万个 token，而其他前沿模型在达到其规定的 100 万个 token 限制之前就失效了。
   > 💡 SSA在保持检索精度的同时实现线性扩展，直接挑战"dense attention是长上下文唯一解"的假设。如果benchmark持续验证，长上下文推理的成本曲线将被改写。
-   - 来源: [SubQ Blog](https://subq.ai/how-ssa-makes-long-context-practical) | [新智元](https://mp.weixin.qq.com/s/od_zv90JwoODJVGHNujQmg) | [@alex_whedon](https://x.com/alex_whedon/status/2051663268704636937)
+   - 来源: [SubQ Blog](https://subq.ai/how-ssa-makes-long-context-practical) | [SubQ Blog](https://subq.ai/introducing-subq)| [新智元](https://mp.weixin.qq.com/s/od_zv90JwoODJVGHNujQmg) | [@alex_whedon](https://x.com/alex_whedon/status/2051663268704636937)
 
 ### 产业动态
 **OpenAI B2B Signals研究：前沿企业AI使用强度达普通企业3.5倍**
