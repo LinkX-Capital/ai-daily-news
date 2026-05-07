@@ -1376,7 +1376,7 @@ def process_with_llm(articles, recent_articles=None):
                 # 使用 LLM 生成的 body
                 llm_body = lr.get('body', '')
                 if llm_body and len(llm_body) > 10:
-                    article['body'] = llm_body[:200]
+                    article['body'] = llm_body[:400]
                 else:
                     article['body'] = orig_summary[:150] if orig_summary else article['title']
 
