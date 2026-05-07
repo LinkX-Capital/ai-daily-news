@@ -6,10 +6,10 @@
 
 ## 要点汇总
 
-- 模型前沿：OpenAI发布GPT-5.5 Instant，高风险领域幻觉减少52.5%，替代GPT-5.3 Instant成为ChatGPT默认模型
-- 产业动态：Apple计划在iOS 27中允许用户选择第三方AI模型驱动设备端功能; Microsoft Copilot Cowork扩展至移动端，新增Skills和插件支持; 斯坦福合并HAI与数据科学计划，李飞飞升任校长顾问; Anthropic发布金融服务业Claude代理模板
-- 算力追踪：OpenRouter实测GPT-5.5成本增加49-92%，但输出token增19-34%; SemiAnalysis分析：InP材料成AI数据中心光通信关键瓶颈
-- 初创&融资：CopilotKit完成2700万美元A轮融资，帮助开发者部署应用原生AI代理; ElevenLabs获得BlackRock等新投资，年度经常性收入达5亿美元; Altara完成700万美元种子轮，构建面向物理世界的科学智能平台
+- 模型前沿：OpenAI发布GPT-5.5 Instant，高风险领域幻觉减少52.5%，替代GPT-5.3 Instant成为ChatGPT默认模型；Google发布Gemma 4 MTP Drafters，通过speculative decoding实现最高3x推理加速，零质量损失
+- 产业动态：Apple计划在iOS 27中允许用户选择第三方AI模型驱动设备端功能; Microsoft Copilot Cowork扩展至移动端，新增Skills和插件支持; 斯坦福合并HAI与数据科学计划，李飞飞升任校长顾问; Anthropic发布金融服务业Claude代理模板; Meta开发"Hatch"消费端AI代理及Instagram AI购物工具; Google升级Gemini API File Search支持多模态RAG
+- 算力追踪：OpenRouter实测GPT-5.5成本增加49-92%，但输出token增19-34%; SemiAnalysis分析：InP材料成AI数据中心光通信关键瓶颈; AMD发布FarSkip-Collective MoE架构，DeepSeek-V3推理TTFT加速1.34x; Anthropic承诺向Google Cloud芯片投入$2000亿
+- 初创&融资：CopilotKit完成2700万美元A轮融资，帮助开发者部署应用原生AI代理; ElevenLabs获得BlackRock、Nvidia风投等新投资，ARR从3.5亿增至5亿美元;Altara完成700万美元种子轮，构建面向物理世界的科学智能平台
 - 研究关注：Anthropic发布Model Spec Midtraining研究，探索AI对齐新方法; Epoch AI探讨经典推理基准衰退与下一代评估方向; Agent-World：ByteDance提出智能体自进化训练框架
 - X讨论：Anthropic联创Jack Clark预测2028年AI实现递归自我改进
 
@@ -22,6 +22,11 @@
 - OpenAI发布GPT-5.5 Instant，即日起向所有ChatGPT用户推出，替代GPT-5.3 Instant成为默认模型。API端点为`chat-latest`，付费用户可在3个月内继续使用GPT-5.3 Instant，之后正式退役。内部评估显示，高风险领域（医学、法律、金融）幻觉减少**52.5%**，用户标记的事实错误对话中不准确声明减少**37.3%**。输出比前代减少**30.2%词数**，去除多余emoji和过度格式化。这是首个被OpenAI评定为网络安全和生物化学领域**"High Capability"（高能力）**级别的Instant模型，安全评估标准比前代更严格。新增Memory Sources功能，用户可查看哪些上下文（历史对话/文件/Gmail）被用于个性化回复，并可删除或修正。增强个性化先向Plus和Pro用户推出，后续扩展至Free/Go/Business/Enterprise。
   > 💡 Instant模型从"更快"转向"更准+更个性化"，幻觉减半是面向数亿用户的实质性安全改进；High Capability评级意味着即使是轻量级即时模型，能力也已达到需要更严格监管的阈值
    - 来源: [OpenAI](https://openai.com/index/gpt-5-5-instant/) | [System Card](https://openai.com/index/gpt-5-5-instant-system-card/)
+
+**Google发布Gemma 4 MTP Drafters，通过speculative decoding实现最高3x推理加速**
+- Google发布Gemma 4系列的Multi-Token Prediction（MTP）drafter模型，利用speculative decoding架构实现最高**3x推理加速**，且**零质量损失**。原理是将轻量级drafter与目标模型配对，drafter在目标模型处理一个token的时间内预测多个后续token，目标模型在一次前向传播中并行验证全部建议token。MTP drafter共享目标模型的KV cache和激活，无需重复计算上下文。在NVIDIA RTX PRO 6000上，Gemma 4 26B推理速度接近翻倍；Apple Silicon上batch size 4-8时可获**~2.2x加速**。模型以**Apache 2.0**开源，已支持**vLLM、SGLang、Ollama、Hugging Face Transformers、MLX**等推理框架。
+  > 💡 开源模型推理优化从算法层面突破瓶颈，MTP+speculative decoding组合使开源模型在延迟上逼近闭源API
+   - 来源: [Google Blog](https://blog.google/innovation-and-ai/technology/developers-tools/multi-token-prediction-gemma-4/)
 
 ### 产业动态
 **Apple计划在iOS 27中允许用户选择第三方AI模型驱动设备端功能**
@@ -44,6 +49,16 @@
   > 💡 垂直领域AI代理竞争加剧， template模式降低落地门槛
    - 来源: [@claudeai](https://x.com/claudeai/status/2051679629488865498#m)
 
+**Meta开发"Hatch"消费端AI代理及InstagramAI购物工具**
+- 据The Information报道，Meta正在开发代号为**"Hatch"**的消费端AI代理，基于其OpenClaw项目构建，由CEO Mark Zuckerberg推动，目标是将巨额AI投资转化为可落地产品。同时Meta还在为Instagram开发agentic shopping工具，让用户可通过AI代理完成购物流程。
+  > 💡 Meta从社交平台AI功能升级到独立消费端AI代理，对标OpenAI和Google的消费者AI布局
+   - 来源: [The Information](https://www.theinformation.com/articles/meta-building-ai-agent-called-hatch-agentic-shopping-tool-instagram)
+
+**Google升级Gemini API File Search支持多模态RAG**
+- Google发布Gemini API File Search三大更新：**多模态支持**（由Gemini Embedding 2驱动，可同时处理图片和文本）、**自定义元数据过滤**（支持key-value标签精准检索）、**页面级引用**（将模型回复直接关联到原始PDF页码）。开发者可构建高效、可验证的多模态RAG系统，无需额外预处理即可检索图片和文本混合数据。
+  > 💡 RAG工具链从文本检索升级为多模态检索+可验证引用，企业级AI应用的数据基础能力大幅提升
+   - 来源: [Google Blog](https://blog.google/innovation-and-ai/technology/developers-tools/expanded-gemini-api-file-search-multimodal-rag/)
+
 ### 算力追踪
 **OpenRouter实测GPT-5.5成本增加49-92%，但输出token增19-34%**
 - OpenRouter分析GPT-5.5与GPT-5.4的成本差异，发现定价上涨**49-92%**，但GPT-5.5的输出token增加**19-34%**。即同样的prompt，GPT-5.5会生成更长的回复，实际单token价格涨幅与标价涨幅之间存在差异。
@@ -55,6 +70,16 @@
   > 💡 光通信材料迭代远落后于算力扩张速度，InP供应链值得投资关注
    - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2051768965446160824#m) | [@semianalysis_](https://x.com/SemiAnalysis_/status/2051768960828207290#m)
 
+**AMD发布FarSkip-Collective MoE架构，DeepSeek-V3推理TTFT加速1.34x**
+- AMD发布FarSkip-Collective架构，通过重新设计MoE层的通信模式实现**计算-通信原生重叠**。核心思路：在GPU间同步expert输出的等待期间，用已有的部分激活直接启动下一层计算，同步完成后将结果加入残差，消除传统MoE分布执行中的空闲通信气泡。在Llama-4 Scout上通过自蒸馏（FCSD）方法验证，平均准确率仅下降0.9个百分点（76.0→75.1）。推理侧基于vLLM和SGLang框架实现，DeepSeek-V3 671B的**TTFT加速达1.34x**，Llama-4 Scout加速**18%**。训练侧在AMD Primus框架中集成，Moonlight架构预训练加速**11%**，结合GQA后加速达**16%**。
+  > 💡 MoE架构优化的瓶颈从"算力不够"转向"通信浪费"，FarSkip从模型结构层面消除空闲等待，比纯系统优化更根本
+   - 来源: [AMD ROCm Blog](https://rocm.blogs.amd.com/artificial-intelligence/farskip-collective-moe/README.html)
+
+**Anthropic承诺向Google Cloud芯片投入$2000亿**
+- 据The Information报道，Anthropic承诺向Google的云服务和芯片（TPU）投入**$2000亿**，标志着Anthropic与Google的算力绑定进一步加深。此前Google已向Anthropic投资$400亿并承诺5GW算力。
+  > 💡 Anthropic-Google算力联盟从股权投资走向基础设施锁定，$2000亿承诺是AI史上最大单笔云支出协议
+   - 来源: [The Information](https://www.theinformation.com/articles/anthropic-commits-spending-200-billion-googles-cloud-chips)
+
 ### 初创&融资
 **CopilotKit完成2700万美元A轮融资，帮助开发者部署应用原生AI代理**
 - 西雅图初创公司CopilotKit完成2700万美元A轮融资，由Glilot Capital、NFX和SignalFire领投。该公司致力于帮助开发者在其应用中原生嵌入AI代理功能，使应用能够自动执行复杂的多步骤任务。本轮融资将用于扩大团队和加速产品开发。
@@ -62,9 +87,9 @@
    - 来源: [TechCrunch](https://techcrunch.com/2026/05/05/copilotkit-raises-27m-to-help-devs-deploy-app-native-ai-agents/)
 
 **ElevenLabs获得BlackRock等新投资，年度经常性收入达5亿美元**
-- 语音AI公司ElevenLabs披露新投资者名单，包括资管巨头BlackRock、演员Jamie Foxx和Eva Longoria等知名人物。公司同时宣布年度经常性收入（ARR）已达5亿美元，企业客户群持续扩大。ElevenLabs目前提供语音克隆、文本转语音、配音等产品线。
+- 语音AI公司ElevenLabs披露新投资者名单，包括资管巨头BlackRock、演员Jamie Foxx和Eva Longoria等知名人物。据The Information补充报道，新增投资者还包括**Nvidia旗下风投Nventures、Wellington、Santander**；公司ARR已达**5亿美元**，较去年底的**3.5亿美元增长43%**，增长主要来自面向企业的voice agent销售。ElevenLabs目前提供语音克隆、文本转语音、配音等产品线。
   > 💡 语音AI商业化加速，顶级投资方入场显示赛道成熟度提升
-   - 来源: [TechCrunch](https://techcrunch.com/2026/05/05/elevenlabs-lists-blackrock-jamie-foxx-and-eva-longoria-as-new-investors/)
+   - 来源: [TechCrunch](https://techcrunch.com/2026/05/05/elevenlabs-lists-blackrock-jamie-foxx-and-eva-longoria-as-new-investors/) | [The Information](https://www.theinformation.com/briefings/elevenlabs-hits-500-million-annualized-revenue-adds-nvidia-investor)
 
 **Altara完成700万美元种子轮，构建面向物理世界的科学智能平台**
 - 旧金山初创公司Altara宣布完成**700万美元种子轮融资**，由Catherine Yeo和Eva Tuecke联合创立。Altara定位为面向物理世界的科学智能平台，解决半导体、电池、先进材料等领域的数据碎片化问题。平台利用agentic AI将分散的技术数据统一到单一平台，使研究人员能够加速科学和工业突破。
@@ -105,4 +130,4 @@
 
 
 ---
-*更新时间: 2026-05-06 06:05*
+*更新时间: 2026-05-06 08:30*
