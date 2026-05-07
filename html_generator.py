@@ -1255,7 +1255,32 @@ def _update_index_html(today_date_str, articles):
             desc = title[sep_pos+1:].strip()[:40]
             summary_parts.append(f"<strong>{entity}</strong>{desc}")
         else:
-            summary_parts.append(f"<strong>{title[:15]}</strong>{title[15:40]}")
+            # 按空格分词，取前几个词作为主体（不超过15字符），避免截断到词中间
+            words = title.split(' ')
+            if len(words) > 1:
+                entity = ''
+                for w in words:
+                    if len(entity) + len(w) + (1 if entity else 0) > 15:
+                        break
+                    entity = entity + (' ' if entity else '') + w
+                if not entity:
+                    entity = words[0]
+                desc = title[len(entity):].strip()[:40]
+            else:
+                # 纯中文无空格标题：找动词关键词作为分界点
+                cut = -1
+                for verb in ['发布', '推出', '完成', '达成', '计划', '宣布', '开源', '投资', '获得']:
+                    vpos = title.find(verb)
+                    if vpos > 0:
+                        cut = vpos + len(verb)
+                        break
+                if cut > 0 and cut < len(title):
+                    entity = title[:cut]
+                    desc = title[cut:][:40]
+                else:
+                    entity = title[:12]
+                    desc = title[12:52]
+            summary_parts.append(f"<strong>{entity}</strong>{desc}")
     summary_text = "；".join(summary_parts)
     count = len(articles)
 
