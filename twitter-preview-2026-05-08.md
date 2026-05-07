@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-05-08 07:15
-**总计**：43 条推文
+**总计**：44 条推文
 
 ---
 
@@ -11,7 +11,30 @@
 
 ---
 
-## 🏢 公司发布（34条）
+## ⭐ 今日重点（LLM 提炼）
+
+1. **Anthropic将开源对齐工具Petri捐赠给Meridian Labs独立开发**
+   @anthropicai
+2. **Anthropic安全漏洞赏金项目在HackerOne公开上线**
+   @anthropicai
+3. **Anthropic发布新研究：自然语言自编码器(NLAs)**
+   @anthropicai
+4. **Anthropic与Neuronpedia合作发布开源NLAs模型**
+   @anthropicai
+5. **OpenRouter上线Recraft图像生成工具配置参数指南**
+   @openrouter
+6. **OpenRouter推出Recraft V3支持精确文本布局和高清图像**
+   @openrouter
+7. **OpenRouter推出Recraft V4 Pro面向品牌设计的高分辨率图像生成**
+   @openrouter
+8. **OpenRouter推出Recraft V4图像生成模型支持艺术风格一致性**
+   @openrouter
+9. **信息检索中上下文搜索的探索与讨论**
+   @thesephist
+
+---
+
+## 🏢 公司发布（33条）
 
 ### @agilityrobotics | App
 
@@ -24,12 +47,12 @@
   [查看](https://x.com/AnthropicAI/status/2052494460966019137#m)
 - Our security bug bounty program is now public on HackerOne.   We've run the program privately within the security research community, and their findin...
   [查看](https://x.com/AnthropicAI/status/2052466175540629965#m)
-- R to @AnthropicAI: To support other researchers getting hands-on experience with NLAs, we’ve partnered with Neuronpedia to release NLAs on open models...
-  [查看](https://x.com/AnthropicAI/status/2052435460220211397#m)
+- New Anthropic research: Natural Language Autoencoders.  Models like Claude talk in words but think in numbers. The numbers—called activations—encode C...
+  [查看](https://x.com/AnthropicAI/status/2052435436157452769#m)
 - R to @AnthropicAI: Read more about NLAs on the Anthropic blog: https://www.anthropic.com/research/natural-language-autoencoders
   [查看](https://x.com/AnthropicAI/status/2052435458580193726#m)
-- R to @AnthropicAI: NLA training doesn’t guarantee that explanations are faithful descriptions of Claude’s thoughts. But based on experience and experi...
-  [查看](https://x.com/AnthropicAI/status/2052435456634110336#m)
+- R to @AnthropicAI: To support other researchers getting hands-on experience with NLAs, we’ve partnered with Neuronpedia to release NLAs on open models...
+  [查看](https://x.com/AnthropicAI/status/2052435460220211397#m)
 
 ### @bespokelabsai | App
 
@@ -52,8 +75,6 @@
   [查看](https://x.com/LumaLabsAI/status/2052485077310042321#m)
 - RT by @LumaLabsAI: 👀 @LumaLabsAI's UNI-1 just landed in Envato's image generator and image editor.  It thinks through what you're asking for before ge...
   [查看](https://x.com/envato/status/2052289087441117593#m)
-- The right message to the right person at the right time. Now you can build every version of it.   Define the audience. Set the variation. Luma Agents ...
-  [查看](https://x.com/LumaLabsAI/status/2052149305981768094#m)
 
 ### @openai | Model
 
@@ -70,16 +91,16 @@
 
 ### @openrouter | Infra
 
-- RT by @OpenRouter: 🔫 what does claude opus do when told it needs to be the last surviving?  building an agent battle royale w @OpenRouter - models dro...
-  [查看](https://x.com/jjackyliang/status/2052493146949370153#m)
-- RT by @OpenRouter: damn so much crazy stuff happened today in speech:  - @OpenAI releases realtime-2 speech-to-speech - @ElevenLabs reduces stt/tts se...
-  [查看](https://x.com/yungalgorithm/status/2052458081452261844#m)
-- R to @OpenRouter: Heads up: `gemini-3.1-flash-lite-preview` is deprecating on 5/11/26 and shuts down on May 25.  Full schedule: https://ai.google.dev/...
-  [查看](https://x.com/OpenRouter/status/2052444165032787991#m)
-- R to @OpenRouter: More on service tiers: pass `service_tier` to trade cost vs. latency (standard / flex / priority). OpenAI and Google models supporte...
-  [查看](https://x.com/OpenRouter/status/2052444153477570918#m)
-- R to @OpenRouter: Use it now: https://openrouter.ai/google/gemini-3.1-flash-lite
-  [查看](https://x.com/OpenRouter/status/2052444141951598872#m)
+- R to @OpenRouter: Learn how to use the Recraft-specific `image_config` parameters: `rgb_colors`, `background_rgb_color`, `strength`, plus `style` and ...
+  [查看](https://x.com/OpenRouter/status/2052521963349041495#m)
+- R to @OpenRouter: Also now available: Recraft V3. ~1K resolution, with `text_layout` for precise text placement plus `style` presets. Good choice for ...
+  [查看](https://x.com/OpenRouter/status/2052521951692996861#m)
+- R to @OpenRouter: Recraft V4 Pro: ~2K resolution, ~30s per image. Same creative capabilities and design taste as V4, at production scale. For branding...
+  [查看](https://x.com/OpenRouter/status/2052521940037120056#m)
+- R to @OpenRouter: Recraft V4: ~1K resolution, ~10s per image. Tuned for aesthetic coherence across photoreal and illustrative styles. Confident color,...
+  [查看](https://x.com/OpenRouter/status/2052521928284676331#m)
+- Live on OpenRouter: @recraftai.  Recraft V4 is an image generation model tuned for high aesthetics - art-directed composition, lighting, and color tha...
+  [查看](https://x.com/OpenRouter/status/2052521915458453894#m)
 
 ### @semianalysis_ | Infra
 
@@ -117,12 +138,21 @@
 - R to @Zai_org: On the agentic side:  Toolchain expansion and framework integration - The model chains multimodal tools, including search, cropping, an...
   [查看](https://x.com/Zai_org/status/2052426780745572453#m)
 
-## 👤 研究者动态（9条）
+## 👤 研究者动态（11条）
 
 ### @andrewyng [independent] | Research
 
 - New course: Build agents that respond to users with not only plaintext, but custom UIs like charts, forms, and whiteboards, generated on demand and di...
   [查看](https://x.com/AndrewYNg/status/2052422157310083493#m)
+
+### @neelnanda5 [Google DeepMind] | Research
+
+- Very cool work! This seems a strong new tool for hypothesis generation about weird model behaviors
+  [查看](https://x.com/NeelNanda5/status/2052465721863508373#m)
+- Congrats to everyone who survived NeurIPS submission! Just a reminder that mech interp workshop submissions are due tomorrow, and can be the exact sam...
+  [查看](https://x.com/NeelNanda5/status/2052383439039652346#m)
+- R to @NeelNanda5: More info: http://mechinterpworkshop.com https://openreview.net/group?id=ICML.cc%2F2026%2FWorkshop%2FMech_Interp
+  [查看](https://x.com/NeelNanda5/status/2052383451400278388#m)
 
 ### @sama [OpenAI] | Model
 
@@ -144,8 +174,6 @@
 
 - trying an abdominal binder and wow instead of +30 bpm on standing up it's more like +15  definitely makes upright activities more effortless and reduc...
   [查看](https://x.com/TheGregYang/status/2052217033245470968#m)
-- was feeling a strain on my body recently even when my mind can be clear  my sleep has been shorter as well and sometimes I wake up hot or cold  turns ...
-  [查看](https://x.com/TheGregYang/status/2052150836378411195#m)
 
 ### @thesephist [Anthropic] | Research
 
