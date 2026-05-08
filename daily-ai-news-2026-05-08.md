@@ -18,7 +18,7 @@
 
 ### 模型前沿
 **Meta ProgramBench新评测标准：要求AI从零重建完整软件，9个模型完成率均为0%**
-- Meta Superintelligence Labs联合Stanford、Harvard的John Yang（SWE-Bench作者）、Kilian Lieret等发布**ProgramBench**（arXiv:2605.03546）。任务设定：给定一个编译好的可执行文件及其文档，Agent必须自主选择语言、设计架构、编写全部源码并生成构建脚本，重现原程序行为。**不提供源码、禁止反编译、禁止联网**。共**200个任务**，覆盖从jq、ripgrep等CLI工具到FFmpeg、SQLite、PHP解释器等大型项目，配套**24.8万+行为测试**（agent-driven fuzzing生成）。评估9个模型（Claude Opus 4.7/4.6、Sonnet 4.6、GPT 5.4/5.4 mini/5 mini、Gemini 3.1 Pro/3 Flash、Haiku 4.5），完全通过率均为**0%**。放宽至≥95%测试通过，最佳为Opus 4.7仅**3%**。论文指出模型倾向于生成单文件巨型实现，与人类代码结构严重偏离。
+- Meta Superintelligence Labs联合Stanford、Harvard的John Yang（SWE-Bench作者）、Kilian Lieret等发布**ProgramBench**。任务设定：给定一个编译好的可执行文件及其文档，Agent必须自主选择语言、设计架构、编写全部源码并生成构建脚本，重现原程序行为。**不提供源码、禁止反编译、禁止联网**。共**200个任务**，覆盖从jq、ripgrep等CLI工具到FFmpeg、SQLite、PHP解释器等大型项目，配套**24.8万+行为测试**（agent-driven fuzzing生成）。评估9个模型（Claude Opus 4.7/4.6、Sonnet 4.6、GPT 5.4/5.4 mini/5 mini、Gemini 3.1 Pro/3 Flash、Haiku 4.5），完全通过率均为**0%**。放宽至≥95%测试通过，最佳为Opus 4.7仅**3%**。论文指出模型倾向于生成单文件巨型实现，与人类代码结构严重偏离。
   > 💡 ProgramBench暴露的不是"写代码"能力缺陷，而是"做架构决策"的缺陷——当没有skeleton/签名/PRD提示时，模型无法自主分解复杂系统。这与ARC-AGI-3暴露的"无指令探索"缺陷方向一致。
    - 来源: [arXiv](https://arxiv.org/abs/2605.03546) | [ProgramBench](https://programbench.com) | [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651031726&idx=2&sn=105ca19f31b4709f958795a3a73bc0ca&chksm=859f41c0bc71e8a30f0f883dda71413b910ee5062229aa21367ec94556e2afce372534365aa2&scene=0&xtrack=1#rd)
 
