@@ -386,8 +386,8 @@ INFRA_HIGH = [
     "三星存储", "sk海力士", "美光", "micron",
     # 供应链
     "cowos", "封装", "产能", "tsmc", "台积电",
-    # 重大 Capex
-    "capex", "$10b", "$100b",
+    # 重大 Capex / 芯片工厂
+    "capex", "$10b", "$100b", "chip factory", "芯片工厂", "terafab", "fab",
 ]
 INFRA_MEDIUM = [
     # 芯片相关
@@ -1232,13 +1232,14 @@ def process_with_llm(articles, recent_articles=None):
 
     ai_filtered = [a for a in sorted_articles if not is_likely_non_ai(a)]
 
-    # 每个来源最多保留3条，避免单一源占满名额
+    # 每个来源最多保留N条，避免单一源占满名额
     from collections import Counter
     src_count = Counter()
     diversified = []
     for a in ai_filtered:
         src = a.get('source', '')
-        if src_count[src] < 3:
+        limit = 6 if src == "TechCrunch" else 3
+        if src_count[src] < limit:
             diversified.append(a)
             src_count[src] += 1
 

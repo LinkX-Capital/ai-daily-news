@@ -5,7 +5,9 @@ import json
 import os
 
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.json")
+ACCOUNTS_FILE = os.path.join(os.path.dirname(__file__), "accounts.yaml")
 _config = None
+_accounts_cache = None
 
 def load_config():
     """加载配置文件"""
@@ -21,6 +23,50 @@ def load_config():
             print(f"⚠️ 配置文件格式错误: {e}")
             _config = {}
     return _config
+
+
+def _load_accounts_yaml():
+    """从 accounts.yaml 加载账号
+
+    返回 dict:
+      - company: 所有公司账号 handle (set)
+      - researcher: 所有研究者账号 handle (set)
+      - company_whitelist: 带 feed_whitelist 的公司账号 (set, 用于分类)
+      - researcher_whitelist: 带 feed_whitelist 的研究者账号 (set, 用于分类)
+    """
+    global _accounts_cache
+    if _accounts_cache is not None:
+        return _accounts_cache
+
+    _accounts_cache = {
+        "company": set(), "researcher": set(),
+        "company_whitelist": set(), "researcher_whitelist": set(),
+    }
+    if not os.path.exists(ACCOUNTS_FILE):
+        return _accounts_cache
+
+    try:
+        import yaml
+        with open(ACCOUNTS_FILE, 'r', encoding='utf-8') as f:
+            data = yaml.safe_load(f)
+        for acc in data.get("accounts", []):
+            handle = acc.get("handle", "").lower()
+            if not handle:
+                continue
+            category = acc.get("category", "")
+            is_whitelist = acc.get("feed_whitelist", False)
+            if category == "Company":
+                _accounts_cache["company"].add(handle)
+                if is_whitelist:
+                    _accounts_cache["company_whitelist"].add(handle)
+            elif category == "Researcher":
+                _accounts_cache["researcher"].add(handle)
+                if is_whitelist:
+                    _accounts_cache["researcher_whitelist"].add(handle)
+    except Exception as e:
+        print(f"⚠️ accounts.yaml 加载失败: {e}")
+
+    return _accounts_cache
 
 def get(path, default=None):
     """获取配置项，支持路径访问
@@ -41,10 +87,18 @@ def get(path, default=None):
 
 # 便捷访问函数
 def twitter_company_accounts():
-    return set(get("twitter.company_accounts", []))
+    """从 accounts.yaml 读取带 feed_whitelist 的公司账号（分类白名单）
+
+    只有 feed_whitelist: true 的账号会自动通过 is_ai_related() 检查。
+    其他账号只被 tweet_fetcher 抓取，需要通过内容关键词才能进入管线。
+    """
+    accounts = _load_accounts_yaml()
+    return accounts.get("company_whitelist", set()) or set(a.lower() for a in get("twitter.company_accounts", []))
 
 def twitter_researcher_accounts():
-    return set(get("twitter.researcher_accounts", []))
+    """从 accounts.yaml 读取带 feed_whitelist 的研究者账号（分类白名单）"""
+    accounts = _load_accounts_yaml()
+    return accounts.get("researcher_whitelist", set()) or set(a.lower() for a in get("twitter.researcher_accounts", []))
 
 def tier1_ai_companies():
     return get("companies.tier1_ai_companies", [])
