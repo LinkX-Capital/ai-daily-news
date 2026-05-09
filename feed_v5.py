@@ -1260,7 +1260,7 @@ def process_with_llm(articles, recent_articles=None):
   {
     "original_title": "原始标题（必须和输入完全一致）",
     "title": "中文标题，事件主体+做什么+为什么重要，禁止感叹号/问号结尾",
-    "body": "3-6句话，只写关键事实：是什么、关键数据、突破/创新、关联事件、事实影响。硬性下限3句。禁止AI自己的判断和引申（判断放insight）",
+    "body": "建议3-6句话，只写关键事实：是什么、关键数据、突破/创新、关联事件、事实性影响（市场反应/行业变化/专家评价）。信息不足时宁可2句也不编造。禁止AI自己的判断和引申（判断放insight）",
     "insight": "一句话务实判断：具体趋势、竞争动态或实际影响。禁止空洞宏大叙事",
     "category": "分类"
   }
@@ -1441,69 +1441,18 @@ def _has_quantifiable_data(text):
     return bool(re.search(r'\d+\.?\d*%|\$\d+|\d+x|\d+倍|\d+亿|\d+万|\d{2,}B|\d{2,}M', text))
 
 def post_validate_and_enrich(articles):
-    """后处理：论文溯源 + body 校验"""
-    enriched_count = 0
+    """后处理：轻量校验，主要补充逻辑由 QA autofix 完成"""
     warnings = []
-
     for a in articles:
         title_short = a.get("title", "")[:40]
         body = a.get("body", "")
         sent_count = _count_sentences(body)
-
-        # 1. 论文溯源：研究类条目且 body 缺数据 → 尝试从 arXiv 补充
-        cats = a.get("categories", [])
-        is_research = any(c in ["研究关注", "模型前沿"] for c in cats)
-        link = a.get("link", "")
-
-        if is_research or "论文" in body or "arxiv" in (link + body).lower():
-            arxiv_id = _find_arxiv_id(a)
-            if not arxiv_id:
-                # 尝试从 link 中提取
-                m = re.search(r'(\d{4}\.\d{4,5})', link)
-                if m:
-                    arxiv_id = m.group(1)
-
-            if arxiv_id and (sent_count < 3 or not _has_quantifiable_data(body)):
-                paper = _fetch_arxiv(arxiv_id)
-                if paper and "abstract" in paper:
-                    abstract = paper["abstract"]
-                    # 提取含数字的句子作为补充
-                    data_sents = [s.strip() for s in re.split(r'(?<=[.!?])\s+', abstract)
-                                  if re.search(r'\d', s.strip())]
-                    if data_sents:
-                        supplement = " ".join(data_sents[:3])[:300]
-                        a["body"] = body + " " + supplement if body else supplement
-                        enriched_count += 1
-                        print(f"   📄 arXiv溯源补充: {title_short}")
-
-                    # 确保 arXiv 链接在来源中
-                    if "arxiv.org" not in (a.get("link", "") + a.get("source", "")):
-                        a["arxiv_link"] = f"https://arxiv.org/abs/{arxiv_id}"
-
-        # 2. Body 校验
-        body = a.get("body", "")
-        sent_count = _count_sentences(body)
-
         if sent_count < 3:
             warnings.append(f"[{title_short}] body仅{sent_count}句")
-
-        if not _has_quantifiable_data(body) and "融资" not in str(cats):
-            # 融资类不一定都有数据
-            pass  # 仅记录，不强制
-
-        # 模糊称呼检测
-        vague = ["有研究团队", "研究者", "研究人员发布", "有人", "有团队"]
-        for v in vague:
-            if v in body:
-                warnings.append(f"[{title_short}] 模糊称呼: '{v}'")
-                break
-
-    if enriched_count:
-        print(f"   📄 arXiv溯源: 补充了 {enriched_count} 条")
     if warnings:
         for w in warnings:
             print(f"   ⚠️ {w}")
-        print(f"   📋 后处理校验: {len(warnings)} 个警告")
+        print(f"   📋 后处理校验: {len(warnings)} 个待补充（将由QA autofix处理）")
     else:
         print(f"   ✅ 后处理校验: 全部通过")
     return articles
@@ -2058,6 +2007,16 @@ def main():
     if errors:
         print(f"⚠️ 失败: {errors[:3]}")
 
+    # Overflow 标记：超过上限时用 LLM 标记低价值条目（不自动删除）
+    from qa import MAX_ARTICLES, check_article_overflow
+    if len(merged) > MAX_ARTICLES and not args.skip_llm:
+        print(f"\n⚠️ 条目过多（{len(merged)}>{MAX_ARTICLES}），LLM 建议删除：")
+        overflow_issues = check_article_overflow(merged)
+        if overflow_issues:
+            for _, title, msg in overflow_issues:
+                reason = msg.split('：')[-1] if '：' in msg else msg
+                print(f"   ⚠️ {title[:45]} — {reason}")
+
     # 生成报告
     if args.no_overwrite and os.path.exists(OUTPUT_FILE):
         print(f"⚠️ {OUTPUT_FILE} 已存在且 --no-overwrite，跳过覆盖")
@@ -2074,12 +2033,22 @@ def main():
     # 质量日志（自进化数据源）
     _log_quality(merged)
 
-    # 自动 QA 检查
+    # 自动 QA 检查 + autofix
     try:
         from qa import run_checks
         print("\n📋 自动 QA 检查...")
         date_str = args.date if args.date else datetime.now().strftime("%Y-%m-%d")
-        run_checks(date_str)
+        issue_count = run_checks(date_str)
+
+        # QA 发现 short_body 问题 → 自动补充
+        if issue_count > 0 and not args.skip_llm:
+            from qa_autofix import autofix_short_body
+            print("\n🔧 自动补充 body...")
+            fixed = autofix_short_body(date_str)
+            if fixed > 0:
+                print(f"   ✅ 已补充 {fixed} 条")
+    except ImportError as e:
+        print(f"   ⚠️ QA/autofix模块缺失: {e}")
     except Exception as e:
         print(f"   ⚠️ QA检查失败: {e}")
 

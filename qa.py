@@ -242,6 +242,107 @@ VAGUE_REFERENCES = [
 ]
 
 
+MAX_ARTICLES = 15  # 每日动态上限，超出则标记低价值条目建议删除
+
+
+def check_article_overflow(articles):
+    """检查条目总数是否超出上限，用 LLM 以行业分析师视角判断哪些条目信息价值最低"""
+    if len(articles) <= MAX_ARTICLES:
+        return []
+
+    overflow = len(articles) - MAX_ARTICLES
+    api_key = os.environ.get("MINIMAX_API_KEY", "")
+    if not api_key:
+        # 无 API key 时回退到简单规则：标记最后几条
+        issues = []
+        for a in articles[-overflow:]:
+            issues.append(('overflow', a.get('title', ''),
+                          f"建议删除（总数{len(articles)}超上限{MAX_ARTICLES}，无API key无法智能排序）"))
+        return issues
+
+    # 构建条目摘要供 LLM 判断
+    items_text = ""
+    for i, a in enumerate(articles):
+        title = a.get('title', '')
+        body = a.get('body', '').strip()
+        cat = a.get('categories', [''])[0] if a.get('categories') else ''
+        # 截断 body 避免 prompt 过长
+        body_short = body[:150] + "..." if len(body) > 150 else body
+        items_text += f"{i+1}. [{cat}] {title}\n   {body_short}\n\n"
+
+    prompt = f"""你是AI行业顶尖分析师。以下是今日{len(articles)}条AI新闻，需要精选到{MAX_ARTICLES}条。
+
+请选出{overflow}条信息价值最低、最应该删除的条目。
+
+判断标准（按重要性排序）：
+1. 行业影响力：对AI从业者/投资者/研究者是否有实质信息增量
+2. 事件独特性：是否是独家事件，还是常规动态/泛泛讨论
+3. 信息完整度：内容是否提供了足够的事实支撑，还是空洞描述
+4. 时效价值：是否是今天必须知道的，还是可以错过的
+
+高价值保护（不应删除）：重要模型发布/更新（新能力、新API）、深度研究洞察（可解释性、安全、对齐）、有具体benchmark数据的技术突破、头部公司（OpenAI/Anthropic/Google/Meta）的重大动作
+
+低价值信号：纯观点讨论无新事实、常规产品更新无突破、信息模糊无具体数据、与其他条目高度重叠、人事任命、课程/活动推广、与AI前沿技术/模型/基础设施无直接关联的融资收购（即使金额大）、非当日首发的旧报告/旧数据
+
+## 今日条目
+
+{items_text}
+
+## 输出格式
+返回JSON数组，包含应删除条目的序号和理由：
+[{{"index": 序号, "title": "标题前15字...", "reason": "一句话理由"}}]
+
+只返回JSON，不要其他文字。"""
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "anthropic-version": "2023-06-01",
+    }
+    data = {
+        "model": "MiniMax-M2.5",
+        "max_tokens": 1500,
+        "temperature": 0.1,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+
+    issues = []
+    try:
+        r = httpx.post(
+            "https://api.minimaxi.com/anthropic/v1/messages",
+            headers=headers, json=data, timeout=30, verify=False)
+        if r.status_code == 200:
+            resp = r.json()
+            text = ""
+            if "content" in resp:
+                for block in resp["content"]:
+                    if block.get("type") == "text":
+                        text = block.get("text", "")
+                        break
+            # 提取 JSON（去除 markdown code fence）
+            text = re.sub(r'```(?:json)?\s*', '', text).strip()
+            match = re.search(r'\[.*\]', text, re.DOTALL)
+            if match:
+                results = json.loads(match.group())
+                for item in results:
+                    idx = item.get("index", 0) - 1
+                    reason = item.get("reason", "")
+                    if 0 <= idx < len(articles):
+                        title = articles[idx].get('title', '')
+                        issues.append(('overflow', title,
+                                      f"建议删除（总数{len(articles)}超上限{MAX_ARTICLES}）：{reason}"))
+                return issues
+    except Exception as e:
+        print(f"    ⚠️ LLM排序失败: {e}")
+
+    # LLM 失败时回退：标记最后几条
+    if not issues:
+        for a in articles[-overflow:]:
+            issues.append(('overflow', a.get('title', ''),
+                          f"建议删除（总数{len(articles)}超上限{MAX_ARTICLES}，LLM排序失败）"))
+    return issues
+
+
 def check_fact_heuristic(articles):
     """启发式事实校验：模糊称呼、英文翻译、无依据声称"""
     issues = []
@@ -721,9 +822,17 @@ def run_checks(date_str=None, factcheck=False):
     for _, title, detail in issues:
         print(f"    - {title}: {detail}")
 
-    # 11. LLM 事实校验（可选，逐条比对原文）
+    # 11. 条目过多检测
+    issues = check_article_overflow(articles)
+    all_issues.extend(issues)
+    if issues:
+        print(f"\n[11] 条目过多: {len(issues)} 条建议删除（上限{MAX_ARTICLES}）")
+        for _, title, detail in issues:
+            print(f"    - {title}: {detail}")
+
+    # 12. LLM 事实校验（可选，逐条比对原文）
     if factcheck:
-        print(f"\n[11] 事实校验(LLM): 逐条对比原文...")
+        print(f"\n[12] 事实校验(LLM): 逐条对比原文...")
         issues = check_fact_llm(articles)
         all_issues.extend(issues)
         if not issues:

@@ -208,3 +208,29 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 删除该句。vLLM推文只说了"10+ bug fixes and optimizations"，未声称自己是"首选引擎"或"核心地位"
 - **reason**: 无来源的市场地位判断，属于AI自行添加的"拔高"表述
 - **rule_hint**: **body中禁止无来源的市场地位/竞争格局判断（"首选""核心地位""领先"等）。这类判断如果要写，必须放insight且标注是AI分析，不能混入body伪装成事实**
+
+---
+
+### [2026-05-09] #26
+- **file**: daily-ai-news-2026-05-09.md
+- **field**: body
+- **before**: EMO条目中机构归属错误——来源链接明确为 huggingface.co/blog/allenai/emo，body中也写了"Allen AI的Ryan Wang..."，但管线处理阶段曾将其错误归属为Meta
+- **after**: 确认为Allen AI (AI2)的工作，非Meta
+- **reason**: 来源链接已明确标注allenai，QA环节未交叉校验机构归属
+- **rule_hint**: **QA必须交叉校验：来源链接中的机构标识（如URL路径中的allenai/google/meta）必须与body中提到的机构名一致。发现不一致时立即标记为事实错误。这是最高优先级的校验项——机构归属错误比分类错误严重得多**
+
+### [2026-05-09] #27
+- **file**: daily-ai-news-2026-05-09.md
+- **field**: category
+- **before**: Anthropic安全干预方法研究、OpenAI CoT优化压力研究被归入"X讨论"
+- **after**: 移入"研究关注"
+- **reason**: 内容是正式研究博文/论文，不是X平台讨论。来源虽含X推文链接，但核心内容是研究成果
+- **rule_hint**: **分类以内容语义为准，不以来源渠道为准。官方研究博文/论文即使通过X推文传播，仍归"研究关注"。"X讨论"仅用于：(1)纯社区讨论/观点；(2)产品演示视频/动态；(3)无正式博文/论文支撑的碎片信息**
+
+### [2026-05-09] #28
+- **file**: daily-ai-news-2026-05-09.md
+- **field**: filter
+- **before**: OpenAI Codex Chrome插件推文未被管线自动收录
+- **after**: 手动补充为产业动态条目
+- **reason**: 采集窗口或关键词匹配遗漏了OpenAI官方推文
+- **rule_hint**: **OpenAI/Anthropic/Google等头部厂商的官方产品更新推文不应被遗漏。采集后应有一轮"头部厂商官方账号覆盖检查"**
