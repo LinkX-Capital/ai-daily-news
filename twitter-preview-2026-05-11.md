@@ -17,8 +17,8 @@
 
 - RT by @Humanoid_AI: 这套搭配是不是和墙上画的颜色很搭 #正装白袜 #皮鞋白袜 #白袜控
   [查看](https://x.com/baiwazik/status/2053481103575683560#m)
-- Pinned: 这个号被封了一段时间，期间建了个小号 后续这个号依然以转发xp为主 小号不定期掉落原创和合作内容吧 欢迎关注👏 （以防x再抽风封号）
-  [查看](https://x.com/Humanoid_AI/status/2053308157464817897#m)
+- RT by @Humanoid_AI: 谁能提供实惠有效的氯啊？垃圾佐匹，白白荒废了这么个白袜巨帅。一晚没睡死。一动就醒。
+  [查看](https://x.com/zx_baiwa/status/2053419054778704076#m)
 
 ### @openrouter | Infra
 
