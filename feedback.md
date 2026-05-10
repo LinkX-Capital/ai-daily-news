@@ -274,3 +274,11 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 通义千问眼镜降级为"据报发布，具体参数无法验证"；浙大知识图谱删除"覆盖学科最多、规模最大"的绝对性判断；Claude Code源码解析标注"二次解读非一手源"；SGL/Radixark标注"具体benchmark数据待补充"
 - **reason**: 来源不可达时，body中的具体细节同样不可验证，应一并降级。按规则"只写已确认的最小事实集"
 - **rule_hint**: **⚠️标注的降级规则应覆盖body中所有具体声明，不只加标签但保留细节。如果来源不可达，body中任何"支持XX功能""实现XX效果"的描述都是不可验证的，应缩减为"据报XX，细节待验证"**
+
+### [2026-05-10] #34
+- **file**: daily-ai-news-2026-05-10.md
+- **field**: 来源链接
+- **before**: `[arXiv:2604.05014](https://arxiv.org/abs/2604.05014)`, `[arXiv:2604.14228](https://arxiv.org/abs/2604.14228)`
+- **after**: `[arXiv](https://arxiv.org/abs/2604.05014)`, `[arXiv](https://arxiv.org/abs/2604.14228)`
+- **reason**: arXiv来源链接无需在方括号内注明编码，链接本身已包含完整信息
+- **rule_hint**: **arXiv来源链接统一使用 `[arXiv](URL)` 格式，不在方括号内加编码**

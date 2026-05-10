@@ -147,6 +147,7 @@ LLM 处理新闻时的格式规范。
 - 海外公司/人名不翻译为中文，保持英文（如 OpenAI、Google、Anthropic、NVIDIA、Sam Altman）
 - 链接必须与内容匹配，确保来源链接正确指向文章
 - nitter.net 链接不可用，需替换为正确的 x.com 链接
+- arXiv来源链接统一使用 `[arXiv](URL)` 格式，不在方括号内加编码
 
 **已废弃规则（勿再使用）：**
 - ~~body必须有so what/为什么重要~~ → 已移至insight，body只写事实（#17, 2026-04-28）
