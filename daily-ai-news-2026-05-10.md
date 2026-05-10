@@ -46,7 +46,7 @@
 
 ### 研究关注
 **Sakana AI与NVIDIA开源TwELL稀疏格式：重塑稀疏性适配GPU，推理加速30%训练加速24%**
-- Sakana AI与NVIDIA合作发布ICML 2026论文"Sparser, Faster, Lighter Transformer Language Models"，作者包括Transformer论文共同作者**Llion Jones**，开源GPU kernel与数据格式。核心贡献两方面：一是提出**TwELL（Tile-wise ELLPACK）**稀疏打包格式，按tile对齐而非传统ELL的按行对齐，可直接嵌入优化tiled matmul kernel而不破坏执行管线或引入额外同步；二是开发**自定义CUDA kernel**，推理端融合up/down projection跳过中间activation物化，训练端将TwELL压缩为稀疏+dense备份的混合表示以最小化内存开销。核心思路是"不强迫GPU适配稀疏性，而是将稀疏性重塑以适配GPU"：通过L1正则化诱导>**99%稀疏率**（对下游性能影响可忽略），99%高度稀疏token走快速路径，少量重token走dense安全阀。在**H100 GPU**上评测：推理加速最高**30%**（功耗额外降低~3%），训练加速最高**24%**且峰值内存降低>**24%**。模型从0.5B缩放到2B时非零activation减少**38%**，收益随规模增长，2B模型推理加速**20.5%**、可容纳双倍micro-batch使训练加速**21.9%**。
+- Sakana AI与NVIDIA合作发布ICML 2026论文"Sparser, Faster, Lighter Transformer Language Models"（作者包括Transformer论文共同作者**Llion Jones**），开源GPU kernel与数据格式。核心贡献两方面：提出**TwELL（Tile-wise ELLPACK）**稀疏打包格式，按tile对齐可直接嵌入优化tiled matmul kernel；开发**自定义CUDA kernel**，推理端融合up/down projection跳过中间activation物化，训练端压缩为稀疏+dense备份的混合表示。通过L1正则化诱导>**99%稀疏率**（对下游性能影响可忽略），在**H100**上推理加速最高**30%**，训练加速最高**24%**且峰值内存降低>**24%**。收益随规模增长：0.5B→2B时非零activation减少**38%**，2B模型推理加速**20.5%**、训练加速**21.9%**。
   > 💡 TwELL解决了"做更少运算反而更慢"的硬件悖论——tile对齐设计让稀疏性与现有GPU kernel管线无缝融合而非对抗。收益随模型规模增长是关键信号：若趋势持续，稀疏性可能成为量化/剪枝之外LLM效率的第三条主轴
    - 来源: [Sakana AI](https://sakana.ai/twell/) | [arXiv](https://arxiv.org/abs/2603.23198) | [GitHub](https://github.com/SakanaAI/sparser-faster-llms)
 
