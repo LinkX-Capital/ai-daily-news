@@ -234,3 +234,43 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 手动补充为产业动态条目
 - **reason**: 采集窗口或关键词匹配遗漏了OpenAI官方推文
 - **rule_hint**: **OpenAI/Anthropic/Google等头部厂商的官方产品更新推文不应被遗漏。采集后应有一轮"头部厂商官方账号覆盖检查"**
+
+### [2026-05-10] #29
+- **file**: daily-ai-news-2026-05-10.md
+- **field**: body
+- **before**: "谷歌DeepMind Pushmeet Kohli发布AI for Math最新成果，刷新数学AI基准SOTA。牛津教授使用该工具解开群论悬案。"（2句，无具体benchmark数据，slogan级描述）
+- **after**: 补充AI co-mathematician是多Agent系统、FrontierMath Tier 4得分**48%**（创AI最高分）、测试领域（群论/哈密顿系统/代数组合）、对比GPT-5.5 Pro 39.6%、Gemini Deep Think IMO金牌、AlphaEvolve具体成果
+- **reason**: 原body完全无量化数据，"刷新SOTA""群论悬案"均为空洞表述。从Pushmeet LinkedIn帖子和Google Blog补充具体数据后信息密度显著提升
+- **rule_hint**: **模型/系统发布类新闻必须包含至少1个具体benchmark数据点（分数/排名/对比）。"刷新SOTA"本身不是数据，必须写明在哪个benchmark上、具体多少分。缺乏数据时优先搜索官方博客/LinkedIn帖子/技术论文**
+
+### [2026-05-10] #30
+- **file**: daily-ai-news-2026-05-10.md
+- **field**: body
+- **before**: "英伟达2026年内已承诺$400亿用于AI相关股权投资交易。英伟达在传统GPU销售商业模式之外，通过资本投资深入参与AI产业链，扩展其在AI领域的影响力。"（2句，第2句纯filler）
+- **after**: 补充$300亿投向OpenAI、Corning $32亿、IREN $21亿、2025年67笔VC、2026年24轮私募、Wedbush分析师"circular investment theme"评价
+- **reason**: 第2句"深入参与产业链扩展影响力"是零信息增量的filler。TechCrunch原文有丰富数据（OpenAI $300亿等），未读取就写body
+- **rule_hint**: **融资/投资类新闻必须拆解资金构成（最大单笔→谁→多少钱、其他投资→几笔→总额多少），不能只写一个总数。对比数据（同比/上期）和第三方评价（分析师观点）是信息密度的关键增量**
+
+### [2026-05-10] #31
+- **file**: daily-ai-news-2026-05-10.md
+- **field**: body
+- **before**: "Robo.ai宣布收购Neurovia AI，后者是一家AI数据处理与压缩技术研发商...产品广泛赋能自动驾驶、智慧城市、无人设备及智能制造等场景。本次收购将强化Robo.ai在机器人数据基础设施方面的能力。"（营销稿体，无交易金额/结构）
+- **after**: 补充$1亿全股票、Class B股、8年锁定期、NASDAQ: AIIO、股价飙升70%、具体应用场景
+- **reason**: 原body直接复制IT桔子摘录，含"广泛赋能"等marketing fluff，缺少交易金额/结构/市场反应等核心事实。PRNewswire官方新闻稿有完整数据
+- **rule_hint**: **收购/M&A类新闻的核心要素：交易金额、支付方式（现金/股票/混合）、锁定期/earn-out、卖方核心资产、市场反应（股价变动）。来源优先级：PRNewswire官方稿 > 财经媒体 > IT桔子。禁止使用"广泛赋能""致力于"等营销稿措辞**
+
+### [2026-05-10] #32
+- **file**: daily-ai-news-2026-05-10.md
+- **field**: body
+- **before**: "该技术为AI Agent的安全性提供技术保障，填补Agent治理领域的技术空白。"
+- **after**: 删除"填补Agent治理领域的技术空白"。Agent安全/Guardrails赛道已有NVIDIA NeMo Guardrails、Lakera等先行项目
+- **reason**: "填补技术空白"是无来源的绝对性判断，违反"禁止无来源的绝对性判断"规则
+- **rule_hint**: **"填补空白""首创""填补技术空白"与"首个""首次"同属绝对性判断，必须由原文明确支撑。Agent安全赛道已有多个开源项目，不能因为中文媒体报道未提竞品就称"填补空白"**
+
+### [2026-05-10] #33
+- **file**: daily-ai-news-2026-05-10.md
+- **field**: body
+- **before**: 多个⚠️来源不可达条目的body仍包含无法验证的具体细节（如通义千问眼镜"支持主动提醒用户并帮忙叫车"）
+- **after**: 通义千问眼镜降级为"据报发布，具体参数无法验证"；浙大知识图谱删除"覆盖学科最多、规模最大"的绝对性判断；Claude Code源码解析标注"二次解读非一手源"；SGL/Radixark标注"具体benchmark数据待补充"
+- **reason**: 来源不可达时，body中的具体细节同样不可验证，应一并降级。按规则"只写已确认的最小事实集"
+- **rule_hint**: **⚠️标注的降级规则应覆盖body中所有具体声明，不只加标签但保留细节。如果来源不可达，body中任何"支持XX功能""实现XX效果"的描述都是不可验证的，应缩减为"据报XX，细节待验证"**
