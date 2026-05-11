@@ -34,7 +34,7 @@
 
 ### 算力追踪
 **Anthropic无补贴登顶OpenRouter令牌份额榜**
-- OpenRouter数据显示，Anthropic在2026年5月10日在令牌份额榜单位居第一，且未使用任何补贴。
+- OpenRouter数据显示，Anthropic在2026年5月10日登顶令牌份额排行榜首，且未使用任何补贴。该推文截至目前已获得**7,817次浏览**。OpenRouter官方账号于当日18:53（北京时间）发布此动态，并未披露具体令牌数量或市场份额数据。
   > 💡 Anthropic在开源路由平台取得领先，显示模型质量和用户体验获得市场认可
    - 来源: [@openrouter](https://x.com/OpenRouter/status/2053548965220475115#m)
    

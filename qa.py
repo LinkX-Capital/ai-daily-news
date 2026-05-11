@@ -150,9 +150,11 @@ def check_body_quality(articles):
         if not body:
             issues.append(('empty_body', title, "body为空"))
         elif sent_count < 3:
-            issues.append(('short_body', title, f"body仅{sent_count}句话（建议3-6句）"))
-        elif sent_count > 7:
-            issues.append(('long_body', title, f"body有{sent_count}句话（建议3-6句）"))
+            no_data = not re.search(r'\d', body)
+            is_paraphrase = len(body) < len(title) * 2
+            if no_data or is_paraphrase:
+                hint = "无数据" if no_data else "仅重述标题"
+                issues.append(('short_body', title, f"body仅{sent_count}句话，{hint}（信息不足）"))
 
         # 检查 body 是否包含不应有的判断性表达（判断应在 insight 中）
         judgment_patterns = [

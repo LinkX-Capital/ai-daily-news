@@ -211,6 +211,9 @@ def autofix_short_body(date_str):
 
         if sent_count >= 3:
             continue
+        # 有数据且body充实（不只是在重述标题）的短body不需要补
+        if re.search(r'\d', body) and len(body) >= len(a.get('title', '')) * 2:
+            continue
 
         # 获取分类
         category = a.get("categories", [""])[0] if a.get("categories") else ""
