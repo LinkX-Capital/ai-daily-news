@@ -10,7 +10,7 @@
 - 算力追踪：AMD发布vLLM-ATOM插件，AMD Instinct GPU原生推理性能直通vLLM
 - 初创&融资：Robo.ai以$1亿全股票收购Neurovia AI，构建物理AI视频数据基础设施
 - 研究关注：Sakana AI与NVIDIA开源TwELL稀疏格式，重塑稀疏性适配GPU，推理加速30%训练加速24%; OpenAI翁家翌提出Heuristic Learning，Codex写纯代码在Atari/MuJoCo媲美Deep RL; 港科大开源StarVLA框架，模块化架构统一VLM与世界模型两大VLA范式; 浙大联合上海AI Lab发布SciGraph-SCP，覆盖8大学科3.7亿实体的AI原生科学知识图谱; Claude Code源码逆向分析，核心循环仅while-loop，7模式权限+5层上下文压缩构成主要复杂度
-- X讨论：Claude Code团队成员倡导HTML替代Markdown作为Agent输出格式; SGL Project与Radixark团队合作优化DeepSeek V4推理，提升B200/B300性能
+- X讨论：OpenClaw发布Peekaboo 3.0，action-first macOS computer use工具支持AI Agent驱动桌面; Claude Code团队成员倡导HTML替代Markdown作为Agent输出格式; SGL Project与Radixark团队合作优化DeepSeek V4推理，提升B200/B300性能
 
 ---
 
@@ -71,6 +71,11 @@
    - 来源: [arXiv](https://arxiv.org/abs/2604.14228) | [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247889444&idx=3&sn=db42e6bfd193cb5b0d2150a3ac90b64d)
 
 ### X讨论
+**OpenClaw发布Peekaboo 3.0：action-first macOS computer use工具，支持AI Agent驱动桌面**
+- OpenClaw创始人Peter Steinberger发布 **Peekaboo 3.0**，称"去年开始做但模型还不够好，现在够了"。核心升级：**action-first macOS computer use**（从被动截图升级为主动驱动输入）、**unified screenshot + UI detection**（统一截图与辅助功能树检测）、**cleaner JSON across CLI + MCP**（CLI和MCP接口统一JSON格式）、**better snapshots**。Peekaboo可让Codex、Claude Code、Cursor等AI客户端通过MCP协议驱动macOS桌面——捕获像素、读取辅助功能树、模拟点击/输入/滚动/拖拽。推文获 **305K+ views**。
+  > 💡 Peekaboo 3.0代表了Computer Use从"看"到"做"的演进：不仅是截图分析，而是让AI Agent直接操控桌面应用。
+   - 来源: [steipete](https://x.com/steipete/status/2053114837698249190) | [peekaboo.sh](https://peekaboo.sh/)
+
 **Claude Code团队成员倡导HTML替代Markdown作为Agent输出格式**
 - Claude Code团队成员trq212发帖分享用HTML替代Markdown作为Agent输出格式。理由：HTML可表达表格/SVG/交互/动画，信息密度远高于Markdown；配合Opus 4.7的**1M上下文窗口**，token增长可忽略。典型场景包括方案探索对比、PR代码解释、可交互playground编辑器。缺点是**HTML diff对版本控制不友好**，生成耗时比Markdown长2-4倍。
   > 💡 trq212的实践揭示了Agent输出从纯文本向富媒体演进的路径。HTML作为"通用画布"可能改变AI辅助工作的交互范式，但VC不友好是工程层面的硬伤
