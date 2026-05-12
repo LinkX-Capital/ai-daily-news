@@ -170,13 +170,17 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True,
         # parse display month_day from file_date
         dm = re.match(r'(\d{4})-(\d{2})-(\d{2})', file_date)
         if dm:
-            month_day = f"{dm.group(2)}月{dm.group(3)}日"
+            dt = datetime(int(dm.group(1)), int(dm.group(2)), int(dm.group(3)))
+            weekday_cn = ['周一','周二','周三','周四','周五','周六','周日'][dt.weekday()]
+            month_day = f"{dm.group(2)}月{dm.group(3)}日{weekday_cn}"
         elif month_day is None:
-            month_day = datetime.now().strftime("%m月%d日")
+            weekday_cn = ['周一','周二','周三','周四','周五','周六','周日'][datetime.now().weekday()]
+            month_day = datetime.now().strftime("%m月%d日") + weekday_cn
     else:
         today_iso = datetime.now().strftime("%Y-%m-%d")
         if month_day is None:
-            month_day = datetime.now().strftime("%m月%d日")
+            weekday_cn = ['周一','周二','周三','周四','周五','周六','周日'][datetime.now().weekday()]
+            month_day = datetime.now().strftime("%m月%d日") + weekday_cn
 
     today_time = today_iso  # for batch conversion, no time needed
 
