@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-05-13 07:15
-**总计**：32 条推文
+**总计**：28 条推文
 
 ---
 
@@ -11,7 +11,7 @@
 
 ---
 
-## 🏢 公司发布（23条）
+## 🏢 公司发布（22条）
 
 ### @bostondynamics | App
 
@@ -42,8 +42,6 @@
 
 - Your ad is running. But is it working?    Define what better looks like. Set the direction. Luma Agents build a sharper, higher performing version wit...
   [查看](https://x.com/LumaLabsAI/status/2054300200517456185#m)
-- The finest campaigns don't just show the product. They make you want the world it lives in.    Set the vision. Define the aesthetic. Luma Agents build...
-  [查看](https://x.com/LumaLabsAI/status/2053976189849772316#m)
 
 ### @openai | Model
 
@@ -86,7 +84,7 @@
 - RT by @Zai_org: 🧵 Slime: The Most Elegant & Comfortable RL Training Framework Ever  A deep dive into why Slime redefines LLM RL training with clean ar...
   [查看](https://x.com/ZhihuFrontier/status/2053983362755477671#m)
 
-## 👤 研究者动态（9条）
+## 👤 研究者动态（6条）
 
 ### @andrewyng [independent] | Research
 
@@ -105,13 +103,6 @@
 - RT by @JeffDean: Today we're launching the Open Defense Initiative: up to $5 million in @depthfirstlabs credits for critical open source projects to f...
   [查看](https://x.com/andreamichi/status/2054262136659194352#m)
 
-### @sama [OpenAI] | Model
-
-- speaking of things that have gotten over a threshold for me, the combo of the new ChatGPT model, personality, and personalization feels like a new thi...
-  [查看](https://x.com/sama/status/2053971387308745046#m)
-- would you call it  a superapp?
-  [查看](https://x.com/sama/status/2053970698725679437#m)
-
 ### @soumithchintala [Meta] | Research
 
 - Cluster magicians and GPU whisperers, come join us!  We’re looking for supercomputing engineers to build the infrastructure behind real-time interacti...
@@ -119,7 +110,5 @@
 
 ### @swyx [AI社区] | App
 
-- I believe the kids call this "@thinkymachines just brutally framemogged gdm and oai".   basically everyone's definition of "realtime" just got a massi...
-  [查看](https://x.com/swyx/status/2053960011748098462#m)
-- R to @thinkymachines: her. this is her.  https://www.youtube.com/watch?v=iVDJ8O89ERg
-  [查看](https://x.com/swyx/status/2053958921388458220#m)
+- the best way to think about /goal is that you’re moving from prompting WHAT you want done, to HOW you want it evaluated
+  [查看](https://x.com/swyx/status/2054327253102895361#m)
