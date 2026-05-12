@@ -6,6 +6,7 @@
 
 ## 要点汇总
 
+- 模型前沿：Thinking Machines Lab提出Interaction Model架构，276B参数MoE原生支持实时多模态协作
 - 产业动态：Claude Code新增Agent视图，可视化所有会话列表; AWS Bedrock AgentCore支持AI代理自主支付，推Agent Toolkit简化开发; Google推出REPLIQA研究计划，投入1000万美元探索量子计算在生命科学应用
 - 初创&融资：量子精密测量公司国仪量子IPO过会，拟登陆科创板; 快手计划分拆可灵AI融资20亿美元，估值200亿美元; 冯瑶、刘淼联手创立具身智能公司，以人为中心重构训练范式
 - 研究关注：ICLR 2026论文统计：清华331篇全球第一，美国机构占Oral论文40%; PRISM框架用分层决策替代Best-of-N，dLLM推理加速最高6.5倍; Claw-Eval-Live提出Agent动态评测框架：最高通过率仅66.7%，HR和多系统工作流成瓶颈
@@ -15,6 +16,12 @@
 ---
 
 ## 📖 详细参考
+
+### 模型前沿
+**Thinking Machines Lab提出Interaction Model架构，276B MoE原生支持实时多模态协作**
+- Thinking Machines Lab发布Interaction Models研究预览，提出将交互能力作为模型原生能力而非外挂组件的新架构。首个模型TML-Interaction-Small为**276B参数MoE**（**12B活跃参数**），采用**200ms micro-turn**设计持续处理音频、视频和文本的并发输入输出，无需voice-activity-detection等外部对话管理组件。系统分为两层：交互模型负责实时感知与响应，后台模型负责深度推理和工具调用，两者共享上下文。在FD-bench v1.5交互质量评测中达到最优，Audio MultiChallenge超过所有非thinking模型。团队同时提出TimeSpeak、CueSpeak、ProactiveVideoQA等新基准测试时间感知、同时语音和视觉主动性能力，现有商业实时模型（GPT-Realtime、Gemini Flash Live）均无法有效完成。模型采用encoder-free early fusion——音频通过dMel嵌入层、图像通过40x40 patch + hMLP编码，所有组件从头联合训练。推理优化的streaming sessions功能已upstream至SGLang。
+  > 💡 将实时交互从外挂harness变为模型原生能力，符合"bitter lesson"端到端学习路线；200ms micro-turn + 双模型分层架构可能成为实时AI交互的新范式，对语音助手、具身智能等需要持续感知的场景有深远影响。
+   - 来源: [Thinking Machines Lab](https://thinkingmachines.ai/blog/interaction-models/)
 
 ### 产业动态
 **Claude Code推出Agent view，支持多会话并行管理与后台运行**
