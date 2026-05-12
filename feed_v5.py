@@ -1727,7 +1727,7 @@ def save_archive(articles):
     print(f"✅ 已存档: {archive_file}")
 
 def get_time_window(target_date=None):
-    """获取时间窗口：固定 24 小时（昨天9点 → 今天9点）
+    """获取时间窗口：固定 24 小时（昨天8点 → 今天8点）
 
     Args:
         target_date: 指定日期，格式 YYYY-MM-DD。默认为今天。
@@ -1737,15 +1737,15 @@ def get_time_window(target_date=None):
     if target_date:
         # 使用指定日期（带时区）
         end_beijing = datetime.strptime(target_date, "%Y-%m-%d").replace(
-            hour=9, minute=0, second=0, microsecond=0, tzinfo=timezone(timedelta(hours=beijing_offset))
+            hour=8, minute=0, second=0, microsecond=0, tzinfo=timezone(timedelta(hours=beijing_offset))
         )
     else:
         # 使用当前时间
         now_utc = datetime.now(timezone.utc)
         now_beijing = now_utc + timedelta(hours=beijing_offset)
-        # end_beijing = 今天9点（如果还没到9点）或昨天9点（如果已过9点）
-        end_beijing = now_beijing.replace(hour=9, minute=0, second=0, microsecond=0)
-        if now_beijing.hour >= 9:
+        # end_beijing = 今天8点（如果还没到8点）或明天8点（如果已过8点）
+        end_beijing = now_beijing.replace(hour=8, minute=0, second=0, microsecond=0)
+        if now_beijing.hour >= 8:
             end_beijing = end_beijing + timedelta(days=1)
 
     # 固定：24小时窗口
