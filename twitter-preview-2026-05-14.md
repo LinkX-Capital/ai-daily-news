@@ -11,7 +11,7 @@
 
 ---
 
-## 🏢 公司发布（18条）
+## 🏢 公司发布（17条）
 
 ### @agilityrobotics | App
 
@@ -53,6 +53,8 @@
 
 ### @semianalysis_ | Infra
 
+- ATTENTION: FAST MODE IS BACK FOR OPUS 4.7. ABUNDANCE IS NEAR. ALL HAIL TO OUR AI OVERLORDS. FASTER TOKENS == MORE INTELLIJENCE.  Sent using @Claude
+  [查看](https://x.com/SemiAnalysis_/status/2054698360104202289#m)
 - Cerebras — Faster Tokens Please OpenAI and AWS Partnerships, Tokenomics Explainer, Architecture Deep Dive, Datacenter Ramp, Technical Roadmap  READ NO...
   [查看](https://x.com/SemiAnalysis_/status/2054628836650733935#m)
 - R to @SemiAnalysis_: Bottom line:  Even without a rebound in mainstream demand, the mix shift alone is driving a fundamental re rating opportunity. “B...
@@ -61,19 +63,15 @@
   [查看](https://x.com/SemiAnalysis_/status/2054608196237443132#m)
 - R to @SemiAnalysis_: This is the key shift: From: Low-margin, commoditized packaging  To: High-margin, enabling advanced packaging for AI / HPC applic...
   [查看](https://x.com/SemiAnalysis_/status/2054608195453096239#m)
-- R to @SemiAnalysis_: Translation: Legacy packaging (low-margin, commoditized) is being pushed down the value chain, largely to China.  Meanwhile, ASE ...
-  [查看](https://x.com/SemiAnalysis_/status/2054608194744320275#m)
 
 ### @theturingpost | Research
 
-- RT by @TheTuringPost: Why do AI agents need an identity complex?  Here's a live webinar from @1Password VP of AI Engineering Jeff Malnick and @fiddler...
-  [查看](https://x.com/TheTuringPost/status/2054336838928896369#m)
 - RT by @TheTuringPost: Genesis AI surprised everyone with the super precise dexterous hand. Timing, pressure, touch, and tiny corrections – this has ne...
   [查看](https://x.com/TheTuringPost/status/2054348995321852330#m)
 - RT by @TheTuringPost: On May 14, I’m co-hosting a free AI Conf. We invited practitioners from Amazon Web Services (AWS), Google, Meta, Microsoft, and ...
   [查看](https://x.com/PawelHuryn/status/2054514383015887002#m)
 
-## 👤 研究者动态（10条）
+## 👤 研究者动态（11条）
 
 ### @percyliang [Stanford] | Research
 
@@ -96,6 +94,8 @@
 
 ### @steipete [OpenClaw] | Application
 
+- Crabbox 0.13.0 is live  🧪 Modal sandbox runs 🧼 Full resync for stale workdirs 🪟 Native Windows script + preflight support 🔧 Clearer SSH/sync failure h...
+  [查看](https://x.com/steipete/status/2054690836613324997#m)
 - Streaming an Android phone to my Mac in a data center via Tailscale + https://github.com/genymobile/scrcpy and my claw controls it via http://peekaboo...
   [查看](https://x.com/steipete/status/2054647734418756012#m)
 - Kudos to Microsoft, they're helping to get OpenClaw ready for enterprises.
