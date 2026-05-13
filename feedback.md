@@ -53,6 +53,7 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 | **source** | #14 | 论文以arXiv为一手源，媒体为补充 |
 | **source** | #26 | 交叉校验URL中的机构标识 |
 | **source** | #34 | arXiv链接格式：`[arXiv](URL)` |
+| **source** | #41 | 研究类新闻：主动查找arXiv是第一步，不是补充步骤 |
 
 **图例：** 🔗 = 已合并至更新条目
 
@@ -110,15 +111,8 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 
 ---
 
-### [2026-04-25] #09 🔗
-> 🔗 与 #29 合并。#09 建立了"body必须有量化数据"的基础规则，#29 细化为"模型/系统发布类必须有benchmark数据点"。统一规则见 #29
-
-- **file**: daily-ai-news-2026-04-25.md
-- **field**: body
-- **before**: 多条body信息密度极低：DeepSeek-V4只有"支持百万token"、Grok Voice只有"快速响应和高精度"、Anthropic降智只有"三个Bug导致"、Workspaces只有"协作工作空间"
-- **after**: 全部补充具体数据：V4参数量/benchmark/定价、Grok τ-voice Bench登顶/Starlink 20%转化率、Anthropic三个Bug具体内容、Workspaces API密钥/配额/路由
-- **reason**: slogan级描述没有信息量，读者看完无法跟人聊，用户每次都要手动去官方源补充
-- **rule_hint**: body必须有可量化的具体数据。如果只能写出一句泛泛描述，必须去官方源挖具体数据，挖不到时标注⚠️。见 #29 获取更具体的benchmark规则
+### [2026-04-25] #09 🔗 已合并至 #29
+> 统一规则：body事实密度。#09 建立"body必须有量化数据"，#29 细化为benchmark数据点要求。完整条目见 #29
 
 ### [2026-04-25] #10
 - **file**: daily-ai-news-2026-04-25.md
@@ -232,25 +226,11 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **reason**: 原body完全跑偏——实际是密态计算（同态加密），不是异构计算架构。人名、公司名、技术方向全部错误，属于未读原文凭标题臆测内容
 - **rule_hint**: **当来源不可达（如微信反爬）且无法验证内容时，禁止凭标题/摘要臆测body细节。应标注"⚠️ 来源未验证"并只写已确认的最小事实集，或请用户提供更多信息**
 
-### [2026-05-05] #24 🔗
-> 🔗 与 #25、#32 合并。三条规则统一为 #32："禁止无来源的绝对性判断"
+### [2026-05-05] #24 🔗 已合并至 #32
+> 统一规则：禁止无来源的绝对性判断。#24（首个）+ #25（首选/核心地位）+ 本条合并为 #32。完整条目见 #32
 
-- **file**: daily-ai-news-2026-05-03.md
-- **field**: body
-- **before**: "这是首个针对'Agent网络'而非单个Agent的安全评估框架"
-- **after**: 删除"首个"判断。原文Prior work段明确提到Prompt Infection、ClawWorm、Agents of Chaos等先行工作
-- **reason**: 原文自己列举了prior work，说明不是"首个"。AI编造了"首个"这一绝对性判断
-- **rule_hint**: 禁止无来源的"首个/首次"判断 → 统一规则见 #32
-
-### [2026-05-05] #25 🔗
-> 🔗 与 #24、#32 合并。统一规则见 #32
-
-- **file**: daily-ai-news-2026-05-03.md
-- **field**: body
-- **before**: "此前vLLM已是DeepSeek V4推理的首选引擎，本次更新进一步巩固了其在开源推理栈中的核心地位"
-- **after**: 删除该句。vLLM推文只说了"10+ bug fixes and optimizations"，未声称自己是"首选引擎"或"核心地位"
-- **reason**: 无来源的市场地位判断，属于AI自行添加的"拔高"表述
-- **rule_hint**: 禁止无来源的"首选/核心地位"判断 → 统一规则见 #32
+### [2026-05-05] #25 🔗 已合并至 #32
+> 统一规则：禁止无来源的绝对性判断。完整条目见 #32
 
 ---
 
@@ -361,3 +341,29 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 按实际性质选择精确动词：博客→"详解/解析"、论文→"提出/发表"、文档→"开源/公开"、数据→"报告/显示"
 - **reason**: "发布/推出"暗示产品级动作，但实际内容可能是博客文章、论文、配置文档、研究报告等。动词不精确会误导读者对事件重要性的判断
 - **rule_hint**: **标题动词必须匹配内容实际性质，禁止"发布/推出"万能化：(1) 博客/技术文章 → 详解、解析、介绍；(2) 论文/学术研究 → 提出、发表、验证；(3) 配置文档/工具 → 开源、公开、提供；(4) 数据/报告 → 报告显示、数据显示；(5) 产品/模型 → 才用发布、推出；(6) 分析/观点 → 分析、复盘、探讨**
+
+---
+
+### [2026-05-13] #39
+- **file**: daily-ai-news-2026-05-13.md
+- **field**: category
+- **before**: Perceptron Mk1视觉语言模型归入"算力追踪"
+- **after**: 移入"模型前沿"
+- **reason**: Perceptron Mk1是视觉语言模型，有明确的模型能力描述（视频理解、具身推理、时间推理），不是算力基础设施
+- **rule_hint**: **模型能力类新闻（视觉语言模型/多模态模型/coding agent benchmark等）归"模型前沿"。算力追踪仅用于：芯片/硬件、云服务定价/实例、推理部署优化、数据中心基础设施。判断标准：描述"模型能做什么"→模型前沿；描述"跑模型的硬件/服务多少钱"→算力追踪**
+
+### [2026-05-13] #40
+- **file**: daily-ai-news-2026-05-13.md
+- **field**: body
+- **before**: Bengio团队TBA条目body写"RL训练提速50倍"
+- **after**: 读取arXiv原文后纠正为"训练时间缩短4倍以上"
+- **reason**: 50倍来自媒体摘要（PaperWeekly），与arXiv原文严重不符（原文是"4x or more"）
+- **rule_hint**: **媒体摘要中的倍数/百分比/绝对数值必须回溯arXiv/官方博客确认。媒体转述论文时常夸大数字（如把4x说成50倍）。属于 #22 "写body前必须读原文"的硬性执行**
+
+### [2026-05-13] #41
+- **file**: daily-ai-news-2026-05-13.md
+- **field**: body
+- **before**: 多次从媒体报道（PaperWeekly/机器之心/DeepTech）直接写body，未主动查找arXiv原文
+- **after**: 看到媒体报道论文时，第一步查找并读取arXiv原文，基于原文写body
+- **reason**: #14要求"arXiv为一手源"，#22要求"写body前必须读原文"，但执行时仍然先读媒体再写body。根本原因是规则表述为"偏好"而非"必做"。应改为：处理研究类新闻时，**主动查找arXiv**是第一步，不是补充步骤
+- **rule_hint**: **【研究类新闻处理流程】看到媒体报道论文时：(1) 从标题/摘要提取arXiv编号或论文标题；(2) 用arXiv搜索或Google找原文；(3) 读arXiv abstract+intro+results；(4) 基于原文写body，媒体只作为补充来源。这是流程起点而非补充步骤，违反此规则等同于凭媒体摘要扩写（#22）。适用于所有"研究关注"类条目和X讨论中的论文解读**

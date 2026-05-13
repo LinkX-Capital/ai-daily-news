@@ -14,7 +14,7 @@ Key patterns from feedback so far:
 - Summary briefing items should only show key facts, no descriptive filler
 - Check source link availability (replace nitter.net)
 - Body must have quantifiable data; fetch from official sources if vague
-- Body hard floor: 3 sentences minimum; if insufficient, fetch more data or mark ⚠️
+- Body hard floor: no hard minimum; write what's confirmed, never fabricate to meet sentence count
 - Official first-hand source preferred (arXiv > media reporting)
 - Verify "首次发布/透露" claims — check if model/product was already released earlier
 - Merge multiple sources for the same event: take the richest data from all sources
@@ -148,11 +148,6 @@ LLM 处理新闻时的格式规范。
 - 链接必须与内容匹配，确保来源链接正确指向文章
 - nitter.net 链接不可用，需替换为正确的 x.com 链接
 - arXiv来源链接统一使用 `[arXiv](URL)` 格式，不在方括号内加编码
-
-**已废弃规则（勿再使用）：**
-- ~~body必须有so what/为什么重要~~ → 已移至insight，body只写事实（#17, 2026-04-28）
-- ~~body不是纯新闻聚合要有判断~~ → 修订为：body要抓住事实性的关键影响（市场反应/行业变化/专家评价），但不加AI自己的判断。"不是纯新闻聚合"≠"要有AI判断"，而是"要有事实性影响"
-- ~~body硬性下限3句，禁止输出不足3句~~ → 已取消硬性下限。建议3-6句，但来源不可达时禁止用AI推理/编造凑数（#22-#25, 2026-05-05；再修订 2026-05-06）
 
 **要点速览 rules:**
 - 只显示"是什么"（取冒号之前的部分），不截断标题
