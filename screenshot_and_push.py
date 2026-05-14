@@ -89,7 +89,8 @@ def _parse_summary_from_html(date: str) -> list[dict]:
             titles = re.findall(r'<span class="sum-item">(.*?)</span>', chunk)
             titles = [re.sub(r"<[^>]+>", "", unescape(t)).strip() for t in titles if re.sub(r"<[^>]+>", "", t).strip()]
             if titles:
-                elements.append({"tag": "div", "text": {"tag": "lark_md", "content": f"**{cat}**：{'；'.join(titles)}"}})
+                lines = f"**{cat}**\n" + "\n".join(f"• {t}" for t in titles)
+                elements.append({"tag": "div", "text": {"tag": "lark_md", "content": lines}})
     else:
         # V1 format
         for chunk in re.split(r'<div class="summary-item">', summary_html)[1:]:
@@ -100,7 +101,8 @@ def _parse_summary_from_html(date: str) -> list[dict]:
             titles = re.findall(r'<span class="summary-title">(.*?)</span>', chunk)
             titles = [re.sub(r"<[^>]+>", "", unescape(t)).strip() for t in titles if re.sub(r"<[^>]+>", "", t).strip()]
             if titles:
-                elements.append({"tag": "div", "text": {"tag": "lark_md", "content": f"**{cat}**：{'；'.join(titles)}"}})
+                lines = f"**{cat}**\n" + "\n".join(f"• {t}" for t in titles)
+                elements.append({"tag": "div", "text": {"tag": "lark_md", "content": lines}})
 
     return elements
 
