@@ -3,6 +3,9 @@
 
 cd /Users/shenyalan/ai-daily-news
 
+# 加载 conda 环境（launchd 下 PATH 几乎为空）
+source ~/.zshrc 2>/dev/null
+
 # 设置环境变量
 export MINIMAX_API_KEY="${MINIMAX_API_KEY}"
 export NOTIFY_METHOD="feishu"
@@ -13,13 +16,13 @@ echo "🤖 AI前沿动态 - $(date '+%Y-%m-%d %H:%M')"
 echo "=========================================="
 
 # 运行抓取脚本 (v5.0 - 研究按领域+被引量排序)
-python feed_v5.py
+python3 feed_v5.py
 
 # 发送通知
 if [ -f "notify.py" ]; then
     echo ""
     echo "📨 发送通知..."
-    python notify.py
+    python3 notify.py
 fi
 
 echo ""

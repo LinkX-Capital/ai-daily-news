@@ -1458,14 +1458,44 @@ def post_validate_and_enrich(articles):
     return articles
 
 # ========== 抓取 ==========
+def _fetch_via_curl(url):
+    """curl fallback: 用系统 curl 抓取（绕过 Python OpenSSL 兼容性问题）"""
+    import subprocess
+    result = subprocess.run(
+        ["curl", "-sL", "--max-time", "15", "-H", "User-Agent: Mozilla/5.0", url],
+        capture_output=True, text=True, timeout=20
+    )
+    if result.returncode != 0 or not result.stdout.strip():
+        raise RuntimeError(f"curl failed: rc={result.returncode}")
+    return result.stdout
+
 def fetch_source(name, url, limit=15, max_retries=5):
-    """抓取 RSS 源，支持重试"""
+    """抓取 RSS 源，支持重试，httpx 失败时自动 fallback 到 curl"""
     for attempt in range(max_retries):
         try:
             client = httpx.Client(timeout=15, verify=False, follow_redirects=True)
             r = client.get(url, headers={"User-Agent": "Mozilla/5.0"})
             r.raise_for_status()
             feed = feedparser.parse(r.text)
+            client.close()
+        except Exception as e:
+            # httpx 失败，尝试 curl fallback（仅最后两次重试时）
+            if attempt >= max_retries - 2:
+                try:
+                    raw = _fetch_via_curl(url)
+                    feed = feedparser.parse(raw)
+                except Exception as e2:
+                    if attempt < max_retries - 1:
+                        import time; time.sleep(2)
+                        continue
+                    return [], str(e)[:60]
+            else:
+                if attempt < max_retries - 1:
+                    import time; time.sleep(2)
+                    continue
+                return [], str(e)[:60]
+
+        try:
             articles = []
             for e in feed.entries:
                 if not is_in_window(e): continue
@@ -1491,12 +1521,10 @@ def fetch_source(name, url, limit=15, max_retries=5):
 
                 articles.append(article)
                 if len(articles) >= limit: break
-            client.close()
             return articles, None
         except Exception as e:
             if attempt < max_retries - 1:
-                import time
-                time.sleep(2)  # 重试前等待2秒
+                import time; time.sleep(2)
                 continue
             return [], str(e)[:60]
 
