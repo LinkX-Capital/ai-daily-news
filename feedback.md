@@ -54,6 +54,7 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 | **source** | #26 | 交叉校验URL中的机构标识 |
 | **source** | #34 | arXiv链接格式：`[arXiv](URL)` |
 | **source** | #41 | 研究类新闻：主动查找arXiv是第一步，不是补充步骤 |
+| **source** | #42 | 媒体来源body不足时：用标题/摘要反向搜索原始来源 |
 
 **图例：** 🔗 = 已合并至更新条目
 
@@ -367,3 +368,11 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 看到媒体报道论文时，第一步查找并读取arXiv原文，基于原文写body
 - **reason**: #14要求"arXiv为一手源"，#22要求"写body前必须读原文"，但执行时仍然先读媒体再写body。根本原因是规则表述为"偏好"而非"必做"。应改为：处理研究类新闻时，**主动查找arXiv**是第一步，不是补充步骤
 - **rule_hint**: **【研究类新闻处理流程】看到媒体报道论文时：(1) 从标题/摘要提取arXiv编号或论文标题；(2) 用arXiv搜索或Google找原文；(3) 读arXiv abstract+intro+results；(4) 基于原文写body，媒体只作为补充来源。这是流程起点而非补充步骤，违反此规则等同于凭媒体摘要扩写（#22）。适用于所有"研究关注"类条目和X讨论中的论文解读**
+
+### [2026-05-15] #42
+- **file**: daily-ai-news-2026-05-15.md
+- **field**: body
+- **before**: 量子位报道国产GPU/SGLang、PaperWeekly报道Nous Research TST，管道只从微信抓到标题/摘要级内容，body只有1-2句slogan描述，未主动搜索原始来源
+- **after**: 用标题关键词（如"Nous Research Token Superposition"）反向搜索arXiv/GitHub/官网，找到原文后基于原文重写body
+- **reason**: #41针对"研究类新闻找arXiv"，但问题更广泛：**任何来源（不仅论文）如果body信息不足，都应基于标题/摘要反向搜索原始来源**。微信/媒体报道是二手信息，原始来源（arXiv/GitHub/官方blog/公司官网）信息密度远高于媒体
+- **rule_hint**: **【反向搜索补body】当管道抓到的来源是媒体（量子位/PaperWeekly/机器之心/DeepTech等）且body不足时：(1) 从标题提取关键实体和关键词（模型名/公司名/技术名）；(2) 用web_search搜索原始来源（arXiv/GitHub/HuggingFace/官方blog）；(3) 读到原文后重写body。此规则是#41的泛化——不仅论文要找arXiv，任何媒体报道都应追溯到一手来源**
