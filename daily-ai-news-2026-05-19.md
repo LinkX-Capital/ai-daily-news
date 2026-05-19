@@ -6,7 +6,7 @@
 
 ## 要点汇总
 
-- 模型前沿：HuggingFace博客详解：用LoRA/DoRA微调Cosmos Predict 2.5生成机器人视频; 阿里通义千问3.7预览版登陆Arena，文本升至全球第六; openJiuwen开源JiuwenSwarm蜂群智能体架构，支持多Agent自主演进
+- 模型前沿：阿里通义千问3.7预览版登陆Arena，文本升至全球第六; openJiuwen开源JiuwenSwarm蜂群智能体架构，支持多Agent自主演进
 - 产业动态：Anthropic收购开发工具初创Stainless，交易估值超3亿美元并将于年内停服; Microsoft高管警示GitHub AI优势流失，Copilot增长未达预期; Meta将数千名员工调配至AI业务部门，并计划实施大规模裁员
 - 算力追踪：NVIDIA首批Vera CPU交付Anthropic/OpenAI/SpaceX，瞄准Agent推理场景
 - 初创&融资：类脑计算芯片公司脑智算芯获天使轮融资，英诺/复旦科创联合领投
@@ -18,11 +18,6 @@
 ## 📖 详细参考
 
 ### 模型前沿
-**HuggingFace博客详解：用LoRA/DoRA微调Cosmos Predict 2.5生成机器人视频**
-- HuggingFace官方博客发布教程，展示如何用LoRA和DoRA参数高效微调NVIDIA Cosmos Predict 2.5模型，用于机器人视频生成任务。该教程覆盖数据集准备、训练配置优化及推理部署全流程，DoRA相比LoRA在保持相近参数量的情况下可实现更好的运动保真度。Cosmos Predict 2.5是NVIDIA的物理世界预测模型系列，目标是将互联网视频理解能力迁移到机器人操控领域。
-  > 💡 Cosmos系列正成为机器人具身智能视频数据生成的标准底座，NVIDIA通过HuggingFace教程降低使用门槛，意在扩大Cosmos生态的开发者基数，加速从模拟到真实机器人的数据闭环。
-   - 来源: [HuggingFace Blog](https://huggingface.co/blog/nvidia/cosmos-fine-tuning-for-robot-video-generation)
-
 **阿里通义千问3.7预览版登陆Arena，文本升至全球第六**
 - 阿里Qwen团队宣布Qwen3.7-Max-Preview和Qwen3.7-Plus-Preview两款模型登陆LMSYS Chatbot Arena。评测结果显示Qwen3.7-Max在文本总榜排名全球第十三，使阿里巴巴整体位列Arena第六大实验室，其中数学第七、专家推理第九、编程与IT第十。视觉方面Qwen3.7-Plus排名第十六，综合使阿里成为视觉第五大实验室。Qwen3.7系列延续MoE架构路线，团队表示完整版本将于近期发布。
   > 💡 Qwen持续高频迭代，3.7版本的Arena排名印证了其在中美大模型第一梯队中的稳定位置。对于需要开源多模态能力的开发者，千问仍是除Llama外的首选基座候选。
