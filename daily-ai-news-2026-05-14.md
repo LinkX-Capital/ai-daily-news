@@ -9,7 +9,7 @@
 - 模型前沿：MiniCPM-V 4.6实现2.4倍推理吞吐提升; Claude Code上线Fast Mode，Opus 4.6速度提升2.5倍
 - 产业动态：Muse Spark全平台推送覆盖WhatsApp/Instagram/AI眼镜; Anthropic小型企业服务+Ramp数据首次显示企业客户数超OpenAI; OpenAI为Windows版Codex构建安全沙箱; MiniMax发布Agent Teams，多Agent协作架构引入Leader-Worker-Verifier机制; Notion发布开发者平台支持外部Agent接入; Apple探索将AI Agent引入App Store; 勒索软件组织声称入侵富士康，涉及Apple Google NVIDIA供应商; Amazon AI购物助手+阿里千问淘宝打通，中美电商AI化加速
 - 算力追踪：NVIDIA与Ineffable合作共建强化学习基础设施; SemiAnalysis分析OSAT从封装向关键AI基础设施转型
-- 初创&融资：Anthropic洽谈收购OpenAI SDK的供应商Stainless至少3亿美元; Origin Lab完成800万美元种子轮，构建游戏数据→世界模型训练数据市场; AI药物设计公司Isomorphic Labs完成21亿美元B轮融资; 林俊旸离开阿里Qwen后创业估值约20亿美元
+- 初创&融资：Recursive Superintelligence出隐身融资6.5亿美元估值46.5亿; Anthropic洽谈收购OpenAI SDK的供应商Stainless至少3亿美元; Origin Lab完成800万美元种子轮，构建游戏数据→世界模型训练数据市场; AI药物设计公司Isomorphic Labs完成21亿美元B轮融资; 林俊旸离开阿里Qwen后创业估值约20亿美元
 - 研究关注：Percy Liang透露下一代Marin模型数据需求增至18T tokens
 - X讨论：Figure展示人形机器人团队8小时完全自主运行; Peter Steinberger展示通过Tailscale+scrcpy+peekaboo远程控制Android手机
 
@@ -90,6 +90,11 @@
 - Origin Lab构建AI训练数据市场，帮助游戏公司向世界模型实验室（如AMI Labs、World Labs）出售高质量授权数据。游戏引擎中的物理世界数据可转化为世界模型训练集，Origin Lab负责数据格式转换和许可桥梁。**800万美元**种子轮由Lightspeed领投，SV Angel、Eniac参投，天使投资人包括Twitch联合创始人Kevin Lin和Cruise创始人Kyle Vogt。
   > 💡 世界模型数据瓶颈催生新赛道，游戏数据成为物理世界模拟的关键训练来源
    - 来源: [TechCrunch](https://techcrunch.com/2026/05/13/origin-lab-raises-8m-to-help-video-game-companies-sell-data-to-world-model-builders/)
+
+**Recursive Superintelligence出隐身融资6.5亿美元，成立仅4个月估值46.5亿美元**
+- Recursive Superintelligence正式出隐身，宣布完成**6.5亿美元**超额认购融资，估值**46.5亿美元**。由**GV**（Google Ventures）和**Greycroft**领投，**AMD Ventures**和**NVIDIA**参投。创始团队来自OpenAI、Google DeepMind、Meta AI、Salesforce AI和Uber AI的前研究团队负责人，当前团队**25+人**，曾创立Salesforce和Uber的AI研究实验室，创办过两家独角兽。公司方向为构建"通过开放式自动化科学发现来递归自我改进的AI"，先聚焦AI改进AI本身，再扩展至所有科学领域。核心技术栈涵盖open-ended algorithms、quality-diversity算法、AI-generating algorithms、自改进编码Agent和自动化红队。
+  > 💡 与Ineffable（David Silver）、World Labs（李飞飞）同属"顶级研究领袖集体出走创业"浪潮，但Recursive是首个明确以"递归自改进"为唯一路线的实验室，芯片双巨头（NVIDIA+AMD）同时押注同一家罕见
+   - 来源: [@Recursive_SI](https://x.com/Recursive_SI/status/2054490801972166898) | [Tech.eu](https://tech.eu/2026/05/13/recursive-superintelligence-emerges-from-stealth-with-650m-raise/) | [Sifted](https://sifted.eu/articles/recursive-superintelligence-500m)
 
 **Isomorphic Labs完成21亿美元B轮融资，Demis Hassabis旗下AI药物设计公司加速扩张**
 - Google DeepMind创始人Demis Hassabis创立的Isomorphic Labs宣布完成**21亿美元**B轮融资，由Thrive Capital连续第二轮领投，Alphabet、GV跟投，新投资人包括MGX、Temasek、CapitalG和英国主权AI基金。公司核心产品为AI药物设计引擎IsoDDE，已在多个治疗领域和药物模态推进管线。
