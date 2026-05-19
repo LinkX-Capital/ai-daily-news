@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-05-20 07:15
-**总计**：49 条推文
+**总计**：48 条推文
 
 ---
 
@@ -11,7 +11,7 @@
 
 ---
 
-## 🏢 公司发布（38条）
+## 🏢 公司发布（37条）
 
 ### @artificialanlys | Model
 
@@ -36,8 +36,15 @@
 - Pinned: Day 7 is Live: Watch F.03 operating fully autonomously, running 24/7 around the clock with no failures https://x.com/i/broadcasts/1RKZzjdMmVwK...
   [查看](https://x.com/Figure_robot/status/2056782045561643450#m)
 
+### @googleai | Model
+
+- New upgrades to the @GeminiApp are you helping you get more done:  ✨Gemini Spark is your 24/7 personal AI agent that can take action on your behalf, u...
+  [查看](https://x.com/GoogleAI/status/2056859455833473091#m)
+
 ### @googledeepmind | Research
 
+- RT by @GoogleDeepMind: (1/4) Gemini 3.5 Flash is in a league of it's own! ⚡️ It's the perfect combo of intelligence, speed, & cost. It's now my daily ...
+  [查看](https://x.com/tulseedoshi/status/2056855249680556324#m)
 - R to @GoogleDeepMind: Find out more → https://goo.gle/3PwoinZ
   [查看](https://x.com/GoogleDeepMind/status/2056826905505247393#m)
 - Gemini 3.5 Flash 🤝 @Antigravity  Watch how the model deploys multiple subagents to design and build an entire city.
@@ -46,15 +53,6 @@
   [查看](https://x.com/GoogleDeepMind/status/2056808892575932630#m)
 - R to @GoogleDeepMind: 2️⃣ Hypothesis Generation  Built with Co-Scientist, this system can help brainstorm and evaluate novel research ideas for open c...
   [查看](https://x.com/GoogleDeepMind/status/2056808885709602855#m)
-- R to @GoogleDeepMind: 1️⃣ Literature Insights  Built with @NotebookLM, it searches scientific papers, organises everything into custom tables, and let...
-  [查看](https://x.com/GoogleDeepMind/status/2056808879137472925#m)
-
-### @humanoid_ai | App
-
-- RT @vEo5EJ752TgfuaT: 和健身房直男足球生一起鍛鍊的過程中了解到他的sm屬性 於是加以引導開發 直男第一次和男生玩 很多過程非常生疏
-  [查看](https://x.com/Humanoid_AI/status/2056640287393673277#m)
-- RT @SDBC007: 【长椅泳帽训练】海龟弟弟@SDBC008想在晕的时候射精。他四肢反绑控制至长条椅上，极度兴奋下稍微一撸就缴械喷射了！ 但 #窒息游戏 才刚刚开始！由于一层泳帽微漏气，这次尝试了两层泳帽玩法，窒息效果更强烈！他用尽全力释放能量，最后绑紧性感躯体，体会到晕…
-  [查看](https://x.com/Humanoid_AI/status/2056614842145137111#m)
 
 ### @lumalabsai | Research
 
@@ -65,10 +63,10 @@
 
 ### @openai | Model
 
-- People are generating over 1.5 billion images a week in ChatGPT.  Researcher @kenjihata joins Product lead @adele__li and host @AndrewMayne to explore...
-  [查看](https://x.com/OpenAI/status/2056849157860831239#m)
 - ⚠️ R to @OpenAI: Listen to the OpenAI Podcast on— Spotify https://open.spotify.com/show/0zojMEDizKMh3aTxnGLENP Apple https://podcasts.apple.com/us/podcas...
   [查看](https://x.com/OpenAI/status/2056849160704503961#m)
+- People are generating over 1.5 billion images a week in ChatGPT.  Researcher @kenjihata joins Product lead @adele__li and host @AndrewMayne to explore...
+  [查看](https://x.com/OpenAI/status/2056849157860831239#m)
 - Introducing OpenAI Guaranteed Capacity: a new offering that enables customers to guarantee long-term access to OpenAI compute.  We’ve made long-term i...
   [查看](https://x.com/OpenAI/status/2056823271774101907#m)
 - ⚠️ RT by @OpenAI: if this tweet gets 1 like, tibo will reset codex rate limits
@@ -91,21 +89,21 @@
 
 ### @semianalysis_ | Infra
 
+- @FabricatedKnowledge answers if the AI Market is truly a bubble, or if we're just completely rewriting the global economy. @tbpn   Chapters 0:00 — Gue...
+  [查看](https://x.com/SemiAnalysis_/status/2056873031977615401#m)
 - Warren Buffett's Berkshire Hathaway first invested in Google in Q3 2025, coincidentally the same time that SemiAnalysis called out a huge increase in ...
   [查看](https://x.com/SemiAnalysis_/status/2056842448081424528#m)
 - AMD ALERT 🚀 MI355 is now 40% cheaper than B200 on GLM5 architecture for Single Node serving FP8 14 weeks after the initial launch of GLM5 on both non-...
   [查看](https://x.com/SemiAnalysis_/status/2056782305440452635#m)
-- Is OpenAI actually back? @JordanNanos, @Dylan522p, @FabricatedKnowledge, and @maxkan_ break down whether OpenAI has truly recovered from their recent ...
-  [查看](https://x.com/SemiAnalysis_/status/2056540589965955257#m)
 - R to @JordanNanos: The team analyzes OpenAI's current position and discusses the competitive dynamics with Codex and higher performance rates.  https:...
   [查看](https://x.com/SemiAnalysis_/status/2056540590905471332#m)
+- Is OpenAI actually back? @JordanNanos, @Dylan522p, @FabricatedKnowledge, and @maxkan_ break down whether OpenAI has truly recovered from their recent ...
+  [查看](https://x.com/SemiAnalysis_/status/2056540589965955257#m)
 
 ### @theturingpost | Research
 
 - RT by @TheTuringPost: Congratulations, @karpathy! Will you continue to share?
   [查看](https://x.com/TheTuringPost/status/2056776459629314074#m)
-- RT by @TheTuringPost: Attention in AI is a dynamic relevance computation in vector space.  Here’s what Transformers do step-by-step:  1. Tokens become...
-  [查看](https://x.com/TheTuringPost/status/2056507915952095621#m)
 - RT by @TheTuringPost: This is mind blowing actually. I’m not that easy to impress but this will change everything.  This is the second time Google is ...
   [查看](https://x.com/Kseniase_/status/2056798225378783656#m)
 - Agentic coding on the scale of search - this summer for everyone, free of charge #google  That’s insane. Google Search will be able to help you build....
@@ -132,7 +130,7 @@
 
 ### @demishassabis [Isomorphic Labs / Google DeepMind] | Research
 
-- Gemini Omni is a major leap in world understanding & multimodal editing! It can take photos, video & audio and build entirely new scenes. Over time it...
+- Pinned: Gemini Omni is a major leap in world understanding & multimodal editing! It can take photos, video & audio and build entirely new scenes. Over...
   [查看](https://x.com/demishassabis/status/2056831486251380783#m)
 
 ### @jeffdean [Google] | Infra
