@@ -1,17 +1,17 @@
 # Twitter 动态预览
 **日期**：2026-05-21 07:15
-**总计**：46 条推文
+**总计**：45 条推文
 
 ---
 
 ## 📋 过滤说明
 
 **抓取规则**：24小时内、去除重复账号、内容 >30字符
-**存疑过滤**：5条（公司账号自我回复/转发，标注⚠️）
+**存疑过滤**：4条（公司账号自我回复/转发，标注⚠️）
 
 ---
 
-## 🏢 公司发布（37条）
+## 🏢 公司发布（36条）
 
 ### @agilityrobotics | App
 
@@ -48,14 +48,12 @@
 
 ### @googleai | Model
 
-- ⚠️ R to @GoogleAI: We're building Gemini for Science with and for the scientific community. In collaboration with 100+ institutions and a trusted tester ...
-  [查看](https://x.com/GoogleAI/status/2057161316746530946#m)
-- ⚠️ R to @GoogleAI: We are also launching Science Skills, a specialized bundle that integrates insights from 30+ major life science models and databases w...
-  [查看](https://x.com/GoogleAI/status/2057161314825584892#m)
-- ⚠️ R to @GoogleAI: We’re rolling out 3 new experimental tools to help scientists skip the busywork and focus on big ideas:  💡 Hypothesis Generation built...
-  [查看](https://x.com/GoogleAI/status/2057161313269514655#m)
 - For centuries, the scientific method has been our best tool for progress. But today, there’s so much data out there that it’s impossible for any one r...
   [查看](https://x.com/GoogleAI/status/2057161311617008061#m)
+- ⚠️ R to @GoogleAI: We are also launching Science Skills, a specialized bundle that integrates insights from 30+ major life science models and databases w...
+  [查看](https://x.com/GoogleAI/status/2057161314825584892#m)
+- ⚠️ R to @GoogleAI: We're building Gemini for Science with and for the scientific community. In collaboration with 100+ institutions and a trusted tester ...
+  [查看](https://x.com/GoogleAI/status/2057161316746530946#m)
 - We partnered with artists, designers, and builders to create new AI tools that solve real problems in their creative workflows.  Here’s what’s new: — ...
   [查看](https://x.com/GoogleAI/status/2057128296538861943#m)
 
@@ -75,12 +73,12 @@
 
 ### @openai | Model
 
-- ⚠️ R to @OpenAI: This result points to something larger: AI systems are becoming capable of holding together long, difficult chains of reasoning, connect...
-  [查看](https://x.com/OpenAI/status/2057176204541866087#m)
+- Today, we share a breakthrough on the planar unit distance problem, a famous open question first posed by Paul Erdős in 1946.  For nearly 80 years, ma...
+  [查看](https://x.com/OpenAI/status/2057176201782075690#m)
 - ⚠️ R to @OpenAI: The proof came from a general-purpose reasoning model, not a system built specifically to solve math problems or this problem in particu...
   [查看](https://x.com/OpenAI/status/2057176203166171317#m)
-- Pinned: Today, we share a breakthrough on the planar unit distance problem, a famous open question first posed by Paul Erdős in 1946.  For nearly 80 y...
-  [查看](https://x.com/OpenAI/status/2057176201782075690#m)
+- ⚠️ R to @OpenAI: This result points to something larger: AI systems are becoming capable of holding together long, difficult chains of reasoning, connect...
+  [查看](https://x.com/OpenAI/status/2057176204541866087#m)
 
 ### @openrouter | Infra
 
@@ -91,16 +89,16 @@
 
 ### @semianalysis_ | Infra
 
-- SpaceX just filed their S1. SemiAnalysis research is cited! (1/5) 🧵
-  [查看](https://x.com/SemiAnalysis_/status/2057218884051034412#m)
-- R to @SemiAnalysis_: they also include some nice pictures of some GB200 NVL72 racks in COLOSSUS II (4/5)
-  [查看](https://x.com/SemiAnalysis_/status/2057218888824184894#m)
 - R to @SemiAnalysis_: SpaceX also disclosed exactly how much their deal with Anthropic is worth. They state that they have "entered Cloud Services Agre...
   [查看](https://x.com/SemiAnalysis_/status/2057218890288030110#m)
-- SemiAnalysis: relentlessly releasing god models
-  [查看](https://x.com/SemiAnalysis_/status/2057204837800960322#m)
-- The full chat with Mishek Musa on how ADI is shrinking inference down to the edge and setting up physical leaderboards for the robotics community.  Ch...
-  [查看](https://x.com/SemiAnalysis_/status/2057204718577782813#m)
+- R to @SemiAnalysis_: they also include some nice pictures of some GB200 NVL72 racks in COLOSSUS II (4/5)
+  [查看](https://x.com/SemiAnalysis_/status/2057218888824184894#m)
+- R to @SemiAnalysis_: They support this claim by commenting that:  "According to SemiAnalysis, for most AI companies without a build cost advantage, th...
+  [查看](https://x.com/SemiAnalysis_/status/2057218887075152380#m)
+- R to @SemiAnalysis_: Specifically, in a section called: Our AI Compute Infrastructure Advantage and Growth Strategy  SpaceX states that they "... beli...
+  [查看](https://x.com/SemiAnalysis_/status/2057218885477109908#m)
+- SpaceX just filed their S1. SemiAnalysis research is cited! (1/5) 🧵
+  [查看](https://x.com/SemiAnalysis_/status/2057218884051034412#m)
 
 ### @theturingpost | Research
 
