@@ -1181,22 +1181,26 @@ def call_llm(prompt):
 
     data = {
         "model": "MiniMax-M2.5", "temperature": 0.2,
-        "max_tokens": 8000,
+        "max_tokens": 16000,
         "system": system_prompt,
         "messages": [{"role": "user", "content": prompt}]
     }
-    try:
-        r = httpx.post(API_URL, headers=headers, json=data, timeout=120, verify=False)
-        r.raise_for_status()
-        result = r.json()
-        if result.get("content"):
-            for item in result["content"]:
-                if item.get("type") == "text":
-                    return item.get("text", "")
-        return None
-    except Exception as e:
-        print(f"⚠️ LLM调用失败: {e}")
-        return None
+    for attempt in range(3):
+        try:
+            r = httpx.post(API_URL, headers=headers, json=data, timeout=120, verify=False)
+            r.raise_for_status()
+            result = r.json()
+            if result.get("content"):
+                for item in result["content"]:
+                    if item.get("type") == "text":
+                        return item.get("text", "")
+            return None
+        except Exception as e:
+            print(f"⚠️ LLM调用失败(第{attempt+1}/3次): {e}")
+            if attempt < 2:
+                import time; time.sleep(5)
+            else:
+                return None
 
 import re
 def process_with_llm(articles, recent_articles=None):
