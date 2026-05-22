@@ -3,11 +3,18 @@
 
 cd /Users/shenyalan/ai-daily-news
 
-# 如果当天 archive 已存在，跳过管线
+# 如果当天 archive 已存在且内容非空，跳过管线
 DATE_STR=$(date +%Y-%m-%d)
-if [ -f "archive/news_${DATE_STR}.json" ]; then
-    echo "⏭️ 当天 archive 已存在 (${DATE_STR})，跳过管线: $(date)"
-    exit 0
+ARCHIVE_FILE="archive/news_${DATE_STR}.json"
+if [ -f "$ARCHIVE_FILE" ]; then
+    ARTICLE_COUNT=$(python3 -c "import json; d=json.load(open('$ARCHIVE_FILE')); print(d.get('count', len(d.get('articles', []))))" 2>/dev/null || echo "0")
+    if [ "$ARTICLE_COUNT" -gt 0 ] 2>/dev/null; then
+        echo "⏭️ 当天 archive 已存在 (${DATE_STR}, ${ARTICLE_COUNT} 条)，跳过管线: $(date)"
+        exit 0
+    else
+        echo "⚠️ 当天 archive 存在但为空 (${DATE_STR})，重新运行管线"
+        rm "$ARCHIVE_FILE"
+    fi
 fi
 
 # 加载环境变量

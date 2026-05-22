@@ -71,6 +71,11 @@
   > 💡 企业运营软件的AI原生改造仍受资本关注，但竞争已趋于同质化。
    - 来源: [IT桔子](https://www.itjuzi.com/investevent/14696900)
 
+**Core Automation目标融资5-10亿美元，前OpenAI研究副总裁创办continual learning新范式**
+- 前OpenAI**研究副总裁**Jerry Tworek创办**Core Automation**，官网标语为"the world's most automated AI lab"。Tworek主页显示研究方向是"教语言模型解决STEM和编程问题"，其核心命题是质疑梯度下降本身：公开表示要"rethink the core of model development, **up to and including gradient descent**"，即替代gradient descent的新优化机制，让模型能持续学习而非停滞在训练完成状态。团队已从Anthropic和Google DeepMind招募多名资深研究员。The Information报道公司正寻求**5-10亿美元**融资，估值目标40亿美元（创业仅6周）。
+  > 💡 Core Automation是自进化三路（另两家：Ineffable、Recursive）中唯一质疑"梯度下降范式"本身的。如果持续学习替代梯度更新成立，意味着模型能力天花板将不再受预训练数据量限制。但灾难性遗忘问题如何解决，目前无任何技术细节披露。
+  - 来源: [The Information](https://www.theinformation.com/articles/ex-openai-researchers-startup-targets-1-billion-funding-develop-new-type-ai) | [Business Insider](https://www.businessinsider.com/core-automation-ai-nerdsniped-anthropic-google-deepmind-researchers-2026-4) | [Jerry Tworek Homepage](https://millionintegrals.com/)
+
 ### 研究关注
 **Allen AI发布EMO，MoE预训练实现涌现式模块化部署**
 - Allen AI的Ryan Wang、Akshita Bhagia、Sewon Min等发布**EMO（Emergent Modularity）**，一种面向模块化部署的MoE预训练方法。核心思路：限制同一文档内的token从共享专家池中选择，不同文档使用不同池，仅利用文档边界即可在预训练中涌现出语义级专家分组（数学、代码等领域），无需人工定义先验。团队预训练了**1B激活参数、14B总参数**的EMO模型（1T tokens）。作为完整模型，性能与标准MoE持平；关键突破在选择性部署：仅保留**25%专家时性能仅下降1%**（12.5%时下降3%），而标准MoE在同等条件下完全崩溃。研究表明EMO的专家子集在语义层面（领域级）特化，而非标准MoE的低级句法特化。

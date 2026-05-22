@@ -179,10 +179,10 @@ def send_feishu(report):
                     titles = [re.sub(r'<[^>]+>', '', unescape(t)).strip() for t in titles if re.sub(r'<[^>]+>', '', t).strip()]
 
                     if titles:
-                        titles_str = "；".join(titles)
+                        lines = f"**{cat}**\n" + "\n".join(f"• {t}" for t in titles)
                         elements.append({
                             "tag": "div",
-                            "text": {"tag": "lark_md", "content": f"**{cat}**：{titles_str}"}
+                            "text": {"tag": "lark_md", "content": lines}
                         })
             else:
                 # V1 format
@@ -197,10 +197,10 @@ def send_feishu(report):
                     titles = [re.sub(r'<[^>]+>', '', unescape(t)).strip() for t in titles if re.sub(r'<[^>]+>', '', t).strip()]
 
                     if titles:
-                        titles_str = "；".join(titles)
+                        lines = f"**{cat}**\n" + "\n".join(f"• {t}" for t in titles)
                         elements.append({
                             "tag": "div",
-                            "text": {"tag": "lark_md", "content": f"**{cat}**：{titles_str}"}
+                            "text": {"tag": "lark_md", "content": lines}
                         })
     else:
         # 备用：从 report 解析
