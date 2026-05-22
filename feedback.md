@@ -377,3 +377,21 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 用标题关键词（如"Nous Research Token Superposition"）反向搜索arXiv/GitHub/官网，找到原文后基于原文重写body
 - **reason**: #41针对"研究类新闻找arXiv"，但问题更广泛：**任何来源（不仅论文）如果body信息不足，都应基于标题/摘要反向搜索原始来源**。微信/媒体报道是二手信息，原始来源（arXiv/GitHub/官方blog/公司官网）信息密度远高于媒体
 - **rule_hint**: **【反向搜索补body】当管道抓到的来源是媒体（量子位/PaperWeekly/机器之心/DeepTech等）且body不足时：(1) 从标题提取关键实体和关键词（模型名/公司名/技术名）；(2) 用web_search搜索原始来源（arXiv/GitHub/HuggingFace/官方blog）；(3) 读到原文后重写body。此规则是#41的泛化——不仅论文要找arXiv，任何媒体报道都应追溯到一手来源**
+
+---
+
+### [2026-05-20] #43
+- **file**: daily-ai-news-2026-05-20.md
+- **field**: body
+- **before**: Trainium条目从旧报道补充数据（$1000亿承诺、5GW、Project Rainier），未用时间标记区分新旧信息
+- **after**: 用户手动加"曾"区分："Anthropic曾承诺未来10年投入超1000亿美元"
+- **reason**: 旧数据可以用来补充body，但必须用时间标记（曾、此前、早前、已于XX月）区分哪些是今天的新事件、哪些是背景信息。不加区分会误导读者对时间线的判断
+- **rule_hint**: **【旧数据补充body需加时间标记】从旧报道/旧公告补充body数据时：(1) 必须使用时间标记词（曾、此前、早前、已于XX月、去年等）区分新旧信息；(2) 今天的新闻用"已宣布""已采用"等现在时态，旧背景用"曾承诺""此前已投入"等过去时态；(3) 如果无法确定某信息的时间归属，宁可不用或标注"具体时间待确认"**
+
+### [2026-05-20] #44
+- **file**: daily-ai-news-2026-05-20.md
+- **field**: filter
+- **before**: 管道抓取到Karpathy加入Anthropic的推文，但未收录进初始md输出
+- **after**: 用户手动提供URL后由AI补充写入
+- **reason**: Karpathy加入Anthropic是当天最有影响力的产业动态之一（OpenAI创始成员加入主要竞争对手），管道应将其标记为高优先级
+- **rule_hint**: **【高优先级人物动态规则】以下类型的人物动态应自动标记为高优先级（不可被过滤）：(1) 头部AI公司创始人/核心成员的离职或加入（OpenAI/Anthropic/Google/Meta的founding team/C-level/VP）；(2) 知名AI研究者的机构变动（如Karpathy/LeCun/Sutskever等）；(3) 此类动态即使来源仅为一条推文也应收录。属于 #28 头部厂商覆盖检查的延伸**
