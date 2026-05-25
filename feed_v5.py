@@ -1180,7 +1180,7 @@ def call_llm(prompt):
         return None
 
     data = {
-        "model": "MiniMax-M2.5", "temperature": 0.2,
+        "model": "MiniMax-M2.7", "temperature": 0.2,
         "max_tokens": 16000,
         "system": system_prompt,
         "messages": [{"role": "user", "content": prompt}]
