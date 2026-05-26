@@ -32,14 +32,11 @@ python3 feed_v5.py --cache
 # 2. 从 md 生成 HTML（含 dated HTML + index.html）
 python3 html_generator.py
 
-# 3. 生成手机端截图
-python3 gen_screenshot.py
+# 3. 截图手机端长图 + 飞书推送（合并为一步）
+python3 screenshot_and_push.py "${DATE_STR}"
 
-# 4. 发送飞书通知
-python3 notify.py
-
-# 5. Git push HTML 文件到 GitHub
-git add daily-ai-news-${DATE_STR}.html index.html daily-ai-news-mobile.png
+# 4. Git push HTML/截图到 GitHub
+git add daily-ai-news-${DATE_STR}.html daily-ai-news-${DATE_STR}-mobile.png index.html
 git diff --cached --quiet || git commit -m "Update: ${DATE_STR}" && git push
 
 echo "✅ 任务完成: $(date)"

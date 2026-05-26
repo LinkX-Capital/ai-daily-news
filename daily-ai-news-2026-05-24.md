@@ -16,7 +16,7 @@
 
 ### 模型前沿
 **NVIDIA Nemotron-Labs-Diffusion，AR/扩散/自推测三模统一，8B吞吐4倍于Qwen3**
-- Nemotron-Labs-Diffusion针对传统LLM逐token自回归生成的内存带宽瓶颈，在单一架构内统一三种解码模式：**AR**保留传统串行生成；**Diffusion**按**32-token block**并行起草后多步迭代精修；**Self-Speculation**用扩散并行起草、AR因果验证，输出与纯AR完全相同（不损失质量）。模型在AR基础上以联合AR-diffusion目标继续预训练（**1.3T tokens预训练 + 45B tokens SFT**，基于Nemotron数据集），block-wise attention兼容KV cache。家族含**3B/8B/14B**文本模型与**8B视觉-语言模型**，均提供base与instruct版。性能上，**Nemotron-Labs-Diffusion-8B**平均准确率较**Qwen3-8B**高**1.2%**；每次前向生成token数（TPF）Diffusion模式达AR的**2.6倍**，linear self-speculation达**6倍**、quadratic达**6.4倍**；在SPEED-Bench上配合SGLang在**GB200**实现**4倍**于AR基线吞吐，B200达**约865 tok/s**。
+- Nemotron-Labs-Diffusion针对传统LLM逐token自回归生成的内存带宽瓶颈，在单一架构内统一三种解码模式：**AR**保留传统串行生成；**Diffusion**按**32-token block**并行起草后多步迭代精修；**Self-Speculation**用扩散并行起草、AR因果验证，输出与纯AR完全相同（不损失质量）。模型在AR基础上以联合AR-diffusion目标继续预训练（**1.3T tokens预训练 + 45B tokens SFT**，基于Nemotron数据集），block-wise attention兼容KV cache。家族含**3B/8B/14B**文本模型与**8B视觉-语言模型**，均提供base与instruct版。性能上，**Nemotron-Labs-Diffusion-8B**平均准确率较**Qwen3-8B**高**1.2%**；每次前向生成token数（TPF）Diffusion模式达AR的**2.6倍**，linear self-speculation达**6倍**、quadratic达**6.4倍**；在SPEED-Bench上配合SGLang在**GB200**实现**4倍于Qwen3-8B**吞吐（每次前向多生成**5.9×** tokens），**B200**上达**约865 tok/s**（约**4×**同硬件AR基线）。
   > 💡 AR与Diffusion不再是两个模型家族而是同一模型的不同模式，self-speculation用扩散起草+AR验证的范式可能成为推理加速新主流。
    - 来源: [HuggingFace Blog](https://huggingface.co/blog/nvidia/nemotron-labs-diffusion) | [NVIDIA Research](https://research.nvidia.com/publication/2026-05_nemotron-labs-diffusion-tri-mode-language-model-unifying-autoregressive)
 
