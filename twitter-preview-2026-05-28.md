@@ -29,14 +29,14 @@
 
 - We're excited to work with Harvey to launch the full leaderboard for Legal Agent Benchmark - coming soon to Artificial Analysis!
   [查看](https://x.com/ArtificialAnlys/status/2059737917602578804#m)
-- R to @ArtificialAnlys: Stirrup agentic harness which we used to run the ITBench-AA tasks: https://stirrup.artificialanalysis.ai/
-  [查看](https://x.com/ArtificialAnlys/status/2059698338229055691#m)
+- Artificial Analysis and IBM Research are launching ITBench-AA, the first in a new series of benchmarks evaluating models on agentic enterprise IT task...
+  [查看](https://x.com/ArtificialAnlys/status/2059698327235805258#m)
 - R to @ArtificialAnlys: ITBench-AA is built in partnership with @IBM's Software Innovation Lab based on their ITBench benchmark.  For more information ...
   [查看](https://x.com/ArtificialAnlys/status/2059698336849182943#m)
-- R to @ArtificialAnlys: Models vary significantly in cost per task. Gemma 4 31B (Reasoning) scores 37% at $0.14 per task, outperforming Gemini 3.1 Pro ...
-  [查看](https://x.com/ArtificialAnlys/status/2059698334743531708#m)
-- R to @ArtificialAnlys: More turns do not mean better answers. Models that submit additional contributing entities beyond the true root cause get penal...
-  [查看](https://x.com/ArtificialAnlys/status/2059698331891446184#m)
+- R to @ArtificialAnlys: Stirrup agentic harness which we used to run the ITBench-AA tasks: https://stirrup.artificialanalysis.ai/
+  [查看](https://x.com/ArtificialAnlys/status/2059698338229055691#m)
+- R to @ArtificialAnlys: Compare MiniCPM5-1B to other open weights models at https://artificialanalysis.ai
+  [查看](https://x.com/ArtificialAnlys/status/2059411590999621825#m)
 
 ### @claudeai | Model
 
