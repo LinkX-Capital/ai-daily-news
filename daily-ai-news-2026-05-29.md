@@ -9,7 +9,7 @@
 - 模型前沿：Anthropic发布Claude Opus 4.8：代码缺陷漏检率降低4倍，同步推出Dynamic Workflows; 自变量机器人开源Wall-OSS-0.5：预训练VLA模型零样本完成17项机器人任务; Microsoft下周Build大会发布自研编码模型
 - 产业动态：Apple WWDC前瞻：iOS 27全新Siri从Dynamic Island交互，独立App对标ChatGPT; Asana收购StackAI强化AI工作流; OpenRouter新增Flex和Priority定价层; AWS重构OpenSearch Serverless：面向Agentic AI，成本降低60%
 - 初创&融资：Anthropic完成65亿美元H轮融资，估值9650亿美元ARR突破470亿美元; General Compute融资1500万美元押注SambaNova推理芯片; Oura发布Ring 5智能戒指; Visa投资Replit探索Agent支付
-- 研究关注：Biohub发布ESM蛋白质世界模型; DenoiseRL从错误推理链学习; MemTrace追踪LLM记忆错误; RSI成为AI行业新buzzword; DiffusionBlocks将分块训练解释为扩散去噪
+- 研究关注：Biohub发布ESM蛋白质世界模型：ESMFold2设计抗癌蛋白经实验验证; DenoiseRL：从错误推理链中学习，不依赖强教师模型; MemTrace：LLM记忆系统错误追踪与归因框架; RSI成为AI行业新buzzword，递归自我改进仍远未实现; DiffusionBlocks：将神经网络分块训练解释为扩散去噪
 - X讨论：SemiAnalysis分析63%会话无子Agent; Agility Robotics论家庭机器人三大障碍; Jensen Huang加入清华经管顾问委员会; vLLM成为NVIDIA Dynamo推理框架核心引擎
 
 ---
