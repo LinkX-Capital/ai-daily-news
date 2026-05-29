@@ -6,7 +6,7 @@
 
 ## 要点汇总
 
-- 模型前沿：Anthropic发布Claude Opus 4.8：代码缺陷漏检率降低4倍，同步推出Dynamic Workflows; 国产预训练具身大模型开源：打破后训练依赖，benchmark竞争升温; Microsoft下周Build大会发布自研编码模型
+- 模型前沿：Anthropic发布Claude Opus 4.8：代码缺陷漏检率降低4倍，同步推出Dynamic Workflows; 自变量机器人开源Wall-OSS-0.5：预训练VLA模型零样本完成17项机器人任务; Microsoft下周Build大会发布自研编码模型
 - 产业动态：Apple WWDC前瞻：iOS 27全新Siri从Dynamic Island交互，独立App对标ChatGPT; Asana收购StackAI强化AI工作流; OpenRouter新增Flex和Priority定价层; AWS重构OpenSearch Serverless：面向Agentic AI，成本降低60%
 - 初创&融资：Anthropic完成65亿美元H轮融资，估值9650亿美元ARR突破470亿美元; General Compute融资1500万美元押注SambaNova推理芯片; Oura发布Ring 5智能戒指; Visa投资Replit探索Agent支付
 - 研究关注：Biohub发布ESM蛋白质世界模型; DenoiseRL从错误推理链学习; MemTrace追踪LLM记忆错误; RSI成为AI行业新buzzword; DiffusionBlocks将分块训练解释为扩散去噪
@@ -99,7 +99,7 @@
 - Makoto Shing和Takuya Akiba（Sakana AI）发表论文DiffusionBlocks，将神经网络分块训练重新解释为连续时间扩散过程中的**去噪操作**。通过将网络划分为独立可训练的block并优化噪声层级分配，实现与分块数成正比的**显存缩减**，同时在图像生成和语言建模任务上**超越**传统端到端反向传播。论文已被ICML 2025 TTODLer-FM Workshop接收。
   > 💡 将blockwise training与扩散过程统一的理论框架，为有限算力下的大模型训练提供了新视角——不降低模型质量的前提下绕过显存瓶颈。
    - 来源: [arXiv](https://arxiv.org/abs/2506.14202) | [@hardmaru](https://x.com/hardmaru/status/2059648995132367277)
-   
+
 ### X讨论
 **SemiAnalysis评codex浏览器UX方向：Web开发场景潜力大，待模型能力提升**
 - SemiAnalysis分析师在X平台评论codex在应用浏览器UX（用户界面）方向的表现，认为对Web开发场景有潜力。该分析指出codex的浏览器集成方向正确，但需等待codex模型本身在Web开发任务上达到足够好的表现才能实现完整价值。当前codex在复杂Web开发任务上仍存在局限性。
