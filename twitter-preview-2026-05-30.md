@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-05-30 07:15
-**总计**：40 条推文
+**总计**：41 条推文
 
 ---
 
@@ -110,7 +110,7 @@
 - grok-build-0.1 is now available via the xAI API in public beta.  This is the same model that powers the Grok Build CLI and excels at agentic coding.  ...
   [查看](https://x.com/xai/status/2060392249402552457#m)
 
-## 👤 研究者动态（8条）
+## 👤 研究者动态（9条）
 
 ### @drfeifei [Stanford] | Research
 
@@ -138,6 +138,8 @@
 
 - “clanker” is not a slur. “vibe coding” is.
   [查看](https://x.com/steipete/status/2060371944168358250#m)
+- I smell a takedown in 3...2...1 https://clawd.rip/
+  [查看](https://x.com/steipete/status/2060294413377519808#m)
 
 ### @swyx [AI社区] | App
 
