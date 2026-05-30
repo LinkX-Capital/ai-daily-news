@@ -1445,20 +1445,38 @@ def _has_quantifiable_data(text):
     return bool(re.search(r'\d+\.?\d*%|\$\d+|\d+x|\d+倍|\d+亿|\d+万|\d{2,}B|\d{2,}M', text))
 
 def post_validate_and_enrich(articles):
-    """后处理：当 body 信息密度不足时，按域名规则深抓官方页面正文补充。"""
+    """后处理：当 body 信息密度不足时，按域名规则深抓官方页面正文补充。
+
+    Token 优化：
+    - 只对优先级 Top N 的文章触发深抓（避免 18 条全跑）
+    - 单条深抓内容截断到 ~600 字（够 body 重写但不浪费上下文）
+    """
     warnings = []
     enriched = 0
+
+    # 取候选 = body 不合格的文章
+    candidates = []
     for a in articles:
+        body = a.get("body", "")
+        if _count_sentences(body) >= 3 and _has_quantifiable_data(body):
+            continue
+        candidates.append(a)
+
+    # 按优先级排序，只对 Top N 深抓
+    DEEP_FETCH_TOP_N = 10
+    try:
+        candidates.sort(key=lambda x: -float(x.get("priority", 0) or 0))
+    except Exception:
+        pass
+    candidates = candidates[:DEEP_FETCH_TOP_N]
+
+    for a in candidates:
         title_short = a.get("title", "")[:40]
         body = a.get("body", "")
         sent_count = _count_sentences(body)
-        if sent_count >= 3 and _has_quantifiable_data(body):
-            continue  # 已合格
 
-        # 尝试深抓：按 link / body 中出现的链接路由到域名提取器
         link = a.get("link", "") or ""
         candidate_urls = [link]
-        # 也从 body 中扫出潜在的 arxiv / 官方 blog 链接
         for m in re.finditer(r'https?://[^\s\)\]]+', body):
             candidate_urls.append(m.group(0).rstrip('.,;'))
 
@@ -1471,6 +1489,9 @@ def post_validate_and_enrich(articles):
                 break
 
         if extra:
+            # 截断到 600 字以控制 token 成本
+            if len(extra) > 600:
+                extra = extra[:600] + "..."
             sep = "\n\n[深抓补充]\n" if a.get("body") else ""
             a["body"] = (a.get("body", "") + sep + extra).strip()
             enriched += 1
@@ -1483,7 +1504,7 @@ def post_validate_and_enrich(articles):
             print(f"   ⚠️ {w}")
         print(f"   📋 后处理校验: {len(warnings)} 个待补充（将由QA autofix处理）")
     if enriched:
-        print(f"   ✅ 深抓补充: {enriched} 条")
+        print(f"   ✅ 深抓补充: {enriched} 条 (Top {DEEP_FETCH_TOP_N})")
     return articles
 
 
