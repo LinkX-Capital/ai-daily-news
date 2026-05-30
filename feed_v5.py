@@ -1445,21 +1445,143 @@ def _has_quantifiable_data(text):
     return bool(re.search(r'\d+\.?\d*%|\$\d+|\d+x|\d+倍|\d+亿|\d+万|\d{2,}B|\d{2,}M', text))
 
 def post_validate_and_enrich(articles):
-    """后处理：轻量校验，主要补充逻辑由 QA autofix 完成"""
+    """后处理：当 body 信息密度不足时，按域名规则深抓官方页面正文补充。"""
     warnings = []
+    enriched = 0
     for a in articles:
         title_short = a.get("title", "")[:40]
         body = a.get("body", "")
         sent_count = _count_sentences(body)
-        if sent_count < 3:
+        if sent_count >= 3 and _has_quantifiable_data(body):
+            continue  # 已合格
+
+        # 尝试深抓：按 link / body 中出现的链接路由到域名提取器
+        link = a.get("link", "") or ""
+        candidate_urls = [link]
+        # 也从 body 中扫出潜在的 arxiv / 官方 blog 链接
+        for m in re.finditer(r'https?://[^\s\)\]]+', body):
+            candidate_urls.append(m.group(0).rstrip('.,;'))
+
+        extra = None
+        used_url = None
+        for u in candidate_urls:
+            extra = _deep_fetch(u)
+            if extra:
+                used_url = u
+                break
+
+        if extra:
+            sep = "\n\n[深抓补充]\n" if a.get("body") else ""
+            a["body"] = (a.get("body", "") + sep + extra).strip()
+            enriched += 1
+            print(f"   🔍 深抓补充: [{title_short}] ← {used_url[:60]}")
+        elif sent_count < 3:
             warnings.append(f"[{title_short}] body仅{sent_count}句")
+
     if warnings:
         for w in warnings:
             print(f"   ⚠️ {w}")
         print(f"   📋 后处理校验: {len(warnings)} 个待补充（将由QA autofix处理）")
-    else:
-        print(f"   ✅ 后处理校验: 全部通过")
+    if enriched:
+        print(f"   ✅ 深抓补充: {enriched} 条")
     return articles
+
+
+def _deep_fetch(url):
+    """根据域名路由到对应提取器，返回纯文本片段或 None。"""
+    if not url or not url.startswith("http"):
+        return None
+    try:
+        if "arxiv.org/abs/" in url:
+            m = re.search(r'arxiv\.org/abs/(\d{4}\.\d{4,5})', url)
+            if m:
+                r = _fetch_arxiv(m.group(1))
+                if r and r.get("abstract"):
+                    title = r.get("title", "")
+                    return (f"[arXiv {title}]\n" if title else "") + r["abstract"]
+        if any(d in url for d in PAYWALL_DOMAINS):
+            return _extract_meta_summary(url)
+        if "newsletter.semianalysis.com" in url or "substack.com" in url:
+            return _extract_substack(url)
+        if any(d in url for d in ("vllm.ai/blog/", "stepfun.com/blog/", "blog.together.ai", "together.ai/blog")):
+            return _extract_html_main(url, max_chars=1500)
+        if "techcrunch.com" in url:
+            return _extract_html_main(url, max_chars=1800, marker_re=r'(In\s+Brief|Posted:|Image\s+Credits)')
+        if "huggingface.co" in url and ("/papers/" in url or "/datasets/" in url or re.search(r'/[^/]+/[^/]+$', url)):
+            return _extract_html_main(url, max_chars=1500)
+    except Exception as e:
+        print(f"   ⚠️ 深抓失败 {url[:50]}: {str(e)[:60]}")
+    return None
+
+
+def _extract_meta_summary(url):
+    """从付费墙文章 HTML 中提取 og:description / JSON-LD keywords / authors。"""
+    try:
+        html = _fetch_via_curl(url)  # 自动用 Googlebot UA
+    except Exception:
+        return None
+    parts = []
+    og = re.search(r'<meta[^>]*property=["\']og:description["\'][^>]*content=["\']([^"\']+)', html)
+    if og:
+        parts.append(og.group(1).strip()[:600])
+    # JSON-LD NewsArticle 提取 keywords / authors
+    jsonld_blocks = re.findall(r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.+?)</script>', html, re.DOTALL)
+    for block in jsonld_blocks[:3]:
+        try:
+            import json as _json
+            data = _json.loads(block)
+        except Exception:
+            continue
+        if isinstance(data, dict) and data.get("@type") in ("NewsArticle", "Article"):
+            kw = data.get("keywords")
+            if kw:
+                kw_str = ", ".join(kw) if isinstance(kw, list) else str(kw)
+                parts.append(f"关键词: {kw_str[:300]}")
+            authors = data.get("author")
+            if authors:
+                auth_names = [a.get("name") for a in authors if isinstance(a, dict)] if isinstance(authors, list) else [authors.get("name")] if isinstance(authors, dict) else []
+                if auth_names:
+                    parts.append(f"作者: {', '.join(filter(None, auth_names))}")
+            break
+    return "\n".join(parts) if parts else None
+
+
+def _extract_substack(url):
+    """Substack 文章正文提取。"""
+    try:
+        html = _fetch_via_curl(url)
+    except Exception:
+        return None
+    # Substack 把正文放在 "body_html":"..." 字段中
+    m = re.search(r'"body_html"\s*:\s*"((?:[^"\\]|\\.)+?)"', html)
+    if m:
+        raw = m.group(1).encode().decode("unicode_escape", errors="ignore")
+        text = re.sub(r'<[^>]+>', ' ', raw)
+        text = re.sub(r'\s+', ' ', text).strip()
+        if len(text) > 200:
+            return text[:1800]
+    # 回退到 og:description
+    return _extract_meta_summary(url)
+
+
+def _extract_html_main(url, max_chars=1500, marker_re=None):
+    """通用 HTML 正文提取：去脚本/样式后取主体文字。"""
+    try:
+        html = _fetch_via_curl(url)
+    except Exception:
+        return None
+    text = re.sub(r'<script[^>]*>.*?</script>', ' ', html, flags=re.DOTALL)
+    text = re.sub(r'<style[^>]*>.*?</style>', ' ', text, flags=re.DOTALL)
+    text = re.sub(r'<[^>]+>', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    if marker_re:
+        m = re.search(marker_re, text)
+        if m:
+            text = text[m.start():]
+    if len(text) < 200:
+        return None
+    return text[:max_chars]
+
 
 # ========== 抓取 ==========
 
