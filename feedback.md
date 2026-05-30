@@ -442,3 +442,35 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: "中科大等提出EffOPD：参数动力学'预见'机制实现后训练3倍加速"
 - **reason**: (1) "揭示XX高效密码"属 #49 禁止的万能开头（类似"研究发现""论文提出"）；(2) 仅写"中科大"但论文12位作者来自多个机构；(3) 标题应体现核心贡献（方法名+关键机制）而非笼统描述问题
 - **rule_hint**: **【#49强化：多机构论文标题精度】(1) 当论文作者来自多个机构时，标题中的机构名应加"等"（如"中科大等"），不能仅写一个机构——否则是事实不完整；(2) "揭示XX密码/机制/秘密""解锁XX"属万能开头，与"研究发现"同构，标题必须体现具体的核心贡献（方法名+关键机制+量化效果）；(3) 标题中应包含论文提出的方法名（如EffOPD），而非仅描述问题（如"揭示OPD高效密码"）。判断标准：删掉方法名后标题是否仍成立——如果成立，说明方法名是关键区分点不应省略**
+
+### [2026-05-30] #56
+- **file**: daily-ai-news-2026-05-30.md
+- **field**: pipeline/fetcher
+- **before**: feed_v5.py 对所有站点用 `Mozilla/5.0` UA，The Information 文章正文被 Cloudflare 拦截，pipeline 只能拿到 RSS 摘要前 200 字，导致 Meta AI Pendant / Lowe's / ByteDance 三条都降级为「⚠️ 来源未验证」最小事实
+- **after**: 在 `_fetch_via_curl` 和 `fetch_source` 中根据域名切换 UA：付费墙站点（theinformation.com / wsj.com / ft.com / nytimes.com / bloomberg.com / economist.com）改用 Googlebot UA `Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)`
+- **reason**: 实测 Googlebot UA 对 The Information 返回 200 OK 且能拿到 og:description 完整版（约 300 字）+ JSON-LD keywords 字段（含核心实体），足够写一条合格 body
+- **rule_hint**: **【付费墙站点 UA 路由规则】feed_v5.py 已通过 `_ua_for_url(url)` 根据域名自动切换 UA。若未来新增 The Information 类付费媒体（subscription-only journalism），应加入 `PAYWALL_DOMAINS` 元组。除 og:description 外，可从 JSON-LD `<script type="application/ld+json">` 中的 NewsArticle 提取 keywords 字段获取核心实体列表用于 body 补充**
+
+### [2026-05-30] #57
+- **file**: daily-ai-news-2026-05-30.md
+- **field**: pipeline/coverage
+- **before**: vLLM RL 升级 / StepFun Step-3.7-Flash 详细 benchmark / Together AI OSCAR 论文等内容只能从推文片段或机器之心二手报道获得，body 信息密度不足，需用户手动提供官方 blog/arXiv 链接后再补
+- **after**: OPML 增订阅 4 个 feed：vLLM Blog (`https://vllm.ai/blog/rss.xml`)、Together AI Blog (`https://www.together.ai/blog/rss.xml`)、arXiv cs.CL、arXiv cs.LG
+- **reason**: 这些都是当天信息密度最高的一手源，原 OPML 只覆盖了大型媒体和顶级公司博客，**vLLM/Together 等中型项目和 arXiv 论文流**没收
+- **rule_hint**: **【一手源覆盖规则】对于以下类别应优先订阅一手 RSS 而非依赖推文/二手报道：(1) 主流推理框架官方 blog（vLLM、SGLang、LMDeploy）；(2) 重要研究机构/初创官方 blog（Together AI、Anthropic、Mistral）；(3) arXiv 分类 RSS（cs.CL、cs.LG）作为当天论文兜底覆盖。验证方法：候选 RSS 必须返回 `application/xml` 或 `application/rss+xml` 且 200 状态码**
+
+### [2026-05-30] #58
+- **file**: daily-ai-news-2026-05-30.md
+- **field**: body
+- **before**: SemiAnalysis Dark Output / StepFun Step-3.7-Flash / OSCAR 论文等条目，pipeline 抓到了源（推文或 RSS 标题）但只用 RSS 摘要文本，没有顺着推文/媒体里的 `arxiv.org/abs/*`、`*.stepfun.com/blog/`、`newsletter.semianalysis.com/p/*` 等链接抓官方页面
+- **after**: 用户提供链接后由 AI 主动抓正文（StepFun blog 拿到完整 benchmark 表、SemiAnalysis Substack 拿到 Solow 类比和 3.6 万亿 GDP 修订案例、arXiv 拿到 OSCAR/BES/Adam's Law/Life-Harness 摘要）
+- **reason**: feed_v5.py 的 `_fetch_arxiv` 函数已存在但只在 article 字段含 "arxiv" 字符串时触发；对于「机器之心报道某 arXiv 论文」这种二手报道，pipeline 不会反查 arXiv。同理对官方 blog/Substack 链接也无深抓
+- **rule_hint**: **【深抓触发规则】未来计划在 `post_validate_and_enrich` 中实现按域名的二级深抓：当 body < 3 句或 < 80 字且 link 含以下域名时强制抓正文：`arxiv.org/abs/`（用现有 `_fetch_arxiv` 扩展）、`*.stepfun.com/blog/`、`vllm.ai/blog/`、`newsletter.semianalysis.com`、`techcrunch.com`（抓全文而非只用 RSS description）、`huggingface.co`（抓 model card）。每个域名一个轻量提取函数**
+
+### [2026-05-30] #59
+- **file**: daily-ai-news-2026-05-30.md
+- **field**: body/translation
+- **before**: 「美国清洁能源创业公司 Focused Energy 宣布获得 2.4 亿美元 A 轮融资，投资方包括联邦突破能源机构（Federal Agency for Breakthrough Energy）」——国籍错（实为德国公司）、机构名错译（Federal Agency for Breakthrough **Innovation** 即 SPRIND，不是 Energy）
+- **after**: 「Darmstadt 总部的激光核聚变公司 Focused Energy ... 投资方包括德国联邦突破创新署 SPRIND（Federal Agency for Breakthrough Innovation）、RWE（战略+工业合作伙伴）、欧洲创新理事会基金、原领投方 Prime Movers Lab」
+- **reason**: 公司原 press release 明确表述为德国 Darmstadt 公司、欧洲最具价值聚变公司，主要投资方 SPRIND 是德国联邦机构（Federal Agency for Breakthrough Innovation 创新署，非 Energy 能源署）。pipeline 只用 IT桔子 二手摘要导致两处事实错误
+- **rule_hint**: **【机构名/国籍核实规则】(1) 涉及非中国公司/机构时，国籍以官方网站 / press release 为准，不以中文媒体的「美国/欧洲」笼统描述为准；(2) 外文机构缩写（如 SPRIND、ARPA-H、DARPA）必须保留缩写并在括号中给出完整官方英文名，不要凭直觉翻译完整名（Innovation 易被错译为 Energy）；(3) 当条目的唯一来源是 IT桔子等中文二手聚合时，应去公司官网/press release 抓一手核对。属于 #54 "媒体技术描述与论文原文不符时以论文为准重写 body" 的国别/机构维度延伸**

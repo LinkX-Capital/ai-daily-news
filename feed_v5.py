@@ -1462,11 +1462,26 @@ def post_validate_and_enrich(articles):
     return articles
 
 # ========== 抓取 ==========
+
+# 付费墙站点用 Googlebot UA 绕过（The Information / WSJ / FT / NYT 等）
+PAYWALL_DOMAINS = ("theinformation.com", "wsj.com", "ft.com", "nytimes.com",
+                   "bloomberg.com", "economist.com")
+GOOGLEBOT_UA = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+
+
+def _ua_for_url(url):
+    """根据 URL 域名决定 User-Agent。付费墙用 Googlebot，其他用 Mozilla。"""
+    if any(d in url for d in PAYWALL_DOMAINS):
+        return GOOGLEBOT_UA
+    return "Mozilla/5.0"
+
+
 def _fetch_via_curl(url):
     """curl fallback: 用系统 curl 抓取（绕过 Python OpenSSL 兼容性问题）"""
     import subprocess
+    ua = _ua_for_url(url)
     result = subprocess.run(
-        ["curl", "-sL", "--max-time", "15", "-H", "User-Agent: Mozilla/5.0", url],
+        ["curl", "-sL", "--max-time", "15", "-H", f"User-Agent: {ua}", url],
         capture_output=True, text=True, timeout=20
     )
     if result.returncode != 0 or not result.stdout.strip():
@@ -1478,7 +1493,7 @@ def fetch_source(name, url, limit=15, max_retries=5):
     for attempt in range(max_retries):
         try:
             client = httpx.Client(timeout=15, verify=False, follow_redirects=True)
-            r = client.get(url, headers={"User-Agent": "Mozilla/5.0"})
+            r = client.get(url, headers={"User-Agent": _ua_for_url(url)})
             r.raise_for_status()
             feed = feedparser.parse(r.text)
             client.close()
