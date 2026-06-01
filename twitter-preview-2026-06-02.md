@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-06-02 07:15
-**总计**：34 条推文
+**总计**：35 条推文
 
 ---
 
@@ -13,16 +13,22 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **美国50+地方数据中心暂停令分析：监管趋势的深层解读**
-   @semianalysis_
-2. **Luma推出Open Physical AI Lab，致力于解决机器人泛化问题**
-   @lumalabsai
-3. **AI与VFX融合：从像素编辑到结果导演**
-   @lumalabsai
-4. **生成式AI基础数学综述：《The Little Book of Generative AI Foundations》**
-   @theturingpost
-5. **晶圆代工行业季度供需模型发布**
-   @semianalysis_
+1. **Unitree发布H2 Plus，开启全栈研发制造新阶段**
+   @unitreerobotics
+2. **Codex通过sag.sh在用户分心时主动语音沟通请求解锁**
+   @steipete
+3. **Qwen发布多模态交互式混合智能体Demo（Demo1 & Demo2）**
+   @alibaba_qwen
+4. **Qwen3.7-Plus多模态基准性能显著提升**
+   @alibaba_qwen
+5. **Qwen3.7-Plus文本性能全面接近Max级模型**
+   @alibaba_qwen
+6. **Grace+Blackwell芯片登陆笔记本，微软与英伟达联手挑战苹果Silicon六年统治**
+   @swyx
+7. **OpenRouter Auto Router新增cost_quality_tradeoff参数（0-10），灵活权衡成本与质量**
+   @openrouter
+8. **教程：用模型黑名单与自定义数据保留策略构建周预算$1000的智能体**
+   @openrouter
 
 ---
 
@@ -87,16 +93,16 @@
 
 ### @semianalysis_ | Infra
 
-- R to @SemiAnalysis_: Counting proroposed/active moratoriums misses the point. The number that matters is how many projects in the pipeline remain viab...
-  [查看](https://x.com/SemiAnalysis_/status/2061493266411819315#m)
-- R to @SemiAnalysis_: Moratoriums are the tip of a broader regulatory shift:  🟠 Moratoriums are often rejected and eventually expire, while laws don't....
-  [查看](https://x.com/SemiAnalysis_/status/2061493265556230623#m)
-- R to @SemiAnalysis_: In May 2026, for example, Hill County, Texas, passed the state's first datacenter moratorium. However, the County Judge framed th...
-  [查看](https://x.com/SemiAnalysis_/status/2061493264130216128#m)
 - Over 50 local moratoriums are active across the US right now, but almost all of them are temporary by design, and most local governments don't actuall...
   [查看](https://x.com/SemiAnalysis_/status/2061493263136133286#m)
-- R to @SemiAnalysis_: Our Foundry Industry Model captures quarterly supply and demand metrics across every major foundry. Reach out to sales@semianalys...
-  [查看](https://x.com/SemiAnalysis_/status/2061433006309454125#m)
+- R to @SemiAnalysis_: Moratoriums are the tip of a broader regulatory shift:  🟠 Moratoriums are often rejected and eventually expire, while laws don't....
+  [查看](https://x.com/SemiAnalysis_/status/2061493265556230623#m)
+- R to @SemiAnalysis_: Counting proroposed/active moratoriums misses the point. The number that matters is how many projects in the pipeline remain viab...
+  [查看](https://x.com/SemiAnalysis_/status/2061493266411819315#m)
+- The foundry industry hit a record $48.8B in 1Q26, +32% y/y and +3% q/q in seasonally soft Q1, marking the 9th consecutive quarter of y/y growth. 2Q26E...
+  [查看](https://x.com/SemiAnalysis_/status/2061432999929860500#m)
+- R to @SemiAnalysis_: Intel Foundry's EMIB plus 18A-P/T is positioned as a multi-billion-dollar external franchise into 2028. New entrants still pushin...
+  [查看](https://x.com/SemiAnalysis_/status/2061433005298655704#m)
 
 ### @theturingpost | Research
 
@@ -126,7 +132,7 @@
 - Composer 2.5 is now available inside Grok Build.   Composer 2.5 is a fast, highly intelligent model that excels on long-running tasks and following co...
   [查看](https://x.com/xai/status/2061510464325206163#m)
 
-## 👤 研究者动态（3条）
+## 👤 研究者动态（4条）
 
 ### @andrewyng [independent] | Research
 
@@ -137,6 +143,11 @@
 
 - The OpenAI Foundation is doing a lot of wonderful things.  Helping society become resilient to AI is going to be incredibly important. Much more to co...
   [查看](https://x.com/sama/status/2061562575322492937#m)
+
+### @steipete [OpenClaw] | Application
+
+- I told codex to use http://sag.sh whenever I'm distracted and it needs my help to be unblocked, and ever once it a while I hear it talking to me, and ...
+  [查看](https://x.com/steipete/status/2061574752574283858#m)
 
 ### @swyx [AI社区] | App
 
