@@ -14,7 +14,7 @@
            能力跃迁                                 效率革命
         （突破天花板）                            （压低成本/延迟）
  ──────┬──────────────────────────────────────────────────────────────
-       │  Qwen3.7-Max Code Arena #2 编程         GLM-5.1-highspeed 400 tok/s
+       │  Qwen3.7-Max Code Arena 1541 #4           GLM-5.1-highspeed 400 tok/s
        │  Gemini 3.5 Flash I/O 编程旗舰          MiniCPM5-1B 端侧 1B 超越 2B
        │  Gemini Omni 世界模型                    BitCPM-CANN 昇腾 1.58-bit 全栈
        │  AlphaProof Nexus 攻克 56 年 Erdős      Nemotron Diffusion 4× Qwen3
@@ -43,17 +43,17 @@
 
 ## 模型发布
 
-### 1. Qwen3.7-Max（5/21）——全球第二大 AI 编程模型
+### 1. Qwen3.7-Max（5/21）——Code Arena 前四，非 Claude 系最强
 
 **置信度：高** | 来源：[Facebook@alibabacloud](https://www.facebook.com/alibabacloud/posts/qwen37-max-is-officially-the-2-ai-coding-model-globallyin-the-latest-code-arena-/1434941022011319/) | [VentureBeat](https://venturebeat.com/technology/alibabas-proprietary-qwen3-7-max-can-run-for-35-hours-autonomously-and-supports-external-harnesses-like-anthropics-claude-code) | [OpenRouter](https://openrouter.ai/qwen/qwen3.7-max)
 
-阿里通义千问发布 Qwen3.7-Max，在 Code Arena 盲测中得分 **1541**，正式成为全球第二大 AI 编程模型，仅次于 Claude。另有测试显示 Qwen3.7-Max 超越 GPT-5.5、Gemini-3.5-Flash、GLM-5.1 和 Kimi K2.6。
+阿里通义千问发布 Qwen3.7-Max，在 Code Arena 盲测中得分 **1541**（排名 #4，非 Claude 系最强）。前三均为 Claude Opus 变体（4.7 thinking 1567、4.7 1562、4.6 thinking 1542），Qwen3.7-Max 超越 GPT-5.5-xhigh（1505）、Gemini 3.5 Flash（1506）、GLM-5.1（1533）、Kimi K2.6（1518）等所有非 Anthropic 模型。
 
 **核心参数：**
 
 | 维度 | 数值 |
 |------|------|
-| Code Arena 得分 | **1541**（全球第二） |
+| Code Arena 得分 | **1541**（#4，非 Claude 系最强） |
 | 上下文窗口 | **1M tokens** |
 | API 定价 | $2.50 / $7.50 per 1M tokens |
 | 可运行时长 | **35 小时**（支持长时间自主任务） |
@@ -1058,13 +1058,18 @@ CSET Helen Toner 的反驳是对的——目前所有"自进化"都是**让 AI �
 |------|-------------|---------|---------------|---------------|------------|
 | Claude Mythos | **93.9%** | **77.8%** | 82.0% | - | - |
 | **Claude Opus 4.8** | - | - | - | - | - |
-| Claude Opus 4.7 | **87.6%** | **64.3%** | 69.4% | 88.8 | - |
-| GPT-5.5 | 80.0% | 58.6% | **82.7%** | - | - |
-| DeepSeek V4-Pro | 80.6% | 55.4% | 67.9% | **93.5** | - |
-| Kimi K2.6 | 80.2% | 58.6% | 66.7% | 89.6 | - |
-| **Gemini 3.5 Flash** | - | - | **76.2%** | - | - |
+| Claude Opus 4.7 (thinking) | **87.6%** | **64.3%** | 69.4% | 88.8 | **1567 (#1)** |
+| Claude Opus 4.7 | - | - | - | - | 1562 (#2) |
+| **Qwen3.7-Max** | - | - | - | - | 1541 (#4) |
+| GLM-5.1 | - | - | - | - | 1533 (#6) |
+| Claude Sonnet 4.6 | - | - | - | - | 1523 (#7) |
+| Kimi K2.6 | 80.2% | 58.6% | 66.7% | 89.6 | 1518 (#8) |
+| Meta Muse Spark | - | - | - | - | 1508 (#9) |
+| **Gemini 3.5 Flash** | - | - | **76.2%** | - | 1506 (#10) |
+| GPT-5.5-xhigh | - | - | - | - | 1505 (#11) |
+| GPT-5.5 | 80.0% | 58.6% | **82.7%** | - | 1444 (#21) |
+| DeepSeek V4-Pro (thinking) | 80.6% | 55.4% | 67.9% | **93.5** | 1464 (#17) |
 | GPT-5.4 | 78.2% | 57.7% | 75.1% | - | - |
-| **Qwen3.7-Max** | - | - | - | - | **1541 (#2)** |
 | Grok 4.3 | 70.0% | - | - | - | - |
 
 ### 推理 & 知识（无工具/静态问答 + ARC 系列 + 长程执行）
@@ -1107,7 +1112,7 @@ CSET Helen Toner 的反驳是对的——目前所有"自进化"都是**让 AI �
 | 维度 | 状态 | 领先者 | 分数 | 含义 |
 |------|------|--------|------|------|
 | ARC-AGI-3 | **通用推理缺口** | Claude Opus 4.8 | **1.5%**（~$10K） | 人类 100%，较 GPT-5.5 的 0.43% 提升 3.5×，Opus 4.8 以更高抽象层理解环境（物体与系统而非像素）但仍远未突破 |
-| Code Arena | **新战场** | Qwen3.7-Max | **1541 (#2)** | 盲测编程能力新基准 |
+| Code Arena | **新战场** | Claude Opus 4.7 thinking | **1567** | Claude 占据前三，Qwen3.7-Max 1541 #4 为非 Anthropic 最强 |
 | API 速度 | **新突破** | GLM-5.1-highspeed | **400 tok/s** | 打破"高速即轻量"定律 |
 | SWE-bench Pro | 分化加剧 | Claude Mythos | **77.8%** | 前 2 差 13.5% |
 | τ-voice | **新战场** | Grok Voice | **67.3%** | 语音 Agent 首个标准 benchmark |
@@ -1122,7 +1127,7 @@ CSET Helen Toner 的反驳是对的——目前所有"自进化"都是**让 AI �
 
 | 指标 | 数值 | 来源 |
 |------|------|------|
-| **Qwen3.7-Max Code Arena** | **1541**（全球第二大编程模型） | [alibabacloud](https://www.facebook.com/alibabacloud/posts/qwen37-max-is-officially-the-2-ai-coding-model-globallyin-the-latest-code-arena-/1434941022011319/) |
+| **Qwen3.7-Max Code Arena** | **1541**（#4，非 Claude 系最强） | [alibabacloud](https://www.facebook.com/alibabacloud/posts/qwen37-max-is-officially-the-2-ai-coding-model-globallyin-the-latest-code-arena-/1434941022011319/) |
 | Qwen3.7-Max 上下文 | **1M tokens** | [OpenRouter](https://openrouter.ai/qwen/qwen3.7-max) |
 | Qwen3.7-Max 自主可运行 | **35 小时** + 1000+ 工具调用 | [VentureBeat](https://venturebeat.com/technology/alibabas-proprietary-qwen3-7-max-can-run-for-35-hours-autonomously-and-supports-external-harnesses-like-anthropics-claude-code) |
 | **GLM-5.1-highspeed 速度** | **400 tok/s**（全球最快 API） | [智谱](https://docs.bigmodel.cn/cn/guide/models/text/glm-5.1-highspeed) |
@@ -1189,7 +1194,7 @@ CSET Helen Toner 的反驳是对的——目前所有"自进化"都是**让 AI �
 
 1. **API 速度竞争正在成为新战场**：GLM-5.1-highspeed 的 400 tok/s 刷新全球纪录，打破了"高速模型即轻量模型"的传统认知。这可能引发新一轮 API 速度竞赛——不是能力，而是延迟。
 
-2. **Code Arena 盲测是比 SWE-Pro 更接近真实编程的信号**：Qwen3.7-Max 1541 排名 #2（仅次于 Claude），盲测消除了 prompt engineering 优势。但 Code Arena 上 GPT-5.5 的具体排名尚未公开，"超越 GPT-5.5"的判断需要第三方验证。
+2. **Code Arena 盲测是比 SWE-Pro 更接近真实编程的信号**：Claude Opus 4.7 thinking 以 **1567** 排名 #1，前三均为 Claude 变体。Qwen3.7-Max 1541 排名 #4，是非 Anthropic 最强，超越 GPT-5.5-xhigh（1505）、Gemini 3.5 Flash（1506）、GLM-5.1（1533）。GPT-5.5 (codex-harness) 仅排 #21（1444）。
 
 3. **Google I/O 一箭双雕——Gemini 3.5 Flash + Omni 同时发布**：Google 同时推出编程旗舰（Flash）和世界模型（Omni），展示在模型层多线推进能力。Flash 的 Terminal-Bench 76.2% 已超越 GPT-5.4，Gemini 3.5 Pro 6 月发布后可能改写编程能力排行榜。
 
@@ -1197,13 +1202,13 @@ CSET Helen Toner 的反驳是对的——目前所有"自进化"都是**让 AI �
 
 5. **Benchmark 进入"自审"阶段**：Stanford ABA 揭示 25.7% benchmark 任务有缺陷，移除后 SWE-bench Verified 与 Terminal-Bench 2 平均分均上升约 10pp 且模型排名变化。叠加 SaaS-Bench 暴露 Opus 4.7 端到端仅 3.8% 通过率，**当前 benchmark 时代的可信度正被系统性重估**。
 
-6. **xAI 加码编程模型**：Grok V9-Medium 从 0.5T 跃升至 1.5T 参数，训练中加入大量 Cursor 编程数据，2-3 周后公开发布。结合 Cursor Composer 2.5 基于 Kimi K2.5、Qwen3.7-Max Code Arena #2、Claude Mythos SWE-Pro 77.8% 等信号，**编程模型已成为各家旗舰能力的核心竞争维度**。
+6. **xAI 加码编程模型**：Grok V9-Medium 从 0.5T 跃升至 1.5T 参数，训练中加入大量 Cursor 编程数据，2-3 周后公开发布。结合 Cursor Composer 2.5 基于 Kimi K2.5、Qwen3.7-Max Code Arena #4（非 Claude 系最强）、Claude Mythos SWE-Pro 77.8% 等信号，**编程模型已成为各家旗舰能力的核心竞争维度**。
 
 7. **DSA 跨模态成功**：快手 Keye-VL-2.0 首次将 DeepSeek Sparse Attention 落地多模态，**架构通用性获验证**——稀疏注意力不只是 LLM 加速技术，也能跨域到视觉理解，512 帧仍维持长上下文性能。
 
 8. **Anthropic 41 天迭代 Opus 4.8 + Dynamic Workflows = Agent 基础设施化**：Opus 4.8 不仅是模型升级，更通过 Dynamic Workflows（数十到上百个并行子 Agent）将"模型能力"转化为"系统级 Agent 基础设施"。Bun 团队 75 万行 Zig→Rust 的实战案例证明，**编程模型的价值已从"写代码"升级为"重构整个代码库"**。
 
-9. **Qwen3.7-Plus 在 Terminal Bench 2.0 上首次超越 Anthropic 头部模型**：70.3 > Opus 4.6 Max 65.4，结合 Qwen3.7-Max 在 Code Arena #2 的表现，阿里在编程模型赛道已从追赶者变为并跑者。多模态 Agent benchmark（ScreenSpot Pro 79.0、AndroidWorld 81.0）的系统性领先进一步巩固了这一判断。
+9. **Qwen3.7-Plus 在 Terminal Bench 2.0 上首次超越 Anthropic 头部模型**：70.3 > Opus 4.6 Max 65.4，结合 Qwen3.7-Max 在 Code Arena #4（非 Claude 系最强）的表现，阿里在编程模型赛道已从追赶者变为并跑者。多模态 Agent benchmark（ScreenSpot Pro 79.0、AndroidWorld 81.0）的系统性领先进一步巩固了这一判断。
 
 10. **开源 VLA 开始超越闭源**：Wall-OSS-0.5 在 RoboCaca 精密插入达 39.6%，领先 π0.5 的 4.0% 近 10 倍。这打破了"闭源 VLA 碾压开源"的假设，开源 VLA 生态正在形成与闭源（π0.5、Gemini Robotics）的正面竞争。
 
