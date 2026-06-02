@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Google I/O 2026 深度研究报告 | AI Research</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --bg-card: #ffffff;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --green: #0d8050;
+            --green-bg: #e6f5ed;
+            --red: #c03030;
+            --red-bg: #fce8e8;
+            --blue: #2563eb;
+            --blue-bg: #eff4ff;
+            --orange: #c05000;
+            --orange-bg: #fff3e6;
+            --google-blue: #4285f4;
+            --google-bg: #e8f0fe;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --bg-card: #141414;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+                --green: #34d399;
+                --green-bg: #0d2818;
+                --red: #f87171;
+                --red-bg: #2a1212;
+                --blue: #60a5fa;
+                --blue-bg: #0c1a33;
+                --orange: #fbbf24;
+                --orange-bg: #2a1f0c;
+                --google-blue: #8ab4f8;
+                --google-bg: #1a2a4a;
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-left { display: flex; align-items: baseline; gap: 10px; }
+        .topbar-brand { font-size: 14px; font-weight: 700; color: var(--purple); text-decoration: none; }
+        .topbar-tagline { font-size: 11px; color: var(--text-3); letter-spacing: 0.2px; }
+        .topbar-right { display: flex; gap: 12px; align-items: center; }
+        .topbar-nav { font-size: 12px; color: var(--text-3); text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: all 0.12s; }
+        .topbar-nav:hover { color: var(--text); background: var(--purple-20); }
+        .topbar-nav.active { color: var(--purple); font-weight: 600; }
+
+        /* Container */
+        .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+        /* Hero */
+        .hero {
+            text-align: center; padding: 48px 0 36px;
+            border-bottom: 1px solid var(--border); margin-bottom: 40px;
+        }
+        .hero-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--google-blue); margin-bottom: 8px; }
+        .hero-title { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .hero-sub { font-size: 15px; color: var(--text-2); max-width: 620px; margin: 0 auto 16px; line-height: 1.7; }
+        .hero-meta { font-size: 12px; color: var(--text-3); }
+
+        /* Key stats bar */
+        .stats-bar {
+            display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+            margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);
+        }
+        .stat-item { text-align: center; }
+        .stat-val { font-size: 24px; font-weight: 700; color: var(--google-blue); line-height: 1.2; }
+        .stat-label { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+        /* Section */
+        .section { margin-bottom: 36px; }
+        .section-head {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 16px; padding-bottom: 8px;
+            border-bottom: 2px solid var(--google-blue);
+        }
+        .sec-dot { width: 6px; height: 6px; background: var(--google-blue); border-radius: 2px; }
+        .sec-title { font-size: 18px; font-weight: 700; color: var(--text); }
+        .sec-num { font-size: 12px; color: var(--text-3); font-weight: 500; margin-left: 4px; }
+
+        /* Subsection */
+        .subsection { margin-bottom: 28px; }
+        .sub-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: var(--text); padding-left: 10px; border-left: 3px solid var(--google-blue); }
+
+        /* Tables */
+        table {
+            width: 100%; border-collapse: collapse; margin: 12px 0 16px;
+            font-size: 13px; background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+        }
+        th { background: var(--bg-page); font-weight: 600; text-align: left; padding: 10px 14px; font-size: 12px; color: var(--text-2); border-bottom: 1px solid var(--border); }
+        td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-2); }
+        tr:last-child td { border-bottom: none; }
+        strong { color: var(--text); }
+
+        /* Blockquote */
+        blockquote {
+            border-left: 3px solid var(--google-blue);
+            padding: 12px 16px; margin: 12px 0;
+            color: var(--text-2); font-size: 14px;
+            background: var(--google-bg); border-radius: 0 6px 6px 0;
+        }
+        blockquote p { margin: 4px 0; }
+
+        /* Insight blocks */
+        .insight-block {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 20px 24px; margin-bottom: 20px;
+        }
+        .insight-block h3 { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+        .insight-block ul { padding-left: 18px; }
+        .insight-block li { margin-bottom: 8px; font-size: 13px; color: var(--text-2); line-height: 1.7; }
+
+        /* Card grid */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .info-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 10px; padding: 18px;
+        }
+        .info-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+        .info-card p { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 4px; }
+
+        /* Highlight box */
+        .highlight-box {
+            background: var(--google-bg); border: 1px solid var(--google-blue);
+            border-radius: 10px; padding: 18px 20px; margin: 16px 0;
+        }
+        .highlight-box h4 { font-size: 14px; font-weight: 700; color: var(--google-blue); margin-bottom: 8px; }
+        .highlight-box p { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+        /* Timeline */
+        .timeline { margin: 16px 0; }
+        .timeline-item { display: flex; gap: 12px; padding: 8px 0; font-size: 13px; }
+        .timeline-time { min-width: 100px; font-weight: 600; color: var(--google-blue); }
+        .timeline-desc { color: var(--text-2); }
+
+        /* Winner badge */
+        .badge-win { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 3px; background: #ffd700; color: #1a1a1a; }
+        .badge-rank { font-size: 11px; font-weight: 600; color: var(--text-3); }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 20px 24px; margin-top: 40px;
+            max-width: 960px; margin-left: auto; margin-right: auto;
+        }
+        .footer-copy { font-size: 12px; color: var(--text-3); line-height: 1.6; }
+        .footer-copy a { color: var(--purple-80); text-decoration: none; }
+        .footer-copy a:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 16px; }
+            .hero-title { font-size: 24px; }
+            .stats-bar { gap: 20px; }
+            .stat-val { font-size: 20px; }
+            .card-grid { grid-template-columns: 1fr; }
+            table { font-size: 12px; }
+            th, td { padding: 8px 10px; }
+        }
+        @media (max-width: 480px) {
+            .topbar-tagline { display: none; }
+            .stats-bar { gap: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-left">
+        <a href="index.html" class="topbar-brand">← AI 前沿动态</a>
+        <span class="topbar-tagline">AI Research</span>
+    </div>
+    <div class="topbar-right">
+        <a href="topics.html" class="topbar-nav active">专题集合</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-eyebrow">Special Report</div>
+        <h1 class="hero-title">Google I/O 2026 深度研究报告</h1>
+        <p class="hero-sub">Agentic Gemini 时代——AI 不再只是帮助"写"的工具，而是能够帮助"做"的 Agent。从单轮对话到协作式、持续在线的 Agent。</p>
+        <div class="hero-meta">2026年5月19-20日 · Shoreline Amphitheatre, Mountain View & 全球直播</div>
+        <div class="stats-bar">
+            <div class="stat-item"><div class="stat-val">$1900亿</div><div class="stat-label">2026 AI 资本支出</div></div>
+            <div class="stat-item"><div class="stat-val">4×</div><div class="stat-label">输出 token 速度</div></div>
+            <div class="stat-item"><div class="stat-val">6 项 #1</div><div class="stat-label">Gemini 3.5 Flash</div></div>
+            <div class="stat-item"><div class="stat-val">$100/月</div><div class="stat-label">AI Ultra 新档位</div></div>
+            <div class="stat-item"><div class="stat-val">24 篇</div><div class="stat-label">官方文章</div></div>
+        </div>
+    </div>
+
+    <!-- Section 1: Overview -->
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">总览：Agentic Gemini 时代</span><span class="sec-num">01</span></div>
+        <p style="font-size:14px;color:var(--text-2);margin-bottom:16px;">Sundar Pichai 将今年的 I/O 定位为 <strong>"Agentic Gemini Era"</strong>。Google 将这一转变定义为从单轮对话到协作式、持续在线 Agent 的飞跃。</p>
+        <blockquote>
+            <p>"我们正在超越帮助我们写的 AI 工具，走向帮助我们行动的 Agent。" — <strong>Sundar Pichai</strong></p>
+        </blockquote>
+        <p style="font-size:13px;color:var(--text-2);">Google 宣布 2026 年 AI 相关资本支出达 <strong>$1900 亿</strong>，是 2022 年的 6 倍。搜索业务 Q1 2026 增长约 <strong>19%</strong>，部分由 AI Overviews 和 AI Mode 驱动。Google Cloud 积压订单约 <strong>$4620 亿</strong>。</p>
+    </div>
+
+    <!-- Section 2: Core Models -->
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">核心模型发布</span><span class="sec-num">02</span></div>
+
+        <!-- Gemini Omni -->
+        <div class="subsection">
+            <div class="sub-title">Gemini Omni — 世界模型</div>
+            <table>
+                <tr><th style="width:120px">维度</th><th>详情</th></tr>
+                <tr><td><strong>模型本质</strong></td><td>世界模型（World Model），非单纯视频生成器。能理解物理概念如动能、重力</td></tr>
+                <tr><td><strong>技术融合</strong></td><td>整合 Veo（视频）、Nano Banana（图像）、Genie（世界模拟）三大模型能力</td></tr>
+                <tr><td><strong>核心能力</strong></td><td>(1) 从任意输入生成视频 (2) 自然语言编辑视频 (3) 理解并模拟物理世界</td></tr>
+                <tr><td><strong>发布节奏</strong></td><td>Gemini Omni Flash <strong>即日起</strong>上线，Pro 版后续推出</td></tr>
+                <tr><td><strong>竞争定位</strong></td><td><strong>首个顶级统一多模态模型包含视频输出能力</strong>，提示保真度和音频质量均优于 Veo 3.1</td></tr>
+            </table>
+            <blockquote>
+                <p>"这正是我们构建 Gemini 的目标，也是我们一开始就将其设计为多模态的原因。这是一条更难的路，但现在这个基础正在产生回报。" — <strong>Demis Hassabis</strong></p>
+                <p>"任何东西都成为创造全新现实的画布。"</p>
+            </blockquote>
+        </div>
+
+        <!-- Gemini 3.5 Flash -->
+        <div class="subsection">
+            <div class="sub-title">Gemini 3.5 Flash — 前沿智能 + 行动力</div>
+            <div class="highlight-box">
+                <h4>顶层结论</h4>
+                <p>输出 token 速度是其他前沿模型的 <strong>4 倍</strong>。在 <strong>Agentic 工作流、金融分析、多模态推理</strong> 三大领域取得绝对领先（6 项 benchmark 第一）。在编码和 UI 控制上仅次于 GPT-5.5（差距极小：Terminal-bench 2%、OSWorld 0.3%）。Gemini App 新默认模型。</p>
+            </div>
+            <blockquote>
+                <p>"当你看智能 vs 输出速度时，它在右上角象限完全自成一档，输出 token 速度是其他前沿模型的 4 倍，使用体验令人愉悦。" — <strong>Sundar Pichai</strong></p>
+            </blockquote>
+            <p style="font-size:13px;color:var(--text-2);margin-bottom:12px;">第三方评价（TrendingTopics）：Gemini 3.5 Flash 性能大致相当于 <strong>GPT-5.5</strong>，但落后于 <strong>Anthropic Mythos</strong>——后者目前被认为是前沿模型的参照点。</p>
+
+            <h4 style="font-size:14px;font-weight:700;margin:20px 0 8px;">编码 Benchmark</h4>
+            <table>
+                <tr><th>Benchmark</th><th>Gemini 3.5 Flash</th><th>Gemini 3 Flash</th><th>Opus 4.7</th><th>GPT-5.5</th></tr>
+                <tr><td>Terminal-bench 2.1</td><td>76.2%</td><td>58.0%</td><td>66.1%</td><td><strong>78.2%</strong></td></tr>
+                <tr><td>SWE-Bench Pro (Public)</td><td>55.1%</td><td>49.6%</td><td><strong>64.3%</strong></td><td>58.6%</td></tr>
+            </table>
+
+            <h4 style="font-size:14px;font-weight:700;margin:20px 0 8px;">Agentic 工作流</h4>
+            <table>
+                <tr><th>Benchmark</th><th>Gemini 3.5 Flash</th><th>Opus 4.7</th><th>GPT-5.5</th></tr>
+                <tr><td>MCP Atlas</td><td><strong>83.6%</strong></td><td>79.1%</td><td>75.3%</td></tr>
+                <tr><td>Toolathlon</td><td><strong>56.5%</strong></td><td>—</td><td>55.6%</td></tr>
+            </table>
+
+            <h4 style="font-size:14px;font-weight:700;margin:20px 0 8px;">多模态</h4>
+            <table>
+                <tr><th>Benchmark</th><th>Gemini 3.5 Flash</th><th>Opus 4.7</th><th>GPT-5.5</th></tr>
+                <tr><td>CharXiv</td><td><strong>84.2%</strong></td><td>82.1%</td><td>84.1%</td></tr>
+                <tr><td>MMMU-Pro</td><td><strong>83.6%</strong></td><td>75.2%</td><td>81.2%</td></tr>
+                <tr><td>Blueprint-Bench 2</td><td>33.6%</td><td>24.5%</td><td><strong>36.2%</strong></td></tr>
+            </table>
+
+            <h4 style="font-size:14px;font-weight:700;margin:20px 0 8px;">专家任务 / 长上下文 / 推理</h4>
+            <table>
+                <tr><th>Benchmark</th><th>Gemini 3.5 Flash</th><th>Opus 4.7</th><th>GPT-5.5</th></tr>
+                <tr><td>Finance Agent v2</td><td><strong>57.9%</strong></td><td>51.5%</td><td>51.8%</td></tr>
+                <tr><td>GDPval-AA</td><td>1656 Elo</td><td>1753 Elo</td><td><strong>1769 Elo</strong></td></tr>
+                <tr><td>MRCR v2 (128k)</td><td>77.3%</td><td>59.3%</td><td><strong>94.8%</strong></td></tr>
+                <tr><td>MRCR v2 (1M)</td><td><strong>26.6%</strong></td><td>—</td><td>—</td></tr>
+                <tr><td>HLE</td><td>40.2%</td><td><strong>46.9%</strong></td><td>41.4%</td></tr>
+                <tr><td>ARC-AGI-2</td><td>72.1%</td><td>75.8%</td><td><strong>84.6%</strong></td></tr>
+            </table>
+
+            <div class="highlight-box">
+                <h4>Benchmark 小结</h4>
+                <p><strong>Gemini 3.5 Flash 领域</strong>：Agentic 工作流、通用工具、金融分析、多模态推理/理解、1M 长上下文——<strong>6 项第一</strong>。编码和 UI 控制仅次于 GPT-5.5（差距 ≤2%）。核心优势：以 Flash 级别的速度和成本提供接近甚至超越 Pro 级别模型的性能。</p>
+            </div>
+
+            <h4 style="font-size:14px;font-weight:700;margin:20px 0 8px;">模型规格</h4>
+            <table>
+                <tr><th>参数</th><th>值</th></tr>
+                <tr><td>状态</td><td>Preview</td></tr>
+                <tr><td>输入模态</td><td>Text、Image、Video、Audio、PDF</td></tr>
+                <tr><td>输入/输出 token</td><td><strong>1M</strong> / <strong>64k</strong></td></tr>
+                <tr><td>知识截止</td><td>2025 年 1 月</td></tr>
+                <tr><td>工具使用</td><td>Function calling、Structured output、Search、Code execution</td></tr>
+            </table>
+
+            <h4 style="font-size:14px;font-weight:700;margin:20px 0 8px;">第三方评测</h4>
+            <blockquote><p><strong>JetBrains</strong>（Nick Frolov）："新模型在低推理编码性能上相比上一代 Flash 提升 10-20%。"</p></blockquote>
+            <blockquote><p><strong>Box</strong>（CTO Ben Kus）："企业评估集比 Gemini 3 Flash 高 <strong>19.6%</strong>。生命科学数据提取准确率提升 <strong>96.4%</strong>，金融服务报告准确率提升 <strong>46.7%</strong>。"</p></blockquote>
+            <blockquote><p><strong>Armadin</strong>（David Slater）："长程多轮网络安全基准比上一代 Flash 3 提升 <strong>42%</strong>，token 使用量减少 <strong>72%</strong>。"</p></blockquote>
+        </div>
+
+        <!-- Gemini 3.5 Pro + 8i TPU -->
+        <div class="card-grid">
+            <div class="info-card">
+                <h4>Gemini 3.5 Pro</h4>
+                <p>Flash 发布 <strong>一个月后</strong> 推出。面向需要更深推理能力的场景。</p>
+            </div>
+            <div class="info-card">
+                <h4>8i TPU</h4>
+                <p>新一代张量处理器。支持全球分布式训练，速度和能效大幅提升。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Developer Platform -->
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">开发者平台：Google Antigravity</span><span class="sec-num">03</span></div>
+        <p style="font-size:14px;color:var(--text-2);margin-bottom:16px;"><strong>Google Antigravity</strong> 是 Google 的 Agent 优先开发平台，定位与 Android、Firebase、Chrome 并列。这是今年 I/O 面向开发者的最重要发布。</p>
+
+        <table>
+            <tr><th>产品</th><th>关键技术细节</th></tr>
+            <tr><td><strong>Antigravity 2.0</strong></td><td>多 Agent 并行编排、动态子 Agent 自动任务分解、计划任务、集成 AI Studio/Android/Firebase</td></tr>
+            <tr><td><strong>Antigravity CLI</strong></td><td>替代 Gemini CLI，终端内即时创建 Agent</td></tr>
+            <tr><td><strong>Antigravity SDK</strong></td><td>用 Markdown 定义自定义 Agent，可在任意基础设施托管</td></tr>
+            <tr><td><strong>Antigravity IDE</strong></td><td>专用集成开发环境</td></tr>
+            <tr><td><strong>企业版</strong></td><td>Google Cloud 客户直连 Cloud 项目</td></tr>
+        </table>
+
+        <div class="highlight-box">
+            <h4>关键数据</h4>
+            <p>AI Studio Vibe Coding 发布前内部已构建 <strong>数十万个应用</strong>。XPRIZE Hackathon 奖金池 <strong>$200 万</strong>——有史以来最大规模。Antigravity 2.0 比前代快 <strong>12 倍</strong>。Keynote 现场 <strong>编码了一个 Doom 游戏</strong>。</p>
+        </div>
+
+        <div class="subsection" style="margin-top:20px;">
+            <div class="sub-title">与传统 AI 工具的本质区别</div>
+            <table>
+                <tr><th>维度</th><th>传统 AI 工具</th><th>Antigravity Agent</th></tr>
+                <tr><td>交互模式</td><td>单轮问答</td><td>持久、有状态的协作</td></tr>
+                <tr><td>执行能力</td><td>生成代码片段</td><td>构建完整生产应用</td></tr>
+                <tr><td>环境管理</td><td>无</td><td>独立 Linux 环境，文件和状态持久化</td></tr>
+                <tr><td>工具使用</td><td>受限</td><td>可调用外部 API、安装依赖、管理数据库</td></tr>
+                <tr><td>多任务</td><td>不支持</td><td>多 Agent 并行，动态子任务分解</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="sub-title">Google AI Studio — Vibe Coding</div>
+            <table>
+                <tr><th>维度</th><th>详情</th></tr>
+                <tr><td>框架支持</td><td>React、Angular、Next.js（新增）</td></tr>
+                <tr><td>后端集成</td><td>Cloud Firestore、Firebase Authentication</td></tr>
+                <tr><td>Android 构建</td><td>Prompt → 完整 Android 应用 → Play Console 测试轨道</td></tr>
+                <tr><td>Workspace 集成</td><td>Agent 可原生调用 Google Workspace API</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="sub-title">Chrome 开发者工具</div>
+            <table>
+                <tr><th>工具/标准</th><th>详情</th></tr>
+                <tr><td><strong>WebMCP</strong></td><td>开放 Web 标准，暴露结构化工具给浏览器端 Agent。Chrome 149 Origin Trial</td></tr>
+                <tr><td><strong>Chrome DevTools for Agents</strong></td><td>Agent 直接访问控制台日志、网络流量，支持 <strong>20+ 第三方编码 Agent</strong></td></tr>
+                <tr><td><strong>Gemini Nano</strong></td><td>Chrome 148 内置，Prompt API 达 Stable 状态</td></tr>
+                <tr><td><strong>Gemma 197M</strong></td><td>超高效设备端专家模型</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 4: Product Updates -->
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">产品更新矩阵</span><span class="sec-num">04</span></div>
+
+        <div class="subsection">
+            <div class="sub-title">Search — 搜索的 Agent 化</div>
+            <table>
+                <tr><th>功能</th><th>关键细节</th></tr>
+                <tr><td><strong>Information Agents</strong></td><td>24/7 后台搜索 Agent，持续监控并主动推送——Search 从"拉取"变为"推送"</td></tr>
+                <tr><td><strong>AI Mode</strong></td><td>上线一年后在美国大幅扩展，用户转向自然语言查询</td></tr>
+                <tr><td><strong>Q1 搜索增长</strong></td><td>~19%，部分由 AI Overviews 和 AI Mode 驱动</td></tr>
+            </table>
+        </div>
+
+        <div class="subsection">
+            <div class="sub-title">Gemini App — 主动式个人 AI</div>
+            <table>
+                <tr><th>功能</th><th>关键细节</th></tr>
+                <tr><td><strong>Gemini Spark</strong></td><td>24/7 持续在线 Agent，跨 Gmail/Sheets/Calendar 执行多步骤工作流</td></tr>
+                <tr><td><strong>Daily Brief</strong></td><td>每日主动推送综合摘要，整合日历、邮件、待办</td></tr>
+                <tr><td><strong>Gemini Notebooks</strong></td><td>自包含数据库，与 NotebookLM 同步</td></tr>
+            </table>
+        </div>
+
+        <div class="card-grid">
+            <div class="info-card">
+                <h4>Shopping</h4>
+                <p><strong>Universal Cart</strong>：跨零售商智能购物车。<strong>UCP</strong> 开放标准使 AI Agent 能在多商家间代理交易。</p>
+            </div>
+            <div class="info-card">
+                <h4>Google Workspace</h4>
+                <p><strong>Google Pics</strong>：嵌入 Docs/Slides 的 AI 图像生成。Docs Live：语音创建文档。AI Inbox：智能收件箱。</p>
+            </div>
+            <div class="info-card">
+                <h4>Android</h4>
+                <p><strong>Android Halo</strong>：状态栏 Agent 指示器。<strong>Android XR</strong> 眼镜（三星 + Warby Parker），2026 秋季上市。<strong>Android 17</strong> 6-7 月正式版。</p>
+            </div>
+            <div class="info-card">
+                <h4>Googlebook（新硬件）</h4>
+                <p><strong>AluminumOS</strong>（Android + ChromeOS）。Acer/ASUS/Dell/HP/Lenovo 合作。2026 秋季。原生 Android 应用 + Magic Pointer。</p>
+            </div>
+            <div class="info-card">
+                <h4>YouTube</h4>
+                <p><strong>Ask YouTube</strong>：AI 索引视频语音内容，搜索定位到时间戳。美国 2026 夏季上线。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 5: Creative Tools -->
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">创意工具链</span><span class="sec-num">05</span></div>
+        <div class="card-grid">
+            <div class="info-card">
+                <h4>Google Flow / Flow Music</h4>
+                <p>升级为 <strong>16 个并行 Agent</strong>。Flow Music：哼唱 → Gemini 自动编曲。全线接入 Gemini Omni。</p>
+            </div>
+            <div class="info-card">
+                <h4>Project Genie + Street View</h4>
+                <p>整合近 <strong>20 年</strong> Street View 影像数据。生成锚定于现实世界的街景模拟和环境变化可视化。</p>
+            </div>
+            <div class="info-card">
+                <h4>Pomelli</h4>
+                <p>扫描企业材料建立 "Business DNA" 档案，自动生成品牌手册和营销内容。</p>
+            </div>
+            <div class="info-card">
+                <h4>Stitch</h4>
+                <p>AI 设计 Agent，Voice Canvas 语音描述实时生成设计。导出至 Antigravity 或 Netlify。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 6: Science & Safety -->
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">科学研究 × AI 安全</span><span class="sec-num">06</span></div>
+        <div class="card-grid">
+            <div class="info-card">
+                <h4>Co-Scientist</h4>
+                <p>多 Agent 科研伙伴：文献综述 → 假设生成 → 实验设计 → 数据分析，加速科学发现。</p>
+            </div>
+            <div class="info-card">
+                <h4>WeatherNext AI</h4>
+                <p>已投入实际使用，成功预测飓风 Melissa 对牙买加的历史性登陆，比传统数值预报更准确。</p>
+            </div>
+        </div>
+        <div class="subsection">
+            <div class="sub-title">AI 安全与内容真实性</div>
+            <table>
+                <tr><th>层级</th><th>技术</th><th>覆盖范围</th></tr>
+                <tr><td>数字水印</td><td>SynthID</td><td>所有 AI 生成的图像、音频、视频</td></tr>
+                <tr><td>内容溯源</td><td>C2PA Content Credentials</td><td>加密凭证追踪媒体来源和编辑历史</td></tr>
+                <tr><td>双轨系统</td><td>水印 + 溯源</td><td>两层防护体系</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 7: Pricing -->
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">订阅体系</span><span class="sec-num">07</span></div>
+        <table>
+            <tr><th>层级</th><th>价格</th><th>关键权益</th></tr>
+            <tr><td>免费</td><td>$0</td><td>基础 Gemini 功能</td></tr>
+            <tr><td>AI Pro</td><td>维持原价</td><td>Pro 级别模型访问</td></tr>
+            <tr><td><strong>AI Ultra（新）</strong></td><td><strong>$100/月</strong></td><td>5× Antigravity 额度、Gemini 3.5 Flash、Gemini Spark、Daily Brief</td></tr>
+            <tr><td>最高 tier</td><td><strong>$200/月</strong>（降价 $50）</td><td>全部高级功能 + 更高容量</td></tr>
+        </table>
+    </div>
+
+    <!-- Section 8: Timeline -->
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">时间线总览</span><span class="sec-num">08</span></div>
+        <div class="timeline">
+            <div class="timeline-item"><span class="timeline-time">即日起</span><span class="timeline-desc">Gemini 3.5 Flash 上线、Gemini Omni Flash 上线、Antigravity 2.0 发布</span></div>
+            <div class="timeline-item"><span class="timeline-time">2026 夏季</span><span class="timeline-desc">Gemini Omni Pro、Docs Live、Ask YouTube 美国上线</span></div>
+            <div class="timeline-item"><span class="timeline-time">2026.06-07</span><span class="timeline-desc">Android 17 正式版</span></div>
+            <div class="timeline-item"><span class="timeline-time">Flash + 1 月</span><span class="timeline-desc">Gemini 3.5 Pro 发布</span></div>
+            <div class="timeline-item"><span class="timeline-time">2026.09</span><span class="timeline-desc">XPRIZE Hackathon 决赛（洛杉矶）</span></div>
+            <div class="timeline-item"><span class="timeline-time">2026 秋季</span><span class="timeline-desc">Android XR 眼镜上市、Googlebook 上市</span></div>
+        </div>
+    </div>
+
+    <!-- Section 9: Strategy -->
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">战略分析</span><span class="sec-num">09</span></div>
+
+        <div class="subsection">
+            <div class="sub-title">竞争格局</div>
+            <table>
+                <tr><th>维度</th><th>Google</th><th>竞争对手</th></tr>
+                <tr><td>前沿模型</td><td>Gemini 3.5 Flash ≈ GPT-5.5</td><td>Anthropic Mythos 确立新参照点</td></tr>
+                <tr><td>视频生成</td><td>Gemini Omni = 首个统一多模态+视频</td><td>ByteDance Seedance 2.0（基准测试领先）</td></tr>
+                <tr><td>开发者工具</td><td>Antigravity 全栈 Agent 平台</td><td>GitHub Copilot、Cursor</td></tr>
+                <tr><td>个人 AI</td><td>Spark 24/7 跨 Google 服务</td><td>ChatGPT、Apple Intelligence</td></tr>
+                <tr><td>分发优势</td><td>Search + Android + Workspace + Chrome + YouTube 数十亿用户</td><td>无直接可比对手</td></tr>
+                <tr><td>基础设施</td><td>8i TPU + Google Cloud</td><td>NVIDIA GPU 生态</td></tr>
+            </table>
+        </div>
+
+        <div class="insight-block">
+            <h3>护城河</h3>
+            <ul>
+                <li><strong>数据规模</strong>：20 年搜索数据、Street View、YouTube 内容</li>
+                <li><strong>产品生态</strong>：Search、Android、Workspace、Chrome、YouTube 深度整合</li>
+                <li><strong>基础设施</strong>：8i TPU + Google Cloud 的训练和推理能力</li>
+                <li><strong>分发渠道</strong>：数十亿用户的触达能力</li>
+            </ul>
+        </div>
+
+        <div class="insight-block">
+            <h3>开放 vs 封闭策略</h3>
+            <ul>
+                <li><strong>WebMCP</strong> 作为开放 Web 标准</li>
+                <li><strong>UCP</strong> 作为开放商务协议</li>
+                <li><strong>Antigravity SDK</strong> 支持任意基础设施部署</li>
+                <li>核心模型仍由 Google 控制</li>
+            </ul>
+        </div>
+
+        <blockquote>
+            <p><strong>TrendingTopics 评价</strong>："Google 必须证明其模型在数十亿设备上的分发能力、在广告和云基础设施中的整合能力，能够补偿竞争对手在纯模型前沿上建立的领先优势。I/O 2026 将展示这一计算是否能够成立。"</p>
+        </blockquote>
+    </div>
+
+    <!-- Section 10: Official Articles Index -->
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">24 篇官方文章索引</span><span class="sec-num">10</span></div>
+        <table>
+            <tr><th>#</th><th>标题</th><th>主题</th></tr>
+            <tr><td>1</td><td>I/O 2026: Welcome to the agentic Gemini era</td><td>总览</td></tr>
+            <tr><td>2</td><td>Introducing Gemini Omni</td><td>Gemini 模型</td></tr>
+            <tr><td>3</td><td>Gemini 3.5: frontier intelligence with action</td><td>Gemini 模型</td></tr>
+            <tr><td>4</td><td>The Gemini app becomes more agentic</td><td>Gemini App</td></tr>
+            <tr><td>5</td><td>A new era for AI Search</td><td>Search</td></tr>
+            <tr><td>6</td><td>Introducing the Universal Cart</td><td>Shopping</td></tr>
+            <tr><td>7</td><td>Intelligent eyewear is coming this fall</td><td>Android</td></tr>
+            <tr><td>8</td><td>New ways to create in Google Workspace</td><td>Workspace</td></tr>
+            <tr><td>9</td><td>Making it easier to understand how content was created</td><td>AI 安全</td></tr>
+            <tr><td>10</td><td>New agents, mobile apps for Google Flow</td><td>Google Labs</td></tr>
+            <tr><td>11</td><td>Building the agentic future: Developer highlights</td><td>开发者工具</td></tr>
+            <tr><td>12</td><td>Bring any idea to life: Google AI Studio</td><td>开发者工具</td></tr>
+            <tr><td>13</td><td>AI experiments and tools for discovery</td><td>Research</td></tr>
+            <tr><td>14</td><td>Simulate real-world places with Project Genie</td><td>DeepMind</td></tr>
+            <tr><td>15</td><td>Everything new in our Google AI subscriptions</td><td>Google One</td></tr>
+            <tr><td>16</td><td>Stay in sync with Android Halo</td><td>Android</td></tr>
+            <tr><td>17</td><td>Pomelli adds new ways to build brand content</td><td>Google Labs</td></tr>
+            <tr><td>18</td><td>New ways to design in real time with Stitch</td><td>Google Labs</td></tr>
+            <tr><td>19</td><td>How AI Mode is changing the way people search</td><td>Search</td></tr>
+            <tr><td>20</td><td>Co-Scientist: A multi-agent AI partner</td><td>Research</td></tr>
+            <tr><td>21</td><td>All the YouTube news from Google I/O</td><td>YouTube</td></tr>
+            <tr><td>22</td><td>Everything Google Cloud customers should know</td><td>Cloud</td></tr>
+            <tr><td>23</td><td>Chrome: 15 updates from Google I/O 2026</td><td>Chrome</td></tr>
+            <tr><td>24</td><td>WeatherNext AI helped forecasters predict historic storm</td><td>天气</td></tr>
+        </table>
+    </div>
+
+</div>
+
+<div class="footer">
+    <div class="footer-copy">
+        报告来源：Google Blog、CNET、Android Central、LiveMint、TrendingTopics、WaveSpeedAI 等多源交叉验证<br>
+        研究日期：2026年5月20日 · <a href="topics.html">← 专题集合</a>
+    </div>
+</div>
+
+</body>
+</html>
