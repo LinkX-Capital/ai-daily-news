@@ -88,6 +88,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ========== 配置 ==========
 API_KEY = os.environ.get("MINIMAX_API_KEY", "")  # 独立变量，不影响 GLM
 API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
+ZHIPU_API_KEY = os.environ.get("ZHIPU_API_KEY", "")  # 智谱搜索资源包
 OPML_FILE = opml_file()
 ARCHIVE_DIR = archive_dir()
 OUTPUT_FILE = output_md()
@@ -1497,6 +1498,18 @@ def post_validate_and_enrich(articles):
             enriched += 1
             print(f"   🔍 深抓补充: [{title_short}] ← {used_url[:60]}")
         elif sent_count < 3:
+            # Fallback: 智谱 web_search 补充
+            search_q = a.get("title", "")
+            if search_q and len(search_q) > 10:
+                zhipu_extra = _zhipu_web_search(search_q)
+                if zhipu_extra:
+                    if len(zhipu_extra) > 600:
+                        zhipu_extra = zhipu_extra[:600] + "..."
+                    sep = "\n\n[搜索补充]\n" if a.get("body") else ""
+                    a["body"] = (a.get("body", "") + sep + zhipu_extra).strip()
+                    enriched += 1
+                    print(f"   🔎 搜索补充: [{title_short}] ← 智谱web_search")
+                    continue
             warnings.append(f"[{title_short}] body仅{sent_count}句")
 
     if warnings:
@@ -1506,6 +1519,36 @@ def post_validate_and_enrich(articles):
     if enriched:
         print(f"   ✅ 深抓补充: {enriched} 条 (Top {DEEP_FETCH_TOP_N})")
     return articles
+
+
+def _zhipu_web_search(query):
+    """调用智谱原生 API + web_search tool 搜索，返回搜索结果摘要或 None。消耗搜索资源包额度。"""
+    if not ZHIPU_API_KEY:
+        return None
+    try:
+        r = httpx.post(
+            "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+            headers={"Authorization": f"Bearer {ZHIPU_API_KEY}"},
+            json={
+                "model": "glm-4-flash",
+                "messages": [{"role": "user", "content": f"请用中文简洁总结以下主题的最新关键事实和数据，不要猜测：{query}"}],
+                "tools": [{"type": "web_search", "web_search": {"enable": True, "search_result": True}}],
+                "max_tokens": 800,
+            },
+            timeout=30,
+        )
+        r.raise_for_status()
+        data = r.json()
+        choices = data.get("choices", [])
+        if choices:
+            msg = choices[0].get("message", {})
+            content = msg.get("content", "")
+            if content:
+                return content[:600]
+        return None
+    except Exception as e:
+        print(f"   ⚠️ 智谱搜索失败: {str(e)[:60]}")
+        return None
 
 
 def _deep_fetch(url):
