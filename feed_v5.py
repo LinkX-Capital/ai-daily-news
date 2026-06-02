@@ -1211,6 +1211,18 @@ def process_with_llm(articles, recent_articles=None):
     if not API_KEY or len(articles) < 5:
         return articles
 
+    # 分离 HF 论文（已有 summary，跳过 LLM 处理）
+    hf_papers = [a for a in articles if a.get("is_hf_paper")]
+    llm_articles = [a for a in articles if not a.get("is_hf_paper")]
+
+    # 对 HF 论文直接用 summary 生成 body 和 key_points
+    for a in hf_papers:
+        summary = a.get("content", "") or a.get("summary", "")
+        if summary and not a.get("body"):
+            a["body"] = summary[:300]
+        if not a.get("key_points"):
+            a["key_points"] = [f"来自HuggingFace Daily Papers，社区投票 {a.get('_upvotes', 0)}👍"]
+
     # 构建历史动态摘要
     recent_summary = ""
     if recent_articles:
@@ -1222,7 +1234,7 @@ def process_with_llm(articles, recent_articles=None):
 ".join([f"- {t}" for t in recent_titles])
 
     # 按优先级排序，确保重要新闻优先处理
-    sorted_articles = sorted(articles, key=lambda x: x.get('priority', 0), reverse=True)
+    sorted_articles = sorted(llm_articles, key=lambda x: x.get('priority', 0), reverse=True)
 
     # 预过滤：排除明显非AI内容（Tesla财报、NASA、Rivian等）
     NON_AI_TITLE_KEYWORDS = [
@@ -1397,6 +1409,9 @@ def process_with_llm(articles, recent_articles=None):
             print(f"✅ LLM处理了 {len(llm_results)} 条新闻，过滤后 {len(articles)} 条")
     except Exception as e:
         print(f"⚠️ 解析LLM结果失败: {e}")
+    # 合并回跳过 LLM 的 HF 论文
+    if hf_papers:
+        articles = articles + hf_papers
     return articles
 
 # ========== 论文自动溯源 + Body 校验 ==========
@@ -1621,7 +1636,7 @@ def _fetch_hf_daily_papers(max_papers=5):
             "is_tweet": False,
             "is_hf_paper": True,
             "published_parsed": None,
-            "priority": 30 + min(upvotes, 50),  # 基础30 + upvotes加权，上限50
+            "priority": 15 + min(upvotes, 20),  # 基础15 + upvotes加权，上限20
             "_subfield": subfield,
             "_upvotes": upvotes,
             "_authors": author_str,
