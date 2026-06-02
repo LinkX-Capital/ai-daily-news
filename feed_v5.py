@@ -1551,6 +1551,100 @@ def _zhipu_web_search(query):
         return None
 
 
+# ========== 研究关注关键词（来自 config.json research_subfields）==========
+_HF_RESEARCH_KEYWORDS = {
+    "LLM": ["llm", "large language model", "gpt", "claude", "gemini", "transformer", "attention",
+             "prefill", "decode", "context length", "kv cache", "reasoning", "chain of thought",
+             "rlhf", "dpo", "grpo", "fine-tun", "instruction follow", "agent"],
+    "多模态": ["multimodal", "vision language", "vlm", "image generation", "video generation",
+              "diffusion", "text-to-image", "text-to-video", "speech", "audio"],
+    "具身智能": ["robot", "embodied", "world model", "simulation", "manipulation", "locomotion",
+               "autonomous driv", "physical ai"],
+    "AI4S": ["ai for science", "protein", "drug", "molecule", "material", "physics",
+             "climate", "biology", "alphafold"],
+    "MLSys": ["mlsys", "inference", "training", "distributed", "gpu", "serving", "compiler",
+              "quantiz", "prun", "distill", "efficient", "optimiz"],
+    "AI安全": ["alignment", "safety", "interpretab", "red team", "jailbreak", "bias",
+              "fairness", "robust", "guardrail"],
+    "推理": ["reasoning", "math", "code", "programming", "search", "planning",
+            "tool use", "agentic"],
+}
+
+
+def _fetch_hf_daily_papers(max_papers=5):
+    """从 HuggingFace Daily Papers API 抓取当天热门论文，按领域关键词过滤。
+
+    返回与 feed_v5 文章格式兼容的列表。
+    """
+    try:
+        r = httpx.get("https://huggingface.co/api/daily_papers", timeout=20)
+        r.raise_for_status()
+        all_papers = r.json()
+    except Exception as e:
+        print(f"   ⚠️ HF Daily Papers 抓取失败: {str(e)[:60]}")
+        return []
+
+    # 按 upvotes 降序
+    all_papers.sort(key=lambda x: x.get("paper", {}).get("upvotes", 0), reverse=True)
+
+    matched = []
+    for entry in all_papers:
+        paper = entry.get("paper", {})
+        title = paper.get("title", "")
+        summary = paper.get("summary", "")
+        upvotes = paper.get("upvotes", 0)
+        pid = paper.get("id", "")
+        authors = [a.get("name", "") for a in (paper.get("authors") or [])[:3]]
+
+        # 关键词匹配：标题+摘要至少命中一个领域的关键词
+        text_lower = (title + " " + summary).lower()
+        subfield = None
+        for sf, keywords in _HF_RESEARCH_KEYWORDS.items():
+            if any(kw.lower() in text_lower for kw in keywords):
+                subfield = sf
+                break
+
+        if not subfield:
+            continue
+
+        # 构造文章对象（与 feed_v5 格式兼容）
+        author_str = ", ".join(authors)
+        body = summary[:300] if summary else ""
+
+        matched.append({
+            "title": title[:80],
+            "summary": f"{title}. Authors: {author_str}. Upvotes: {upvotes}",
+            "content": summary or title,
+            "link": f"https://huggingface.co/papers/{pid}",
+            "categories": ["研究关注"],
+            "source": "HuggingFace Daily Papers",
+            "is_tweet": False,
+            "is_hf_paper": True,
+            "published_parsed": None,
+            "priority": 30 + min(upvotes, 50),  # 基础30 + upvotes加权，上限50
+            "_subfield": subfield,
+            "_upvotes": upvotes,
+            "_authors": author_str,
+            "_arxiv_id": pid,
+        })
+
+    # 每个领域最多取 top 1，总共不超过 max_papers
+    by_field = {}
+    for a in matched:
+        sf = a.get("_subfield", "")
+        if sf not in by_field:
+            by_field[sf] = []
+        by_field[sf].append(a)
+
+    result = []
+    for sf in ["LLM", "推理", "多模态", "具身智能", "MLSys", "AI安全", "AI4S"]:
+        if sf in by_field and len(result) < max_papers:
+            top = by_field[sf][0]
+            result.append(top)
+
+    return result
+
+
 def _deep_fetch(url):
     """根据域名路由到对应提取器，返回纯文本片段或 None。"""
     if not url or not url.startswith("http"):
@@ -2160,6 +2254,17 @@ def main():
                     "published_parsed": parse_tweet_time(t.get("published", "")),
                     "priority": priority,
                 })
+
+        # 抓取 HuggingFace Daily Papers
+        print("📡 抓取 HuggingFace Daily Papers...")
+        hf_papers = _fetch_hf_daily_papers(max_papers=5)
+        if hf_papers:
+            for p in hf_papers:
+                print(f"   [{p.get('_subfield')}] [{p.get('_upvotes', 0)}👍] {p.get('title', '')[:60]}")
+                all_arts.append(p)
+            print(f"   获取 {len(hf_papers)} 篇热门论文")
+        else:
+            print("   无匹配论文")
 
         # 保存缓存
         if args.cache:
