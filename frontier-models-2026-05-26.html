@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>前沿模型周报 | 2026.05.19 — 06.02</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --bg-card: #ffffff;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --green: #0d8050;
+            --green-bg: #e6f5ed;
+            --red: #c03030;
+            --red-bg: #fce8e8;
+            --blue: #2563eb;
+            --blue-bg: #eff4ff;
+            --orange: #c05000;
+            --orange-bg: #fff3e6;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --bg-card: #141414;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+                --green: #34d399;
+                --green-bg: #0d2818;
+                --red: #f87171;
+                --red-bg: #2a1212;
+                --blue: #60a5fa;
+                --blue-bg: #0c1a33;
+                --orange: #fbbf24;
+                --orange-bg: #2a1f0c;
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-left { display: flex; align-items: baseline; gap: 10px; }
+        .topbar-brand { font-size: 14px; font-weight: 700; color: var(--purple); text-decoration: none; }
+        .topbar-tagline { font-size: 11px; color: var(--text-3); letter-spacing: 0.2px; }
+        .topbar-right { display: flex; gap: 12px; align-items: center; }
+        .topbar-nav { font-size: 12px; color: var(--text-3); text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: all 0.12s; }
+        .topbar-nav:hover { color: var(--text); background: var(--purple-20); }
+        .topbar-nav.active { color: var(--purple); font-weight: 600; }
+
+        /* Container */
+        .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+        /* Hero */
+        .hero {
+            text-align: center; padding: 40px 0 32px;
+            border-bottom: 1px solid var(--border); margin-bottom: 32px;
+        }
+        .hero-date { font-size: 13px; color: var(--text-3); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-title { font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+        .hero-sub { font-size: 15px; color: var(--text-2); max-width: 640px; margin: 0 auto 24px; line-height: 1.7; }
+        .hero-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+        .hero-stat { text-align: center; }
+        .hero-stat-num { font-size: 28px; font-weight: 700; color: var(--purple); font-variant-numeric: tabular-nums; }
+        .hero-stat-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+        /* Section */
+        .section { margin-bottom: 40px; }
+        .section-head {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 16px; padding-bottom: 8px;
+            border-bottom: 2px solid var(--purple-40);
+        }
+        .sec-dot { width: 6px; height: 6px; background: var(--purple); border-radius: 2px; }
+        .sec-title { font-size: 14px; font-weight: 600; color: var(--purple); text-transform: uppercase; letter-spacing: 0.8px; }
+
+        /* Signal Matrix */
+        .matrix-wrap {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 20px; overflow-x: auto;
+        }
+        .matrix-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .matrix-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+        .matrix-table td { padding: 10px; vertical-align: top; border-bottom: 1px solid var(--border); }
+        .matrix-table tr:last-child td { border-bottom: none; }
+        .matrix-layer { font-weight: 700; font-size: 12px; color: var(--purple); white-space: nowrap; }
+        .matrix-signal { font-size: 12px; line-height: 1.6; color: var(--text-2); }
+        .matrix-strength { font-size: 13px; letter-spacing: 2px; white-space: nowrap; text-align: center; }
+
+        /* Cards */
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 20px; transition: border-color 0.15s;
+        }
+        .card:hover { border-color: var(--purple-40); }
+        .card-tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 3px; display: inline-block; margin-bottom: 8px; }
+        .card-tag-high { background: var(--green-bg); color: var(--green); }
+        .card-tag-mid { background: var(--orange-bg); color: var(--orange); }
+        .card-tag-new { background: var(--blue-bg); color: var(--blue); }
+        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .card-sub { font-size: 12px; color: var(--text-3); margin-bottom: 12px; }
+        .card-body { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+        .card-body strong { color: var(--text); }
+        .card-links { margin-top: 10px; }
+        .card-links a { font-size: 11px; color: var(--purple-80); text-decoration: none; margin-right: 10px; }
+        .card-links a:hover { text-decoration: underline; }
+
+        /* Mini stats in cards */
+        .mini-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .mini-stat { background: var(--bg-page); border-radius: 6px; padding: 8px 10px; }
+        .mini-stat-val { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .mini-stat-label { font-size: 10px; color: var(--text-3); }
+
+        /* Tables */
+        .data-table-wrap {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            overflow: hidden; margin-bottom: 20px;
+        }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th {
+            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-3); background: var(--bg-page); padding: 10px 12px; text-align: left;
+            border-bottom: 1px solid var(--border); white-space: nowrap;
+        }
+        .data-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover td { background: var(--purple-20); }
+        .data-table .bold { font-weight: 700; }
+        .data-table .highlight { color: var(--purple); font-weight: 600; }
+        .data-table .best { background: var(--purple-20); border-radius: 3px; padding: 1px 4px; font-weight: 700; color: var(--purple); }
+        .data-table .model-name { font-weight: 600; white-space: nowrap; }
+        .data-table .vendor { font-size: 11px; color: var(--text-3); }
+        .data-table .tag-mit { font-size: 10px; background: var(--green-bg); color: var(--green); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+        .data-table .tag-closed { font-size: 10px; background: var(--red-bg); color: var(--red); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+        .data-table .tag-open { font-size: 10px; background: var(--blue-bg); color: var(--blue); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+        .data-table .up { color: var(--green); font-size: 12px; }
+        .data-table .down { color: var(--red); font-size: 12px; }
+        .data-table .new-row td { background: var(--blue-bg); }
+
+        /* Insight block */
+        .insight-block {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 20px; margin-bottom: 20px;
+        }
+        .insight-block h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+        .insight-block p { font-size: 13px; color: var(--text-2); line-height: 1.7; margin-bottom: 8px; }
+        .insight-block p:last-child { margin-bottom: 0; }
+        .insight-block strong { color: var(--text); }
+
+        /* Three-pole comparison */
+        .three-pole { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+        .pole {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 16px; text-align: center;
+        }
+        .pole-icon { font-size: 24px; margin-bottom: 6px; }
+        .pole-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .pole-model { font-size: 12px; color: var(--purple); font-weight: 600; margin-bottom: 6px; }
+        .pole-stat { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .pole-stat-label { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+        .pole-desc { font-size: 11px; color: var(--text-3); margin-top: 8px; line-height: 1.5; }
+
+        /* Speed ranking */
+        .speed-bar-wrap { margin-bottom: 8px; }
+        .speed-bar-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; }
+        .speed-bar-label span:last-child { color: var(--text-3); }
+        .speed-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .speed-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+        /* Prediction cards */
+        .pred-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .pred-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 14px;
+        }
+        .pred-vendor { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+        .pred-model { font-size: 12px; color: var(--purple); margin-bottom: 4px; }
+        .pred-detail { font-size: 11px; color: var(--text-3); line-height: 1.5; }
+        .pred-signal { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; margin-top: 6px; }
+        .pred-signal-strong { background: var(--green-bg); color: var(--green); }
+        .pred-signal-mid { background: var(--orange-bg); color: var(--orange); }
+        .pred-signal-weak { background: var(--red-bg); color: var(--red); }
+
+        /* Timeline */
+        .timeline { border-left: 2px solid var(--border); padding-left: 20px; margin-left: 8px; }
+        .timeline-item { position: relative; margin-bottom: 16px; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -26px; top: 4px;
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--purple-40); border: 2px solid var(--bg-page);
+        }
+        .timeline-date { font-size: 12px; color: var(--text-3); margin-bottom: 2px; }
+        .timeline-event { font-size: 13px; color: var(--text-2); }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 20px 24px; margin-top: 40px;
+            max-width: 960px; margin-left: auto; margin-right: auto;
+        }
+        .footer-copy { font-size: 12px; color: var(--text-3); line-height: 1.6; }
+        .footer-copy a { color: var(--purple-80); text-decoration: none; }
+        .footer-copy a:hover { text-decoration: underline; }
+
+        /* Section label for inline text */
+        .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--purple); margin-bottom: 12px; margin-top: 20px; }
+
+        /* Insight bullets */
+        .insight-bullets { margin-top: 12px; padding-left: 0; list-style: none; }
+        .insight-bullets li { font-size: 13px; color: var(--text-2); line-height: 1.6; padding: 4px 0; padding-left: 16px; position: relative; }
+        .insight-bullets li::before { content: '·'; position: absolute; left: 0; color: var(--purple); font-weight: 700; }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 16px; }
+            .hero-title { font-size: 22px; }
+            .hero-stats { gap: 20px; }
+            .hero-stat-num { font-size: 22px; }
+            .three-pole { grid-template-columns: 1fr; }
+            .pred-grid { grid-template-columns: 1fr; }
+            .cards { grid-template-columns: 1fr; }
+            .data-table { font-size: 11px; }
+            .data-table th, .data-table td { padding: 6px 8px; }
+        }
+        @media (max-width: 480px) {
+            .topbar-tagline { display: none; }
+            .mini-stats { grid-template-columns: 1fr; }
+        }
+    
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-left">
+        <a href="../index.html" class="topbar-brand">← AI 前沿动态</a>
+        <span class="topbar-tagline">AI Research</span>
+    </div>
+    <div class="topbar-right">
+        <a href="#signal" class="topbar-nav active">信号矩阵</a>
+        <a href="#models" class="topbar-nav">模型发布</a>
+        <a href="#evaluation" class="topbar-nav">能力评估</a>
+        <a href="#trends" class="topbar-nav">趋势深读</a>
+        <a href="#vendors" class="topbar-nav">厂商演进</a>
+        <a href="#iteration" class="topbar-nav">迭代速度</a>
+        <a href="#benchmark" class="topbar-nav">Benchmark</a>
+        <a href="#numbers" class="topbar-nav">关键数字</a>
+        <a href="#outlook" class="topbar-nav">前瞻</a>
+    </div>
+</div>
+<div class="container">
+
+<!-- Hero -->
+<div class="hero">
+    <div class="hero-date">2026.05.19 — 06.02</div>
+    <h1 class="hero-title">前沿模型周报</h1>
+    <p class="hero-sub">开源反超、数学破壁——三周 24 模型释放的拐点信号：前沿竞争从能力竞赛转向效率博弈。</p>
+    <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">24</div><div class="hero-stat-label">模型发布数</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">70.3</div><div class="hero-stat-label">TerminalBench 2.0 SOTA (Qwen3.7-Plus)</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">400</div><div class="hero-stat-label">API 速度 tok/s (GLM-5.1)</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">¥0.5</div><div class="hero-stat-label">最低 API ¥/M (SkyClaw)</div></div>
+    </div>
+</div>
+
+<!-- Signal Matrix -->
+<div class="section" id="signal">
+    <div class="section-head"><span class="sec-dot"></span><span class="sec-title">信号矩阵</span></div>
+    <div class="matrix-wrap">
+        <table class="matrix-table">
+            <thead><tr><th>主线</th><th>信号</th><th>强度</th></tr></thead>
+            <tbody>
+                <tr><td class="matrix-layer"><strong>Thread A：能力跃迁</strong></td>
+                <td class="matrix-signal">Qwen3.7-Max Code Arena #2 / Gemini 3.5 Flash I/O 编程旗舰 / AlphaProof Nexus 攻克 56 年 Erdős / OpenAI 通用模型解 80 年单位距离 / Qwen3.7-Plus TerminalBench 2.0 超头部 / NVIDIA Cosmos 3 物理AI世界模型 / Wall-OSS-0.5 开源 VLA 精密操作 39.6% / MiniMax M3 编程接近 Opus 4.7</td>
+                <td class="matrix-strength">★★★</td></tr>
+                <tr><td class="matrix-layer"><strong>Thread B：效率革命</strong></td>
+                <td class="matrix-signal">GLM-5.1-highspeed 400 tok/s / MiniCPM5-1B 端侧 1B 超越 2B / BitCPM-CANN 昇腾 1.58-bit / Nemotron Diffusion 4× Qwen3 / EAGLE 3.1 接受长度 2× / Mellum2 10B MoE IDE 编程 / MiMo-V2.5 KVCache 1/7 / SkyClaw 1M ctx ¥0.5</td>
+                <td class="matrix-strength">★★★</td></tr>
+                <tr><td class="matrix-layer"><strong>评估信号</strong></td>
+                <td class="matrix-signal">GPT-5.6 150 万 ctx 泄露 / Mythos 进入 Claude Code / SaaS-Bench Opus 4.7 仅 3.8% / Stanford ABA 25.7% 有缺陷 / CUA-Gym OSWorld 72.6%</td>
+                <td class="matrix-strength">★★☆</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="insight-block" style="margin-top:16px">
+        <p><strong>本周格局：</strong>模型层"天花板突破"与"效率革命"双线推进。能力跃迁侧，Google 终结 96 天沉寂在 I/O 放出 Gemini 3.5 Flash 和 Gemini Omni；阿里 Qwen3.7-Max 以 Code Arena 1541 分坐稳编程模型 #2；OpenAI 通用模型与 Google AlphaProof Nexus 在同一周分别攻克 80 年/56 年 Erdős 难题。<strong>6 月初更新：</strong>Qwen3.7-Plus TerminalBench 2.0 达 70.3 超越 Opus 4.6 Max；NVIDIA Cosmos 3 将视觉推理与动作生成闭环统一；MiniMax M3 编程接近 Opus 4.7；开源 VLA Wall-OSS-0.5 以 39.6% 领先 π0.5 近 10 倍。</p>
+    </div>
+</div>
+
+<!-- Model Releases -->
+<div class="section" id="models">
+    <div class="section-head"><span class="sec-dot"></span><span class="sec-title">模型发布</span></div>
+    <div class="cards">
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">编程 #2</span>
+            <div class="card-title">Qwen3.7-Max</div>
+            <div class="card-sub">Alibaba | 5/21 | 全球第二大 AI 编程模型</div>
+            <div class="card-body">Code Arena 盲测得分 <strong>1541</strong>，仅次于 Claude。35 小时自主运行 + 1000+ 工具调用。隐式缓存 5/25 上线。$2.50/$7.50 是阿里旗舰模型历史最高价，能力溢价获市场认可。Code Arena 盲测排除了 prompt engineering 优势，结果更接近真实能力。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">1541</div><div class="mini-stat-label">Code Arena</div></div><div class="mini-stat"><div class="mini-stat-val">1M</div><div class="mini-stat-label">上下文</div></div><div class="mini-stat"><div class="mini-stat-val">$2.5/$7.5</div><div class="mini-stat-label">API $/M</div></div><div class="mini-stat"><div class="mini-stat-val">35h</div><div class="mini-stat-label">自主运行</div></div></div>
+            <div class="card-links"><a href="https://venturebeat.com/technology/alibabas-proprietary-qwen3-7-max-can-run-for-35-hours-autonomously" target="_blank">VentureBeat</a> / <a href="https://openrouter.ai/qwen/qwen3.7-max" target="_blank">OpenRouter</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">速度纪录</span>
+            <div class="card-title">智谱 GLM-5.1 高速版</div>
+            <div class="card-sub">智谱 | 5/22 | 400 tok/s 全球最快 API</div>
+            <div class="card-body">输出速度 <strong>400 tokens/s</strong> 刷新全球纪录。自研 TileRT 推理引擎，首次在国产大模型中实现旗舰级能力与低延迟结合。打破"高速即轻量"定律。适用场景：AI 编程、实时语音、商业决策。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">400</div><div class="mini-stat-label">tok/s</div></div><div class="mini-stat"><div class="mini-stat-val">TileRT</div><div class="mini-stat-label">推理引擎</div></div><div class="mini-stat"><div class="mini-stat-val">旗舰级</div><div class="mini-stat-label">能力保留</div></div><div class="mini-stat"><div class="mini-stat-val">企业灰度</div><div class="mini-stat-label">可用性</div></div></div>
+            <div class="card-links"><a href="https://docs.bigmodel.cn/cn/guide/models/text/glm-5.1-highspeed" target="_blank">智谱文档</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">数学双线突破</span>
+            <div class="card-title">AI 数学推理双线突破</div>
+            <div class="card-sub">AlphaProof Nexus + OpenAI 通用模型 | 5/22-5/26</div>
+            <div class="card-body">同一周两条独立技术路线均取得历史性突破：<strong>Google AlphaProof Nexus</strong>（5/26）用 Lean 形式化验证 + Gemini 候选生成协同，解决 <strong>9 个 Erdős + 44 个 OEIS</strong> 猜想（含两道悬置 56 年难题），单题成本约几百美元。<strong>OpenAI 通用模型</strong>（5/22）攻克 80 年平面单位距离问题。这不再是"是否能解"的问题，而是"成本与规模"问题——AI 数学推理已从"做数学题"进入"发现新数学"阶段。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">9+80年</div><div class="mini-stat-label">Erdős 突破</div></div><div class="mini-stat"><div class="mini-stat-val">44</div><div class="mini-stat-label">OEIS 证明</div></div><div class="mini-stat"><div class="mini-stat-val">双线</div><div class="mini-stat-label">独立路线</div></div><div class="mini-stat"><div class="mini-stat-val">~$数百</div><div class="mini-stat-label">单题成本</div></div></div>
+            <div class="card-links"><a href="https://arxiv.org/abs/2605.22763v1" target="_blank">arXiv</a> / <a href="https://x.com/pushmeet" target="_blank">@pushmeet</a> / <a href="https://x.com/OpenAI/status/2057176201782075690" target="_blank">@OpenAI</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">I/O 旗舰</span>
+            <div class="card-title">Gemini 3.5 Flash</div>
+            <div class="card-sub">Google | 5/19 | I/O 2026 编程旗舰</div>
+            <div class="card-body">Terminal-Bench <strong>76.2%</strong>（超 GPT-5.4 的 75.1%），GDPval-AA Elo <strong>1656</strong>。较 Gemini 3.1 Pro 速度 <strong>4×</strong>。Google 终结 96 天沉寂。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">76.2%</div><div class="mini-stat-label">Terminal-Bench</div></div><div class="mini-stat"><div class="mini-stat-val">1656</div><div class="mini-stat-label">GDPval-AA</div></div><div class="mini-stat"><div class="mini-stat-val">4×</div><div class="mini-stat-label">速度提升</div></div><div class="mini-stat"><div class="mini-stat-val">$1.25/$5</div><div class="mini-stat-label">API $/M</div></div></div>
+            <div class="card-links"><a href="https://blog.google" target="_blank">Google Blog</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">世界模型</span>
+            <div class="card-title">Google Gemini Omni</div>
+            <div class="card-sub">Google | 5/19 | 多模态视频生成与物理世界模拟</div>
+            <div class="card-body">Google 正式进入物理世界模拟领域。支持多模态视频生成与编辑，定位为理解物理世界、生成和编辑视频的基础模型。与 Gemini 3.5 Flash 同日发布，Google I/O 三线齐发（Flash + Omni + 后续 Nexus）。与 NVIDIA Cosmos 3、Gemini Robotics 形成世界模型赛道三足鼎立。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">多模态</div><div class="mini-stat-label">视频生成+编辑</div></div><div class="mini-stat"><div class="mini-stat-val">世界模型</div><div class="mini-stat-label">定位</div></div><div class="mini-stat"><div class="mini-stat-val">物理仿真</div><div class="mini-stat-label">能力</div></div><div class="mini-stat"><div class="mini-stat-val">闭源</div><div class="mini-stat-label">许可证</div></div></div>
+            <div class="card-links"><a href="https://io.google" target="_blank">Google I/O</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">Agent 训练</span>
+            <div class="card-title">Cursor Composer 2.5</div>
+            <div class="card-sub">Cursor | 5/19 | Targeted RL + textual feedback</div>
+            <div class="card-body">Targeted RL with textual feedback 是 Agent-native 训练的关键创新。Colossus 2 百万级 H100，<strong>10× 计算量</strong>。学术对照：HINT-SD (2026) 也用 textual feedback，LOOP (2025) 类似 credit assignment，但 Cursor 首次在生产级规模验证。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">10×</div><div class="mini-stat-label">计算量</div></div><div class="mini-stat"><div class="mini-stat-val">K2.5</div><div class="mini-stat-label">基座</div></div><div class="mini-stat"><div class="mini-stat-val">Targeted RL</div><div class="mini-stat-label">训练方法</div></div><div class="mini-stat"><div class="mini-stat-val">长程</div><div class="mini-stat-label">Agent 任务</div></div></div>
+            <div class="card-links"><a href="https://cursor.com/cn/blog/composer-2-5" target="_blank">Cursor Blog</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">41天迭代</span>
+            <div class="card-title">Claude Opus 4.8</div>
+            <div class="card-sub">Anthropic | 5/29 | 漏检降4× + Dynamic Workflows</div>
+            <div class="card-body">距前代仅 <strong>41 天</strong>，代码缺陷漏检率降低 4 倍。Dynamic Workflows 支持数十到上百个并行子 Agent 交叉验证。Bun 团队 <strong>75 万行 Zig→Rust，11 天，99.8% 通过</strong>。LAB benchmark 首个突破 10%。编程模型的价值已从"写代码"升级为"重构整个代码库"。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">4×</div><div class="mini-stat-label">漏检降低</div></div><div class="mini-stat"><div class="mini-stat-val">41天</div><div class="mini-stat-label">迭代间隔</div></div><div class="mini-stat"><div class="mini-stat-val">75万行</div><div class="mini-stat-label">Zig→Rust</div></div><div class="mini-stat"><div class="mini-stat-val">>10%</div><div class="mini-stat-label">LAB 首破</div></div></div>
+            <div class="card-links"><a href="https://www.anthropic.com/news/claude-opus-4-8" target="_blank">Anthropic Blog</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">编程新标杆</span>
+            <div class="card-title">Qwen3.7-Plus</div>
+            <div class="card-sub">Alibaba | 6/2 | TerminalBench 2.0 超头部模型</div>
+            <div class="card-body">TerminalBench 2.0 达 <strong>70.3</strong>（超 Opus 4.6 Max 65.4、DeepSeek-V4-Pro 67.9）。多模态 Agent 全面领先：ScreenSpot Pro <strong>79.0</strong>、AndroidWorld <strong>81.0</strong>、MathVision <strong>90.3</strong>。在单一智能体循环中融合 GUI 操作 + CLI 工具调用 + 视觉推理。Qwen3.7 双旗舰：Max 专注 Code Arena 盲测，Plus 专注多模态 Agent 实操。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">70.3</div><div class="mini-stat-label">TerminalBench 2.0</div></div><div class="mini-stat"><div class="mini-stat-val">79.0</div><div class="mini-stat-label">ScreenSpot Pro</div></div><div class="mini-stat"><div class="mini-stat-val">81.0</div><div class="mini-stat-label">AndroidWorld</div></div><div class="mini-stat"><div class="mini-stat-val">90.3</div><div class="mini-stat-label">MathVision</div></div></div>
+            <div class="card-links"><a href="https://qwen.ai/blog?id=qwen3.7-plus" target="_blank">Qwen Blog</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">#MSA</span>
+            <div class="card-title">MiniMax M3</div>
+            <div class="card-sub">MiniMax | 6/2 | 编程接近 Opus 4.7，开源</div>
+            <div class="card-body">编程能力接近 <strong>Opus 4.7</strong>，#MSA 新注意力架构。支持文本+图像+视频多模态输入，AI Agent 复杂多步任务。开源编程赛道与 CodeQwen、DeepSeek V4 正面竞争。M2.7→M3 仅 51 天，迭代节奏加速。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">≈Opus 4.7</div><div class="mini-stat-label">编程能力</div></div><div class="mini-stat"><div class="mini-stat-val">多模态</div><div class="mini-stat-label">文本+图像+视频</div></div><div class="mini-stat"><div class="mini-stat-val">51天</div><div class="mini-stat-label">迭代间隔</div></div><div class="mini-stat"><div class="mini-stat-val">开源</div><div class="mini-stat-label">许可证</div></div></div>
+            <div class="card-links"><a href="https://www.theinformation.com/briefings/chinas-minimax-launches-new-model-open-source-ai-coding-battle-heats" target="_blank">The Information</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">物理AI</span>
+            <div class="card-title">NVIDIA Cosmos 3</div>
+            <div class="card-sub">NVIDIA | 6/2 | GTC Taipei 物理AI世界基础模型</div>
+            <div class="card-body">Mixture-of-Transformers 架构，5 模态统一（文本/视频/图像/环境音/动作）。推理块解析场景→生成块输出物理仿真，支持原生动作生成（关节角度、夹爪位置、轨迹点）。Agile Robots、GEAR 团队已在用。与 Gemini Omni、Gemini Robotics 三足鼎立。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">MoT</div><div class="mini-stat-label">架构</div></div><div class="mini-stat"><div class="mini-stat-val">5模态</div><div class="mini-stat-label">统一</div></div><div class="mini-stat"><div class="mini-stat-val">动作生成</div><div class="mini-stat-label">原生</div></div><div class="mini-stat"><div class="mini-stat-val">机器人</div><div class="mini-stat-label">已采用</div></div></div>
+            <div class="card-links"><a href="https://blogs.nvidia.com/blog/cosmos-3-physical-ai-open-world-foundation-model/" target="_blank">NVIDIA Blog</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-open">开源 VLA</span>
+            <div class="card-title">Wall-OSS-0.5</div>
+            <div class="card-sub">自变量机器人 | 5/29 | 精密操作领先 π0.5 近 10 倍</div>
+            <div class="card-body">RoboCaca 精密插入达 <strong>39.6%</strong>，领先闭源 π0.5 的 4.0% 近 10 倍。首个在精密操作上大幅超越闭源的开源 VLA。学术对照：π0（2024）奠定 VLA 范式、villa-X 零样本生成、GeoAware-VLA 几何先验、VLAPS+MCTS——开源 VLA 已从追随者变为领先者。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">39.6%</div><div class="mini-stat-label">精密插入</div></div><div class="mini-stat"><div class="mini-stat-val">10×</div><div class="mini-stat-label">vs π0.5</div></div><div class="mini-stat"><div class="mini-stat-val">VLA</div><div class="mini-stat-label">定位</div></div><div class="mini-stat"><div class="mini-stat-val">开源</div><div class="mini-stat-label">许可证</div></div></div>
+            <div class="card-links"><a href="https://huggingface.co" target="_blank">HuggingFace</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span>
+            <div class="card-title">xAI Grok V9-Medium</div>
+            <div class="card-sub">xAI | 5/27 | 1.5T 参数完成训练</div>
+            <div class="card-body"><strong>1.5T 参数</strong>，从 0.5T 跃升 3×。训练中加入大量 Cursor 编程数据，2-3 周内公开发布。结合 Cursor Composer 2.5、Qwen3.7-Max Code Arena #2、Claude Mythos SWE-Pro 77.8%，编程模型已成各家旗舰核心竞争维度。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">1.5T</div><div class="mini-stat-label">参数</div></div><div class="mini-stat"><div class="mini-stat-val">2-3周</div><div class="mini-stat-label">预计发布</div></div><div class="mini-stat"><div class="mini-stat-val">Cursor</div><div class="mini-stat-label">编程数据</div></div><div class="mini-stat"><div class="mini-stat-val">闭源</div><div class="mini-stat-label">许可证</div></div></div>
+            <div class="card-links"><a href="https://x.com/elonmusk/status/2058787384364265734" target="_blank">@elonmusk</a></div>
+        </div>
+
+        <div class="card">
+            <span class="card-tag card-tag-high">高置信度</span> <span class="card-tag card-tag-new">首个 DSA 多模态</span>
+            <div class="card-title">快手 Keye-VL-2.0</div>
+            <div class="card-sub">快手 | 5/27 | 首个 DSA 多模态，长视频 SOTA</div>
+            <div class="card-body"><strong>256K 上下文</strong>，首个将 DeepSeek Sparse Attention 落地多模态。VideoMME V2 64→512 帧 <strong>35.3%→42.4%</strong>（不降反升），LongVideoBench <strong>74.1</strong> 超 Qwen3-VL-235B。稀疏注意力不只是 LLM 加速技术，也能跨域到视觉理解——架构通用性获验证。</div>
+            <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">256K</div><div class="mini-stat-label">上下文</div></div><div class="mini-stat"><div class="mini-stat-val">42.4%</div><div class="mini-stat-label">VideoMME V2</div></div><div class="mini-stat"><div class="mini-stat-val">74.1</div><div class="mini-stat-label">LongVideoBench</div></div><div class="mini-stat"><div class="mini-stat-val">开源</div><div class="mini-stat-label">许可证</div></div></div>
+            <div class="card-links"><a href="https://huggingface.co/Kwai-Keye/Keye-VL-2.0-30B-A3B" target="_blank">HuggingFace</a></div>
+        </div>
+
+    </div>
+
+    <!-- Secondary models: grouped text summaries -->
+    <div class="insight-block" style="margin-top:20px">
+        <h3>效率革命：端侧 / 量化 / 推测解码 / 极低价</h3>
+        <ul class="insight-bullets">
+            <li><strong>面壁 MiniCPM5-1B</strong>（5/26）：AA-Index <strong>17.9</strong> 超越所有 2B 以下模型。基于自研 ForgeTrain AI 训练框架，较 Megatron +10% 训练速度。端侧 1B 超越 2B 打破参数量天花板。</li>
+            <li><strong>面壁 BitCPM-CANN</strong>（5/25）：全球首个昇腾全栈训练的 1.58-bit 开源大模型，内存降低 <strong>6×</strong>。国产 NPU 训练栈的里程碑。</li>
+            <li><strong>NVIDIA Nemotron-Diffusion</strong>（5/23）：AR + Diffusion + Self-Spec 三模统一架构，8B 吞吐推到 Qwen3-8B 的 <strong>4×</strong>（SPEED-Bench GB200）。</li>
+            <li><strong>EAGLE 3.1</strong>（5/28）：长上下文接受长度较 EAGLE 3 提升 <strong>2×</strong>。但批量推理时收益递减（并发 1 时 2.03× vs 并发 16 时 1.66×）——对低延迟单用户场景杠杆最大。</li>
+            <li><strong>昆仑万维 SkyClaw-v1.0</strong>（5/27）：Agent-native 模型，<strong>1M 上下文</strong>，价格仅 Sonnet 4.6 的 1/43~1/27（¥0.5/¥4）。限免试用中。</li>
+            <li><strong>阶跃星辰 Step-3.7-Flash</strong>（5/30）：<strong>198B/11B MoE</strong>，图像+视频多模态，登陆 OpenRouter。</li>
+            <li><strong>JetBrains Mellum2</strong>（6/2）：<strong>12B 稀疏 MoE</strong> 编程模型，IDE 原生集成。稀疏激活让 12B 在本地可接受范围运行。</li>
+            <li><strong>Xiaomi MiMo-V2.5</strong>（6/2）：Hybrid SWA 架构，70 层中 60 层 SWA，KVCache 降至 Full Attention 的 <strong>1/7</strong>。</li>
+        </ul>
+    </div>
+    <div class="insight-block">
+        <h3>垂直场景：翻译 / 教育 / 数字人 / 文生图 / 世界模型</h3>
+        <ul class="insight-bullets">
+            <li><strong>腾讯 Hy-MT2</strong>（5/21）：1.8B 登顶 HuggingFace #1。1.25-bit 量化后仅 <strong>440MB</strong>，可手机本地运行，33 种语言互译。</li>
+            <li><strong>网易有道"子曰4"</strong>（5/22）：<strong>27B</strong> 多模态全栈开源。中文数理 81.4%，思维链压缩 43.2%，3 秒语音克隆 14 语种。</li>
+            <li><strong>美团 LongCat-Video-Avatar-1.5</strong>（5/21）：DMD2 步蒸馏仅需 <strong>8 步</strong>推理。音频驱动数字人视频生成。</li>
+            <li><strong>Microsoft MAI-Image-2.5</strong>（5/28）：Arena 文生图排行榜 <strong>第 3 名</strong>。文本渲染、风格化插画和商业图像较上一代显著提升。Microsoft 同周自研编码模型预告 + 文生图升级，从依赖 OpenAI 转向双轨模式。</li>
+            <li><strong>Cohere Command A+</strong>（5/21）：<strong>218B/25B</strong> 激活参数 MoE，<strong>Apache 2.0</strong> 开源。当前最大开源 MoE 之一。</li>
+
+        </ul>
+    </div>
+</div>
+
+<!-- Evaluation -->
+<div class="section" id="evaluation">
+    <div class="section-head"><span class="sec-dot"></span><span class="sec-title">模型能力评估与部署预告</span></div>
+    <div class="cards">
+        <div class="card"><span class="card-tag card-tag-mid">中置信度</span>
+            <div class="card-title">GPT-5.6 曝下月发布：150 万 token 上下文</div>
+            <div class="card-sub">泄露信号 | 内部代号 iris-alpha</div>
+            <div class="card-body">150 万 token 上下文窗口，+43% vs GPT-5.5。Polymarket GPT-6 by Jun 30 跌至 45%。</div>
+        </div>
+
+        <div class="card"><span class="card-tag card-tag-high">高置信度</span>
+            <div class="card-title">SaaS-Bench：Opus 4.7 端到端仅 3.8%</div>
+            <div class="card-sub">106 任务 4 个通过 | benchmark 高估 10-20×</div>
+            <div class="card-body">当前最强 Claude Opus 4.7 在真实跨应用任务上端到端通过率仅 <strong>3.8%</strong>。检查点 43.9% → 端到端 3.8%，Agent benchmark 高估真实能力 10-20×。</div>
+        </div>
+        <div class="card"><span class="card-tag card-tag-high">高置信度</span>
+            <div class="card-title">Mythos 1 进入 Claude Code / Security</div>
+            <div class="card-sub">最强内部模型开始下沉生产</div>
+            <div class="card-body">Anthropic Mythos SWE-Pro 77.8% 远超所有可用模型。进入 Claude Code 和 Claude Security 产品线。Project Glasswing 护栏披露。</div>
+        </div>
+        <div class="card"><span class="card-tag card-tag-high">高置信度</span>
+            <div class="card-title">Stanford ABA：25.7% benchmark 有缺陷</div>
+            <div class="card-sub">arXiv:2605.26079 | 移除后模型排名重排</div>
+            <div class="card-body"><strong>25.7%</strong> AI benchmark 任务存在歧义/错误。移除后 SWE-Verified <strong>+9.9%</strong>、Terminal-Bench 2 <strong>+9.6%</strong>，模型排名变化。Benchmark 报错率已接近模型性能差距——当前所有"模型 X 比 Y 强 5%"的论断都需重新审视。</div>
+        </div>
+        <div class="card"><span class="card-tag card-tag-high">高置信度</span>
+            <div class="card-title">Qwen CUA-Gym：OSWorld 72.6%</div>
+            <div class="card-sub">arXiv:2605.25624 | Generator-Discriminator 32K 数据</div>
+            <div class="card-body">计算机使用 Agent 训练数据规模化生成。OSWorld-Verified A17B <strong>72.6%</strong>。Generator 生成任务 + Discriminator 过滤质量。</div>
+        </div>
+        <div class="card"><span class="card-tag card-tag-high">高置信度</span>
+            <div class="card-title">苹果定制 1.2T Google 模型重塑 Siri</div>
+            <div class="card-sub">WWDC 6/9-6/13 公开</div>
+            <div class="card-body">苹果据称使用定制版 <strong>1.2T 参数</strong> Google 模型重塑下一代 Siri。端云协同比例待 WWDC 揭晓。</div>
+        </div>
+    </div>
+</div>
+
+<!-- Trends -->
+<div class="section" id="trends">
+    <div class="section-head"><span class="sec-dot"></span><span class="sec-title">趋势深读</span></div>
+
+    <div class="insight-block">
+        <h3>趋势 A — Agent-native：从"通用 LLM + harness"到"专为 Agent 训练的模型"</h3>
+        <p>这是早就出现、本期变得明牌的趋势。核心信号：</p>
+        <ul class="insight-bullets">
+            <li><strong>Cursor Composer 2.5</strong>：targeted RL + textual feedback 训练，长程 Agent 任务大幅提升。学术对照：HINT-SD (2026) 也用 textual feedback 做指令跟随，LOOP (2025) 类似 credit assignment 机制——Cursor 首次在生产级规模验证</li>
+            <li><strong>Qwen3.7-Max</strong>：35 小时自主运行 + 1000+ 工具调用，专为长时任务设计</li>
+            <li><strong>Opus 4.8 Dynamic Workflows</strong>：数十到上百个并行子 Agent，Agent 基础设施化</li>
+            <li><strong>SkyClaw-v1.0</strong>：Agent-native 模型定位，1M 上下文极低价</li>
+            <li><strong>Qwen3.7-Plus</strong>：单一循环融合 GUI + CLI + 视觉推理，Agent-native 范式</li>
+            <li><strong>CUA-Gym</strong>：Generator-Discriminator 生成 Agent 训练数据，OSWorld 72.6%</li>
+        </ul>
+        <p><strong>判断：</strong>未来旗舰模型的差异化不再是"通用能力"，而是"Agent-native 设计"——长时运行、工具调用、并行协调。LiteCoder-Terminal (2026) 的研究表明 Terminal-Bench 与真实编程能力高度相关，是 Agent 时代核心 benchmark。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>趋势 B — 推理效率 6 条正交路径</h3>
+        <p>推理成本下降的主要来源不再是"模型变小"，而是 6 条路径组合：</p>
+        <ul class="insight-bullets">
+            <li><strong>路径 1 系统级推理</strong>：TileRT <strong>400 tok/s</strong>（GLM-5.1-highspeed）</li>
+            <li><strong>路径 2 推测解码</strong>：EAGLE 3.1 接受长度 <strong>2×</strong>。批量推理时收益递减——对低延迟单用户场景杠杆最大</li>
+            <li><strong>路径 3 架构创新</strong>：DSA / Sparse Attention / MoE。Keye-VL-2.0 首次 DSA 跨模态验证</li>
+            <li><strong>路径 4 极低比特量化</strong>：BitCPM <strong>1.58-bit</strong>，内存 <strong>6×</strong>。TogetherAI 2-bit KV 压缩</li>
+            <li><strong>路径 5 步蒸馏</strong>：LongCat DMD2 仅 <strong>8 步</strong>（扩散类专用）</li>
+            <li><strong>路径 6 Hybrid SWA</strong>：MiMo-V2.5 60 层 SWA，KVCache 降至 <strong>1/7</strong></li>
+        </ul>
+        <p><strong>理论上限估算：</strong>路径 1（400 tok/s）× 路径 2（推测解码 ~1.7× 实测加速）× 路径 4（量化允许更大 batch）三条叠加，理论上限远超单路径。但三者并非完全正交——EAGLE 的 draft 命中率受量化影响，batch 收益受推测解码约束。简单相乘（400 × 2 × 6 = 4800）是粗糙上界，实际需实测验证。</p>
+        <p><strong>判断：</strong>GPU 厂商护城河被削弱，vLLM/SGLang 战略地位上升。小厂仍能追（路径 4/5/6 可在开源模型上实现）。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>趋势 C — 物理世界模型 × VLA：被低估的下半年爆发点</h3>
+        <p>三条独立技术路线同步推进：</p>
+        <ul class="insight-bullets">
+            <li><strong>路线 1 World Model</strong>：Gemini Omni（5/19）、<strong>NVIDIA Cosmos 3</strong>（6/2）——Cosmos 3 将推理+生成+动作统一，Agile Robots 已在用</li>
+            <li><strong>路线 2 VLA</strong>：<strong>Wall-OSS-0.5</strong>（5/29）精密操作 <strong>39.6%</strong> vs π0.5 的 4.0%——开源已显著领先闭源。学术对照：π0（2024）奠定范式、villa-X（2025）零样本生成、GeoAware-VLA 几何先验 +35pp、VLAPS+MCTS +67pp</li>
+            <li><strong>路线 3 端云协同</strong>：苹果 1.2T Google 模型（WWDC 6 月）、子曰4 27B 端侧——消费级最大单一市场</li>
+        </ul>
+        <p><strong>深层判断：</strong>三条路线在 2026 下半年可能合流。Wall-OSS-0.5 的开源比闭源更值得关注，因为它降低了整个赛道的入场门槛。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>趋势 D — Benchmark 信任危机 5 个维度</h3>
+        <ul class="insight-bullets">
+            <li><strong>1. 任务质量缺陷</strong>：Stanford ABA 25.7% 有歧义/错误，移除后 SWE-Verified +9.9%、Terminal-Bench 2 +9.6%——模型排名重排</li>
+            <li><strong>2. benchmark vs 真实差距</strong>：SaaS-Bench Opus 4.7 检查点 43.9% → 端到端 3.8%——高估 10-20×</li>
+            <li><strong>3. 饱和</strong>：AIME 100%、GPQA 94.6% 前 4 差 &lt;0.5%——失去区分度</li>
+            <li><strong>4. 训练数据泄露</strong>：闭源模型可能见过题，LiveCodeBench v6 缓解但未根治</li>
+            <li><strong>5. 评测方法本身</strong>：Neel Nanda + DeepMind Gram 指出当前对齐评估只能 nudge 测出欺骗能力——安全 benchmark 系统性低估真实风险</li>
+        </ul>
+        <p><strong>判断：</strong>Benchmark 报错率（25.7%）已接近模型性能差距（5-10pp）——所有"模型 X 比 Y 强 5%"的论断都需重新审视。Benchmark v2 运动即将启动。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>趋势 E — 自进化工具链：四层级成熟度</h3>
+        <ul class="insight-bullets">
+            <li><strong>L1 工程自动化（生产级）</strong>：ForgeTrain（5/26）、CUA-Gym（5/27）、Composer 2.5（5/19）、HF Delta Weight Sync（5/28）——AI 写训练代码/生成训练数据</li>
+            <li><strong>L2 评测自审（早期工程化）</strong>：Stanford ABA（5/27）、MemTrace（5/29）、DeepMind Gram（5/30）——AI 审计 benchmark/发现自身错误</li>
+            <li><strong>L3 自我修正（能力初现）</strong>：Opus 4.8 主动标记（5/29）、DenoiseRL（5/29）、BES（5/30）——推理时主动标记错误/从错误学习</li>
+            <li><strong>L4 闭环自进化（未实现）</strong>：本期无证据</li>
+        </ul>
+        <p><strong>深层判断：</strong>已形成"AI-in-the-loop"训练循环——人类只需定义目标和审核结果。CSET Helen Toner 反驳是对的——目前所有"自进化"都是让 AI 加速人类研究员的某些环节，而非真正的 RSI。</p>
+        <p><strong>METR Ajeya Cotra 三阶段框架</strong>（5/29 TechCrunch）：Adequacy（无人也能产出研究）预计 1-2 年内 → Parity（AI 等同人类研究员）→ Supremacy（达到 parity 后 1 年内可能到来）。追踪指标：Karpathy Auto-Research、Richard Socher Recursive Superintelligence、Sara Hooker Adaption AutoScientist。</p>
+    </div>
+</div>
+
+<!-- Vendor Evolution -->
+<div class="section" id="vendors">
+    <div class="section-head"><span class="sec-dot"></span><span class="sec-title">厂商演进</span></div>
+
+    <div class="insight-block">
+        <h3>OpenAI</h3>
+        <table class="data-table"><thead><tr><th>模型</th><th>发布日期</th><th>间隔</th><th>SWE-Pro</th><th>TerminalBench</th><th>GPQA</th><th>定价 $/M</th><th>备注</th></tr></thead><tbody>
+        <tr><td>GPT-5.4</td><td>2026-03-05</td><td>—</td><td>57.7%</td><td>75.1%</td><td>92.8%</td><td>$2.5/$15</td><td></td></tr>
+        <tr><td>GPT-5.4 Pro</td><td>2026-03-05</td><td>0天</td><td>—</td><td>—</td><td>94.4%</td><td>$30/$180</td><td></td></tr>
+        <tr class="new-row"><td><strong>GPT-5.6</strong></td><td><strong>预计 6 月</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td><strong>1.5M ctx（泄露）</strong></td></tr>
+        </tbody></table>
+        <p>通用模型攻克 80 年 Erdős 平面单位距离问题。GPT-5.6 150 万上下文泄露。数学推理双线突破。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>Anthropic</h3>
+        <table class="data-table"><thead><tr><th>模型</th><th>发布日期</th><th>间隔</th><th>SWE-Pro</th><th>LAB</th><th>定价 $/M</th><th>备注</th></tr></thead><tbody>
+        <tr><td>Claude Opus 4.6</td><td>2026-02-05</td><td>—</td><td>53.4%</td><td>—</td><td>$5/$25</td><td></td></tr>
+        <tr><td>Claude Sonnet 4.6</td><td>2026-02-17</td><td>12天</td><td>—</td><td>—</td><td>$3/$15</td><td>性价比款</td></tr>
+        <tr><td>Claude Opus 4.7</td><td>2026-04-16</td><td>2月</td><td>64.3%</td><td>—</td><td>$5/$25</td><td></td></tr>
+        <tr class="new-row"><td><strong>Claude Opus 4.8</strong></td><td><strong>2026-05-29</strong></td><td><strong>41天</strong></td><td>—</td><td><strong>&gt;10% 首破</strong></td><td><strong>$5/$25</strong></td><td><strong>漏检降4×，Dynamic Workflows</strong></td></tr>
+        <tr><td>Claude Mythos</td><td>受限</td><td>—</td><td>77.8%</td><td>—</td><td>—</td><td>ASL-4，进入 Claude Code/Security</td></tr>
+        </tbody></table>
+        <p>41 天迭代 Opus 4.8，编程模型价值从"写代码"升级为"重构代码库"。Mythos SWE-Pro 77.8% 远超所有可用模型，开始下沉生产。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>Alibaba（阿里通义）</h3>
+        <table class="data-table"><thead><tr><th>模型</th><th>发布日期</th><th>间隔</th><th>Code Arena</th><th>TerminalBench</th><th>定价 $/M</th><th>备注</th></tr></thead><tbody>
+        <tr><td>Qwen3.6-Max</td><td>2026-04-20</td><td>—</td><td>—</td><td>65.4%</td><td>—</td><td>首个闭源</td></tr>
+        <tr class="new-row"><td><strong>Qwen3.7-Max</strong></td><td><strong>2026-05-21</strong></td><td><strong>31天</strong></td><td><strong>1541 (#2)</strong></td><td>—</td><td><strong>$2.50/$7.50</strong></td><td><strong>35h 自主，1M ctx</strong></td></tr>
+        <tr class="new-row"><td><strong>Qwen3.7-Plus</strong></td><td><strong>2026-06-02</strong></td><td><strong>12天</strong></td><td>—</td><td><strong>70.3</strong></td><td>未公开</td><td><strong>多模态 Agent 基座</strong></td></tr>
+        </tbody></table>
+        <p>12 天内双发双旗舰，迭代速度爆发。Max 专注 Code Arena 盲测，Plus 专注多模态 Agent 实操。Plus 首次在 TerminalBench 2.0 超越 Anthropic 头部模型。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>Google DeepMind</h3>
+        <table class="data-table"><thead><tr><th>模型</th><th>发布日期</th><th>间隔</th><th>TerminalBench</th><th>GPQA</th><th>定价 $/M</th><th>备注</th></tr></thead><tbody>
+        <tr><td>Gemini 3.1 Pro</td><td>2026-02-19</td><td>—</td><td>68.5%</td><td>94.3%</td><td>$2/$12</td><td></td></tr>
+        <tr class="new-row"><td><strong>Gemini 3.5 Flash</strong></td><td><strong>2026-05-19</strong></td><td><strong>89天</strong></td><td><strong>76.2%</strong></td><td>—</td><td><strong>$1.25/$5</strong></td><td><strong>I/O 编程旗舰，4× 速度</strong></td></tr>
+        <tr class="new-row"><td><strong>Gemini Omni</strong></td><td><strong>2026-05-19</strong></td><td><strong>同日</strong></td><td>—</td><td>—</td><td>—</td><td><strong>世界模型</strong></td></tr>
+        <tr class="new-row"><td><strong>AlphaProof Nexus</strong></td><td><strong>2026-05-26</strong></td><td><strong>7天</strong></td><td>—</td><td>—</td><td>—</td><td><strong>9 Erdős + 44 OEIS</strong></td></tr>
+        </tbody></table>
+        <p>终结 96 天沉寂，I/O 三线齐发。Gemini 3.5 Pro 6 月跟进。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>DeepSeek</h3>
+        <table class="data-table"><thead><tr><th>模型</th><th>发布日期</th><th>间隔</th><th>SWE-Verified</th><th>LiveCodeBench</th><th>定价 $/M</th><th>许可证</th></tr></thead><tbody>
+        <tr><td>V3.2</td><td>2025-09</td><td>—</td><td>—</td><td>—</td><td>$0.28/$0.42</td><td>MIT</td></tr>
+        <tr class="new-row"><td><strong>V4-Pro</strong></td><td><strong>2026-04-27</strong></td><td><strong>~4月</strong></td><td><strong>80.6%</strong></td><td><strong>93.5</strong></td><td><strong>$1.74/$3.48</strong></td><td><strong>MIT</strong></td></tr>
+        <tr class="new-row"><td><strong>V4-Flash</strong></td><td><strong>2026-04-27</strong></td><td><strong>0天</strong></td><td>79.0%</td><td>91.6</td><td><strong>$0.14/$0.28</strong></td><td><strong>MIT</strong></td></tr>
+        </tbody></table>
+        <p>唯一坚持完全开源的前沿实验室。DSA 架构将 KV cache 降至 V3.2 的 10%。LiveCodeBench 93.5 超越所有模型。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>MiniMax</h3>
+        <table class="data-table"><thead><tr><th>模型</th><th>发布日期</th><th>间隔</th><th>SWE-Pro</th><th>定价 $/M</th><th>备注</th></tr></thead><tbody>
+        <tr><td>MiniMax M2.5</td><td>2026-02</td><td>—</td><td>55.4%</td><td>$0.30/$1.20</td><td></td></tr>
+        <tr><td>MiniMax M2.7</td><td>2026-04-12</td><td>~2月</td><td>56.2%</td><td>$0.30/$1.20</td><td>编程性价比王者</td></tr>
+        <tr class="new-row"><td><strong>M3</strong></td><td><strong>2026-06-02</strong></td><td><strong>51天</strong></td><td>—</td><td>—</td><td><strong>#MSA 架构，编程≈Opus 4.7，开源</strong></td></tr>
+        </tbody></table>
+        <p>迭代速度从 14 个月大幅缩短。#MSA 新注意力架构。编程能力从性价比路线向头部逼近。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>智谱</h3>
+        <table class="data-table"><thead><tr><th>模型</th><th>发布日期</th><th>间隔</th><th>SWE-Verified</th><th>SWE-Pro</th><th>TerminalBench</th><th>定价 $/M</th><th>备注</th></tr></thead><tbody>
+        <tr><td>GLM-4.7</td><td>2025-10</td><td>—</td><td>—</td><td>—</td><td>—</td><td>推理特化</td></tr>
+        <tr><td>GLM-5</td><td>2026-02</td><td>4月</td><td>77.8%</td><td>—</td><td>—</td><td>$0.72/$2.30，开源</td></tr>
+        <tr><td>GLM-5.1</td><td>2026-03-27</td><td>~1月</td><td>—</td><td>58.4%</td><td>69.0%</td><td>$1.40/$4.40</td></tr>
+        <tr class="new-row"><td><strong>GLM-5.1-highspeed</strong></td><td><strong>2026-05-22</strong></td><td><strong>~2月</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td><strong>400 tok/s 全球纪录，TileRT</strong></td></tr>
+        </tbody></table>
+        <p>国产迭代最活跃。400 tok/s 打破"高速即轻量"定律，首次突破"低价换量"转向"性能溢价"。</p>
+    </div>
+
+    <div class="insight-block">
+        <h3>其他厂商汇总</h3>
+        <table class="data-table"><thead><tr><th>厂商</th><th>最近模型</th><th>发布日期</th><th>核心数据</th><th>距今天数</th></tr></thead><tbody>
+        <tr class="new-row"><td><strong>NVIDIA</strong></td><td><strong>Cosmos 3</strong>（物理AI）</td><td><strong>2026-06-02</strong></td><td><strong>5 模态统一 MoT</strong></td><td><strong>0天</strong></td></tr>
+        <tr class="new-row"><td><strong>JetBrains</strong></td><td><strong>Mellum2</strong>（12B MoE）</td><td><strong>2026-06-02</strong></td><td><strong>IDE 原生编程</strong></td><td><strong>0天</strong></td></tr>
+        <tr class="new-row"><td><strong>xAI</strong></td><td><strong>Grok V9-Medium</strong>（1.5T）</td><td><strong>2026-05-27</strong></td><td><strong>训练完成，2-3周发布</strong></td><td><strong>6天</strong></td></tr>
+        <tr class="new-row"><td><strong>快手</strong></td><td><strong>Keye-VL-2.0</strong>（DSA）</td><td><strong>2026-05-27</strong></td><td><strong>首个 DSA 多模态</strong></td><td><strong>6天</strong></td></tr>
+        <tr class="new-row"><td><strong>自变量机器人</strong></td><td><strong>Wall-OSS-0.5</strong>（VLA）</td><td><strong>2026-05-29</strong></td><td><strong>精密操作 39.6%</strong></td><td><strong>4天</strong></td></tr>
+        <tr class="new-row"><td><strong>阶跃星辰</strong></td><td><strong>Step-3.7-Flash</strong></td><td><strong>2026-05-30</strong></td><td><strong>198B/11B MoE</strong></td><td><strong>3天</strong></td></tr>
+        <tr><td>面壁智能</td><td>MiniCPM5-1B</td><td>2026-05-26</td><td>AA-Index 17.9</td><td>7天</td></tr>
+        <tr><td>面壁/华为</td><td>BitCPM-CANN</td><td>2026-05-25</td><td>昇腾 1.58-bit</td><td>8天</td></tr>
+        <tr><td>NVIDIA</td><td>Nemotron-Diffusion</td><td>2026-05-23</td><td>4× Qwen3-8B</td><td>10天</td></tr>
+        <tr><td>智谱</td><td>GLM-5.1-highspeed</td><td>2026-05-22</td><td>400 tok/s</td><td>11天</td></tr>
+        <tr><td>网易有道</td><td>子曰4</td><td>2026-05-22</td><td>27B 开源</td><td>11天</td></tr>
+        <tr><td>腾讯</td><td>Hy-MT2</td><td>2026-05-21</td><td>1.25-bit 440MB</td><td>12天</td></tr>
+        <tr><td>Cohere</td><td>Command A+</td><td>2026-05-21</td><td>218B Apache 2.0</td><td>12天</td></tr>
+        <tr><td>Cursor</td><td>Composer 2.5</td><td>2026-05-19</td><td>Kimi K2.5 基座</td><td>14天</td></tr>
+        <tr><td>昆仑万维</td><td>SkyClaw-v1.0</td><td>2026-05-27</td><td>1M ctx ¥0.5/¥4</td><td>6天</td></tr>
+        <tr><td>DeepSeek</td><td>V4-Pro/Flash</td><td>2026-04-27</td><td>LiveCodeBench 93.5</td><td>36天</td></tr>
+        <tr><td>Moonshot AI</td><td>Kimi K2.6</td><td>2026-04-20</td><td>300 子代理</td><td>43天</td></tr>
+        </tbody></table>
+    </div>
+</div>
+
+<!-- Iteration Speed -->
+<div class="section" id="iteration">
+    <div class="section-head"><span class="sec-dot"></span><span class="sec-title">迭代速度排名</span></div>
+    <div class="data-table-wrap">
+        <table class="data-table"><thead><tr><th>排名</th><th>厂商</th><th>模型数</th><th>平均间隔</th><th>最近间隔</th><th>趋势</th></tr></thead><tbody>
+        <tr><td>1</td><td class="model-name"><strong>OpenAI</strong></td><td>12</td><td>~2.2 月</td><td><strong>48天</strong></td><td class="up">加速 ↑</td></tr>
+        <tr><td>2</td><td class="model-name"><strong>xAI</strong></td><td>5</td><td>~3.0 月</td><td><strong>2月</strong></td><td class="up"><strong>显著加速 ↑↑</strong></td></tr>
+        <tr><td>3</td><td class="model-name"><strong>Google DeepMind</strong></td><td>8</td><td>~2.8 月</td><td><strong>8天（I/O）</strong></td><td class="up"><strong>爆发 ↑↑↑</strong></td></tr>
+        <tr><td>4</td><td class="model-name"><strong>Anthropic</strong></td><td>10</td><td>~2.8 月</td><td><strong>41天</strong></td><td class="up">加速 ↑</td></tr>
+        <tr><td>5</td><td class="model-name">Tencent</td><td>1</td><td>—</td><td>首发即开源</td><td>新入局</td></tr>
+        <tr><td>6</td><td class="model-name">DeepSeek</td><td>7</td><td>~4 月</td><td>~4月</td><td>回归</td></tr>
+        <tr><td>7</td><td class="model-name">Moonshot AI</td><td>4</td><td>~4 月</td><td>3月</td><td>加速 ↑</td></tr>
+        <tr><td>8</td><td class="model-name"><strong>Alibaba</strong></td><td>7</td><td>~3.0 月</td><td><strong>0天（Plus）</strong></td><td class="up"><strong>爆发 ↑↑↑</strong></td></tr>
+        <tr><td>9</td><td class="model-name"><strong>MiniMax</strong></td><td>4</td><td>~6.5 月</td><td><strong>0天（M3）</strong></td><td class="up">加速 ↑</td></tr>
+        <tr><td>10</td><td class="model-name">智谱</td><td>3</td><td>~6 月</td><td><strong>11天</strong></td><td class="up">爆发 ↑↑</td></tr>
+        </tbody></table>
+    </div>
+</div>
+
+<!-- Benchmark -->
+<div class="section" id="benchmark">
+    <div class="section-head"><span class="sec-dot"></span><span class="sec-title">Benchmark 横向对比</span></div>
+    <div class="bench-sub">编程能力</div>
+    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>模型</th><th>Code Arena</th><th>TerminalBench 2.0</th><th>SWE-Pro</th><th>LiveCodeBench</th></tr></thead><tbody>
+    <tr class="new-row"><td>Claude Mythos</td><td>—</td><td>82.0%</td><td><strong>77.8%</strong></td><td>—</td></tr>
+    <tr><td>Gemini 3.5 Flash</td><td>—</td><td><strong>76.2%</strong></td><td>—</td><td>—</td></tr>
+    <tr><td>GPT-5.4</td><td>—</td><td>75.1%</td><td>57.7%</td><td>—</td></tr>
+    <tr class="new-row"><td><strong>Qwen3.7-Plus</strong></td><td>—</td><td><strong>70.3</strong></td><td>57.6</td><td>—</td></tr>
+    <tr><td>GLM-5.1</td><td>—</td><td>69.0%</td><td>58.4%</td><td>—</td></tr>
+    <tr><td>DeepSeek V4-Pro</td><td>—</td><td>67.9%</td><td>55.4%</td><td><strong>93.5</strong></td></tr>
+    <tr class="new-row"><td><strong>Qwen3.7-Max</strong></td><td><strong>1541 (#2)</strong></td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>Kimi K2.6</td><td>—</td><td>66.7%</td><td>58.6%</td><td>89.6</td></tr>
+    <tr><td>Claude Opus 4.7</td><td>—</td><td>69.4%</td><td>64.3%</td><td>88.8</td></tr>
+    </tbody></table></div>
+
+    <div class="bench-sub">推理 & 知识</div>
+    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>模型</th><th>GPQA</th><th>ARC-AGI-3</th><th>数学推理</th></tr></thead><tbody>
+    <tr><td>Claude Mythos</td><td><strong>94.6%</strong></td><td>—</td><td>—</td></tr>
+    <tr><td>Gemini 3.1 Pro</td><td>94.3%</td><td>—</td><td>—</td></tr>
+    <tr><td>Claude Opus 4.7</td><td>94.2%</td><td>—</td><td>—</td></tr>
+    <tr><td>GPT-5.5</td><td>93.6%</td><td><strong>0.43%</strong></td><td>人类 100%，233x 差距</td></tr>
+    <tr><td>DeepSeek V4-Pro</td><td>90.1%</td><td>—</td><td>—</td></tr>
+    <tr class="new-row"><td>AlphaProof Nexus</td><td>—</td><td>—</td><td><strong>9 Erdős + 44 OEIS</strong></td></tr>
+    <tr class="new-row"><td>OpenAI 通用模型</td><td>—</td><td>—</td><td><strong>80 年单位距离</strong></td></tr>
+    </tbody></table></div>
+
+    <div class="bench-sub">突破方向检测</div>
+    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>维度</th><th>状态</th><th>领先者</th><th>分数</th><th>含义</th></tr></thead><tbody>
+    <tr><td>ARC-AGI-3</td><td><strong>通用推理缺口</strong></td><td>GPT-5.5</td><td><strong>0.43%</strong></td><td>人类 100%，233x 差距</td></tr>
+    <tr><td>Code Arena</td><td><strong>新战场</strong></td><td>Claude</td><td><strong>1541</strong></td><td>盲测编程能力新基准</td></tr>
+    <tr><td>API 速度</td><td><strong>新突破</strong></td><td>GLM-5.1</td><td><strong>400 tok/s</strong></td><td>打破"高速即轻量"定律</td></tr>
+    <tr><td>τ-voice</td><td><strong>新战场</strong></td><td>Grok Voice</td><td><strong>67.3%</strong></td><td>语音 Agent 首个标准 benchmark</td></tr>
+    <tr><td>SWE-Pro</td><td>分化加剧</td><td>Claude Mythos</td><td><strong>77.8%</strong></td><td>前 2 差 13.5%</td></tr>
+    <tr><td>GPQA</td><td>已饱和</td><td>Mythos</td><td>94.6%</td><td>前 4 差 &lt;0.5%</td></tr>
+    <tr><td>AIME</td><td>已饱和</td><td>多模型</td><td>100%</td><td>完全失去区分度</td></tr>
+    </tbody></table></div>
+</div>
+
+<!-- Key Numbers -->
+<div class="section" id="numbers">
+    <div class="section-head"><span class="sec-dot"></span><span class="sec-title">本周关键数字</span></div>
+    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>指标</th><th>数值</th><th>来源</th></tr></thead><tbody>
+    <tr><td class="model-name bold">Qwen3.7-Max Code Arena</td><td><strong>1541</strong>（全球第二）</td><td>alibabacloud</td></tr>
+    <tr><td class="model-name">Qwen3.7-Max 上下文</td><td>1M tokens</td><td>OpenRouter</td></tr>
+    <tr><td class="model-name">Qwen3.7-Max 自主可运行</td><td>35 小时 + 1000+ 工具调用</td><td>VentureBeat</td></tr>
+    <tr><td class="model-name bold">GLM-5.1-highspeed 速度</td><td class="best">400 tok/s（全球最快）</td><td>智谱</td></tr>
+    <tr><td class="model-name bold">MiniCPM5-1B AA-Index</td><td><strong>17.9</strong>（超所有 2B 以下）</td><td>机器之心</td></tr>
+    <tr><td class="model-name">BitCPM-CANN 内存降低</td><td><strong>6×</strong>（vs BF16）</td><td>Rohan Paul</td></tr>
+    <tr><td class="model-name bold">AlphaProof Nexus Erdős</td><td><strong>9/353 解决 + 44/492 证明</strong></td><td>@pushmeet</td></tr>
+    <tr><td class="model-name">AlphaProof 单题成本</td><td>约几百美元</td><td>arXiv</td></tr>
+    <tr><td class="model-name bold">OpenAI 通用模型 Erdős</td><td>80 年开放问题首获突破</td><td>@OpenAI</td></tr>
+    <tr><td class="model-name bold">Gemini 3.5 Flash TerminalBench</td><td><strong>76.2%</strong>（超 GPT-5.4）</td><td>Google Blog</td></tr>
+    <tr><td class="model-name">Gemini 3.5 Flash GDPval-AA</td><td>Elo <strong>1656</strong></td><td>Google Blog</td></tr>
+    <tr><td class="model-name">Gemini 3.5 Flash 速度</td><td>较 3.1 Pro <strong>4×</strong></td><td>Google I/O</td></tr>
+    <tr><td class="model-name bold">Tencent Hy-MT2</td><td>1.8B 登顶 HF #1</td><td>Tencent</td></tr>
+    <tr><td class="model-name">Hy-MT2 量化后大小</td><td><strong>440MB</strong>（1.25-bit）</td><td>Medium</td></tr>
+    <tr><td class="model-name bold">Cohere Command A+</td><td><strong>218B / 25B 激活</strong></td><td>Cohere</td></tr>
+    <tr><td class="model-name bold">NVIDIA Nemotron-Diffusion</td><td>8B 吞吐 <strong>4× Qwen3-8B</strong></td><td>HuggingFace</td></tr>
+    <tr><td class="model-name">子曰4 多模态</td><td><strong>27B</strong>，中文数理 81.4%</td><td>IT之家</td></tr>
+    <tr><td class="model-name">子曰4 思维链压缩</td><td>输出长度压缩 <strong>43.2%</strong></td><td>IT之家</td></tr>
+    <tr><td class="model-name">子曰4 语音克隆</td><td><strong>3 秒</strong>，14 语种，>97%</td><td>IT之家</td></tr>
+    <tr><td class="model-name">LongCat 推理步数</td><td>仅需 <strong>8 步</strong>（DMD2）</td><td>HuggingFace</td></tr>
+    <tr><td class="model-name bold">Grok V9-Medium</td><td><strong>1.5T 参数</strong>，2-3 周内发布</td><td>@elonmusk</td></tr>
+    <tr><td class="model-name bold">Keye-VL-2.0</td><td><strong>256K ctx + 首个 DSA 多模态</strong></td><td>HuggingFace</td></tr>
+    <tr><td class="model-name">Keye-VL-2.0 VideoMME V2</td><td>64→512 帧：35.3%→<strong>42.4%</strong></td><td>量子位</td></tr>
+    <tr><td class="model-name">Keye-VL-2.0 LongVideoBench</td><td><strong>74.1</strong>（超 Qwen3-VL-235B）</td><td>HuggingFace</td></tr>
+    <tr><td class="model-name bold">SkyClaw-v1.0</td><td><strong>1M ctx</strong>，Sonnet 4.6 的 1/43~1/27</td><td>新智元</td></tr>
+    <tr><td class="model-name">Cursor Composer 2.5 算力</td><td>Colossus 2 百万级 H100，<strong>10×</strong></td><td>Cursor Blog</td></tr>
+    <tr><td class="model-name bold">GPT-5.6 上下文</td><td><strong>150 万 tokens</strong>（泄露）</td><td>新智元</td></tr>
+    <tr><td class="model-name bold">SaaS-Bench Opus 4.7</td><td>端到端通过率 <strong>3.8%</strong></td><td>UniPat AI</td></tr>
+    <tr><td class="model-name bold">Stanford ABA</td><td><strong>25.7%</strong> 任务有缺陷</td><td>arXiv</td></tr>
+    <tr><td class="model-name">ABA 移除后</td><td>SWE-Verified <strong>+9.9%</strong>、Terminal-Bench 2 <strong>+9.6%</strong></td><td>arXiv</td></tr>
+    <tr><td class="model-name bold">Qwen CUA-Gym</td><td>OSWorld A17B <strong>72.6%</strong>，32K 数据</td><td>arXiv</td></tr>
+    <tr><td class="model-name">Mythos 1</td><td>进入 Claude Code / Security</td><td>TestingCatalog</td></tr>
+    <tr><td class="model-name bold">Claude Opus 4.8</td><td><strong>漏检降 4×</strong>，LAB >10%，41 天迭代</td><td>Anthropic</td></tr>
+    <tr><td class="model-name">Opus 4.8 Dynamic Workflows</td><td><strong>数十到上百并行子 Agent</strong></td><td>Anthropic</td></tr>
+    <tr><td class="model-name">Bun 团队实战</td><td><strong>75 万行 Zig→Rust，11 天，99.8%</strong></td><td>Anthropic</td></tr>
+    <tr><td class="model-name bold">Step-3.7-Flash</td><td><strong>198B / 11B MoE</strong>，多模态</td><td>OpenRouter</td></tr>
+    <tr><td class="model-name">MAI-Image-2.5 Arena</td><td>文生图 <strong>第 3 名</strong></td><td>Microsoft AI</td></tr>
+    <tr><td class="model-name">EAGLE 3.1 接受长度</td><td>较 EAGLE 3 <strong>2×</strong></td><td>vLLM Blog</td></tr>
+    <tr><td class="model-name bold">Qwen3.7-Plus</td><td>TerminalBench 2.0 <strong>70.3</strong>（超 Opus 4.6 Max）</td><td>Qwen Blog</td></tr>
+    <tr><td class="model-name">Qwen3.7-Plus 多模态</td><td>ScreenSpot <strong>79.0</strong>、AndroidWorld <strong>81.0</strong>、MathVision <strong>90.3</strong></td><td>Qwen Blog</td></tr>
+    <tr><td class="model-name bold">MiniMax M3</td><td>编程接近 <strong>Opus 4.7</strong>，#MSA</td><td>The Information</td></tr>
+    <tr><td class="model-name bold">NVIDIA Cosmos 3</td><td>MoT，5 模态统一</td><td>NVIDIA Blog</td></tr>
+    <tr><td class="model-name bold">JetBrains Mellum2</td><td><strong>12B</strong> MoE，IDE 原生</td><td>HuggingFace</td></tr>
+    <tr><td class="model-name bold">Wall-OSS-0.5</td><td>RoboCaca <strong>39.6%</strong>（π0.5 仅 4.0%）</td><td>自变量机器人</td></tr>
+    <tr><td class="model-name bold">MiMo-V2.5</td><td>Hybrid SWA KVCache <strong>1/7</strong></td><td>Xiaomi</td></tr>
+    </tbody></table></div>
+</div>
+
+<!-- Pricing -->
+<div class="section" id="pricing">
+    <div class="section-head"><span class="sec-dot"></span><span class="sec-title">API 定价对比</span></div>
+    <div class="data-table-wrap">
+        <table class="data-table"><thead><tr><th>模型</th><th>Input $/M</th><th>Output $/M</th><th>上下文</th><th>许可证</th><th>备注</th></tr></thead><tbody>
+        <tr class="new-row"><td><strong>DeepSeek V4-Flash</strong></td><td><strong>$0.14</strong></td><td><strong>$0.28</strong></td><td>1M</td><td><span class="tag-mit">MIT</span></td><td>最低价</td></tr>
+        <tr><td>MiniMax 2.7</td><td>$0.30</td><td>$1.20</td><td>1M</td><td>闭源</td><td>—</td></tr>
+        <tr><td><strong>SkyClaw-v1.0</strong></td><td><strong>¥0.5</strong></td><td><strong>¥4</strong></td><td>1M</td><td>闭源</td><td>Agent 原生</td></tr>
+        <tr><td>Grok 4.3</td><td>$1.25</td><td>$2.50</td><td>1M</td><td>闭源</td><td>—</td></tr>
+        <tr><td>DeepSeek V4-Pro</td><td>$1.74</td><td>$3.48</td><td>1M</td><td><span class="tag-mit">MIT</span></td><td>—</td></tr>
+        <tr class="new-row"><td>Gemini 3.5 Flash</td><td>$1.25</td><td>$5.00</td><td>1M</td><td>闭源</td><td><strong>新发布</strong></td></tr>
+        <tr class="new-row"><td><strong>Qwen3.7-Max</strong></td><td><strong>$2.50</strong></td><td><strong>$7.50</strong></td><td><strong>1M</strong></td><td>闭源</td><td><strong>新发布</strong></td></tr>
+        <tr><td>Gemini 3.1 Pro</td><td>$2.00</td><td>$12.00</td><td>10M</td><td>闭源</td><td>—</td></tr>
+        <tr><td>GPT-5.4</td><td>$2.50</td><td>$15.00</td><td>1M</td><td>闭源</td><td>—</td></tr>
+        <tr><td>Claude Sonnet 4.6</td><td>$3.00</td><td>$15.00</td><td>200K</td><td>闭源</td><td>—</td></tr>
+        <tr><td>GPT-5.5</td><td>$5.00</td><td>$30.00</td><td>1M</td><td>闭源</td><td>—</td></tr>
+        <tr><td>Claude Opus 4.7</td><td>$5.00</td><td>$25.00</td><td>200K</td><td>闭源</td><td>—</td></tr>
+        <tr><td>GPT-5.5 Pro</td><td>$30.00</td><td>$180.00</td><td>1M</td><td>闭源</td><td>—</td></tr>
+        </tbody></table>
+    </div>
+</div>
+
+<!-- Outlook -->
+<div class="section" id="outlook">
+    <div class="section-head"><span class="sec-dot"></span><span class="sec-title">前瞻预判</span></div>
+
+    <div class="insight-block">
+        <h3>近期可能发布</h3>
+        <table class="data-table"><thead><tr><th>厂商</th><th>预期模型</th><th>信号强度</th><th>预计时间</th></tr></thead><tbody>
+        <tr><td>Google DeepMind</td><td>Gemini 3.5 Pro</td><td>高</td><td><strong>6 月</strong></td></tr>
+        <tr><td>OpenAI</td><td>GPT-5.6（iris-alpha）</td><td>中</td><td><strong>6 月</strong></td></tr>
+        <tr><td>Anthropic</td><td>Sonnet 4.8（代号 Conway）</td><td>中</td><td><strong>6 月中下旬</strong></td></tr>
+        <tr><td>Anthropic</td><td>Mythos 新能力</td><td>高</td><td><strong>数周内</strong></td></tr>
+        <tr><td><strong>xAI</strong></td><td><strong>Grok V9-Medium 1.5T</strong></td><td><strong>高</strong></td><td><strong>2-3 周内</strong></td></tr>
+        <tr><td>Microsoft</td><td>自研编码模型</td><td>中</td><td><strong>Build 大会</strong></td></tr>
+        </tbody></table>
+    </div>
+
+    <div class="insight-block">
+        <h3>非共识判断</h3>
+        <ul class="insight-bullets">
+            <li><strong>API 速度竞争正在成为新战场</strong>：GLM-5.1-highspeed 400 tok/s 打破"高速模型即轻量模型"认知，可能引发新一轮 API 速度竞赛</li>
+            <li><strong>Code Arena 盲测是比 SWE-Pro 更接近真实编程的信号</strong>：Qwen3.7-Max 1541 排名 #2（仅次于 Claude），盲测消除了 prompt engineering 优势。但 Code Arena 上 GPT-5.5 的具体排名尚未公开，"超越 GPT-5.5"的判断需要第三方验证</li>
+            <li><strong>Google I/O 一箭双雕</strong>：Flash + Omni + 后续 Nexus，展示模型层多线推进。Gemini 3.5 Pro 6 月发布后可能改写编程能力排行榜</li>
+            <li><strong>数学推理出现双线突破</strong>：OpenAI 通用模型攻克 80 年 + AlphaProof Nexus 解决 56 年难题。不再是"是否能解"的问题，而是"成本与规模"问题</li>
+            <li><strong>Benchmark 进入"自审"阶段</strong>：25.7% 有缺陷 + SaaS-Bench 仅 3.8%，可信度被系统性重估。Benchmark v2 运动即将启动</li>
+            <li><strong>编程模型已成各家旗舰核心竞争维度</strong>：Grok V9-Medium 加码 + Qwen3.7-Plus 超头部 + Cursor Composer 2.5 + MiniMax M3</li>
+            <li><strong>DSA 跨模态成功</strong>：Keye-VL-2.0 首次将稀疏注意力落地多模态，512 帧仍维持长上下文性能——架构通用性获验证</li>
+            <li><strong>Opus 4.8 + Dynamic Workflows = Agent 基础设施化</strong>：Bun 75 万行 Zig→Rust 实战证明，编程模型价值从"写代码"升级为"重构整个代码库"</li>
+            <li><strong>Qwen3.7-Plus 首次超越 Anthropic 头部模型</strong>：70.3 > Opus 4.6 Max 65.4，结合 Code Arena #2，阿里从追赶者变为并跑者</li>
+            <li><strong>开源 VLA 开始超越闭源</strong>：Wall-OSS-0.5 39.6% vs π0.5 的 4.0%，近 10 倍差距，打破"闭源 VLA 碾压开源"假设</li>
+        </ul>
+    </div>
+
+    <div class="insight-block">
+        <h3>下周关注</h3>
+        <ul class="insight-bullets">
+            <li>Gemini 3.5 Pro 发布时间：Flash 已 GA，更强的 Pro 版本何时跟进</li>
+            <li>GPT-5.6 动向：150 万 token 上下文是否得到官方确认</li>
+            <li>Anthropic Sonnet 4.8（代号 Conway）：视觉 >98%，新增 X-high 推理层级</li>
+            <li>Grok V9-Medium 2-3 周后正式发布：是否能与 Qwen3.7-Max / Claude 正面较量</li>
+            <li>Mythos 1 灰度进度：Claude Code / Claude Security 集成后是否进一步开放</li>
+            <li>MiniMax M3 → <strong>已发布</strong>（6/2），后续追踪 #MSA 架构细节和 benchmark 完整数据</li>
+            <li>Microsoft Build 自研编码模型：强化 GitHub Copilot 竞争力</li>
+            <li>Qwen3.7-Plus 后续：TerminalBench 2.0 新标杆能否在 Code Arena 盲测中同步验证</li>
+            <li>NVIDIA Cosmos 3 生态：开源程度、机器人团队接入进展、与 Gemini Robotics 对照</li>
+            <li>Apple WWDC 6/9-6/13：1.2T Google 模型端云比例揭晓</li>
+        </ul>
+    </div>
+</div>
+
+</div>
+
+<div class="footer">
+    <div class="footer-copy">
+        数据来源：阿里 Qwen / Cursor Blog / 面壁智能 / 智谱文档 / Hugging Face / Google Blog / @pushmeet / Cohere / NVIDIA / @elonmusk / Tencent Hunyuan / arXiv / 机器之心 / 量子位 / 新智元 / TestingCatalog / UniPat AI / VentureBeat / The Information / Qwen Blog / NVIDIA Blog / Xiaomi<br>
+        报告范围：仅聚焦模型本身的发布、能力、benchmark、推理效率、部署预告。融资、人事、算力基础设施、产品化等非模型信号请参阅日度 AI 简报。<br>
+        生成时间：2026-06-02 · <a href="topic-frontier-models.html">← 专题集合</a>
+    </div>
+</div>
+
+<script>
+// Smooth scroll for nav
+document.querySelectorAll('.topbar-nav').forEach(a => {
+    a.addEventListener('click', e => {
+        e.preventDefault();
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+
+// Active nav highlight on scroll
+const sections = ['signal','models','evaluation','trends','vendors','iteration','benchmark','numbers','pricing','outlook'];
+const navLinks = document.querySelectorAll('.topbar-nav');
+window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top < 120) current = id;
+    });
+    navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+});
+</script>
+
+</body>
+</html>
