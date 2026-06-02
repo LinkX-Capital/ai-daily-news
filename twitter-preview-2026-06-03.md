@@ -13,24 +13,26 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **Legora将法律解读工作带入新时代**
-   @claudeai
-2. **女儿眼中的超智能：人类之于超智能如同狗之于人类**
-   @denny_zhou
-3. **与Ed Chi和Llion在越南和新加坡相聚**
-   @yitayml
-4. **Crafter和CraftEditor：科学图表生成与编辑工具**
-   @theturingpost
-5. **Perplexity AI推出Search as Code（SAC）架构**
-   @theturingpost
-6. **Arcee：值得更多关注的美国开源AI模型公司**
-   @theturingpost
-7. **OpenClaw登陆Microsoft平台**
-   @theturingpost
-8. **Microsoft Build硬件与基础设施亮点**
-   @theturingpost
-9. **令人鼓舞的格言：全力以赴做好手头之事**
-   @sama
+1. **MiniCPM-o 4.5 合并入 vLLM-Omni：9B 端到端全模态模型，支持文本/图像/音频/视频输入及文本+语音输出**
+   @vllm_project
+2. **JetBrains 开源 Mellum2-12B-A2.5B-Thinking：12B MoE 模型仅激活 2.5B 参数，同时支持自然语言和代码任务**
+   @vllm_project
+3. **Mustafa 疑似泄露 Mythos 的 FLOP 算力数据，引发社区讨论**
+   @swyx
+4. **OpenClaw 集成可观测性与可验证工作区功能**
+   @steipete
+5. **OpenClaw 与微软达成合作，推动企业级应用落地**
+   @steipete
+6. **OpenAI 发布 Codex 公开股票投资插件**
+   @openai
+7. **OpenAI 发布 Codex 销售插件，助力销售准备与决策**
+   @openai
+8. **OpenAI 发布 Codex 产品设计插件，可将创意转化为实时原型**
+   @openai
+9. **OpenAI 发布 Codex 创意制作插件，让简报焕发生命力**
+   @openai
+10. **OpenAI 发布 Codex 数据分析插件，将数据转化为答案**
+   @openai
 
 ---
 
@@ -107,16 +109,16 @@
 
 ### @semianalysis_ | Infra
 
-- R to @SemiAnalysis_: Cerebras has an escape: wafer-on-wafer bonding a second wafer to add SRAM or compute. They're seriously exploring it, already sho...
-  [查看](https://x.com/SemiAnalysis_/status/2061915957337923748#m)
-- R to @SemiAnalysis_: Here's the trap. When the chip is the whole wafer, you can't shrink your way to more SRAM and you can't make the wafer bigger. Th...
-  [查看](https://x.com/SemiAnalysis_/status/2061915956373283081#m)
-- R to @SemiAnalysis_: Why the need for another wafer? SRAM has stopped scaling. That's a problem when SRAM is the whole pitch and 50% of the wafer. It'...
-  [查看](https://x.com/SemiAnalysis_/status/2061915954913640767#m)
 - Cerebras did what the industry calls impossible: turned an entire 46,225mm² wafer into one chip. Defects on silicon that big are inevitable, so they b...
   [查看](https://x.com/SemiAnalysis_/status/2061915952711639361#m)
+- R to @SemiAnalysis_: Here's the trap. When the chip is the whole wafer, you can't shrink your way to more SRAM and you can't make the wafer bigger. Th...
+  [查看](https://x.com/SemiAnalysis_/status/2061915956373283081#m)
+- R to @SemiAnalysis_: Cerebras has an escape: wafer-on-wafer bonding a second wafer to add SRAM or compute. They're seriously exploring it, already sho...
+  [查看](https://x.com/SemiAnalysis_/status/2061915957337923748#m)
 - Major hyperscalers introduce a variety of GPU, XPU, and CPU chips, leading to more diverse server rack and board designs. To meet different customer n...
   [查看](https://x.com/SemiAnalysis_/status/2061855674561110121#m)
+- The recent Ornn H100 index drop to $2.63 (-7.72%) is confusing. But mostly because it's a misleading index. Our H100 hourly has been in a $2.70–$3.01 ...
+  [查看](https://x.com/SemiAnalysis_/status/2061795397698277485#m)
 
 ### @theturingpost | Research
 
