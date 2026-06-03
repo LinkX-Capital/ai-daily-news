@@ -4,13 +4,13 @@
 
 ---
 
-## 要点汇总
+## 要点速览
 
 - 模型前沿：Together AI解析MiniMax-M3高效推理方案：支持百万Token上下文
-- 产业动态：OpenAI发布Codex六款职业插件：数据分析师、创意制作、销售等; NVIDIA解析金融机构的交易基础模型趋势; Microsoft Build大会发布自研AI模型、OpenClaw风格Agent及Scout个人助手; Salesforce收购Contentful加码AI内容管理; Anthropic扩展Glasswing安全项目至15国150个组织
-- 算力追踪：SK海力士计划五年内将内存芯片产能翻倍应对AI需求; Alphabet计划融资800亿美元用于AI基础设施; OpenAI拟公开跨芯片推理工具削弱NVIDIA软件优势
-- 初创&融资：AULONG获500万美元A轮融资：金融AI Agent基础设施; ZeroDrift获1000万美元融资：AI模型合规服务; 橡木果机器人走出隐身：9名清华博士创办，主打零数据本能驱动
-- 研究关注：UniLab：CPU模拟+GPU训练异构架构，训练效率提升3-10倍; τ₀-WM：统一视频-动作世界模型，27,300小时真实机器人数据; DataMaster：自主数据工程Agent，MLE-Bench奖牌率提升32%; TASTE：反转任务构建流程，Agent基准难度翻倍; Demo2Reward：VLM奖励模型的测试时Prompt优化; 具身认知：Sutton等论证感知应是主动行动而非被动处理
+- 产业动态：OpenAI发布Codex六款职业插件：数据分析师、创意制作、销售等; Microsoft Build大会：发布自研AI模型、OpenClaw风格Agent及Scout个人助手; Anthropic扩展Glasswing安全项目至15国150个组织; NVIDIA解析金融机构的交易基础模型趋势; Salesforce收购Contentful加码AI内容管理
+- 算力追踪：Alphabet计划融资800亿美元用于AI基础设施; OpenAI拟公开跨芯片推理工具：削弱NVIDIA软件优势; SK海力士计划五年内将内存芯片产能翻倍应对AI需求
+- 初创&融资：ZeroDrift获1000万美元融资：AI模型合规服务; AULONG获500万美元A轮融资：金融AI Agent基础设施; 橡木果机器人走出隐身：9名清华博士创办，主打零数据本能驱动
+- 研究关注：UniLab：CPU模拟+GPU训练异构架构，机器人RL训练效率提升3-10倍; τ₀-WM：统一视频-动作世界模型，27,300小时真实机器人数据训练; DataMaster：自主数据工程Agent，MLE-Bench奖牌率提升32%; TASTE：反转任务构建流程，Agent基准难度翻倍; Demo2Reward：VLM奖励模型的测试时Prompt优化; 具身认知：Sutton等论证感知应是主动行动而非被动处理
 - X讨论：Google DeepMind开放Co-Scientist：AI科研助手面向个人研究者; SemiAnalysis分析：Cerebras晶圆级芯片的扩张困境与出路; 超大规模厂商密集推出GPU/XPU/CPU芯片，服务器设计趋向多元化
 
 ---
