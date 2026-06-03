@@ -28,8 +28,8 @@
   > 💡 Qwen3.7-Plus在多模态Agent能力上实现系统性突破，GUI操作和视觉编程benchmark全面领先同级别模型。
    - 来源: [Qwen Blog](https://qwen.ai/blog?id=qwen3.7-plus) | [@Alibaba_Qwen](https://x.com/Alibaba_Qwen/status/2061506644367069392#m)
 
-**MiniMax发布M3模型：开源编程战场再加一员**
-- 中国AI公司MiniMax发布M3大语言模型，编程能力接近**Anthropic Opus 4.7**水平。该模型特别适合编程和AI agent的复杂多步任务，支持文本、图像和视频多模态输入。MiniMax称M3可与头部闭源编程模型竞争，推动开源编程赛道进一步升温。
+**MiniMax发布M3模型：编程能力接近Opus 4.7**
+- MiniMax发布M3大语言模型，编程能力接近**Anthropic Opus 4.7**水平。该模型特别适合编程和AI agent的复杂多步任务，支持文本、图像和视频多模态输入。MiniMax称M3可与头部闭源编程模型竞争，推动开源编程赛道进一步升温。
   > 💡 开源编程模型赛道继续升温，MiniMax M3加入后与CodeQwen、CodeLlama等形成正面竞争。
    - 来源: [The Information](https://www.theinformation.com/briefings/chinas-minimax-launches-new-model-open-source-ai-coding-battle-heats) | [@MiniMax_AI](https://x.com/MiniMax_AI/status/2061266317815296322)
 
