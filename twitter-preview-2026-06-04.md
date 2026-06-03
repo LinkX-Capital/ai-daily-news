@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-06-04 07:15
-**总计**：38 条推文
+**总计**：39 条推文
 
 ---
 
@@ -13,20 +13,12 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **The Big Crunch：企业推理成本飙升，OpenRouter 推出 Pareto Router**
-   @openrouter
-2. **Pareto Router 日处理量接近 10 亿 tokens，Auto Router 处理 120 亿 tokens**
-   @openrouter
-3. **OpenAI 发布 GPT-Rosalind，面向企业级生命科学研究**
-   @openai
-4. **Town：被誉为「全民版 Devin」的 AI 代理工具**
-   @swyx
-5. **Codex 展示 AGI 级能力，一次性完成复杂任务**
-   @swyx
-6. **vLLM Day-0 支持 Google Gemma 4 12B 多模态模型**
-   @vllm_project
-7. **Intel AutoRound 量化原生集成 vLLM-Omni，支持 W4A16 多模态推理**
-   @vllm_project
+1. **π0.5实现自主吻合手术（autonomous anastomosis）**
+   @physical_int
+2. **Boston Dynamics Stretch已自主搬运数千万件货物**
+   @bostondynamics
+3. **Sam Altman：美国应继续开发最先进AI模型，确保安全，并将网络工具交予受信防务方**
+   @sama
 
 ---
 
@@ -93,10 +85,10 @@
 
 ### @semianalysis_ | Infra
 
-- R to @JeremieEO: Find out why token-as-a-service is fundamentally richer than GPU rentals : https://youtu.be/3zGmZfZnChs
-  [查看](https://x.com/SemiAnalysis_/status/2062266891981209801#m)
 - The five stages of Claude, @JeremieEO is currently at Stage 1...  ACCEPTANCE.
   [查看](https://x.com/SemiAnalysis_/status/2062266891121442858#m)
+- R to @JeremieEO: Find out why token-as-a-service is fundamentally richer than GPU rentals : https://youtu.be/3zGmZfZnChs
+  [查看](https://x.com/SemiAnalysis_/status/2062266891981209801#m)
 - To Boldly Go: The Case for Space Datacenters Space DC Total Cost of Ownership Explained. Unpacking constraints from Terrestrial DCs  and Chip Producti...
   [查看](https://x.com/SemiAnalysis_/status/2062193998756806922#m)
 - Google Cloud revenue showed a +63% y/y growth this past quarter.  Microsoft Intelligence Cloud revenue showed a +30% y/y growth this past quarter. AWS...
@@ -125,7 +117,7 @@
 - Try the most natural TTS and cost-effective STT APIs in @Vapi_AI
   [查看](https://x.com/xai/status/2062209374039499178#m)
 
-## 👤 研究者动态（11条）
+## 👤 研究者动态（12条）
 
 ### @demishassabis [Isomorphic Labs / Google DeepMind] | Research
 
@@ -159,6 +151,8 @@
 
 ### @svlevine [UCB] | Research
 
+- If you are at CVPR 2026, I'll be giving one more talk tomorrow (Jun 4) in the ScaleBot workshop, room 610/612 1:30 pm. The topic: Scaling robot data m...
+  [查看](https://x.com/svlevine/status/2062303206592634902#m)
 - Today (June 3), I'll be speaking at CVPR at the Test-Time Scaling for Computer Vision WS (1:30 pm PT) about how we can use test-time compute to boost ...
   [查看](https://x.com/svlevine/status/2062196620146651548#m)
 
