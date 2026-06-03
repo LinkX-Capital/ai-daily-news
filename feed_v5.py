@@ -88,7 +88,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ========== 配置 ==========
 API_KEY = os.environ.get("MINIMAX_API_KEY", "")  # 独立变量，不影响 GLM
 API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
-ZHIPU_API_KEY = os.environ.get("ZHIPU_API_KEY", "")  # 智谱搜索资源包
 OPML_FILE = opml_file()
 ARCHIVE_DIR = archive_dir()
 OUTPUT_FILE = output_md()
@@ -1211,18 +1210,6 @@ def process_with_llm(articles, recent_articles=None):
     if not API_KEY or len(articles) < 5:
         return articles
 
-    # 分离 HF 论文（已有 summary，跳过 LLM 处理）
-    hf_papers = [a for a in articles if a.get("is_hf_paper")]
-    llm_articles = [a for a in articles if not a.get("is_hf_paper")]
-
-    # 对 HF 论文直接用 summary 生成 body 和 key_points
-    for a in hf_papers:
-        summary = a.get("content", "") or a.get("summary", "")
-        if summary and not a.get("body"):
-            a["body"] = summary[:300]
-        if not a.get("key_points"):
-            a["key_points"] = [f"来自HuggingFace Daily Papers，社区投票 {a.get('_upvotes', 0)}👍"]
-
     # 构建历史动态摘要
     recent_summary = ""
     if recent_articles:
@@ -1234,7 +1221,7 @@ def process_with_llm(articles, recent_articles=None):
 ".join([f"- {t}" for t in recent_titles])
 
     # 按优先级排序，确保重要新闻优先处理
-    sorted_articles = sorted(llm_articles, key=lambda x: x.get('priority', 0), reverse=True)
+    sorted_articles = sorted(articles, key=lambda x: x.get('priority', 0), reverse=True)
 
     # 预过滤：排除明显非AI内容（Tesla财报、NASA、Rivian等）
     NON_AI_TITLE_KEYWORDS = [
@@ -1409,9 +1396,6 @@ def process_with_llm(articles, recent_articles=None):
             print(f"✅ LLM处理了 {len(llm_results)} 条新闻，过滤后 {len(articles)} 条")
     except Exception as e:
         print(f"⚠️ 解析LLM结果失败: {e}")
-    # 合并回跳过 LLM 的 HF 论文
-    if hf_papers:
-        articles = articles + hf_papers
     return articles
 
 # ========== 论文自动溯源 + Body 校验 ==========
@@ -1461,322 +1445,28 @@ def _has_quantifiable_data(text):
     return bool(re.search(r'\d+\.?\d*%|\$\d+|\d+x|\d+倍|\d+亿|\d+万|\d{2,}B|\d{2,}M', text))
 
 def post_validate_and_enrich(articles):
-    """后处理：当 body 信息密度不足时，按域名规则深抓官方页面正文补充。
-
-    Token 优化：
-    - 只对优先级 Top N 的文章触发深抓（避免 18 条全跑）
-    - 单条深抓内容截断到 ~600 字（够 body 重写但不浪费上下文）
-    """
+    """后处理：轻量校验，主要补充逻辑由 QA autofix 完成"""
     warnings = []
-    enriched = 0
-
-    # 取候选 = body 不合格的文章
-    candidates = []
     for a in articles:
-        body = a.get("body", "")
-        if _count_sentences(body) >= 3 and _has_quantifiable_data(body):
-            continue
-        candidates.append(a)
-
-    # 按优先级排序，只对 Top N 深抓
-    DEEP_FETCH_TOP_N = 10
-    try:
-        candidates.sort(key=lambda x: -float(x.get("priority", 0) or 0))
-    except Exception:
-        pass
-    candidates = candidates[:DEEP_FETCH_TOP_N]
-
-    for a in candidates:
         title_short = a.get("title", "")[:40]
         body = a.get("body", "")
         sent_count = _count_sentences(body)
-
-        link = a.get("link", "") or ""
-        candidate_urls = [link]
-        for m in re.finditer(r'https?://[^\s\)\]]+', body):
-            candidate_urls.append(m.group(0).rstrip('.,;'))
-
-        extra = None
-        used_url = None
-        for u in candidate_urls:
-            extra = _deep_fetch(u)
-            if extra:
-                used_url = u
-                break
-
-        if extra:
-            # 截断到 600 字以控制 token 成本
-            if len(extra) > 600:
-                extra = extra[:600] + "..."
-            sep = "\n\n[深抓补充]\n" if a.get("body") else ""
-            a["body"] = (a.get("body", "") + sep + extra).strip()
-            enriched += 1
-            print(f"   🔍 深抓补充: [{title_short}] ← {used_url[:60]}")
-        elif sent_count < 3:
-            # Fallback: 智谱 web_search 补充
-            search_q = a.get("title", "")
-            if search_q and len(search_q) > 10:
-                zhipu_extra = _zhipu_web_search(search_q)
-                if zhipu_extra:
-                    if len(zhipu_extra) > 600:
-                        zhipu_extra = zhipu_extra[:600] + "..."
-                    sep = "\n\n[搜索补充]\n" if a.get("body") else ""
-                    a["body"] = (a.get("body", "") + sep + zhipu_extra).strip()
-                    enriched += 1
-                    print(f"   🔎 搜索补充: [{title_short}] ← 智谱web_search")
-                    continue
+        if sent_count < 3:
             warnings.append(f"[{title_short}] body仅{sent_count}句")
-
     if warnings:
         for w in warnings:
             print(f"   ⚠️ {w}")
         print(f"   📋 后处理校验: {len(warnings)} 个待补充（将由QA autofix处理）")
-    if enriched:
-        print(f"   ✅ 深抓补充: {enriched} 条 (Top {DEEP_FETCH_TOP_N})")
+    else:
+        print(f"   ✅ 后处理校验: 全部通过")
     return articles
 
-
-def _zhipu_web_search(query):
-    """调用智谱原生 API + web_search tool 搜索，返回搜索结果摘要或 None。消耗搜索资源包额度。"""
-    if not ZHIPU_API_KEY:
-        return None
-    try:
-        r = httpx.post(
-            "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-            headers={"Authorization": f"Bearer {ZHIPU_API_KEY}"},
-            json={
-                "model": "glm-4-flash",
-                "messages": [{"role": "user", "content": f"请用中文简洁总结以下主题的最新关键事实和数据，不要猜测：{query}"}],
-                "tools": [{"type": "web_search", "web_search": {"enable": True, "search_result": True}}],
-                "max_tokens": 800,
-            },
-            timeout=30,
-        )
-        r.raise_for_status()
-        data = r.json()
-        choices = data.get("choices", [])
-        if choices:
-            msg = choices[0].get("message", {})
-            content = msg.get("content", "")
-            if content:
-                return content[:600]
-        return None
-    except Exception as e:
-        print(f"   ⚠️ 智谱搜索失败: {str(e)[:60]}")
-        return None
-
-
-# ========== 研究关注关键词（来自 config.json research_subfields）==========
-_HF_RESEARCH_KEYWORDS = {
-    "LLM": ["llm", "large language model", "gpt", "claude", "gemini", "transformer", "attention",
-             "prefill", "decode", "context length", "kv cache", "reasoning", "chain of thought",
-             "rlhf", "dpo", "grpo", "fine-tun", "instruction follow", "agent"],
-    "多模态": ["multimodal", "vision language", "vlm", "image generation", "video generation",
-              "diffusion", "text-to-image", "text-to-video", "speech", "audio"],
-    "具身智能": ["robot", "embodied", "world model", "simulation", "manipulation", "locomotion",
-               "autonomous driv", "physical ai"],
-    "AI4S": ["ai for science", "protein", "drug", "molecule", "material", "physics",
-             "climate", "biology", "alphafold"],
-    "MLSys": ["mlsys", "inference", "training", "distributed", "gpu", "serving", "compiler",
-              "quantiz", "prun", "distill", "efficient", "optimiz"],
-    "AI安全": ["alignment", "safety", "interpretab", "red team", "jailbreak", "bias",
-              "fairness", "robust", "guardrail"],
-    "推理": ["reasoning", "math", "code", "programming", "search", "planning",
-            "tool use", "agentic"],
-}
-
-
-def _fetch_hf_daily_papers(max_papers=5):
-    """从 HuggingFace Daily Papers API 抓取当天热门论文，按领域关键词过滤。
-
-    返回与 feed_v5 文章格式兼容的列表。
-    """
-    try:
-        r = httpx.get("https://huggingface.co/api/daily_papers", timeout=20)
-        r.raise_for_status()
-        all_papers = r.json()
-    except Exception as e:
-        print(f"   ⚠️ HF Daily Papers 抓取失败: {str(e)[:60]}")
-        return []
-
-    # 按 upvotes 降序
-    all_papers.sort(key=lambda x: x.get("paper", {}).get("upvotes", 0), reverse=True)
-
-    matched = []
-    for entry in all_papers:
-        paper = entry.get("paper", {})
-        title = paper.get("title", "")
-        summary = paper.get("summary", "")
-        upvotes = paper.get("upvotes", 0)
-        pid = paper.get("id", "")
-        authors = [a.get("name", "") for a in (paper.get("authors") or [])[:3]]
-
-        # 关键词匹配：标题+摘要至少命中一个领域的关键词
-        text_lower = (title + " " + summary).lower()
-        subfield = None
-        for sf, keywords in _HF_RESEARCH_KEYWORDS.items():
-            if any(kw.lower() in text_lower for kw in keywords):
-                subfield = sf
-                break
-
-        if not subfield:
-            continue
-
-        # 构造文章对象（与 feed_v5 格式兼容）
-        author_str = ", ".join(authors)
-        body = summary[:300] if summary else ""
-
-        matched.append({
-            "title": title[:80],
-            "summary": f"{title}. Authors: {author_str}. Upvotes: {upvotes}",
-            "content": summary or title,
-            "link": f"https://huggingface.co/papers/{pid}",
-            "categories": ["研究关注"],
-            "source": "HuggingFace Daily Papers",
-            "is_tweet": False,
-            "is_hf_paper": True,
-            "published_parsed": None,
-            "priority": 15 + min(upvotes, 20),  # 基础15 + upvotes加权，上限20
-            "_subfield": subfield,
-            "_upvotes": upvotes,
-            "_authors": author_str,
-            "_arxiv_id": pid,
-        })
-
-    # 每个领域最多取 top 1，总共不超过 max_papers
-    by_field = {}
-    for a in matched:
-        sf = a.get("_subfield", "")
-        if sf not in by_field:
-            by_field[sf] = []
-        by_field[sf].append(a)
-
-    result = []
-    for sf in ["LLM", "推理", "多模态", "具身智能", "MLSys", "AI安全", "AI4S"]:
-        if sf in by_field and len(result) < max_papers:
-            top = by_field[sf][0]
-            result.append(top)
-
-    return result
-
-
-def _deep_fetch(url):
-    """根据域名路由到对应提取器，返回纯文本片段或 None。"""
-    if not url or not url.startswith("http"):
-        return None
-    try:
-        if "arxiv.org/abs/" in url:
-            m = re.search(r'arxiv\.org/abs/(\d{4}\.\d{4,5})', url)
-            if m:
-                r = _fetch_arxiv(m.group(1))
-                if r and r.get("abstract"):
-                    title = r.get("title", "")
-                    return (f"[arXiv {title}]\n" if title else "") + r["abstract"]
-        if any(d in url for d in PAYWALL_DOMAINS):
-            return _extract_meta_summary(url)
-        if "newsletter.semianalysis.com" in url or "substack.com" in url:
-            return _extract_substack(url)
-        if any(d in url for d in ("vllm.ai/blog/", "stepfun.com/blog/", "blog.together.ai", "together.ai/blog")):
-            return _extract_html_main(url, max_chars=1500)
-        if "techcrunch.com" in url:
-            return _extract_html_main(url, max_chars=1800, marker_re=r'(In\s+Brief|Posted:|Image\s+Credits)')
-        if "huggingface.co" in url and ("/papers/" in url or "/datasets/" in url or re.search(r'/[^/]+/[^/]+$', url)):
-            return _extract_html_main(url, max_chars=1500)
-    except Exception as e:
-        print(f"   ⚠️ 深抓失败 {url[:50]}: {str(e)[:60]}")
-    return None
-
-
-def _extract_meta_summary(url):
-    """从付费墙文章 HTML 中提取 og:description / JSON-LD keywords / authors。"""
-    try:
-        html = _fetch_via_curl(url)  # 自动用 Googlebot UA
-    except Exception:
-        return None
-    parts = []
-    og = re.search(r'<meta[^>]*property=["\']og:description["\'][^>]*content=["\']([^"\']+)', html)
-    if og:
-        parts.append(og.group(1).strip()[:600])
-    # JSON-LD NewsArticle 提取 keywords / authors
-    jsonld_blocks = re.findall(r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.+?)</script>', html, re.DOTALL)
-    for block in jsonld_blocks[:3]:
-        try:
-            import json as _json
-            data = _json.loads(block)
-        except Exception:
-            continue
-        if isinstance(data, dict) and data.get("@type") in ("NewsArticle", "Article"):
-            kw = data.get("keywords")
-            if kw:
-                kw_str = ", ".join(kw) if isinstance(kw, list) else str(kw)
-                parts.append(f"关键词: {kw_str[:300]}")
-            authors = data.get("author")
-            if authors:
-                auth_names = [a.get("name") for a in authors if isinstance(a, dict)] if isinstance(authors, list) else [authors.get("name")] if isinstance(authors, dict) else []
-                if auth_names:
-                    parts.append(f"作者: {', '.join(filter(None, auth_names))}")
-            break
-    return "\n".join(parts) if parts else None
-
-
-def _extract_substack(url):
-    """Substack 文章正文提取。"""
-    try:
-        html = _fetch_via_curl(url)
-    except Exception:
-        return None
-    # Substack 把正文放在 "body_html":"..." 字段中
-    m = re.search(r'"body_html"\s*:\s*"((?:[^"\\]|\\.)+?)"', html)
-    if m:
-        raw = m.group(1).encode().decode("unicode_escape", errors="ignore")
-        text = re.sub(r'<[^>]+>', ' ', raw)
-        text = re.sub(r'\s+', ' ', text).strip()
-        if len(text) > 200:
-            return text[:1800]
-    # 回退到 og:description
-    return _extract_meta_summary(url)
-
-
-def _extract_html_main(url, max_chars=1500, marker_re=None):
-    """通用 HTML 正文提取：去脚本/样式后取主体文字。"""
-    try:
-        html = _fetch_via_curl(url)
-    except Exception:
-        return None
-    text = re.sub(r'<script[^>]*>.*?</script>', ' ', html, flags=re.DOTALL)
-    text = re.sub(r'<style[^>]*>.*?</style>', ' ', text, flags=re.DOTALL)
-    text = re.sub(r'<[^>]+>', ' ', text)
-    text = re.sub(r'\s+', ' ', text).strip()
-    if marker_re:
-        m = re.search(marker_re, text)
-        if m:
-            text = text[m.start():]
-    if len(text) < 200:
-        return None
-    return text[:max_chars]
-
-
 # ========== 抓取 ==========
-
-# 付费墙站点用 Googlebot UA 绕过（The Information / WSJ / FT / NYT 等）
-PAYWALL_DOMAINS = ("theinformation.com", "wsj.com", "ft.com", "nytimes.com",
-                   "bloomberg.com", "economist.com")
-GOOGLEBOT_UA = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-
-
-def _ua_for_url(url):
-    """根据 URL 域名决定 User-Agent。付费墙用 Googlebot，其他用 Mozilla。"""
-    if any(d in url for d in PAYWALL_DOMAINS):
-        return GOOGLEBOT_UA
-    return "Mozilla/5.0"
-
-
 def _fetch_via_curl(url):
     """curl fallback: 用系统 curl 抓取（绕过 Python OpenSSL 兼容性问题）"""
     import subprocess
-    ua = _ua_for_url(url)
     result = subprocess.run(
-        ["curl", "-sL", "--max-time", "15", "-H", f"User-Agent: {ua}", url],
+        ["curl", "-sL", "--max-time", "15", "-H", "User-Agent: Mozilla/5.0", url],
         capture_output=True, text=True, timeout=20
     )
     if result.returncode != 0 or not result.stdout.strip():
@@ -1788,7 +1478,7 @@ def fetch_source(name, url, limit=15, max_retries=5):
     for attempt in range(max_retries):
         try:
             client = httpx.Client(timeout=15, verify=False, follow_redirects=True)
-            r = client.get(url, headers={"User-Agent": _ua_for_url(url)})
+            r = client.get(url, headers={"User-Agent": "Mozilla/5.0"})
             r.raise_for_status()
             feed = feedparser.parse(r.text)
             client.close()
@@ -2269,17 +1959,6 @@ def main():
                     "published_parsed": parse_tweet_time(t.get("published", "")),
                     "priority": priority,
                 })
-
-        # 抓取 HuggingFace Daily Papers
-        print("📡 抓取 HuggingFace Daily Papers...")
-        hf_papers = _fetch_hf_daily_papers(max_papers=5)
-        if hf_papers:
-            for p in hf_papers:
-                print(f"   [{p.get('_subfield')}] [{p.get('_upvotes', 0)}👍] {p.get('title', '')[:60]}")
-                all_arts.append(p)
-            print(f"   获取 {len(hf_papers)} 篇热门论文")
-        else:
-            print("   无匹配论文")
 
         # 保存缓存
         if args.cache:
