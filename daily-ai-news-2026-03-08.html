@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1012,6 +1033,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["Xie Saining Team Open-Sources Multi-Player Game Perspective World Model", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "OpenAI Again Delays ChatGPT Adult Mode Release", "Google CEO Pichai Receives $692 Million Compensation Package", "Xie Saining Team Open-Sources Multi-Player Game Perspective World Model", "AI Researcher Shares Reflections on a Year of Reinforcement Learning Research", "Researchers Publish Blog Post on Verification Asymmetry and Verifier Law", "Google Releases Nano Banana 2 Model", "Yann LeCun's New Paper Emphasizes AI Needs Specialized Super-Adaptive Intelligence", "OpenAI Robotics Head Leaves Over Pentagon Cooperation Controversy", "Nature Reveals AI Paper Writing Experiment: All 13 Top Models Passed Fake Paper Test", "AI Expert Predicts Most Future Computing Resources Will Be Used for Scientific Research", "OpenAI Again Delays ChatGPT Adult Mode Release. Same day, GPT-5.4 Thinking and Pro versions began gradual rollout to ChatGPT, API, and Codex users.", "Google CEO Sundar Pichai Receives Approximately $692 Million Compensation Package, Mostly Performance-Linked, Including New Stock Incentives Related to Autonomous Driving Company Waymo and Drone Delivery Project Wing.", "Xie Saining's team open-sourced a new world model MC-VLA that can generate consistent multi-player game perspectives, providing a new research direction for AI to understand the physical world and train agent interactions.", "An AI researcher spent the past year focusing on reinforcement learning, pondering how RL spends most of waking hours, and accidentally gained an important insight about lifestyle.", "AI researcher Jason Wei published a new blog post exploring the asymmetry of verification and the concept of Validator's Law.", "Google announced the release of the Nano Banana 2 model, which users can access through the Gemini API on Google AI Studio and Vertex AI platforms.", "Yann LeCun co-published a new paper arguing that AI must embrace specialization through super-adaptive intelligence.", "OpenAI's robotics lead Caitlin Kalinowski announced her resignation, responding to the company's partnership with the Pentagon. Meanwhile, OpenAI is building a computing facility in Wisconsin, marking a significant step in its long-term compute strategy.", "Nature revealed that the founder of arXiv conducted a honeypot experiment asking top AI models to write fake papers. All 13 AI models failed to detect them and generated seemingly credible fake academic papers, raising concerns about AI-enabled academic fraud.", "AI researchers predict that in the coming decades, most computing resources will be used for AI-driven scientific research.", "OpenAI delays ChatGPT adult mode launch again", "GPT-5.4 Thinking and Pro versions began gradual release on the same day", "Google CEO Pichai received approximately $692 million in compensation", "Compensation is tied to performance of Waymo and drone delivery project Wing", "Xie Saining's team open-sourced world model MC-VLA", "The model can generate consistent multi-player game perspectives", "Researchers share insights from a year of reinforcement learning research", "Jason Wei published a blog about verification asymmetry", "The article proposes Validator's Law theory", "Google Releases Nano Banana 2 Model", "The model can be used via Gemini API on Google AI Studio and Vertex AI", "Yann LeCun's new paper proposes AI needs specialization", "The paper emphasizes the importance of super-adaptive intelligence", "OpenAI's robotics lead Caitlin Kalinowski resigned in protest over company's partnership with Pentagon", "OpenAI builds new computing facility in Wisconsin to advance long-term strategy", "arXiv founder tests whether AI can identify fake papers", "All 13 top AI models passed the test and generated credible fake academic papers", "Most future computing resources will go to AI for Science", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "OpenAI Again Delays ChatGPT Adult Mode Release", "Google CEO Pichai Receives $692 Million Compensation Package", "Xie Saining Team Open-Sources Multi-Player Game Perspective World Model", "AI Researcher Shares Reflections on a Year of Reinforcement Learning Research", "Researchers Publish Blog Post on Verification Asymmetry and Verifier Law", "Google Releases Nano Banana 2 Model", "Yann LeCun's New Paper Emphasizes AI Needs Specialized Super-Adaptive Intelligence", "OpenAI Robotics Head Leaves Over Pentagon Cooperation Controversy", "Nature Reveals AI Writing Paper Experiment", "AI Expert Predicts Most Future Computing Resources Will Be Used for Scientific Research", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "OpenAI Again Delays ChatGPT Adult Mode Release", "Google CEO Pichai Receives $692 Million Compensation Package", "Xie Saining Team Open-Sources Multi-Player Game Perspective World Model", "AI Researcher Shares Reflections on a Year of Reinforcement Learning Research", "Researchers Publish Blog Post on Verification Asymmetry and Verifier Law", "Google Releases Nano Banana 2 Model", "Yann LeCun's New Paper Emphasizes AI Needs Specialized Super-Adaptive Intelligence", "OpenAI Robotics Head Leaves Over Pentagon Cooperation Controversy", "Nature Reveals AI Paper Writing Experiment: All 13 Top Models Passed Fake Paper Test", "AI Expert Predicts Most Future Computing Resources Will Be Used for Scientific Research", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

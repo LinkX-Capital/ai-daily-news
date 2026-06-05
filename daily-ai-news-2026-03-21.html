@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -983,6 +1004,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["Nvidia GTC releases NeMoClaw and Robot Olaf, betting on trillion-dollar AI compute market", "Model Frontier", "Industry Dynamics", "Startup & Funding", "Nvidia GTC releases NeMoClaw and Robot Olaf, betting on trillion-dollar AI compute market", "Amazon developing new smartphone centered on Alexa", "Mellea 0.4.0 update and Granite library officially released", "HuggingFace releases tutorial for building domain-specific embedding models in one day", "AI startups capture 41% of last year's VC funding, hitting record high", "Su Jianlin team proposes Attention Residuals, analyzing Kimi's residual connection innovation", "WordPress.com launches AI agent supporting automatic content creation and publishing", "Zhejiang University Baikateam releases open-source real-time world model, converting video to interactive 4D world in seconds", "ByteDance sells Mudog Technology for 6 billion USD, focusing on AI strategy", "Amazon acquires delivery robot company Rivr", "Energy technology may become the best AI investment direction", "CEO Jensen Huang appeared in a leather jacket at Nvidia GTC conference, releasing NeMoClaw and Robot Olaf among new products. Nvidia is betting heavily on AI compute market, expected to reach 1 trillion dollars. The conference showcased Nvidia's latest layout in AI hardware and robotics.", "Amazon is developing a new smartphone centered on Alexa voice assistant, led by Devices and Services department. The device will focus on personalization features, lowering user barriers. This is Amazon's latest attempt in smart devices.", "Mellea 0.4.0 version update, while HuggingFace released Granite series library. Granite is IBM's large language model series, providing developers with more AI model options.", "HuggingFace blog introduces how to build domain-specific embedding models in one day. Embedding models are core components of multimodal AI and RAG systems, crucial for performance improvement in domain-specific tasks.", "According to Carta data, AI startups raised 41% of the total 128 billion USD VC funding in the US last year, hitting a record high. AI sector investment returns have been strong, showing capital's high optimism for AI tracks.", "Kimi model abandons residual connections, Su Jianlin team analyzes Attention Residuals method from first principles. This method rewrites inter-layer connections using attention mechanisms, representing a major innovation in large model architecture.", "WordPress.com adds AI agent feature, allowing AI to automatically write and publish articles. This feature lowers the barrier to content publishing, but may also increase the amount of machine-generated content online.", "Zhejiang University startup Baikateam's open-source real-time world model tops global authoritative rankings. This model can instantly convert video into interactive 4D world, achieving a major breakthrough in real-time world models. World models represent the cutting edge of AI, with Li Fei-Fei's World Labs valued at billions of dollars and Yann LeCun raising 1.03 billion USD in seed funding. Baikateam's open-source nature enables broader research and application.", "ByteDance announces final agreement with Savvy Games Group under Saudi Public Investment Fund to sell Mudog Technology for over 6 billion USD. Mudog's products include popular mobile games like Magic Rush and Mobile Legends. ByteDance states it will further focus on AI strategy.", "Amazon acquires robot developer Rivr, whose main product is wheeled quadruped robots helping delivery personnel transport packages from vehicles to customers' doorsteps. This is Amazon's latest move in delivery automation.", "Power has become one of the biggest bottlenecks for new AI data centers, creating new opportunities for investors. Energy technology as a key component of AI infrastructure is attracting more capital attention.", "Model Frontier", "Industry Dynamics", "Startup & Funding", "Nvidia GTC releases NeMoClaw and Robot Olaf, betting on trillion-dollar AI compute market", "Amazon developing new smartphone centered on Alexa", "Mellea 0.4.0 update and Granite library officially released", "HuggingFace releases tutorial for building domain-specific embedding models in one day", "Zhejiang University Baikateam releases open-source real-time world model, converting video to interactive 4D world in seconds", "ByteDance sells Mudog Technology for 6 billion USD, focusing on AI strategy", "Amazon acquires delivery robot company Rivr", "Model Frontier", "Industry Dynamics", "Startup & Funding", "Nvidia GTC Releases NeMoClaw and Robot Olaf, Betting on Trillion...", "Amazon developing new smartphone centered on Alexa", "Mellea 0.4.0 update and Granite library officially released", "HuggingFace releases tutorial for building domain-specific embedding models in one day", "AI startups capture 41% of last year's VC funding, hitting record high", "Su Jianlin's Team Proposes Attention Residuals, Analyzing Kimi's Residual Connection...", "WordPress.com launches AI agent supporting automatic content creation and publishing", "Zhejiang University Baikateam releases open-source real-time world model, converting video to interactive 4D world in seconds", "ByteDance sells Mudog Technology for 6 billion USD, focusing on AI strategy", "Amazon acquires delivery robot company Rivr", "Energy technology may become the best AI investment direction", "Model Frontier", "Industry Dynamics", "Startup & Funding", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

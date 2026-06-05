@@ -207,6 +207,34 @@
             .topbar-tagline { display: none; }
             .hero-meta { display: none; }
         }
+
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
+/* Floating variant for pages without topbar */
+.lang-toggle-float {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
     </style>
 </head>
 <body>
@@ -217,6 +245,7 @@
         <span class="topbar-tagline">AI Research</span>
     </div>
     <div class="topbar-right">
+            <button class="lang-toggle" id="lang-toggle">EN</button>
         <a href="index.html" class="topbar-nav">日报</a>
         <span class="topbar-nav active">专题集合</span>
     </div>
@@ -312,6 +341,83 @@
     </div>
     <a href="#" class="footer-top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Back to top &uarr;</a>
 </div>
+<script>
 
+// ── Bilingual toggle (generic) ──
+(function() {
+    const EN = {"专题报告集合": "Topic Report Collection", "关于专题报告": "About Topic Reports", "深度研究与周期性追踪报告。覆盖前沿模型、算力格局等核心赛道。": "In-depth research and periodic tracking reports. Covering frontier models, compute landscape, and other core tracks.", "专题报告基于 AI Daily News 管线数据 + 外部数据源补充检索生成。新专题持续扩充中。": "Topic reports generated based on AI Daily News pipeline data + supplementary retrieval from external sources. New topics continuously expanding.", "2 个专题\n            更新至 2026.04": "2 Topics\n            Updated to 2026.04", "全部专题": "All Topics", "前沿模型周报": "Frontline Model Weekly", "Google I/O 2026 深度研究报告": "Google I/O 2026 Deep Research Report", "GTC 2026 专题报告": "GTC 2026 Special Report", "追踪 LLM 前沿格局变化，每周汇总重大模型发布、基准测试、定价演进与厂商迭代信号。覆盖 OpenAI / Google DeepMind / Anthropic / DeepSeek / Moonshot AI。": "Track the evolving LLM frontier landscape. Weekly roundup of major model releases, benchmarks, pricing developments, and vendor updates. Coverage: OpenAI / Google DeepMind / Anthropic / DeepSeek / Moonshot AI.", "Agentic Gemini 时代：Gemini 3.5 Flash 6 项 benchmark 第一，Gemini Omni 世界模型，Antigravity Agent 开发平台。$1900 亿 AI 资本支出。": "The Agentic Gemini Era: Gemini 3.5 Flash ranks #1 on 6 benchmarks, Gemini Omni world model, Antigravity Agent development platform. $190B AI capex.", "NVIDIA GTC 2026 大会全面复盘。黄仁勋宣布 2025-2027 年 1 万亿美元收入预期，聚焦 Token 经济、AI 工厂、技术路线图、智能体 AI、物理 AI 五大主题。": "Full recap of NVIDIA GTC 2026. Jensen Huang announced $1T revenue outlook for 2025-2027, focusing on five key themes: Token Economy, AI Factories, Technology Roadmap, Agentic AI, and Physical AI.", "最新 2026.06.02": "Latest 2026.06.02", "频率 每周": "Frequency Weekly", "层级 L2 模型架构": "Level L2 Model Architecture", "发布 2026.05.20": "Released 2026.05.20", "大会 05.19 — 05.20 Mountain View": "Conference 05.19 — 05.20 Mountain View", "发布 2026.03.18": "Released 2026.03.18", "大会 03.16 — 03.19 圣何塞": "Conference 03.16 — 03.19 San Jose", "05.06 第2期": "05.06 Issue #2", "04.27 第1期": "04.27 Issue #1"};
+    const PH_EN = "Search news...";
+
+    const SEL = ["h1", "h2", "h3", "h4", "p", "li", "a.topbar-btn", "a.topbar-nav", "span.topbar-brand", "span.topbar-tagline", "div.hero-eyebrow", "h1.hero-title", "p.hero-sub", "div.hero-meta", "div.hero-date", "div.hero-stat-num", "div.hero-stat-label", "div.section-label", "div.sec-title", "span.sec-title", "span.sec-num", "div.edition-title", "div.edition-sub", "div.edition-date-label", "div.edition-date-val", "div.edition-date-month", "span.model-chip", "span.edition-tag", "div.topic-title", "div.topic-desc", "span.topic-meta-item", "span.topic-badge", "span.edition-chip", "div.sp-title", "div.sp-desc", "div.te-date", "div.te-summary", "div.te-count", "div.card-title", "div.card-sub", "div.card-body", "div.card-tag", "div.mini-stat-val", "div.mini-stat-label", "div.sub-title", "div.stat-item", "div.stat-val", "div.stat-label", "div.info-card", "span.cat-tag", "div.source", "div.toc-title", "div.toc-sub", "span.nav-item", "a.nav-item", "details.nav-details > summary > span:not(.nav-count)"];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    // Get text from direct text nodes only (excludes nested span/strong/em children).
+    // Useful for elements like <div class="te-date">May 31 <span>最新</span></div>
+    // where the visible date should match the extracted date text, not the badge text.
+    function getDirectText(el) {
+        var result = '';
+        for (var i = 0; i < el.childNodes.length; i++) {
+            var node = el.childNodes[i];
+            if (node.nodeType === 3) {  // TEXT_NODE
+                result += node.textContent;
+            }
+        }
+        return result.trim();
+    }
+
+    function applyLang() {
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                // Skip elements with disallowed nested children
+                if (el.children.length > 0) {
+                    var hasNested = false;
+                    for (var c of el.children) {
+                        if (c.tagName !== 'BR' && c.tagName !== 'SPAN' && c.tagName !== 'STRONG' && c.tagName !== 'EM' && c.tagName !== 'A') {
+                            hasNested = true; break;
+                        }
+                    }
+                    if (hasNested) return;
+                }
+
+                // Try direct text first (excludes nested span/strong children),
+                // then fall back to the full textContent (covers div.te-summary with <strong>).
+                var zh = getDirectText(el);
+                if (!EN[zh]) zh = el.textContent.trim();
+                if (!zh || !EN[zh]) return;
+
+                if (isEn) {
+                    if (!cache.has(el)) cache.set(el, el.innerHTML);
+                    el.textContent = EN[zh];
+                } else {
+                    var saved = cache.get(el);
+                    if (saved) el.innerHTML = saved;
+                }
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+    if (isEn) applyLang();
+})();
+
+    </script>
 </body>
 </html>

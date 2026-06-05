@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -980,6 +1001,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["JD.com open-sources JoyAI-Image-Edit 24 billion parameter image model, released under Apache 2.0 license", "Industry Dynamics", "Startup & Funding", "Research Focus", "X Discussion", "JD.com open-sources JoyAI-Image-Edit 24 billion parameter image model, released under Apache 2.0 license", "NVIDIA-backed SiFive valued at $3.65 billion, deploying RISC-V open-source AI chips", "Liu Zhuang and Chen Danqi release open-source visual reasoning reinforcement learning framework, setting new SOTA", "Shanghai AI Lab proposes GEMS framework, 6B image generation model Z-Image-Turbo surpasses Nano Banana 2", "Bespoke Labs CSO Alex G Dimakis' Paper Validated and Adopted by Anthropic's New Research", "NTU et al. Jointly Propose CARE Transformer: Asymmetric Decoupling Reconstructs Mobile Linear Vision Transformer", "Luma AI Launches Agent System Empowering Character Creation Workflow", "JD Explore Research Institute Open-Sources JoyAI-Image-Edit, 8B Parameter Multimodal Language Model (MLLM) + 16B Parameter Multimodal Diffusion Transformer (MMDiT) coupled, totaling 24B parameters. First to achieve spatial intelligence architecture embedded at the foundation, performance surpasses Nano Banana 2, fully open under Apache 2.0 license.", "SiFive Completes New Funding Round, Valuation Reaches $3.65B. NVIDIA Participates in Investment, SiFive's Chip Design Based on RISC-V Architecture Rather Than Traditional x86 or ARM, Important Player in Open-Source AI Chip Field.", "Researchers Liu Zhuang and Chen Danqi Launch Open-Source General Visual Reasoning RL Framework, Achieves New SOTA on Visual Reasoning Tasks with Just 0 Thinking Data. Extensive Data Coverage is the Main Driver for Visual Reasoning RL Scaling.", "Shanghai AI Lab Proposes GEMS (Agent-Native Multimodal Generation with Memory and Skills) Framework, Integrates Multi-Agent Loop, Memory and Skills Triad, Enables 6B Parameter Z-Image-Turbo to Surpass Google Nano Banana 2 in GenEval2 and Other Benchmarks. Small Models Break Performance Ceiling Through Agent Architecture Innovation, Providing New Path for On-Device Deployment.", "Bespoke Labs Chief Scientific Advisor Alex G Dimakis' Research Gains Major Validation, Anthropic's Latest Work Appears Based on His Advisor Model Paper. This Recognition Indicates His Research's Forward-Looking Nature and Impact in AI.", "NTU, BUAA and Hefei Tech Jointly Propose CARE Transformer (CVPR 2025), Decouples Local Inductive Bias and Long-Range Dependency Modeling into Parallel Divide-and-Conquer Tasks Through Asymmetric Feature Decoupling, Achieves Cross-Level Feature Fusion with Dual Interaction Module and Dynamic Memory Unit. Achieves 78.4% Top-1 Accuracy at 1.1ms Latency on iPhone 13, Breaks Mobile Vision Transformer \"Efficiency and Accuracy Cannot Both Be Achieved\" Dilemma.", "Luma AI Launches Agent System, Redefining Character Creation. System Supports Selecting Archetype, Locking Reference Images, Adding Clothing Expressions and Styles, Agent Guides Full Process Character Creation - No Longer a Single Image, But a Complete World.", "Open-Source LLMs Continuously Close Gap with Closed-Source Frontier, Spatial Intelligence Embedding is the Differentiating Direction", "RISC-V Open-Source Architecture Rises in AI Chip Field, Challenging Traditional Chip Landscape", "Zero Thinking Data Reinforcement Learning Path Validated Successfully, Reduces Data Cost While Maintaining High Performance", "Small Models Break Through Performance Limits Through Agent Architecture Innovation, Providing New Ideas for On-Device Deployment", "Academic Research Validated and Adopted by Industry, Reflecting Bridge Value Between Forward-Looking Research and Practical Applications", "Asymmetric Decoupling Provides New Paradigm for Mobile ViT, On-Device AI Deployment Efficiency Bottleneck Expected to Break Through", "AI Agent Intervenes in Creation Process, Evolving from Single-Point Generation to Complete Workflow", "Industry Dynamics", "Startup & Funding", "Research Focus", "X Discussion", "JD Open-Sources JoyAI-Image-Edit 24B Parameter Image Model", "NVIDIA-backed SiFive valued at $3.65 billion, deploying RISC-V open-source AI chips", "Liu Zhuang and Chen Danqi Open-Source Visual Reasoning RL Framework, Sets New SOTA", "Shanghai AI Lab GEMS Framework Enables 6B Image Generation Model to Surpass Nano Banana 2", "Bespoke Labs CSO's Paper Validated and Adopted by Anthropic", "NTU et al. Propose CARE Transformer to Reconstruct Mobile Linear ViT", "Luma AI Launches Agent System Empowering Character Creation Workflow", "Industry Dynamics", "Startup & Funding", "Research Focus", "X Discussion", "JD Open-Sources JoyAI-Image-Edit 24B Parameter Image Model, Apac…", "NVIDIA-backed SiFive valued at $3.65 billion, deploying RISC-V open-source AI chips", "Liu Zhuang and Chen Danqi release open-source visual reasoning reinforcement learning framework, setting new SOTA", "Shanghai AI Lab Proposes GEMS Framework, 6B Image Generation Model Z-Image-Turbo…", "Bespoke Labs CSO Alex G Dimakis' Paper Validated by An…", "Nanyang Technological University and Collaborators Jointly Propose CARE Transformer: Asymmetric Decoupling Reconstruction for Mobile Endpoints", "Luma AI Launches Agent System Empowering Character Creation Workflow", "Industry Dynamics", "Startup & Funding", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

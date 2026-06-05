@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1128,6 +1149,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["面壁/OpenBMB Releases ForgeTrain: AI Auto-Writes Training Framework, 1B On-Device Model Achieves 17.9 on AA-Index", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "面壁/OpenBMB Releases ForgeTrain: AI Auto-Writes Training Framework, 1B On-Device Model Achieves 17.9 on AA-Index", "Kuaishou Releases Keye-VL-2.0-30B-A3B: First to Introduce DSA to Multimodal, Long Video Understanding Tops Open-Source SOTA", "Elon Musk Announces Grok V9-Medium (1.5T) Training Complete, Public Release in 2-3 Weeks", "Anthropic Releases Agent Security Architecture Engineering Blog: Three Isolation Modes Correspond to Different Product Risk Levels", "ServiceNow CMO Colin Fleming Departs to Join OpenAI", "OpenArt Launches Single Image to 3D World Feature, 7.3M Impressions on Launch Day, Based on World Labs Model", "Figure Signs Commercial Agreement with Catalyst Brands, Initiates Large-Scale Humanoid Robot Deployment", "逐际动力 Releases LimX Luna: Interactive Full-Size Humanoid Robot, Price 298,000 CNY", "Spotify Launches AI Narration for Magazine Articles, Covering Over 650 English Long-Form Pieces", "昆仑万维 Releases SkyClaw-v1.0: Agent Model Performance Close to Claude Opus 4.6, Free Trial During Launch", "SemiAnalysis: Physical RAM Prices Rise Rapidly Due to AI Chip Demand", "vLLM Formally Merges Rust Frontend: Solving Excessive CPU Time Proportion After GPU Speed Increase", "OpenRouter Completes $113M Series B Funding, Valuation Doubles to $1.3B in One Year", "Baseten in Talks for $1B Funding, AI Inference Service Provider Valuation Reaches $11B", "Zeon Invests in Sanctuary AI, Cooperating on Robot Dexterous Hand Specialized Elastic Materials", "ZJU-Alibaba Propose Unified Thinker: Decoupling Reasoning and Execution in Image Generation, Modular Upgrading Reasoning Capability", "Tsinghua-Alibaba Propose LASA: Language-Agnostic Semantic Safety Alignment, ASR Drops from 24.7% to 2.8%", "Stanford Team Proposes Auto Benchmark Audit: 25.7% of AI Benchmark Test Tasks Have Flaws", "Qwen Team Proposes CUA-Gym: Scalable Generation of Computer Use Agent Training Data", "Gemini 3.5 Flash Shows Progress in Speed and Agent Capability", "Google SynthID Watermark Has Tagged Over 100B Content Pieces, Expanding to Video Transparency", "SemiAnalysis: Meta 70% of New Graduate Engineers Reassigned to Reinforcement Learning Tasks", "面壁智能（OpenBMB） Releases ForgeTrain Training Framework, Enabling AI to Auto-Write Model Training Code Without Human-Written Training Logic. The MiniCPM5-1B On-Device Model Trained With This Framework Achieves 17.9 on AA-Index Benchmark, ~10% Training Speed Improvement vs NVIDIA Megatron, Trained on H100 GPU. The Model Runs on Local Devices, Handling Chat, Q&A and Other Tasks Without Cloud Connection.", "Kuaishou Releases Keye-VL-2.0-30B-A3B, the First Model to Successfully Deploy DeepSeek Sparse Attention (DSA) in Multimodal Understanding Scenario, Supporting 256K Ultra-Long Context. In VideoMME V2 Test, Accuracy Counter-Trend Increases from 35.3% to 42.4% When Input Frames Expand from 64 to 512. LongVideoBench Score 74.1, Surpassing Qwen3-VL-235B-A22B and Other 200B+ Parameter Open-Source Models. Also First to Unlock Agent Collaboration Mechanism, Achieving 77.1 on LiveCodeBench v6, 62.0 on SWE-bench Verified. Model Open-Source.", "Elon Musk Announces xAI's Grok Foundation Model V9-Medium (1.5T Parameters) Training Complete, Evaluation Results Show Good Performance. Training Supplemented with Large Amount of Cursor Programming Data. Currently Undergoing Fine-Tuning, Reinforcement Learning to Begin in Days. The Model Will Be Publicly Released in 2-3 Weeks, a Major Upgrade to Current 0.5T V8-small Serving All Grok Production Traffic, Especially Significant Improvement in Programming Tasks.", "Anthropic发布工程博客\"How we contain Claude across products\"，详细披露三大Agent产品（claude.ai、Claude Code、Claude Cowork）的安全隔离架构。claude.ai采用gVisor临时容器，Claude Code采用OS级沙箱（macOS Seatbelt/Linux bubblewrap），Claude Cowork采用完整虚拟机隔离。文章披露了多个实际安全事件：内部红队通过钓鱼让Claude Code成功窃取AWS凭证（25次中成功24次）；第三方通过合法api.anthropic.com域名实现数据外泄。博客强调核心原则：环境层隔离优先于模型层防御——当概率性防御全部失效时，确定性边界是最后防线。", "ServiceNow执行副总裁兼首席营销官Colin Fleming将在公司任职仅6个月后，于本周二离职并加入OpenAI。在ServiceNow期间，他负责制定公司的全球营销和通信战略，此次离职距离其升任CMO仅仅过去了半年时间。", "OpenArt推出OpenArt Worlds功能，基于World Labs的生成式3D世界模型。用户上传任意图片即可生成可导航、可持久保存的3D环境。工作流分三步：生成世界→在3D空间中取景构图→拍摄2D成品图。上线首日在X平台获得730万曝光、4100点赞、1600转发，登上X News美国热门，250+头部创作者发布使用体验。创作者每周构建数千个3D世界并可反复回到已创建的环境取景。", "Figure官方宣布已与Catalyst Brands签署商业合作协议，计划大规模部署类人机器人。Catalyst Brands运营包括JCPenney、Aéropostale和Brooks Brothers在内的多个知名零售品牌。Figure将于内华达州里诺市启动首批部署。具体合作条款和金额尚未披露。", "逐际动力（LimX Dynamics）发布全尺寸交互人形机器人LimX Luna，身高160cm，具备27个机身自由度，搭载自研System 0全身运控基础模型。支持多模态双向交互（语音、视觉、姿态模仿）、视频学舞、零代码任务编排，最多支持200台集群控制（毫秒级同步）。单次续航4小时，支持外接电源24小时运行。国内零售价29.8万元，即日起接受全球预订。", "Spotify从即日起提供超过650篇长篇杂志文章的AI语音叙述服务，首批仅支持英文内容，涵盖多个知名出版物。用户可通过流媒体平台直接收听文章，预计将提升用户粘性和内容消费时长。", "昆仑万维旗下Skywork（天工AI）发布Agent专用模型SkyClaw-v1.0及轻量版SkyClaw-v1.0-lite，支持100万token上下文窗口，专为工具调用、多轮任务执行、代码生成等Agent场景优化。在OpenClaw相关Agent任务评测中，SkyClaw超越Minimax 2.7、DeepSeek V4 Flash，接近Claude Opus 4.6和DeepSeek V4 Pro水平。采用三阶段Agent-native训练（大规模mid-train + 合成任务SFT + 端到端RL）。API定价输入0.5元/百万token、输出4元/百万token，约为Claude Sonnet 4.6的1/43~1/27。发布后2-4周限时免费试用。", "SemiAnalysis在X平台发文指出，随着AI芯片对HBM等高性能内存需求激增，物理RAM价格正在快速上涨。推文以讽刺口吻提及\"download more RAM\"这一互联网经典meme，暗示内存成本压力的严峻程度。该推文于2026年5月26日发布，已获得约21.7K次观看。", "vLLM官方宣布Rust前端正式合并进入主分支。随着GPU算力提升，CPU端的前端处理时间占比成为瓶颈。新Rust前端通过高性能计算解决了这一问题，可显著提升推理吞吐量。", "OpenRouter宣布完成由CapitalG领投的1.13亿美元B轮融资，估值从一年前的约5亿美元增长至13亿美元。该公司近六个月使用量增长5倍，体现多AI模型调用市场的快速成长。投资方包括a16z、Menlo Ventures和NVIDIA。", "AI推理服务商Baseten正与投资者洽谈筹集10亿美元，估值（含融资）约110亿美元，较上一轮的50亿美元估值翻倍以上。Baseten为企业提供AI模型推理基础设施服务，客户包括Anthropic等。本轮融资反映出AI推理层市场的高速增长态势。", "Zeon与Sanctuary AI达成投资与合作，共同开发适用于人形机器人灵巧手的专用弹性材料。Sanctuary AI致力于构建通用类人智能机器人，其产品已实现自主远程操作和完全自主执行任务的能力。Zeon作为材料创新企业，将为Sanctuary AI提供先进的弹性体解决方案，提升机器人在复杂工业环境中的应用效能。", "浙江大学（周昭澍、赵洲等）和阿里巴巴联合提出Unified Thinker，一种用于图像生成的任务无关推理架构。核心思路是将\"Thinker\"（推理规划器）与图像生成器解耦，Thinker可独立升级而无需重新训练整个生成模型。训练分两阶段：先构建结构化规划接口，再用强化学习将规划锚定在像素级反馈上，使规划优化视觉正确性而非文本合理性。在文生图和图像编辑任务上显著提升推理与生成质量。", "清华大学（杨俊霄、黄民烈等）和阿里巴巴联合提出LASA（Language-Agnostic Semantic Alignment），发现LLM中存在\"语义瓶颈层\"——该中间层的表征由语义内容主导而非语言身份。LASA将安全对齐直接锚定在这一语义瓶颈层，而非传统的表层文本。实验显示：在LLaMA-3.1-8B-Instruct上，平均攻击成功率（ASR）从24.7%降至2.8%；在Qwen2.5和Qwen3系列（7B-32B）上ASR保持在3-4%左右，实现对所有语言的安全覆盖。", "Stanford团队（Junlin Wang、James Zou等）提出Auto Benchmark Audit（ABA）框架，系统审计AI benchmark任务质量。对168个benchmark、九个领域的审查发现，超过25.7%的评测任务存在歧义设计、环境冲突或错误基准答案等问题。移除这些问题任务后，SWE-bench Verified和Terminal-Bench 2的平均性能分别提升9.9%和9.6%，且改变了模型排名。", "Qwen团队（Bowen Wang、Tao Yu等）提出CUA-Gym框架，通过Generator-Discriminator双Agent协作自动生成计算机使用Agent（CUA）的训练数据。该框架构建了32,112条经验证的RLVR训练数据，覆盖110个环境。基于CUA-Gym训练的A3B和A17B模型在OSWorld-Verified上分别达到62.1%和72.6%，超越同规模开源CUA，且在WebArena上展现跨环境泛化能力。", "Artificial Analysis的benchmark测试显示，Gemini 3.5 Flash在响应速度和Agent任务执行能力方面较前代有明显提升。", "Google DeepMind宣布SynthID已为超过1000亿内容添加AI生成水印，Gemini中的SynthID验证已使用超50亿次。Google同时宣布将把内容透明度功能扩展至视频内容。", "SemiAnalysis观点指出，Meta 70%的新毕业生软件工程师被重新分配到强化学习相关任务中，显示出该公司正在大规模将工程资源转向AI模型训练方向。", "ForgeTrain标志着模型训练从人工设计向自动化演进，训练速度提升10%意味着端侧模型开发门槛和成本可大幅降低。", "Keye-VL-2.0以30B参数在视频理解上跨级超越200B+模型，证明DSA架构在多模态场景的高效性，长上下文不衰减的特性对长视频理解有重大实际价值。", "Grok从0.5T跃升至1.5T参数量级，结合Cursor编程数据训练，显示xAI在编程能力上的重点发力意图。", "Anthropic首次大规模公开Agent安全架构细节和真实攻防案例，反映头部厂商从\"模型安全\"转向\"系统工程安全\"的思路转变，为行业Agent安全标准提供了重要参考。", "AI公司对传统软件营销高管的吸引力增强，反映AI行业商业化运营需求正在从技术驱动转向市场驱动。", "单图转3D从技术demo走向可复用的创作工具，持久化和可反复取景是区别于一次性生成的关键差异化。", "Figure accelerates robot technology commercialization through commercial partnerships, with large-scale deployment in retail scenarios serving as a key testing ground for humanoid robot commercialization.", "LimX Luna targets commercial space interaction scenarios (shopping malls, scenic areas, exhibitions), reducing operational barriers through no-code creation and group control capabilities, with a 29.8万元 price point making it competitive among domestic humanoid robots.", "Spotify brings AI voice synthesis technology to content consumption scenarios, another attempt at differentiated competition among streaming platforms, though its technical advancement for the AI industry itself is limited.", "SkyClaw enters the Agent market at an extremely low price point, with 1 million context + Agent-native training as technical highlights, but the \"approaching Opus 4.6\" evaluation is limited to OpenClaw tasks, with general capabilities yet to be verified.", "Memory demand driven by AI chips is pushing up prices across the entire semiconductor supply chain, with upstream raw material price increases expected to impact AI hardware costs.", "vLLM's choice of Rust over traditional Python/C++ represents an important direction for inference framework performance optimization, expected to further improve AI inference efficiency.", "OpenRouter's valuation growth reflects market recognition of multi-model routing demand, but whether it can maintain growth under competition from OpenAI's self-built distribution channels is worth watching.", "AI inference infrastructure is becoming a new investment hotspot after model training, with an 11 billion USD valuation showing market recognition of inference service providers' independent value.", "Material innovation for robot core components is gaining capital attention, with specialized materials likely becoming a key differentiator in the next phase of competition.", "Decoupling inference from generation means inference modules can be adapted to different generators like plugins, representing an important direction for image generation from \"end-to-end\" to \"modular\".", "LASA reveals the root cause of multilingual safety problems at the representation level—safety alignment should be anchored in language-independent semantic space rather than surface text, a perspective of significant guidance for building globalized safety models.", "当前AI评测体系的可靠性远低于预期，四分之一任务存在缺陷意味着部分模型排名可能失真，自动化审计工具将帮助构建更可信的评测标准。", "CUA-Gym solves the bottleneck of scarce training data for computer use Agents, with the automated generation + validation pipeline likely becoming a new paradigm for Agent training data production.", "Google catches up in reasoning speed and Agent capabilities through Gemini 3.5 Flash, but the lack of specific numbers makes it difficult to accurately assess the gap with competitors.", "SynthID's large-scale deployment indicates AI content identification is moving from technical exploration to commercial implementation, but watermark removability and cross-platform universality remain challenges.", "Meta allocates numerous new engineers to RL tasks, reflecting an escalating arms race among top manufacturers in reinforcement learning training data.", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "面壁/OpenBMB Releases ForgeTrain: AI Auto-Writes Training Framework, 1B On-Device Model Achieves 17.9 on AA-Index", "Kuaishou releases Keye-VL-2.0-30B-A3B: the first DSA multimodal model, leading open-source SOTA in long video understanding", "Elon Musk Announces Grok V9-Medium (1.5T) Training Complete, Public Release in 2-3 Weeks", "Anthropic releases Agent security architecture engineering blog: disclosing three isolation modes and real attack-defense cases", "ServiceNow CMO Colin Fleming Departs to Join OpenAI", "OpenArt launches single-image-to-3D-world feature, 7.3 million exposures on first day, based on World Labs model", "Figure Signs Commercial Agreement with Catalyst Brands, Initiates Large-Scale Humanoid Robot Deployment", "Zunji Power releases LimX Luna interactive full-size humanoid robot, priced at 29.8万元", "Spotify Launches AI Narration for Magazine Articles, Covering Over 650 English Long-Form Pieces", "Kunlun Wanwei releases SkyClaw-v1.0: Agent model approaching Claude Opus 4.6, million-token context, limited-time free trial", "SemiAnalysis: Physical RAM Prices Rise Rapidly Due to AI Chip Demand", "vLLM Formally Merges Rust Frontend: Solving Excessive CPU Time Proportion After GPU Speed Increase", "OpenRouter Completes $113M Series B Funding, Valuation Doubles to $1.3B in One Year", "Baseten in talks for 1 billion USD financing round, valuation reaching 11 billion USD", "Zeon Invests in Sanctuary AI, Cooperating on Robot Dexterous Hand Specialized Elastic Materials", "ZJU-Alibaba proposes Unified Thinker: decoupling inference from execution in image generation", "Tsinghua-Alibaba proposes LASA: language-independent semantic safety alignment, ASR reduced to 2.8%", "Stanford team proposes Auto Benchmark Audit: 25.7% of benchmark tasks have defects", "Qwen Team Proposes CUA-Gym: Scalable Generation of Computer Use Agent Training Data", "Gemini 3.5 Flash Shows Progress in Speed and Agent Capability", "Google SynthID Watermark Has Tagged Over 100 Billion Pieces of Content", "SemiAnalysis: Meta 70% of New Graduate Engineers Reassigned to Reinforcement Learning Tasks", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "面壁/OpenBMB Releases ForgeTrain: AI Auto-Generates Training Framework, 1B…", "Kuaishou Releases Keye-VL-2.0-30B-A3B: First to Introduce DSA to Multimodal…", "Elon Musk Announces Grok V9-Medium (1.5T) Training Complete…", "Anthropic Releases Agent Security Architecture Engineering Blog: Three Isolation Modes Correspond to Different Products…", "ServiceNow CMO Colin Fleming Leaves to Join Open…", "OpenArt Launches Single Image to 3D World Feature, Received 7.3 Million Views on First Day, Based on Wor…", "Figure and Catalyst Brands Sign Commercial Cooperation Agreement, Launching Humanoid Robot…", "逐际动力 Releases LimX Luna: Interactive Full-Size Humanoid Robot, Price 298,000 CNY", "Spotify Launches AI Narration for Magazine Articles, Covering Over 650 English Long-Form Pieces", "Kunlun Wanwei Releases SkyClaw-v1.0: Agent Model Performance Close to Claude…", "SemiAnalysis: Physical RAM Prices Rise Rapidly Due to AI Chip Demand", "vLLM Formally Merges Rust Frontend: Solving Excessive CPU Time Proportion After GPU Speed Increase", "OpenRouter Completes $113M Series B Funding, Valuation Doubles to $1.3B in One Year", "Baseten in Talks for $1B Funding, AI Inference Service Provider Valuation Reaches $11B", "Zeon Invests in Sanctuary AI, Cooperating on Robot Dexterous Hand Specialized Elastic Materials", "Zhejiang University and Alibaba Propose Unified Thinker: Decoupling Reasoning and Execution in Image Generation…", "Tsinghua Alibaba Proposes LASA: Language-Agnostic Semantic Safety Alignment, ASR Drops from 24.7% to 2.…", "Stanford Team Proposes Auto Benchmark Audit: 25.…", "Qwen Team Proposes CUA-Gym: Scalable Generation of Computer Use Agent Training Data", "Gemini 3.5 Flash Shows Progress in Speed and Agent Capability", "Google SynthID Watermark Has Tagged Over 100 Billion Contents, to Expand to Video Transparency…", "SemiAnalysis: Meta 70% of New Graduate Engineers Reassigned to Reinforcement…", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1082,6 +1103,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["NVIDIA Cosmos 3 Released: Physical AI Open World Foundation Model, Debuts at GTC Taipei", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "NVIDIA Cosmos 3 Released: Physical AI Open World Foundation Model, Debuts at GTC Taipei", "Qwen3.7-Plus Released: Multimodal Agent Foundation, Leads in Coding Agent Benchmarks", "MiniMax Releases M3 Model: Another Contestant in Open-Source Coding Battlefield", "JetBrains Releases Mellum2: 120B Parameter Sparse MoE Programming Model", "OpenAI Hires Salesforce Global Partner VP, Accelerating Enterprise Channel Expansion", "Unitree Releases H2+ Humanoid Robot: 75 DOF Dexterous Manipulation, Powered by NVIDIA Jetson Thor", "Luma Establishes OPAL Lab: Open Physical AI Research, Solving Robot Generalization Problem", "Meta AI-Supported Chatbot Bypassed: Hackers Hijack Multiple Instagram Accounts", "OpenRouter Auto Router Adds Cost-Quality Trade-off Tuning Feature", "OpenAI Breaks Ground on 1GW Data Center in Michigan, Largest Single-Point Investment in Stargate Project", "NVIDIA AI Cloud Ecosystem Expands to Six Continents, Partners Accelerate AI Factory Deployment", "Anthropic Secretly Files S-1 Draft with SEC: $965B Valuation IPO Process Initiated", "The Mall Releases AI-Powered Universal Shopping Feed Application", "LLM Teams Still Have Limitations in Indirect Reasoning and Cultural Knowledge Tasks", "LinTree: Explicit Tree-Structured Search History Improves LLM Reasoning Efficiency", "S2L-PO: Small Models as GRPO Natural Explorers, Improving Math Reasoning Accuracy", "Materials Property Axiom: Three-Stage Training Framework Improves Material Property Prediction", "DisjunctiveNet: Differentiable Convexification Optimization Layer Achieves Neurosymbolic Learning Breakthrough", "NVIDIA Releases Cosmos 3 World Foundation Model at GTC Taipei, Using Mixture-of-Transformers Architecture, Combining Visual Reasoning and Multimodal Generation (text, video, image, environmental audio, action) in a Single Model. Architecture Divides into Inference Blocks (parsing scenes) and Generation Blocks (generating physics simulation outputs based on context), Supporting Native Motion Generation (numerical data like joint angles, gripper positions, trajectory points). Agile Robots, NVIDIA GEAR Team, etc. are Already Using Cosmos 3 to Generate Action-Conditioned Robot Data. Cosmos 3 Nano Post-Training Strategy Leads on RoboLab and RoboArena.", "Tongyi Qianwen Releases Qwen3.7-Plus, Positioned as a Multimodal Agent Foundation Unifying Vision and Language. On Pure Text, Coding Agent Scores 70.3 on Terminal Bench 2.0 (Surpassing Opus-4.6 Max 65.4 and DeepSeek-V4-Pro 67.9), SWE-Pro 57.6 on Par with Top Models. On Multimodal, ScreenSpot Pro 79.0, AndroidWorld 81.0, MathVision 90.3 Significantly Surpass Opus-4.6 Max and Gemini-3.1 Pro. Model Integrates GUI Operation, CLI Tool Invocation, and Visual Reasoning in a Single Agent Loop, Supporting Cross-Framework (Claude Code/OpenClaw/Qwen Code) Deployment. Available via Alibaba Cloud Bailian API.", "Chinese AI Company MiniMax Releases M3 Large Language Model with Coding Capabilities Approaching Anthropic Opus 4.7 Level. Model Particularly Suited for Complex Multi-Step Tasks in Programming and AI Agents, Supporting Text, Image, and Video Multimodal Inputs. MiniMax Claims M3 Can Compete with Top Closed-Source Programming Models, Further Heating Up Open-Source Coding Track.", "JetBrains Releases Mellum2, 120B Parameter Sparse Mixture-of-Experts Model, Optimized for Code Scenarios. Model Uses Sparse Activation Mechanism to Reduce Inference Costs, Supports Long-Context Processing, Integrated into JetBrains IDE Ecosystem.", "Former Salesforce Executive Vice President Brian Landsman Announces on LinkedIn His Join OpenAI as Global Partner VP, Responsible for Partnership and App Store Business. OpenAI Previously Hired Chief Revenue Officer Denise Dresser and Multiple Salesforce Executives. Landsman Previously Spent 14 Years at Salesforce, Leading Its Global Partner and App Store Business. This Hire Signals OpenAI's Transition from Technology-Driven to Enterprise Ecosystem and Channel-Driven Commercialization Stage.", "Unitree Releases H2+ Humanoid Robot, 75 DOF Full Body (22 Active Hand DOF), Powered by NVIDIA Jetson Thor Chip (Blackwell GPU, FP4 2070 TFLOPS), 128GB Unified Memory. Robot Integrates Dual SharpaWave Tactile Five-Finger Dexterous Hands, Supporting Advanced Dexterous Manipulation. Rated Arm Load 7kg, Peak 15kg, Equipped with 15Ah Battery (~3 Hours Runtime). Developed Based on NVIDIA Isaac GR00T Open Foundation Model, Supporting Humanoid Reasoning, Learning, and Multi-Task Behaviors.", "Luma Announces Establishment of Open Physical AI Lab (OPAL Lab), Positioned as an Open Science Lab Solving Physical AI Generalization Crisis. Luma Points Out Current Robots Can Only Replay Specific Tasks in Specific Environments, Presenting Data Gaps and Generalization Bottlenecks, While Expanding Teleoperation Data Collection is Physically and Economically Infeasible. Luma Has Trained Frontier Foundation Models for 3D, Images, Video, and Unified Language-Vision Generation Over Past 4 Years, Accumulating Infrastructure for Learning Physics and Interaction from Raw Multimodal Data. OPAL Lab Will Develop World Models, Collaborating with Academic and Industry Partners (chips, hardware, physical agent systems), All Outputs Openly Available.", "Multiple Instagram users report account takeovers, with hackers gaining account access by deceiving Meta's AI support chatbot. Attackers leveraged the AI chatbot's instruction-following capability to bypass normal authentication processes and reset account passwords. TechCrunch detailed the attack methodology. Meta has not publicly responded regarding the security vulnerability details or remediation timeline. The incident exposes systemic security risks from lacking permission boundary controls when integrating AI chatbots into user support scenarios.", "OpenRouter adds new functionality to Auto Router, allowing users to customize the weight ratio between cost and quality. The new parameter enables fine-grained control of routing strategies, enabling flexible switching between cost-sensitive and quality-priority scenarios. The official documentation provides detailed configuration instructions.", "OpenAI breaks ground on a 1GW data center in Michigan as a critical component of the Stargate project. The facility will support AI inference and training needs, expanding AI access and creating local jobs. This represents the largest single infrastructure investment disclosed under the Stargate framework.", "NVIDIA announces its AI Cloud ecosystem has expanded to six continents, with partners including CoreWeave, Firmus, IREN, and Nscale deploying dedicated cloud infrastructure globally for training, inference, and agentic AI. Jensen Huang stated \"every company and every country needs AI factory infrastructure to transform data into intelligence\". Regional expansion is accelerating in Southeast Asia, Australia, and the Americas, with new additions Africa Cassava and South America Claro. Partners are adopting NVIDIA DSX reference architecture and liquid cooling modular design to reduce per-token cost and improve energy efficiency.", "Anthropic confirms it has confidentially submitted a draft S-1 registration statement to the SEC, awaiting review completion. Previously, Anthropic just completed a $65B Series H funding round led by Altimeter Capital, Dragoneer, Greenoaks, and Sequoia Capital, with post-money valuation at $965B. Specific IPO timeline, share count, and pricing remain undisclosed. Anthropic is OpenAI's primary competitor and has previously received billions of dollars in investment from Amazon.", "Startup The Mall launches its eponymous shopping app, building a cross-brand product database by scraping retail site catalogs, currently covering over 10,000 brands. The backend uses LLMs and proprietary models for automatic product tagging, supporting category search and price comparison. Users following brands can track promotions, restocks, and new product alerts in real-time, and discover similar lower-priced alternatives. Founded in October 2025 by Ellie Konsker (Tom Ford/Karla Otto background) and Stanford CS graduate Sreya Halder, positioned as \"Spotify for shopping\". Currently invite-only, full launch expected by late summer. Business model relies on anonymous brand data analytics tools and advertising placements.", "Anastasia Kotelnikova et al. evaluate LLM teams on the ChGK quiz game, which requires indirect reasoning and cultural knowledge. Using 572 questions released in 2025, they compare three strategies: Voting, Silent Team, and Talkative Team. Experiments with six open-source models show team strategies boosting accuracy by up to 20 percentage points, with the best team achieving 44.23%, approaching human team levels. Analysis reveals strong inter-model disagreement predicts low accuracy, but explanatory communication can mitigate the decline. The study concludes LLM teams primarily function as answer selection and error filtering mechanisms rather than novel solution generators.", "Liwei Kang, Yee Whye Teh, and Wee Sun Lee discover that as LLM reasoning trajectories form linearized search trees, raw search history is insufficient to reliably outperform heuristic search observing only local states. The reason is that backtracking does not explicitly mark which earlier state was returned to. By adding parent pointers to explicitly represent the linearized tree structure (LinTree), they simultaneously improve task performance and search efficiency across Blocks World, Grid Navigation, and Sokoban environments. Results indicate search history is most useful when tree structure is made explicit.", "Yiming Ren et al. propose S2L-PO (Small-to-Large Policy Optimization), leveraging same-family small models as natural explorers to train large models. They discover that small models achieve higher pass@k as sampling increases, with their diversity exhibiting temporal correlation while maintaining logical consistency, superior to token-level random noise. Through progressive annealing strategy transitioning from small model offline rollouts to the large model's own sampling, they avoid mid-stage performance degradation caused by small model capacity limitations. On AIME 24, using a 1.7B model to guide an 8B model achieves +8.8% accuracy improvement while reducing rollout computation.", "DeepPrinciple proposes Materials Property Axiom (MPA), adapting LLM's three-stage training paradigm (pretraining→alignment→post-training) for materials property prediction. Pretraining is based on approximately 64 million 3D self-supervised optimized material geometries. The intermediate stage selects auxiliary data based on physical relevance to target properties, with post-training fine-tuned for specific experimental endpoints. Across 40 experimental properties, MAE is reduced by 10% on average, with a maximum reduction of 51% in individual OOD tasks. The greatest improvements occur when intermediate training signals align with the physical mechanisms of target properties.", "Shraman Pal and Can Li propose DisjunctiveNet, enforcing hard mixed-integer linear constraints in neural networks through differentiable convex optimization layers. The method represents logical rules as disjunctive constraints, deriving convex hull forms through hierarchical convex relaxation, generating linear constraints embeddable as differentiable optimization layers and achieving precise rule satisfaction. On real datasets, it achieves perfect rule satisfaction and strong predictive performance, overcoming limitations of existing methods that can only approximately satisfy constraints.", "Cosmos 3 unifies the \"scene understanding→prediction→action generation\" loop in a single model, representing a critical step for physical AI end-to-endization from perception to control.", "Qwen3.7-Plus achieves systematic breakthrough in multimodal Agent capabilities, with GUI operation and visual programming benchmarks comprehensively outperforming same-level models.", "Open-source programming model赛道 continues to heat up, with MiniMax M3 joining to directly compete with CodeQwen, CodeLlama and others.", "JetBrains introduces MoE architecture into IDE-native programming assistance through Mellum2, where sparse activation is crucial for cost-sensitive scenarios.", "OpenAI's hiring of an executive with Salesforce background signals AI commercialization shifting from technology competition to ecosystem and channel-driven approaches.", "Unitree H2+'s complete hardware specifications and dexterous hand configuration indicate domestic humanoid robots transitioning from prototype demonstrations to industrial-grade operational capabilities.", "Luma takes an open science approach to physical AI, countering the trend of a few companies monopolizing physical intelligence infrastructure, marking its strategic extension from multimodal generation to embodied intelligence.", "Integration of AI chatbots into security-sensitive products exposes novel attack surfaces, indicating AI security is not merely a model-layer issue.", "Auto Router's trade-off parameters hand routing strategy control to users, with meeting differentiated needs being the core competitive advantage for routing tools.", "1GW-class data centers mark AI infrastructure entering the GW era, with power supply capacity becoming the core constraint for AI expansion.", "NVIDIA bypasses self-built production capacity bottlenecks through partner network, with ecosystem expansion speed being the key to determining its AI infrastructure market share.", "Anthropic launching IPO at nearly trillion-dollar valuation represents AI companies entering a new capital market phase, with its partnership dynamics with Amazon worth following.", "AI-driven cross-retailer product aggregation and automatic tagging addresses brand discovery and price tracking pain points in the fragmented e-commerce era.", "LLM teams' limitations in complex reasoning scenarios reflect single-model capability boundaries, with multi-agent collaboration still requiring breakthroughs.", "Implicit backtracking in LLM reasoning is an efficiency bottleneck, and explicit structured representation is an effective direction for improving reasoning search quality.", "Same-family small models as policy-level exploration sources are more effective than token-level noise, providing a new paradigm for efficient RL training.", "Transfer effectiveness in materials property prediction depends on shared physics rather than data statistics, selecting auxiliary data based on physical relevance is a key innovation.", "Neurosymbolic learning is moving from the opposition of discrete optimization and gradient-based learning toward convergence, with sparse data scenarios as its differentiated application direction.", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "NVIDIA Cosmos 3 Released: Physical AI Open World Foundation Model", "Qwen3.7-Plus Released: Multimodal Agent Foundation, Leads in Coding Agent Benchmarks", "MiniMax Releases M3 Model: Programming Capability Close to Opus 4.7", "JetBrains Releases Mellum2: 120B Parameter Sparse MoE Programming Model", "OpenAI Brings in Salesforce Global Partnership VP", "Unitree Releases H2+ Humanoid Robot: 75 DOF Dexterous Manipulation", "Luma Establishes OPAL Lab: Open Physical AI Research", "Meta AI-Supported Chatbot Bypassed: Hackers Hijack Multiple Instagram Accounts", "OpenRouter Auto Router Adds Cost-Quality Trade-off Tuning Feature", "OpenAI Breaks Ground on 1GW Data Center in Michigan, Largest Single-Point Investment in Stargate Project", "NVIDIA AI Cloud Ecosystem Expands to Six Continents, Partners Accelerate AI Factory Deployment", "Anthropic Secretly Submits S-1 Draft to SEC: $965B Valuation IPO Process Initiated", "The Mall Releases AI-Powered Universal Shopping Feed Application", "LLM Teams Still Have Limitations in Indirect Reasoning and Cultural Knowledge Tasks", "LinTree: Explicit Tree-Structured Search History Improves LLM Reasoning Efficiency", "S2L-PO: Small Models as GRPO Natural Explorers", "Materials Property Axiom: Three-Stage Materials Property Prediction", "DisjunctiveNet: Differentiable Convexification Optimization Layer Achieves Neurosymbolic Learning Breakthrough", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "NVIDIA Cosmos 3 Released: Physical AI Open World Foundation Model, GTC T...", "Qwen3.7-Plus Released: Multimodal Agent Foundation, Programming Agent benc...", "MiniMax Releases M3 Model: Another Contestant in Open-Source Coding Battlefield", "JetBrains Releases Mellum2: 120B Parameter Sparse MoE Programming Model", "OpenAI Hires Salesforce Global Partner VP, Accelerating Enterprise Channel Expansion", "Unitree Releases H2+ Humanoid Robot: 75 DOF Dexterous Manipulation, Powered by NVIDI...", "Luma Establishes OPAL Lab: Open Physical AI Research, Solving Robot Generalization Problem", "Meta AI-Supported Chatbot Bypassed: Hackers Hijack Multiple Instagram Acco...", "OpenRouter Auto Router Adds Cost-Quality Trade-off Tuning Feature", "OpenAI Breaks Ground on 1GW Data Center in Michigan, Largest Single Site of Stargate Project...", "NVIDIA AI Cloud Ecosystem Expands to Six Continents, Partners Accelerate AI Factory Deployment", "Anthropic Has Secretly Submitted S-1 Draft to SEC: $965B Valuation IPO Process...", "The Mall Releases AI-Powered Universal Shopping Feed Application", "LLM Teams Still Have Limitations in Indirect Reasoning and Cultural Knowledge Tasks", "LinTree: Explicit Tree-Structured Search History Improves LLM Reasoning Efficiency", "S2L-PO: Small Models as GRPO Natural Explorers, Improving Math Reasoning Accuracy", "Materials Property Axiom: Three-Stage Training Framework Enhances Materials...", "DisjunctiveNet: Differentiable Convexification Optimization Layer Achieves Neurosymbolic Learning Breakthrough", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

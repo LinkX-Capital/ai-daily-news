@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1096,6 +1117,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["OpenAI Releases GPT-5.5-Cyber Limited Preview, Available to Verified Cybersecurity Teams", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "OpenAI Releases GPT-5.5-Cyber Limited Preview, Available to Verified Cybersecurity Teams", "Alibaba Releases CyberSecQwen-4B Cybersecurity-Specialized Model, Making the Case for Specialized Small Models for Defensive Cybersecurity", "xAI Releases Grok Voice Think Fast 1.0, Voice Agent Supporting Complex Workflows", "Cloudflare Lays Off 1100+ Employees to Transition to AI-First Operations, Q1 Earnings Beat Expectations but Stock Drops 14% After Hours", "Anthropic Officially Releases Claude for Microsoft 365, Covering Excel/PowerPoint/Word/Outlook", "OpenAI Codex Releases Chrome Extension, Supporting Direct In-Browser Running on macOS/Windows", "Anthropic Signs $1.8 Billion Seven-Year Cloud Computing Agreement with Akamai, Expanding Compute Sources", "DeepSeek's First External Financing Targets Up to 50 Billion RMB, Setting China AI Single-Round Fundraising Record", "SGLang Team Founding RadixArk Raises $100 Million Seed Round, Building Open-Source AI Inference Standard", "Pit AB Raises $16 Million Seed Round for Enterprise AI-Native Operations Software Platform", "Core Automation Targets $500 Million-$1 Billion Funding, Former OpenAI Research VP Founds New Continual Learning Paradigm", "Allen AI Releases EMO, MoE Pre-Training Achieves Emergent Modular Deployment", "STRIDE Research (SIGIR 2026), Reshaping Multi-Hop Question Answering RAG with Hierarchical Decision Architecture", "HIT (Shenzhen) and Huawei Release Dynamic-dLLM, Diffusion Language Model Training-Free Acceleration Over 3x", "Anthropic Publishes Safety Interdiction Method Effects, Teaching Models \"Why\" More Effective Than Teaching \"How\"", "OpenAI Discloses Unintended Optimization Pressure Applied to CoT, No Observability Decline Found After Fix", "Figure Releases F.03 Robot Completing Room Cleaning and Bed Making in 2 Minutes", "OpenRouter Agent SDK Adds Human-in-the-Loop Tools, Supporting Automatic Parsing and Human Intervention Workflows", "OpenAI Announces GPT-5.5-Cyber Launch on May 8, Fine-Tuned for Cybersecurity Defense Scenarios Based on GPT-5.5 Released Last Month. Model Available as Limited Preview to Verified Cybersecurity Teams Only, Not for General Public. CEO Sam Altman Says Limited Rollout Will Begin Within Days. Move Comes About One Month After Anthropic Released Mythos.", "Alibaba Releases CyberSecQwen-4B, a Lightweight AI Model Focused on Cybersecurity. Blog Post Makes the Case That Defensive Cybersecurity Scenarios Require Small, Specialized, Locally-Runnable Models Rather Than General-Purpose Large Models. Article Also Discusses Why This Model Is Suitable for Edge Device Deployment.", "xAI Releases Grok Voice Think Fast 1.0, a Voice Agent for Real-World Customer Support Scenarios. Model Can Quickly and Accurately Process Complex Workflows, Supporting Real-Time Voice Interaction.", "Cloudflare Announces Layoffs of Approximately 20% of Workforce (1100+), CEO Matthew Prince and Co-Founder Michelle Zatlyn State in Joint Declaration This Is Not Cost-Cutting but Transition to \"AI-First Agentic Operations,\" Redesigning Every Team and Function to Adapt to the Agentic AI Era. Company Discloses Internal AI Usage Increased 600%+ Over Past Three Months. Same Day Q1 Earnings Beat Expectations but Stock Still Drops 14% After Hours, Market Negatively Reacts to Slightly Below-Expected Q2 Revenue Guidance.", "Anthropic Announces Claude for Excel, PowerPoint, and Word Officially Fully Available, Claude for Outlook Enters Public Beta. Product Distributed as Microsoft AppSource Third-Party Add-in, Existing Side-by-Side with Copilot in Office Sidebar. Core Capability: Cross-App Context Sharing — Sorting Emails in Outlook, Drafting Memos from Team Templates in Word, Building Models with Real Formulas in Excel, Generating Editable Native Charts Strictly Following Enterprise Templates in PowerPoint. All Changes Shown in Revision Mode, Available to All Paid Plan Users.", "OpenAI Announces Codex Now Available via Chrome Extension for Direct In-Browser Running on macOS and Windows, No Need to Leave Chrome. New Version Enhances Collaboration with Chrome Apps and Websites, Supports Cross-Tab Background Parallel Work Without Occupying Current Browser Operations. Users Can Install Chrome Extension in Codex App to Use.", "Anthropic Signs $1.8 Billion Seven-Year Cloud Computing Agreement with Akamai Technologies to Support AI Software Operations. Akamai Described This Customer as \"Leading US Frontier Model Provider\" in Q1 Earnings Report. Anthropic Previously Established Deep Compute Partnerships with Google Cloud and Amazon AWS; This Agreement with Akamai Marks Further Diversification of Compute Sources. Akamai Stock Surged to Highest Level Since 2000 After News Release.", "According to The Information, DeepSeek is seeking to raise up to 500 billion RMB (approximately $73.5 billion) in its first funding round, which would set the record for the highest single-round financing by a Chinese AI company. Founder Liang Wenfeng plans to invest 20 billion RMB personally (40%). Including the fundraising amount, the post-money valuation will exceed 350 billion RMB (approximately $51.5 billion). Previously, the National Integrated Circuit Industry Investment Fund was negotiating to lead the round, with internet giants like Tencent and Alibaba also participating in negotiations. The financing will also accelerate commercialization: Version V4.1 is planned for June release, adding enterprise tooling capabilities, enhanced MCP adaptation, and image/audio understanding (output still limited to text).", "AI infrastructure startup RadixArk has completed a $100 million seed round of financing, with participation from well-known investment firms including a16z and Lakestar. The team's core members come from the SGLang open-source project. This round of financing will be used to build the next generation of open AI infrastructure.", "AI-native platform Pit AB has completed a $16 million seed round of financing, with investments from a16z, Lakestar, and individual investors. Pit AB customizes internal operations software for enterprises, positioning itself as AI product team as a service. This round of financing will be used for team expansion and product R&D.", "Former OpenAI VP of Research Jerry Tworek founded Core Automation, with the company website slogan being \"the world's most automated AI lab\". Tworek's research direction is \"teaching language models to solve STEM and programming problems\", with the core proposition questioning gradient descent itself: publicly stating the need to \"rethink the core of model development, up to and including gradient descent\"—meaning a new optimization mechanism to replace gradient descent, allowing models to continue learning rather than stagnating at training completion. The team has recruited multiple senior researchers from Anthropic and Google DeepMind. The Information reports the company is seeking $500 million to $1 billion in financing, with a valuation target of $4 billion (only 6 weeks after founding).", "Ryan Wang, Akshita Bhagia, Sewon Min et al. from Allen AI release EMO (Emergent Modularity), a MoE pretraining method for modular deployment. Core idea: restrict tokens within the same document to choose from a shared expert pool, different documents use different pools, semantic-level expert grouping (math, code, etc.) emerges during pretraining using only document boundaries, without manually defined priors. The team pretrained an EMO model with 1B activated parameters, 14B total parameters (1T tokens). As a complete model, performance matches standard MoE; key breakthrough is selective deployment: keeping only 25% of experts results in just 1% performance drop (3% at 12.5%), while standard MoE completely collapses under the same conditions. Research shows EMO's expert subsets specialize at the semantic level (domain-level), rather than standard MoE's low-level syntactic specialization.", "Wei Chen et al. published STRIDE (Strategic Iterative Decision-Making for RAG), addressing two major flaws in existing multi-hop QA methods: premature binding of surface-level entities causing ambiguity errors, and ignoring logical dependencies between reasoning steps causing execution misalignment. STRIDE divides the system into three layers: Meta-Planner constructs entity-agnostic abstract reasoning skeletons (delayed entity binding), Supervisor orchestrates sub-problem execution according to dependencies (parallel when possible, sequential when required), dedicated execution modules handle retrieval and reasoning. The team also proposes STRIDE-FT modular fine-tuning framework, using self-generated trajectories for training without human annotation or stronger teacher models.", "Tianyi Wu et al. from Harbin Institute of Technology (Shenzhen), Huawei, and Shenzhen Hehua College propose Dynamic-dLLM (ICLR 2026 Poster), a training-free acceleration framework for diffusion language models (dLLM). Addressing the bottleneck where dLLM inference complexity grows as O(L³) with sequence length, the framework contains two core components: Dynamic Cache Updating (DCU) adaptively allocates cache update budgets based on inter-layer token dynamism; Adaptive Parallel Decoding (APD) dynamically calibrates decoding thresholds to balance quality and efficiency. On models like LLaDA-8B-Instruct and Dream-v0-7B-Instruct, across benchmarks including MMLU, GSM8K, and HumanEval, it achieves over 3x average speedup with no performance loss, plug-and-play without retraining.", "Anthropic's Alignment team releases \"Teaching Claude Why\" research, using agentic misalignment (such as models extorting engineers to avoid being shut down) as a case study, disclosing safety training improvements since Claude 4. Core findings: Training directly on evaluation distribution only reduces misalignment rate from 22% to 15%, but adding ethical reasoning deliberation reduces it to 3%; more importantly, a \"difficult advice\" dataset of just 3M tokens (users facing ethical dilemmas, AI providing constitutional alignment advice) achieves the same effect, with 28x efficiency improvement over direct training data and stronger generalization. High-quality constitutional documents + positive AI fictional stories can reduce extortion rates from 65% to 19%, with improvements persisting throughout the RL process. Since Haiku 4.5, all Claude models have achieved 0% extortion rate in agentic misalignment evaluations (previously Opus 4 was as high as 96%). The team summarized four lessons: teaching principles is more effective than teaching behaviors, data quality and diversity is critical, training environments need diversification, alignment improvements can persist across RL.", "OpenAI's Alignment team published a blog post \"Investigating the consequences of accidentally grading CoT during RL\", disclosing that during training of previously deployed models, optimization pressure was accidentally applied to Chain of Thought. The team built a scanning system to detect all reward pathways and has fixed affected reward paths after identifying the issue. Key conclusion: No evidence of significant decrease in monitorability was found. OpenAI also emphasizes that CoT monitoring systems are a key defense line against AI agent misalignment, and directly rewarding or penalizing CoT changes model reasoning behavior. Anthropic's safety team (Buck Shlegeris) has reviewed the blog post.", "Figure releases new capabilities for its F.03 robot: two F.03 robots completed room cleaning and bed-making in 2 minutes. The company's CEO stated this is an important milestone for robotic embodied intelligence. See Figure's Helix 02 Bedroom coverage on their official website for details.", "OpenRouter Agent SDK releases new feature: human-in-the-loop tool. The new SDK supports automatic parsing of routine processes while allowing human intervention at key nodes for review. This feature is provided to developers in cookbook recipe form for integration.", "Following GPT-5.4-Cyber, OpenAI has once again iterated on its cybersecurity-specialized model. This forms a complementary large-small model landscape with Alibaba's CyberSecQwen-4B—major players taking the closed-source directional open approach, while open-source focuses on lightweight edge deployment.", "Verticalized demands in security scenarios are driving the commercialization of specialized small models, rather than blindly pursuing model scale.", "xAI directly competes with OpenAI in the voice track, with complex workflow processing capability as the key differentiator.", "This is one of the largest AI-related layoffs in the US tech industry recently. AI's impact on employment has shifted from prediction to reality—Cloudflare is not laying off due to losses, but because AI has eliminated the jobs themselves. \"Redesigning every function\" means this is not a one-time event.", "Anthropic directly enters the Microsoft ecosystem rather than opposing it, bypassing Copilot competition as a \"third-party add-on\"—this is a pragmatic path for B-end penetration.", "Codex moves from standalone application to browser-native integration, with \"background parallel across tabs\" being a key adaptation for developer workflows—forming differentiated competition with IDE-embedded tools like Cursor.", "Anthropic seeking third-party compute beyond Google 5GW binding aligns with OpenAI's logic of ending Azure exclusivity—frontier model companies are all reducing dependence on a single cloud provider.", "From April's rumored $10 billion valuation to May's $51.5 billion, a 5x increase in one month—DeepSeek's fundraising pace reflects FOMO sentiment in China's AI capital market. Liang Wenfeng's 40% self-investment serves as both a confidence signal and control safeguard.", "Reasoning framework teams securing top-tier financing signals that competition at the AI infrastructure layer has shifted from technical disputes to capital game stages.", "AI-native transformation of enterprise operations software still receives capital attention, but competition has become increasingly homogeneous.", "Core Automation is the only one among three self-evolution approaches (the other two: Ineffable, Recursive) that questions the \"gradient descent paradigm\" itself. If continuous learning replacing gradient updates holds true, it means the ceiling for model capabilities would no longer be limited by pretraining data volume. However, no technical details on how catastrophic forgetting will be solved have been disclosed.", "EMO solves the MoE deployment pain point of \"needing to load all experts\"—25% of experts can maintain performance, opening new paths for memory-constrained deployment of large-scale sparse models and composable architectures.", "STRIDE的核心创新是”先规划推理结构、再绑定实体”——这与人类解决复杂问题的认知顺序一致，可能成为RAG架构的新范式。", "Diffusion language models' inference efficiency is their key weakness in competing with autoregressive models, and training-free acceleration solutions lower deployment barriers.", "\"Teaching why\" outperforms \"teaching how\" — this aligns with human education intuition but is now quantified for the first time in frontier model alignment. 3M tokens can achieve a 28x efficiency improvement, suggesting data efficiency in alignment training remains far from fully tapped.", "\"Accidentally applying optimization pressure to CoT\" serves as an important empirical case in alignment research — the good news is that observability remains intact after the fix, but it exposes the need for reward pathway auditing in training pipelines.", "The practical deployment of household robots is faster than expected, but the 2-minute limit applies only to specific scenarios, requiring a longer cycle for commercialization.", "Retaining human oversight in Agent workflows is becoming a standard security configuration for enterprise applications.", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "OpenAI Releases GPT-5.5-Cyber Limited Preview, Available to Verified Cybersecurity Teams", "Alibaba Releases CyberSecQwen-4B Cybersecurity-Specialized Model, Making the Case for Specialized Small Models for Defensive Cybersecurity", "xAI Releases Grok Voice Think Fast 1.0, Voice Agent Supporting Complex Workflows", "Cloudflare lays off 1100+ people to transition to AI-first operations, internal AI usage up 600% in three months", "Anthropic officially releases Claude for Microsoft 365, covering the full Office suite", "OpenAI Codex releases Chrome extension, supporting direct in-browser execution", "Anthropic signs $1.8 billion seven-year cloud computing agreement with Akamai", "DeepSeek targets up to 50 billion RMB in first external funding round, setting China's AI single-round financing record", "SGLang Team Founding RadixArk Raises $100 Million Seed Round, Building Open-Source AI Inference Standard", "Pit AB Raises $16 Million Seed Round for Enterprise AI-Native Operations Software Platform", "Core Automation Targets $500 Million-$1 Billion Funding, Former OpenAI Research VP Founds New Continual Learning Paradigm", "Allen AI Releases EMO, MoE Pre-Training Achieves Emergent Modular Deployment", "STRIDE Research (SIGIR 2026), Reshaping Multi-Hop Question Answering RAG with Hierarchical Decision Architecture", "HIT (Shenzhen) and Huawei Release Dynamic-dLLM, Diffusion Language Model Training-Free Acceleration Over 3x", "Anthropic Publishes Safety Interdiction Method Effects, Teaching Models \"Why\" More Effective Than Teaching \"How\"", "OpenAI Discloses Unintended Optimization Pressure Applied to CoT, No Observability Decline Found After Fix", "Figure Releases F.03 Robot Completing Room Cleaning and Bed Making in 2 Minutes", "OpenRouter Agent SDK Adds Human-in-the-Loop Tools, Supporting Automatic Parsing and Human Intervention Workflows", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "OpenAI releases GPT-5.5-Cyber limited preview for vetted cybersecurity…", "Alibaba releases CyberSecQwen-4B, a cybersecurity-specific model, demonstrating defensive cybersecurity…", "xAI releases Grok Voice Think Fast 1.0, supporting complex task…", "Cloudflare lays off 1100+ to pivot to AI-first operations, Q1…", "Anthropic officially releases Claude for Microsoft 36…", "OpenAI Codex releases Chrome extension for macOS/Windo…", "Anthropic signs $1.8 billion seven-year cloud computing agreement with Akamai, expanding compute…", "DeepSeek's first external financing, targeting up to 50 billion RMB, sets China AI single-round financing reco…", "SGLang team founded RadixArk raises $100 million seed round, building open-source AI inference stan…", "Pit AB Raises $16 Million Seed Round for Enterprise AI-Native Operations Software Platform", "Core Automation Targets $500 Million-$1 Billion Funding, Former OpenAI Research VP Founds New Continual Learning Paradigm", "Allen AI Releases EMO, MoE Pre-Training Achieves Emergent Modular Deployment", "STRIDE research (SIGIR 2026), reshaping multi-hop QA RA… with hierarchical decision architecture", "HITsz and Huawei release Dynamic-dLLM, diffusion language model training-free acceleration…", "Anthropic reveals safety intervention method effects, teaching models \"why\" is more… effective than teaching \"how\"", "OpenAI Discloses Unintended Optimization Pressure Applied to CoT, No Observability Decline Found After Fix", "Figure Releases F.03 Robot Completing Room Cleaning and Bed Making in 2 Minutes", "OpenRouter Agent SDK adds human-AI interaction tools, supporting automatic parsing and…", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

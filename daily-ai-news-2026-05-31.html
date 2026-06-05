@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -996,6 +1017,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["OpenRouter launches per-request observability feature, enhancing API key-level control", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "X Discussion", "OpenRouter launches per-request observability feature, enhancing API key-level control", "OpenAI CRO Denise Dresser's enterprise market strategy: intensifying competition with Anthropic", "SoftBank commits up to 75 billion euros in France to build 5GW AI data center capacity", "NVIDIA and Tsinghua propose γ-World: multi-agent world model achieves 24FPS real-time interaction", "LeCun team proves: LeJEPA must satisfy Gaussian distribution condition to learn true structure", "Pion optimizer: fixes spectral norm through orthogonal equivalence transformation to solve training instability", "MetaAgent-X: end-to-end RL jointly optimizes multi-agent system design and execution, exceeding baseline by 21.7%", "SpaceX develops proprietary C training stack, claims 10x faster than JAX", "Anthropic engineering blog: interview questions continuously beaten by Claude, forcing three redesigns", "OpenRouter releases per-request observability feature, allowing users to view detailed run data for each request, with Activity dashboard summary view. Users can assign guardrails for specific API keys or members, or set workspace-level control rules. This feature builds on existing API key management capabilities, supporting request behavior monitoring by key dimension.", "The Information feature analyzes OpenAI CRO Denise Dresser's (former Slack CEO) enterprise market strategy. Dresser previously wrote in a four-page internal memo \"the market is as competitive as I have ever seen it\", accusing Anthropic of inflating ARR (claiming its $30B is only $22B by OpenAI's measure), and calling Anthropic's failure to stockpile compute a \"strategic misstep\" and its single-product programming strategy unsustainable in a \"platform war\". OpenAI's response includes: gaining new enterprise distribution channels through AWS/Bedrock partnership (including Amazon equity investment + Trainium compute), launching a $4B Deployment Company, and promoting multi-product cross-selling (\"multi-product adoption makes us harder to replace\"). According to The Information, OpenAI Q1 revenue is nearly $6B; Ramp enterprise spending data shows Anthropic's gap with OpenAI has narrowed from 11% to 4.6%.", "SoftBank Group announces it will develop and operate AI data centers with 5GW capacity in France, investing up to 75 billion euros (approximately $87.5 billion). This is SoftBank's largest AI infrastructure investment in Europe to date, and one of the largest single commitments in European AI infrastructure. SoftBank cited France's advanced power grid as one of its strategic advantages for the location.", "NVIDIA and Tsinghua University jointly propose γ-World, a generative world model supporting multi-agent (multi-player) interactions. Core innovations include: Simplex Rotary Agent Encoding (parameter-free 3D RoPE extension based on regular simplex, achieving permutation-symmetric agent identity encoding) and Sparse Hub Attention (mediating cross-agent communication through learnable hub tokens, reducing attention cost from quadratic to linear). The model distills bidirectional multi-agent teachers into chunk causal student models, supporting KV cache streaming inference, achieving real-time 24 FPS. Experiments show γ-World can generalize from 2-player to 4-player interactions without additional training.", "Yann LeCun, David Klindt, and Randall Balestriero jointly publish theoretical work. World models should learn the \"true structure\" of the world rather than surface pixels, but JEPA previously only had empirical results without theoretical guarantees. The paper proves: only when the latent variable distribution is Gaussian can LeJEPA recover the true underlying structure of the world from nonlinear pixel-level observations; all other non-Gaussian distributions cannot provide the same guarantee. Experiments cover latent variables from 2D to 1024 dimensions, including distribution ablation and pixel-level robot control verification.", "CUHK, Max Planck Institute and other institutions jointly propose Pion optimizer. Unlike additive optimizers like Adam/Muon, Pion updates weight matrices through left-right orthogonal transformations, maintaining singular values throughout training, achieving an update mechanism of \"adjusting geometric structure while fixing spectral norm\". Follow-up work Rethinking Muon Beyond Pretraining further reveals Muon's uniform spectral whitening failure modes in VLA and RLVR scenarios, proposing high-pass NS iteration as an alternative. Pion achieves 100% success rate on LIBERO VLA tasks (Muon 97%, AdamW 32.2%); in RLVR post-training, Muon collapses to zero while Pion stably outperforms AdamW.", "Oregon State/UCSD/Amazon AGI/Penn State jointly propose MetaAgent-X, addressing the \"frozen executor ceiling\" problem in automatic multi-agent systems (MAS) where existing methods only optimize the design layer or only do test-time search. MetaAgent-X achieves structured rollout generation and precise credit assignment through Executor Designer Hierarchical Rollout, and decoupled scalable training through Stagewise Co-evolution. On Qwen3-4B and 8B base models, it improves up to 21.7% over 6 automatic MAS baselines including AFlow/ADAS/ScoreFlow/MaAS/AFM. SFT cold start is based on 3K Designer + 8K Executor DeepSeek-V3.2 trajectories; RL stage mixes Polaris-Dataset-53K/APPS/CodeContests training.", "SemiAnalysis reveals SpaceX (NVIDIA's largest customer by GPU procurement volume) is nearing completion of v1.0 of its self-developed AI training stack, written entirely in C, with design goal of \"exact-map\" to 220,000 NVIDIA GB300 GPUs + 800G NICs, running as close to bare metal as possible. Elon Musk's team claims the stack is 10x faster than Google JAX (unverified).", "Anthropic performance optimization team lead Tristan Hume writes about how their performance engineering take-home test (simulating accelerator code optimization) has been completed by over 1,000 candidates, with dozens hired. But each Claude generation forces test redesign: Claude Opus 4 surpasses most human applicants within the same time limit, Claude Opus 4.5 further catches up to top candidates' performance. Hume has iterated through three versions trying to maintain test differentiation. Anthropic released the original test as an open challenge — under unlimited time conditions, the best humans can still beat Claude.", "OpenRouter is evolving from a model routing platform to an enterprise-grade AI infra platform, with observability features completing the operational capabilities needed for B-end customers.", "OpenAI is shifting from technology product-driven to sales-driven, and Dresser's aggressive competitive posture indicates the enterprise market has become the core battlefield for both companies' valuation narratives. Anthropic's pace of catching up in enterprise spending is the key variable.", "SoftBank's 75 billion euro commitment will reshape the European AI infrastructure competitive landscape, but execution speed and talent reserves will be key challenges.", "γ-World advances world models from single-agent to multi-agent interaction, having direct application value for scenarios like multi-player game generation and multi-robot simulation.", "This means JEPA's empirical effectiveness is not tuning voodoo but has strict mathematical boundaries — Gaussian priors are a necessary condition, and all non-Gaussian designs inevitably cannot achieve the same guarantee.", "Pion unifies optimizer design for pretraining and post-training from a spectral preservation perspective, providing a systematic solution to stability issues in emerging training paradigms like VLA/RLVR.", "The transition from \"enabling agents to collaborate\" to \"end-to-end model self-design and self-execution\" is a critical step for multi-agent systems moving from engineering orchestration toward autonomous evolution.", "SpaceX's choice reflects zero tolerance for framework overhead in ultra-large-scale training clusters—when GPU counts exceed 200,000+, the abstraction layer cost of Python/XLA becomes unacceptable. But the 10x performance claim requires third-party verification.", "Anthropic quantifies AI capability growth using their own interview questions: each new model generation eliminates one version of the test, which more intuitively demonstrates AI's substitution pressure on knowledge work than any benchmark.", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "X Discussion", "OpenRouter Launches Per-Request Observability Feature", "OpenAI CRO Denise Dresser's enterprise market strategy: intensifying competition with Anthropic", "SoftBank Commits Up to 75 Billion Euros to Build 5GW AI Data Center in France", "NVIDIA and Tsinghua Propose γ-World Multi-Agent World Model Achieving 24FPS Real-Time Interaction", "LeCun's Team Proves LeJEPA Must Satisfy Gaussian Distribution Conditions to Learn True Structure", "Pion optimizer: fixes spectral norm through orthogonal equivalence transformation to solve training instability", "MetaAgent-X: End-to-End RL Jointly Optimizes Multi-Agent System Design and Execution", "SpaceX develops proprietary C training stack, claims 10x faster than JAX", "Anthropic engineering blog: interview questions continuously beaten by Claude, forcing three redesigns", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "X Discussion", "OpenRouter launches per-request observability feature, enhancing API key-level control", "OpenAI CRO Denise Dresser's Enterprise Market Strategy: with An…", "SoftBank commits up to 75 billion euros in France to build 5GW AI data center capacity", "NVIDIA and Tsinghua Propose γ-World: Multi-Agent World Model Achieving 24FPS Real-Time…", "LeCun team proves: LeJEPA must satisfy Gaussian distribution condition to learn true structure", "Pion optimizer: fixes spectral norm through orthogonal equivalence transformation to solve training instability", "MetaAgent-X: End-to-End RL Jointly Optimizes Multi-Agent System Design and Execution, Surpasses…", "SpaceX develops proprietary C training stack, claims 10x faster than JAX", "Anthropic engineering blog: interview questions continuously beaten by Claude, forcing three redesigns", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

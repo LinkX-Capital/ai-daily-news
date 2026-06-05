@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1078,6 +1099,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["Thinking Machines Lab proposes Interaction Model architecture, 276B MoE natively supports real-time multimodal collaboration", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Thinking Machines Lab proposes Interaction Model architecture, 276B MoE natively supports real-time multimodal collaboration", "Claude Code launches Agent view, supporting multi-session parallel management and background execution", "AWS Bedrock AgentCore supports AI agent autonomous payment, launches Agent Toolkit to simplify development", "SpaceX submits SpaceX AI trademark registration, AI subsidiary enters preparation stage", "Google launches REPLIQA research program, investing $10 million to explore quantum computing applications in life sciences", "Google Gemini launches paper notes digitization, can convert to study guides or flashcards", "SemiAnalysis deeply analyzes King Slide: AI server slides near monopoly, liquid cooling solutions become new growth", "Kuaishou plans to spin off Kling AI, raising $2 billion at $20 billion valuation", "Quantum precision measurement company Guoyi Quantum passes IPO hearing, plans to list on STAR Market", "Feng Yao and Liu Miao jointly establish embodied AI company, reconstructing training paradigm centered on humans", "ICLR 2026 paper statistics: Tsinghua 331 papers ranks first globally, American institutions account for 40% of Oral papers", "PRISM framework uses hierarchical decision-making instead of Best-of-N, dLLM inference speedup up to 6.5x, GSM8K improves to 85%", "Claw-Eval-Live proposes agent dynamic evaluation framework: highest pass rate only 66.7%, HR and multi-system workflows become bottlenecks", "Luma Agents integrates Kuaishou Kling Omni+ launched same day with reference image-guided generation", "vLLM tops Artificial Analysis inference ranking, DeepSeek V3.2 and MiniMax-M2.5 deployment performance ranked in front", "Red Hat AI team details vLLM TurboQuant quantization technology, comparing 4x 30B model FP8/BF16 baselines", "Thinking Machines Lab releases Interaction Models research preview, proposing to treat interaction capabilities as native model capabilities rather than external components. First model TML-Interaction-Small is a 276B parameter MoE (12B active parameters), using 200ms micro-turn design to continuously process concurrent audio, video and text input/output without external dialogue management components like voice-activity-detection. System divided into two layers: interaction model handles real-time sensing and response, background model handles deep reasoning and tool calls, both share context. Achieves best results on FD-bench v1.5 interaction quality evaluation, Audio MultiChallenge exceeds all non-thinking models. Team also proposes new benchmarks like TimeSpeak, CueSpeak, ProactiveVideoQA to test temporal awareness, simultaneous speech and visual proactivity capabilities, which existing commercial real-time models (GPT-Realtime, Gemini Flash Live) cannot effectively complete. Model uses encoder-free early fusion—audio encoded through dMel embedding layer, images through 40x40 patch + hMLP, all components jointly trained from scratch. Inference-optimized streaming sessions feature has been upstreamed to SGLang.", "Claude Code launches Agent view as research preview, solving terminal label management challenges in multi-agent parallel scenarios. Available for Pro/Max/Team/Enterprise and API plan users. Interface displays session status per line (awaiting input/working/completed), previous reply summary and last interaction time, can directly peek-inline without context switching, also supports `/bg` or `claude --bg [task]` to start new tasks in background. Early users have already used it for concurrent task distribution, PR monitoring on schedule, fast context switching and other scenarios.", "Amazon Bedrock AgentCore preview first supports AI agent autonomous payment capability, enabling AI agents to independently execute commercial transactions. AWS simultaneously launches Agent Toolkit development toolkit, simplifying AI agent application building. AWS states in blog this was the most exciting news of the week.", "SpaceX has submitted two \"SpaceX AI\" word trademarks to USPTO, serial numbers 99808217 and 99808187, first application explicitly points to space computing direction, covering satellite-based data centers and other businesses. SpaceX submitted application in January this year, planning to launch up to 1 million satellites, building distributed AI data centers in orbit. Reuters cites sources that SpaceX and xAI merger discussions have entered substantive stage, related plans may be completed before SpaceX's planned IPO this year. Additionally, SpaceX AI's establishment is actually Musk's implementation of integrating AI capabilities with space infrastructure.", "Google Quantum AI and Google.org jointly launch REPLIQA (Research Program at the Intersection of Life Sciences & Quantum AI), committing $10 million, collaborating with five universities: Harvard, MIT, UCSD, UCSB, University of Arizona. Research directions include quantum sensors observing biological processes, quantum computers accelerating molecular interaction simulation (like P450 enzymes), goal is combining quantum technology and AI to advance drug development and life science breakthroughs. Published by Google Quantum AI founder Hartmut Neven on blog, explicitly marked as forward-looking basic research.", "Google Gemini supports digitizing paper notes, automatically organizing them into study guides or flashcards. Feature available through NotebookLM or Gemini app, helping students and teachers manage learning content for entire semesters. Users just need to photograph paper notes, Gemini can recognize text and perform smart organization.", "SemiAnalysis publishes report detailing King Slide Works—a Taiwan-headquartered AI server slide supplier. King Slide dominates the near market with largest market share. As AI server power increases, liquid cooling solution demand grows, King Slide's slide design supports direct contact of cold plates with GPU/CPU for cooling, becoming a key component in data center liquid cooling solutions.", "LatePost exclusive report: Kuaishou plans to spin off its video generation LLM business Kling AI, seeking $2 billion financing at $20 billion valuation, in negotiations with investors including Tencent; deal not yet closed. Kling's current ARR has reached $500 million, doubled from pre-Spring Festival; in early 2025 Kuaishou set revenue target for Kling at just $60 million, but actual year-end revenue reached $150 million, current ARR exceeds Kuaishou's most optimistic expectations. If deal completes, Kling will be the world's highest-valued independent video generation LLM product; comparable product Runway valued at ~$5.3 billion. Kuaishou has set incentive mechanism for Kling—team incentives will significantly increase if future IPO valuation reaches $40 billion. As of report date's Hong Kong market close, Kuaishou's total market cap is less than $29 billion. Nearly 70% of Kling's revenue comes from professional user subscriptions.", "Guoyi Quantum's STAR Market IPO has passed the issuance review committee. The company uses quantum precision measurement as core technology, providing enhanced quantum sensors, scientific instruments and industry application solutions for global enterprises, governments and research institutions. Business covers advanced materials, semiconductors, quantum science, life technology, pharmaceuticals and clinical research fields.", "DeepTech reports that Feng Yao (Stanford postdoc, student of Michael J. Black, focused on human body modeling DECA/PIXIE, joining Tsinghua AI Institute next year) and Liu Miao (Assistant Professor at Tsinghua AI Institute, former Meta GenAI contributing to Llama 3/4, Georgia Tech PhD) co-founded a startup to build a Human-Centric embodied model paradigm. In current embodied AI training, \"humans\" are generally absent—models learn grasping, folding, executing commands, but cannot understand human emotions, intentions, and needs. Their technical approaches are complementary: Feng Yao focuses on low-level human behavior understanding and 3D reconstruction, while Liu Miao focuses on cognitive-level memory, intention, and multimodal fusion.", "ICLR 2026 data shows Tsinghua University ranking first globally with 331 papers. Chinese institutions contribute about 40% of Poster paper author affiliations, but only 30% of Oral papers (only 4% of papers receive this honor); US institutions show the reverse, holding 40% of Oral and 30% of Poster papers. This year's Outstanding Paper Awards: three papers with two from the US—*LLMs Get Lost In Multi-Turn Conversation* (Microsoft & Salesforce) and honorary mention *The Polar Express* (NYU & Flatiron Institute), and one from European collaboration *Transformers are Inherently Succinct* (RPTU, ETH Zürich, Max Planck Institute). Additionally, Singapore and Korea's contributions are now comparable to EU-27's competitiveness.", "PRISM (authors Jinbin Bai et al.) addresses the inference-time scaling problem for discrete diffusion language models (dLLMs) by proposing a hierarchical decision architecture to replace the traditional brute-force Best-of-N search. Tested on LLaDA-8B-Instruct: GSM8K accuracy improved from 67.58% to 85.30%, MATH-500 from 26.40% to 42.80%; on Dream-7B-Instruct, HumanEval improved by 24.39pp, MBPP by 16.40pp. Compared to Best-of-N methods, PRISM achieves 2.9×–6.5× inference speedup.", "Claw-Eval-Live proposes a dynamic evaluation benchmark for Workflow Agents, with the core design separating a refreshable signal layer (updated with public workflow requirements) from reproducible timestamped snapshot releases. Current version contains 105 tasks, built on ClawHub Top-500 skills, covering enterprise services and local workspace repair scenarios. Evaluating 13 frontier models shows: the strongest model achieves only 66.7% pass rate, no model reaches 70%; HR, management, and multi-system business workflows remain persistent bottlenecks, while local workspace repair is relatively easier but far from saturated. The framework records execution traces, audit logs, and service states, scoring via deterministic checks + structured LLM judgment.", "Luma Agents adds integration with Kuaishou Kling Omni video generation capabilities, supporting more models and broader application ranges while maintaining the same workflow. Same-day launch of moodboard-based generation: users upload reference images to set direction, and Luma Agents automatically completes the journey from moodboard to full content generation.", "vLLM tops the DeepSeek V3.2 reasoning leaderboard on Artificial Analysis benchmark, ranking among the leaders in MiniMax-M2.5 and Qwen model deployments. Artificial Analysis is the authoritative benchmark in reasoning performance.", "Red Hat AI team releases in-depth technical analysis studying TurboQuant quantization technology in vLLM, testing four 30B parameter models with FP8 and BF16 as reference baselines, providing detailed comparative data for quantization technology selection.", "Transforming real-time interaction from external harness to native model capability aligns with the \"bitter lesson\" end-to-end learning approach; 200ms micro-turn + dual-model hierarchical architecture may become a new paradigm for real-time AI interaction, with profound implications for voice assistants, embodied AI, and other scenarios requiring continuous perception.", "Agent view improves developer toolchain, lowering the barrier for multi-session management. Claude Code is completing its engineering tool capabilities.", "AI agent autonomous payment is a critical infrastructure breakthrough for the Agent economy. AWS taking the lead means enterprise-level Agent applications are moving from demos to real commercial闭环.", "Trademark application indicates SpaceX AI is moving from concept to legal preparation stage, but specific business direction and product form remain undisclosed.", "The crossover direction of Quantum + AI + Life Sciences is clear, but commercialization path remains distant, constituting forward-looking research investment.", "Note digitization is Gemini's vertical scenario implementation—practical functionality but not high technical barriers; main competitive differentiation lies in OCR accuracy and generation quality.", "Slides may be small components, but King Slide's near-monopoly position + liquid cooling trends make it a critical yet overlooked supply chain node in AI computing infrastructure.", "Kling's spin-off at $20B valuation exceeds Kuaishou's total market cap. Video generation AI has independently formed a capital-recognized track; the spin-off is also Kuaishou's key strategy to respond to ByteDance Seedance competition and provide competitive financial returns for the team.", "Quantum measurement company IPO accelerates—quantum technology is moving from lab to commercialization, but revenue capability and market recognition remain to be verified.", "Directly addressing the data source pain point for embodied AI—human-in-the-loop training paradigm may become a key prerequisite for robots entering household scenarios.", "China leads in AI academic output volume, but high-impact indicators like Oral papers remain US-dominated, with quality catch-up still ongoing.", "Test-Time Scaling shifting from brute-force enumeration to intelligent stratification points the direction for inference optimization in emerging architectures like dLLMs; dLLMs previously lagged behind autoregressive models in inference scaling, and PRISM has narrowed this gap.", "Static benchmark freezing task sets cannot keep pace with rapid Agent capability evolution. Claw-Eval-Live's \"signal layer + snapshot\" separation design provides a reproducible solution for dynamic evaluation; the 66.7% pass rate ceiling indicates workflow automation is far from solved.", "Kuaishou Kling's overseas expansion gains integration with top AI agent platforms. Chinese video generation models are expanding overseas developer coverage through third-party platforms; reference image guidance lowers the barrier to generative AI use, and multimodal input is becoming a standard configuration in AI agent workflows.", "vLLM consistently topping reasoning leaderboards confirms its reasoning optimization capabilities; reasoning performance has established a clear technological moat.", "Red Hat's enterprise-level validation indicates vLLM quantization has achieved production-grade reliability.", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Thinking Machines Lab proposes Interaction Model architecture, 276B parameter MoE natively supporting real-time multimodal collaboration", "Claude Code adds Agent view, visualizing all session lists", "AWS Bedrock AgentCore supports AI agent autonomous payment, launches Agent Toolkit to simplify development", "Google launches REPLIQA research program, investing $10 million to explore quantum computing applications in life sciences", "SemiAnalysis deeply analyzes King Slide: AI server slides near monopoly, liquid cooling solutions become new growth", "Quantum precision measurement company Guoyi Quantum passes IPO hearing, plans to list on STAR Market", "Kuaishou plans to spin off Kling AI, raising $2 billion at $20 billion valuation", "Feng Yao and Liu Miao jointly establish embodied AI company, reconstructing training paradigm centered on humans", "ICLR 2026 paper statistics: Tsinghua 331 papers ranks first globally, American institutions account for 40% of Oral papers", "PRISM Framework Replaces Best-of-N with Hierarchical Decision-Making, dLLM Inference Speedup Up to 6.5x", "Claw-Eval-Live proposes agent dynamic evaluation framework: highest pass rate only 66.7%, HR and multi-system workflows become bottlenecks", "Luma Agents Integrates Kuaishou Kling Omni+ with Same-Day Reference Image-Guided Generation, One-Click from Mood Board to Complete Content", "vLLM tops Artificial Analysis inference ranking, DeepSeek V3.2 and MiniMax-M2.5 deployment performance ranked in front", "Red Hat AI Team Details vLLM TurboQuant Quantization Technology, Comparing 4 30B Models", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Thinking Machines Lab Proposes Interaction M…", "Claude Code Launches Agent View, Supporting Multi-Session Parallel Management and Background…", "AWS Bedrock AgentCore Supports AI Agent Autonomous Payments, Launching Age…", "SpaceX submits SpaceX AI trademark registration, AI subsidiary enters preparation stage", "Google Launches REPLIQA Research Initiative, Investing $10 Million to Explore Quantum Computing in…", "Google Gemini launches paper notes digitization, can convert to study guides or flashcards", "SemiAnalysis Deep Dive into King Slide: AI Server Slides Nearly…", "Kuaishou plans to spin off Kling AI, raising $2 billion at $20 billion valuation", "Quantum precision measurement company Guoyi Quantum passes IPO hearing, plans to list on STAR Market", "Feng Yao and Liu Miao jointly establish embodied AI company, reconstructing training paradigm centered on humans", "ICLR 2026 Paper Statistics: Tsinghua 331 Papers Ranks First Globally, US Institutions Account for Oral Papers…", "PRISM框架用分层决策替代Best-of-N，dLLM推理加速最高6.…", "Claw-Eval-Live Proposes Dynamic Agent Evaluation Framework: Highest Pass Rate Only 66…", "Luma Agents集成快手Kling Omni+同日上线参考图引导生…", "vLLM Tops Artificial Analysis Reasoning Benchmark, DeepSe…", "Red Hat AI团队详解vLLM TurboQuant量化技术，对比…", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -972,6 +993,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["Holo3 breaks frontier of computer use", "Model Frontier", "Industry Dynamics", "Startup & Funding", "X Discussion", "Holo3 breaks frontier of computer use", "Gradient Labs offers AI account managers for bank customers using GPT-4.1 and GPT-5.4", "Falcon Perception released", "SpaceX secretly files IPO registration, valuation exceeds $1.75 trillion", "Q1 startup funding hits record, OpenAI/Anthropic/xAI/Waymo secure major financing", "OpenClaw Releases v2026.4.1, Adding Task Panel, SearXNG Search, and Bedrock Guardrails Support", "Holo3 is an AI Agent project focused on Computer Use capabilities, developed by the H company team under HuggingFace. The project aims to push the frontier of AI agents operating computers, enabling AI to use computers like humans to complete complex tasks. This is HuggingFace's latest exploration in the AI Agent field, and its \"Computer Use Frontier\" positioning indicates the project focuses on enabling AI to directly control desktop applications, browsers, and other computing environments.", "Gradient Labs utilizes GPT-4.1 and GPT-5.4 mini and nano models to build AI agents for banks to automate customer support workflows. The system features low latency and high reliability, providing AI account management services for each bank customer.", "Falcon Perception is a new model in the Falcon series released by the UAE Technology Innovation Institute (TII), focused on multimodal perception capabilities. The model may possess deep understanding and reasoning abilities for multimodal content such as images and videos, representing a significant update as Falcon evolves from pure language models to multimodal. The Falcon series has always followed an open-source approach, and the release of the Perception version marks TII's comprehensive layout in the multimodal field. Another strong competitor joins the open-source multimodal model race.", "Sources reveal that SpaceX has secretly filed IPO registration documents with the SEC, planning to go public in June at a valuation potentially exceeding $1.75 trillion. SpaceX previously acquired xAI, and this deal's pull-through effect on the combined valuation is significant, making SpaceX the first ultra-large AI-related enterprise to IPO, ahead of OpenAI and Anthropic PBC. This will be one of the largest IPOs in recent years.", "Q1 2025 Startup Funding Hits Record High, Driven by Four Mega Funding Rounds: OpenAI, Anthropic, xAI and Waymo. Combined funding from these four companies accounts for most of the quarter's total, signaling sustained hot investment in the AI sector. This shows the market's confidence in the AI track remains robust.", "OpenClaw Releases v2026.4.1 with Multiple Important Updates: New `/tasks` session-level task panel; integrated SearXNG search engine plugin; Amazon Bedrock Guardrails security support; macOS voice wake to activate Talk mode; Feishu comment collaboration workflow optimization; configurable chat history truncation; global default parameters and Agent failover strategy upgrade. These updates further strengthen OpenClaw's enterprise capabilities as an open-source Agent platform.", "HuggingFace Strategically Positions AI Agent via H company, Computer Use Becomes Core Capability Track for Multi-Agent Collaboration", "AI Agent Commercialization Accelerates in Vertical Domains, Banking Becomes Key Scenario", "TII Continues Expanding Open-Source LLM Landscape via Falcon Series, Multi-modal Perception Becomes New Competitive Focus", "SpaceX+xAI Merger Listing Signals Deep Integration of AI and Aerospace, Musk's AI Asset Securitization Accelerates", "AI Funding Polarization Intensifies, Top Companies Attract Strong Capital, Investment Concentrates on Higher-Certainty Projects", "OpenClaw Continues Enhancing Enterprise Features, Security and Collaboration Become Competitive Focus for Open-Source Agent Platforms", "Model Frontier", "Industry Dynamics", "Startup & Funding", "X Discussion", "Holo3 breaks frontier of computer use", "Gradient Labs offers AI account managers for bank customers using GPT-4.1 and GPT-5.4", "Falcon Perception released", "SpaceX secretly files IPO registration, valuation exceeds $1.75 trillion", "Q1 startup funding hits record, OpenAI/Anthropic/xAI/Waymo secure major financing", "OpenClaw Releases v2026.4.1, Adding Task Panel, SearXNG Search, and Bedrock Guardrails Support", "Model Frontier", "Industry Dynamics", "Startup & Funding", "X Discussion", "Holo3 breaks frontier of computer use", "Gradient Labs Provides Banking Customers with GPT-4.1 and GPT-5.4…", "Falcon Perception released", "SpaceX secretly files IPO registration, valuation exceeds $1.75 trillion", "Q1 Startup Funding Hits Record, OpenAI/Anthropic/xAI/Waymo…", "OpenClaw Releases v2026.4.1, New Task Panel, SearXNG…", "Model Frontier", "Industry Dynamics", "Startup & Funding", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

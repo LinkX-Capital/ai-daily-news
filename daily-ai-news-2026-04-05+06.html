@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1000,6 +1021,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["OpenAI GPT-6 Leaked, Altman Bets on Next-Gen Model", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "OpenAI GPT-6 Leaked, Altman Bets on Next-Gen Model", "vLLM Adopts TorchSpec Open-Source EAGLE3 Model for Kimi 2.5 Low-Latency Inference", "Epoch AI Releases Multiple AI Infrastructure Data Insights", "New Book Reveals Zuckerberg Missed DeepMind Investment History", "Shanghai Jiao Tong University Team Proposes Multi-Agent Dynamic Collaborative Programming Scheme", "Karpathy Shares Farzapedia Personalized Wikipedia Application Case", "Qubit Report Reveals GPT-6 Information, OpenAI CEO Altman Has High Hopes for Next-Gen Model. As OpenAI's core product line, GPT series draws widespread industry attention with each iteration.", "vLLM Announces Partnership with TorchSpec Team, Integrating EAGLE3 Draft Model into Kimi 2.5 Inference Pipeline. EAGLE3 is TorchSpec's Most Popular Open-Source Draft Model, Using Speculative Decoding Framework. The Collaboration Aims to Improve Kimi 2.5 Inference Speed and Reduce Latency. vLLM is a High-Performance LLM Inference Framework with Wide Usage in Open-Source Community.", "Epoch AI Releases Three Data Insights Reports: 1) Global AI Chip Memory Bandwidth Grows 4.1x Annually, Accumulating to 70 Million TB/s by Q4 2025, Approximately Equal to 300,000x Global Internet Traffic; 2) Advanced Packaging (CoWoS) and HBM Become Main Bottleneck for 2025 AI Chip Production, Four Major Vendors Consume ~90% of Global CoWoS and HBM Supply; 3) Microsoft's Annual Capital Expenditure Reaches $68 Billion, 57% for IT Equipment (GPU/Server), 39% for Buildings.", "Journalist Sebastian Mallaby's New Book 'The Infinite Machine' Reveals DeepMind's Early History. The Book Details Zuckerberg's Opportunity to Invest in DeepMind But Ultimately Missed. This is Important Historical Record About DeepMind's Founding Period, Involving Background of Google's Acquisition of DeepMind.", "Shanghai Jiao Tong University i-WiN Center Team Proposes Novel Multi-Agent Dynamic Collaborative Programming Method. The Solution Achieves 68% Token Cost Reduction, Significantly Lowering Inference Overhead. Team Leader is Professor Guan Xinping, Authors Include Professor Chen Cailian and Associate Researcher Xu Qimin. The Research Explores Dynamic Collaboration Mechanism for Multi-Agent Systems.", "Karpathy Recommends Farzapedia Project, a Personal Wikipedia Tool Built on His Wiki LLM Tweet Concept. Farzapedia Allows Users to Create and Manage Their Own Knowledge Base, Using LLM for Personalized Knowledge Organization and Retrieval. Karpathy Expresses Optimism About This AI-Driven Personalized Knowledge Management Approach. The Project Demonstrates AI's Application Potential in Personal Knowledge Management.", "GPT-6 Leak Indicates OpenAI Continues Rapid Model Iteration, Next-Gen Model May Bring Major Capability Breakthrough.", "vLLM-TorchSpec Collaboration Reflects Deep Integration of Inference Framework and Speculative Decoding Technology, Important Engineering Path for Improving Inference Efficiency.", "AI Infrastructure Investment Continues to Accelerate, Packaging and HBM Production Become More Critical Constraint Than Logic Chips.", "DeepMind Early Investment History Reflects Importance of First-Mover Advantage in AI Field, Tech Giants' Strategic Layout Affects Industry Landscape.", "Multi-Agent Dynamic Collaboration is Important Technical Direction for Reducing LLM Inference Costs, Has Practical Engineering Value.", "Personalized Knowledge Management is Important Application Scenario for LLM Deployment, Wiki LLM Apps Have Clear Practical Value.", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "OpenAI GPT-6 Leaked, Altman Bets on Next-Gen Model", "vLLM Adopts TorchSpec Open-Source EAGLE3 Model for Kimi 2.5 Low-Latency Inference", "Epoch AI Releases Multiple AI Infrastructure Data Insights, Memory Bandwidth Grows 4.1x Annually, CoWoS/HBM Becomes Production Bottleneck, Microsoft's Annual Capital Expenditure Reaches $68 Billion", "New Book Reveals Zuckerberg Missed DeepMind Investment History", "Shanghai Jiao Tong University Team Proposes Multi-Agent Dynamic Collaborative Programming Scheme", "Karpathy Shares Farzapedia Personalized Wikipedia Application Case", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "OpenAI GPT-6 Leaked, Altman Bets on Next-Gen Model", "vLLM Adopts TorchSpec Open-Source EAGLE3 Model for Kimi 2.5 Low-Latency Inference", "Epoch AI Releases Multiple AI Infrastructure Data Insights", "New Book Reveals Zuckerberg Missed DeepMind Investment History", "Shanghai Jiao Tong University Team Proposes Multi-Agent Dynamic Collaborative Programming Scheme", "Karpathy Shares Farzapedia Personalized Wikipedia Application Case", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

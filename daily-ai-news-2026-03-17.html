@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -986,6 +1007,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["Zhipu Releases GLM-5-Turbo, Deeply Optimized for OpenClaw Scenarios", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "Zhipu Releases GLM-5-Turbo, Deeply Optimized for OpenClaw Scenarios", "Sebastian Raschka Compiles Large Model Architecture Diagram Collection, Covering DeepSeek, GPT, Qwen and Other Mainstream Models", "Google Launches Gemini API Cost Transparency and Control Features", "Google AI Version Chrome Officially Launched, Browser Comprehensively Rebuilt", "HuggingFace Releases First Medical Robot Dataset and Foundation Physical AI Model", "NVIDIA DSX Air Reduces AI Factory Deployment from Months to Days Through Accelerated Simulation", "Roche Deploys Over 3500 NVIDIA Blackwell GPUs to Build Global AI Factory, Accelerating Drug Discovery and Diagnostic R&D", "Tsinghua Team Open-Sources Teaching Lobster OpenClaw, Creating China's First L4-Level AI Classroom", "Zhipu Releases GLM-5-Turbo, a Foundation Model Deeply Optimized for OpenClaw Lobster Scenarios. GLM-5-Turbo is specially optimized from training for core lobster task needs, enhancing tool calling, instruction following, timed/persistent tasks, and long-chain execution. Key enhancements include Tool Calling, complex instruction decomposition, long-running scenarios, and high-throughput long-chain execution.", "Sebastian Raschka Compiled a Large Model Architecture Diagram Collection, Shared by Karpathy. The collection includes architecture diagrams of nearly all mainstream LLMs such as GPT, Llama, Gemma, Mistral, DeepSeek, Qwen, Kimi, GLM, and MiniMax. Gained massive attention on GitHub, providing a valuable resource for learning LLM architectures.", "Google Announces More Transparent Cost Control and Usage Management for Gemini API Users. Users can now more precisely monitor and manage API call expenses, optimizing cost支出. This is a key move by Google Cloud to enhance competitiveness in enterprise AI services.", "Google Officially Launches AI-Powered Chrome Browser with Deep Gemini AI Integration. New Chrome features intelligent tab management, AI-driven search enhancement, and optimized real-time translation, comprehensively reimagining user browsing experience. This is a major move by Google to directly embed AI capabilities into core products.", "HuggingFace Releases First Medical Robot Dataset and Foundational Physical AI Model for Medical Robots. These datasets and models aim to advance R&D and application of medical robotics technology, providing training foundations for surgical robots, nursing robots, etc.", "NVIDIA DSX Air Supports Building AI Factories in Simulation Environments, Reducing Deployment from Months to Days. Accelerated simulation is driving the next industrial revolution. DSX Air enables comprehensive system verification before actual hardware deployment, significantly reducing deployment risks and costs.", "Roche Deploys Over 3500 NVIDIA Blackwell GPUs Globally Across the Value Chain. AI factories will accelerate drug discovery, diagnostic solutions, and manufacturing breakthroughs. This is the pharmaceutical industry's first large-scale adoption of NVIDIA's latest AI hardware infrastructure. The deployment of over 3500 Blackwell GPUs is unprecedented in pharmaceutical history.", "Tsinghua University Team Open-Sourced Teaching Lobster Project OpenClaw, China's First L4-Level AI Classroom. Gained massive attention on GitHub with Star growth rate exceeding Linux. OpenClaw aims to provide AI education experience through multi-agent systems, dubbed \"Learning Lobster\" and \"AI Personal Tutor Team.\" This is the world's first multi-agent AI learning technology framework.", "Architecture Diagram Collections Spontaneously Compiled by Top Researchers Reflect Rapid Evolution of LLM Technology and Knowledge-Sharing Spirit of Open-Source Community.", "API Cost Control is a Key Consideration for Enterprise LLM Adoption, and Google is Enhancing Developer Stickiness Through Refined Operations.", "Open-Source Foundational Models in Medical Robotics Fill Industry Gap, Combining Physical AI with Medical Scenarios is Key Direction for AI Deployment.", "Simulation Acceleration Becomes Key Component in AI Infrastructure Deployment, NVIDIA is Building Full-Stack Simulation Capabilities from Hardware to Software.", "Deep Binding Between Pharmaceutical Giants and AI Chip Leader Signals AI for Science Transitioning from Research to Industrial Implementation, Drug Development Cycles Expected to Significantly Shorten.", "Tsinghua Team Achieves Breakthrough in AI Education, Multi-Agent Teaching System to Transform Human-Machine Interactive Learning Paradigm.", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "Zhipu Releases GLM-5-Turbo", "Sebastian Raschka Compiles LLM Architecture Diagram Collection", "Google Launches Gemini API Cost Transparency and Control Features", "Google Officially Launches AI-Powered Chrome", "HuggingFace Releases First Medical Robot Dataset", "NVIDIA DSX Air Accelerates Simulation Deployment", "Roche Deploys Over 3500 NVIDIA Blackwell GPUs", "Tsinghua Team Open-Sources Teaching Lobster OpenClaw", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "Zhipu Releases GLM-5-Turbo, Deeply Optimized for OpenClaw Scenarios", "Sebastian Raschka Compiles LLM Architecture Diagram Collection, Covering DeepS…", "Google Launches Gemini API Cost Transparency and Control Features", "Google AI Version Chrome Officially Launched, Browser Comprehensively Rebuilt", "HuggingFace Releases First Medical Robot Dataset and Foundation Physical AI Model", "NVIDIA DSX Air Reduces AI Factory Deployment Time from Months to Days Through Accelerated Simulation", "Roche Deploys Over 3,500 NVIDIA Blackwell GPUs to Build...", "Tsinghua Team Open-Sources Teaching Lobster OpenClaw, Creating China's First L4-Level AI Classroom", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

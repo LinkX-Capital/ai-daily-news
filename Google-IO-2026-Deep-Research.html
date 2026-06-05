@@ -197,6 +197,25 @@
             .topbar-tagline { display: none; }
             .stats-bar { gap: 14px; }
         }
+    
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -207,6 +226,7 @@
         <span class="topbar-tagline">AI Research</span>
     </div>
     <div class="topbar-right">
+            <button class="lang-toggle" id="lang-toggle">EN</button>
         <a href="topics.html" class="topbar-nav active">专题集合</a>
     </div>
 </div>
@@ -595,5 +615,67 @@
     </div>
 </div>
 
+<script>
+
+// ── Bilingual toggle (generic) ──
+(function() {
+    const EN = {"Google I/O 2026 深度研究报告": "Google I/O 2026 Deep Research Report", "护城河": "Competitive Moat", "开放 vs 封闭策略": "Open vs Closed Strategy", "顶层结论": "Top-Level Conclusions", "编码 Benchmark": "Coding Benchmark", "Agentic 工作流": "Agentic Workflow", "多模态": "Multimodal", "专家任务 / 长上下文 / 推理": "Expert Tasks / Long Context / Reasoning", "Benchmark 小结": "Benchmark Summary", "模型规格": "Model Specifications", "第三方评测": "Third-Party Evaluation", "关键数据": "Key Data", "Googlebook（新硬件）": "Googlebook (New Hardware)", "Agentic Gemini 时代——AI 不再只是帮助\"写\"的工具，而是能够帮助\"做\"的 Agent。从单轮对话到协作式、持续在线的 Agent。": "The Agentic Gemini Era—AI is no longer just a tool that helps us \"write\", but an Agent that can help us \"act\". From single-turn conversations to collaborative, continuously online Agents.", "Sundar Pichai 将今年的 I/O 定位为 \"Agentic Gemini Era\"。Google 将这一转变定义为从单轮对话到协作式、持续在线 Agent 的飞跃。": "Sundar Pichai positioned this year's I/O as the \"Agentic Gemini Era\". Google defines this transition as a leap from single-turn conversations to collaborative, continuously online Agents.", "\"我们正在超越帮助我们写的 AI 工具，走向帮助我们行动的 Agent。\" — Sundar Pichai": "\"We are moving beyond AI tools that help us write, toward Agents that help us act.\" — Sundar Pichai", "Google 宣布 2026 年 AI 相关资本支出达 $1900 亿，是 2022 年的 6 倍。搜索业务 Q1 2026 增长约 19%，部分由 AI Overviews 和 AI Mode 驱动。Google Cloud 积压订单约 $4620 亿。": "Google announced $190B in AI-related capital expenditures for 2026, 6x that of 2022. Search business grew approximately 19% in Q1 2026, driven in part by AI Overviews and AI Mode. Google Cloud backlog stands at approximately $462B.", "\"这正是我们构建 Gemini 的目标，也是我们一开始就将其设计为多模态的原因。这是一条更难的路，但现在这个基础正在产生回报。\" — Demis Hassabis": "\"This is exactly why we built Gemini, and why we designed it to be multimodal from the start. It's a harder road, but this foundation is now paying dividends.\" — Demis Hassabis", "\"任何东西都成为创造全新现实的画布。\"": "\"Everything becomes a canvas for creating entirely new realities.\"", "输出 token 速度是其他前沿模型的 4 倍。在 Agentic 工作流、金融分析、多模态推理 三大领域取得绝对领先（6 项 benchmark 第一）。在编码和 UI 控制上仅次于 GPT-5.5（差距极小：Terminal-bench 2%、OSWorld 0.3%）。Gemini App 新默认模型。": "Output token speed is 4x that of other frontier models. Achieves absolute leadership in three major areas: Agentic Workflow, financial analysis, and multimodal reasoning (6 benchmark firsts). Ranks second to GPT-5.5 in coding and UI control (minimal gaps: Terminal-bench 2%, OSWorld 0.3%). New default model in Gemini App.", "\"当你看智能 vs 输出速度时，它在右上角象限完全自成一档，输出 token 速度是其他前沿模型的 4 倍，使用体验令人愉悦。\" — Sundar Pichai": "\"When you look at intelligence vs output speed, it stands alone completely in the upper right quadrant, with output token speed 4x that of other frontier models, and the user experience is delightful.\" — Sundar Pichai", "第三方评价（TrendingTopics）：Gemini 3.5 Flash 性能大致相当于 GPT-5.5，但落后于 Anthropic Mythos——后者目前被认为是前沿模型的参照点。": "Third-party evaluation (TrendingTopics): Gemini 3.5 Flash performance is roughly equivalent to GPT-5.5, but trails behind Anthropic Mythos—the latter is currently considered the reference point for frontier models.", "Gemini 3.5 Flash 领域：Agentic 工作流、通用工具、金融分析、多模态推理/理解、1M 长上下文——6 项第一。编码和 UI 控制仅次于 GPT-5.5（差距 ≤2%）。核心优势：以 Flash 级别的速度和成本提供接近甚至超越 Pro 级别模型的性能。": "Gemini 3.5 Flash domains: Agentic workflow, general-purpose tools, financial analysis, multimodal reasoning/understanding, 1M long context—6 firsts. Coding and UI control second only to GPT-5.5 (gap ≤2%). Core advantage: delivering near or even exceeding Pro-level model performance at Flash-level speed and cost.", "JetBrains（Nick Frolov）：\"新模型在低推理编码性能上相比上一代 Flash 提升 10-20%。\"": "JetBrains (Nick Frolov): \"The new model shows a 10-20% improvement in low-inference coding performance compared to the previous generation Flash.\"", "Box（CTO Ben Kus）：\"企业评估集比 Gemini 3 Flash 高 19.6%。生命科学数据提取准确率提升 96.4%，金融服务报告准确率提升 46.7%。\"": "Box (CTO Ben Kus): \"Enterprise evaluation set is 19.6% higher than Gemini 3 Flash. Life sciences data extraction accuracy improved by 96.4%, and financial services report accuracy improved by 46.7%.\"", "Armadin（David Slater）：\"长程多轮网络安全基准比上一代 Flash 3 提升 42%，token 使用量减少 72%。\"": "Armadin (David Slater): \"Long-context multi-turn network security benchmark improved 42% compared to previous generation Flash 3, token usage reduced by 72%.\"", "Flash 发布 一个月后 推出。面向需要更深推理能力的场景。": "Released one month after Flash. Designed for scenarios requiring deeper reasoning capabilities.", "新一代张量处理器。支持全球分布式训练，速度和能效大幅提升。": "New generation tensor processor. Supports global distributed training, with significant improvements in speed and energy efficiency.", "Google Antigravity 是 Google 的 Agent 优先开发平台，定位与 Android、Firebase、Chrome 并列。这是今年 I/O 面向开发者的最重要发布。": "Google Antigravity is Google's Agent-first development platform, positioned alongside Android, Firebase, and Chrome. This is the most important developer-focused release at this year's I/O.", "AI Studio Vibe Coding 发布前内部已构建 数十万个应用。XPRIZE Hackathon 奖金池 $200 万——有史以来最大规模。Antigravity 2.0 比前代快 12 倍。Keynote 现场 编码了一个 Doom 游戏。": "AI Studio Vibe Coding had already built hundreds of thousands of apps internally before release. XPRIZE Hackathon prize pool of $2 million—the largest ever. Antigravity 2.0 is 12x faster than the previous generation. Live-coded a Doom game during the keynote.", "Universal Cart：跨零售商智能购物车。UCP 开放标准使 AI Agent 能在多商家间代理交易。": "Universal Cart: Cross-retailer smart shopping cart. UCP open standard enables AI Agents to broker transactions across multiple merchants.", "Google Pics：嵌入 Docs/Slides 的 AI 图像生成。Docs Live：语音创建文档。AI Inbox：智能收件箱。": "Google Pics: AI image generation embedded in Docs/Slides. Docs Live: Voice-enabled document creation. AI Inbox: Intelligent inbox.", "Android Halo：状态栏 Agent 指示器。Android XR 眼镜（三星 + Warby Parker），2026 秋季上市。Android 17 6-7 月正式版。": "Android Halo: State bar Agent indicator. Android XR glasses (Samsung + Warby Parker), launching fall 2026. Android 17 official release in June-July.", "AluminumOS（Android + ChromeOS）。Acer/ASUS/Dell/HP/Lenovo 合作。2026 秋季。原生 Android 应用 + Magic Pointer。": "AluminumOS (Android + ChromeOS). Partnership with Acer/ASUS/Dell/HP/Lenovo. Fall 2026. Native Android apps + Magic Pointer.", "Ask YouTube：AI 索引视频语音内容，搜索定位到时间戳。美国 2026 夏季上线。": "Ask YouTube: AI-indexed video audio content, search with timestamp precision. US launch summer 2026.", "升级为 16 个并行 Agent。Flow Music：哼唱 → Gemini 自动编曲。全线接入 Gemini Omni。": "Upgraded to 16 parallel Agents. Flow Music: Hum → Gemini auto-arrangement. Full lineup integrated with Gemini Omni.", "整合近 20 年 Street View 影像数据。生成锚定于现实世界的街景模拟和环境变化可视化。": "Integrating nearly 20 years of Street View imagery data. Generate street view simulations and environmental change visualization anchored to the real world.", "扫描企业材料建立 \"Business DNA\" 档案，自动生成品牌手册和营销内容。": "Scan enterprise materials to build \"Business DNA\" profiles, automatically generate brand manuals and marketing content.", "AI 设计 Agent，Voice Canvas 语音描述实时生成设计。导出至 Antigravity 或 Netlify。": "AI design Agent, Voice Canvas generates designs in real-time from voice descriptions. Export to Antigravity or Netlify.", "多 Agent 科研伙伴：文献综述 → 假设生成 → 实验设计 → 数据分析，加速科学发现。": "Multi-Agent research partner: Literature review → Hypothesis generation → Experimental design → Data analysis, accelerating scientific discovery.", "已投入实际使用，成功预测飓风 Melissa 对牙买加的历史性登陆，比传统数值预报更准确。": "Already deployed in real-world use, successfully predicted Hurricane Melissa's historic landfall on Jamaica, more accurate than traditional numerical forecasting.", "TrendingTopics 评价：\"Google 必须证明其模型在数十亿设备上的分发能力、在广告和云基础设施中的整合能力，能够补偿竞争对手在纯模型前沿上建立的领先优势。I/O 2026 将展示这一计算是否能够成立。\"": "TrendingTopics rating: \"Google must prove that its model's distribution capability on billions of devices and integration in advertising and cloud infrastructure can compensate for competitors' lead in pure model frontier. I/O 2026 will show whether this calculus holds.\"", "数据规模：20 年搜索数据、Street View、YouTube 内容": "Data scale: 20 years of search data, Street View, YouTube content", "产品生态：Search、Android、Workspace、Chrome、YouTube 深度整合": "Product ecosystem: Search, Android, Workspace, Chrome, YouTube deeply integrated", "基础设施：8i TPU + Google Cloud 的训练和推理能力": "Infrastructure: 8i TPU + Google Cloud training and inference capabilities", "分发渠道：数十亿用户的触达能力": "Distribution channels: Reach capability to billions of users", "WebMCP 作为开放 Web 标准": "WebMCP as an open Web standard", "UCP 作为开放商务协议": "UCP as an open commerce protocol", "Antigravity SDK 支持任意基础设施部署": "Antigravity SDK supports deployment on any infrastructure", "核心模型仍由 Google 控制": "Core models remain under Google's control", "2026年5月19-20日 · Shoreline Amphitheatre, Mountain View & 全球直播": "May 19-20, 2026 · Shoreline Amphitheatre, Mountain View & Global Livestream", "总览：Agentic Gemini 时代": "Overview: Agentic Gemini Era", "核心模型发布": "Core Model Releases", "开发者平台：Google Antigravity": "Developer Platform: Google Antigravity", "产品更新矩阵": "Product Updates Matrix", "创意工具链": "Creative Toolchain", "科学研究 × AI 安全": "Scientific Research × AI Safety", "订阅体系": "Subscription System", "时间线总览": "Timeline Overview", "战略分析": "Strategic Analysis", "24 篇官方文章索引": "24 Official Articles Index"};
+    const PH_EN = "Search news...";
+
+    const SEL = ["h1", "h2", "h3", "h4", "p", "li", "a.topbar-btn", "a.topbar-nav", "span.topbar-brand", "span.topbar-tagline", "div.hero-eyebrow", "div.hero-title", "div.hero-sub", "div.hero-meta", "div.section-label", "div.edition-title", "div.edition-sub", "div.edition-date-label", "div.edition-date-month", "span.model-chip", "div.toc-title", "div.toc-sub", "span.nav-item", "a.nav-item", "span.te-date", "div.te-title", "div.te-sub", "div.sec-title", "span.sec-title", "h1.hero-title", "p.hero-sub", "a.edition-title", "div.card-title", "div.card-sub"];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                // Get plain text (skip elements with child elements that aren't just text)
+                if (el.children.length > 0) {
+                    // Check if has nested elements
+                    var hasNested = false;
+                    for (var c of el.children) {
+                        if (c.tagName !== 'BR' && c.tagName !== 'SPAN' && c.tagName !== 'STRONG' && c.tagName !== 'EM') {
+                            hasNested = true; break;
+                        }
+                    }
+                    if (hasNested) return;
+                }
+
+                var zh = el.textContent.trim();
+                if (!zh || !EN[zh]) return;
+
+                if (isEn) {
+                    if (!cache.has(el)) cache.set(el, el.innerHTML);
+                    el.textContent = EN[zh];
+                } else {
+                    var saved = cache.get(el);
+                    if (saved) el.innerHTML = saved;
+                }
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+    if (isEn) applyLang();
+})();
+
+    </script>
 </body>
 </html>

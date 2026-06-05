@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -916,6 +937,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["Meta's 100B+ Parameter Avocado Model Delayed, Performance Below Expectations and Trailed Gemini in Internal Testing", "Industry Dynamics", "X Discussion", "Meta's 100B+ Parameter Avocado Model Delayed, Performance Below Expectations and Trailed Gemini in Internal Testing", "Karpathy on the Future of AI Programming: IDEs Won't Die But Need to Scale Up", "Meta's next-gen foundational model Avocado, originally planned for release this month, has been delayed due to underwhelming performance. Reports indicate the model lost to Google's Gemini in internal testing and faces accusations of being a 'rebranded' model. This suggests Meta may be falling behind OpenAI and Google in foundation model competition, raising questions about the effectiveness of its $100B AI investment. Previously, Meta CEO", "Renowned AI researcher Karpathy published an article discussing the future of AI programming tools. He noted that while many expect the era of IDEs (Integrated Development Environments) to end, the reality is that 'we need a bigger IDE'. He believes this is because humans will move up in the AI era, taking on higher-level work. This reflects that AI programming tools will fundamentally change developers' working methods rather than simply replacing developers.", "Avocado Model Lost to Gemini in Internal Testing, Performance Below Meta's Internal Expectations", "Originally Planned for Release This Month but Forced to Delay, Timeline Unknown", "Sources Question Whether Model Has 'Repackaging' Problem", "Karpathy Believes IDEs Won't Disappear but Will Become Bigger and Stronger", "AI Will Transform Rather Than Eliminate Developer Roles", "Humans Will Collaborate with AI to Move Toward Higher-Level Tasks", "Industry Dynamics", "X Discussion", "Meta's 100B+ Parameter Avocado Model Delayed, Performance Below Expectations and Trailed Gemini in Internal Testing", "Karpathy on the Future of AI Programming", "Industry Dynamics", "X Discussion", "Meta's 100B+ Parameter Avocado Model Delayed, Performance Below Expectations and Trailed Ge...", "Karpathy on the Future of AI Programming: IDEs Won't Die But Need to Scale Up", "Industry Dynamics", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

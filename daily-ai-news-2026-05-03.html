@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1009,6 +1030,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["ARC-AGI-3 benchmark stumps top models: GPT-5.5 scores 0.43%, Opus 4.7 scores 0.18%, humans achieve 100%", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "X Discussion", "ARC-AGI-3 benchmark stumps top models: GPT-5.5 scores 0.43%, Opus 4.7 scores 0.18%, humans achieve 100%", "OpenRouter launches free Response Caching: cache hits return in 80-300ms, zero token cost", "Tencent Hunyuan open-sources 440M translation model, supports offline mobile operation and surpasses Google in translation quality", "SemiAnalysis analysis: xAI data center has only 11% GPUs online, hundreds of thousands of GPUs idle", "CAS releases SpikingBrain2.0: converts Transformer to spiking hybrid architecture, 10x speedup for 4M context", "Epoch AI podcast explores future of AI benchmarks: current benchmarks have fundamental flaws", "Shanghai Jiao Tong University RouteMoA paper accepted by ACL 2026, achieves dynamic agent routing without pre-reasoning", "Sam Altman admits preference for cheaper and faster models over smarter ones, but users still prioritize capabilities", "SemiAnalysis analysis: data center boom drives ABB electrical equipment order surge, strong demand for low and medium voltage equipment", "ARC Prize Foundation releases ARC-AGI-3 new generation reasoning benchmark, containing 135 human-designed environments where testers must explore interfaces without instructions, infer rules, form hypotheses, and transfer across levels. GPT-5.5 scores 0.43%, Opus 4.7 scores 0.18%, while human subjects achieve 100%. ARC Prize released 160 replays and reasoning chain analyses, identifying 3 common failure modes: (1) Correct local observations but inability to construct global world model; (2) Game analogies from training data (Tetris, Frogger, etc.) hijacking action choices; (3) Passing levels by chance without understanding rules, with incorrect strategies solidifying in subsequent levels. Key difference between models: Opus compresses into confident but wrong theories, while GPT-5.5 resists compression.", "OpenRouter launches Response Caching feature, enabled by adding X-OpenRouter-Cache: true header. First identical request charges normally; subsequent cache hits return in 80-300ms (average cache query 4ms), zero token cost. Supports streaming/non-streaming, multimodal inputs, and tool calls. Cache defaults to 5 minutes, configurable from 1 second to 24 hours via TTL header. Cache scope is per API key, not shared across keys. Typical scenarios: Agent retries (free replay of failed steps), test suites (free repeated runs after first), repeated context processing. Article also discloses non-cached first-token latency: Gemini 2.5 Flash ~1.3s, Kimi K2.6 ~4.6s, GPT-5.5 ~9.1s.", "Tencent Hunyuan team open-sourced a 440M parameter translation model, extremely quantized for offline mobile operation. On WMT translation benchmarks, this model surpasses Google's comparable models in translation quality. This demonstrates practical potential of on-device AI, enabling high-quality translation without network connectivity. Model is now open source for developer download.", "SemiAnalysis releases analysis report showing xAI (Musk's AI company) data center has extremely low GPU utilization. Despite xAI claiming hundreds of thousands of H100/H200 GPUs, only ~11% are actually online. Other GPUs are idle, possibly due to cold storage, preparation for next-gen model training, or waiting for supporting infrastructure. This reflects aggressive compute reserve strategies in AI companies—preferring to stockpile rather than miss model training windows.", "CASIA Li Guoqi's team releases SpikingBrain2.0, a 5B parameter brain-inspired foundation model. Core approach is Transformer-to-Hybrid (T2H)—converting trained Qwen3-4B to hybrid sparse architecture, recovering most original capabilities for under 7000 A100 GPU-hours. Architectural innovation is Dual-Space Sparse Attention (DSSA), mixing Sparse Softmax and Sparse Linear attention across layers. Benchmarks show 10.13x TTFT speedup at 4M context, 8x A100 supports 10M+ tokens (standard Transformer fails due to memory on same hardware). Also supports INT8 spike encoding (for neuromorphic chips, 46.5% power reduction) and FP8 GPU inference (2.52x speedup at 250K context).", "Epoch AI's latest podcast features Greg Burnham and Tom Adamczewski with host Anson Ho for in-depth discussion on future AI benchmarks. Show explores current benchmark limitations including data contamination, overfitting, and inability to truly measure general intelligence, discussing next-gen benchmark design directions. Guests propose benchmarks should focus more on evaluating reasoning processes rather than just final answers, and need evaluation methods closer to real-world application scenarios.", "RouteMoA paper from IWIN Center at School of Automation and Perception, Shanghai Jiao Tong University, accepted by ACL 2026. Paper proposes dynamic routing mechanism without pre-reasoning for efficient Mixture of Agents. Team leader is Prof. Guan Xinping, mentors are Prof. Chen Cailian and Prof. Le Xinyi, with collaborators including Prof. Tao Dacheng from Nanyang Technological University. RouteMoA's core innovation is dynamic task distribution mechanism that routes requests to most suitable agent based on real-time state rather than pre-planning.", "OpenAI CEO Sam Altman expresses thoughts on model development on social media: he personally prefers cheaper and faster models over smarter ones. However, he observes users still prioritize model capabilities (intelligent) itself. This reflects current AI market reality—despite inference cost and speed being pain points, capability gap remains the core decision factor for users.", "SemiAnalysis analysis report notes that as AI data center construction boom continues, ABB's electrical equipment business segment (including low and medium voltage power distribution equipment, transformers, etc.) sees significant order growth. ABB's Electrification business provides power infrastructure solutions for data centers, with order growth directly reflecting global data center capacity expansion trend. Report also analyzes regional differences in data center power demand and grid capacity pressure impacts.", "ARC-AGI-3's value goes beyond scoring—replay analysis reveals specific LLM failure mechanisms (different compression approaches), which gets closer to the essence of 'intelligence' than benchmark chasing, also providing predictive signals for Agent reliability in real environments.", "Response Caching differs from prompt caching—prompt caching only reduces prefix costs, while Response Caching skips provider and returns complete responses directly, most valuable for Agent workflow retry scenarios. First-token latency data also quantifies TTFT gaps between models from an official perspective for the first time.", "Tencent's on-device translation model demonstrates China's differentiated advantage in mobile AI deployment, potentially driving new forms of translation applications.", "xAI's high idle rate indicates serious structural redundancy in AI compute, potentially causing supply chain tension and low capital efficiency—the industry should consider balancing reserves with actual utilization.", "This is not a Transformer replacement but a low-cost post-conversion solution—taking open-source models and converting them to edge versions capable of ultra-long context. 5B scale limits general capabilities, more suitable for vertical scenarios like long documents/codebases.", "AI community's reflection on benchmark reliability is accelerating, but most users will still rely on existing scores for decision-making in the short term—these remain valuable for model rankings.", "RouteMoA's dynamic routing represents a new direction in Agent architecture, potentially driving practical deployment of multi-Agent systems.", "Cost optimization is what vendors pursue, but the core logic driving user payments has always been capability leadership—the intelligence gap between models drives choices more than price does.", "ABB orders are a leading indicator for data center supply side; their growth indicates compute power supply expansion is still in early stages.", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "X Discussion", "ARC-AGI-3 benchmark stumps top models: GPT-5.5 scores 0.43%, Opus 4.7 scores 0.18%, humans achieve 100%", "OpenRouter launches free Response Caching: cache hits return in 80-300ms, zero token cost", "Tencent Hunyuan open-sources 440M translation model, supports offline mobile operation and surpasses Google in translation quality", "SemiAnalysis analysis: xAI data center has only 11% GPUs online, hundreds of thousands of GPUs idle", "CAS releases SpikingBrain2.0: converts Transformer to spiking hybrid architecture, 10x speedup for 4M context", "Epoch AI podcast explores future of AI benchmarks: current benchmarks have fundamental flaws", "Shanghai Jiao Tong University RouteMoA paper accepted by ACL 2026, achieves dynamic agent routing without pre-reasoning", "Sam Altman admits preference for cheaper and faster models over smarter ones, but users still prioritize capabilities", "SemiAnalysis analysis: data center boom drives ABB electrical equipment order surge, strong demand for low and medium voltage equipment", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "X Discussion", "ARC-AGI-3 benchmark stumps top models: GPT-5.5 scores 0.43…", "OpenRouter launches free Response Caching: cache hit rate 80…", "Tencent HunYuan open-sources 440M translation model, supporting offline phone operation and translation quality…", "SemiAnalysis analysis: xAI data center only 11% GPU online operation,數…", "CAS releases SpikingBrain2.0: Converting Transformers into spike…", "Epoch AI podcast explores future of AI benchmarks: current benchmark tests have…", "Shanghai Jiao Tong University's RouteMoA paper accepted by ACL 2026, achieving dynamic… without pre-reasoning", "Sam Altman admits wanting models cheaper and faster rather than smarter, but users still most value abil…", "SemiAnalysis analysis: Data center boom drives ABB electrical equipment orders surge, low…", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

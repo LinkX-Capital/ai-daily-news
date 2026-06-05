@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1041,6 +1062,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["Google DeepMind releases AI co-mathematician, scores 48% on FrontierMath Tier 4, setting new AI record", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Google DeepMind releases AI co-mathematician, scores 48% on FrontierMath Tier 4, setting new AI record", "OpenRouter launches Pareto Code free coding router, auto-routes cheapest qualifying model by coding score", "NVIDIA commits $40B equity investment in AI ecosystem in 2026, with $30B to OpenAI", "AMD releases vLLM-ATOM plugin: AMD Instinct GPU native inference via vLLM", "Robo.ai acquires Neurovia AI for $100M all-stock, building Physical AI video data infrastructure", "Sakana AI and NVIDIA open-source TwELL sparse format: reshaping sparsity for GPU, 30% inference speedup, 24% training speedup", "OpenAI's Jiayi Weng proposes Heuristic Learning: Codex pure code matches Deep RL on Atari/MuJoCo", "HKUST open-sources StarVLA framework, modular architecture unifies VLM and World Model VLA paradigms", "Zhejiang U and Shanghai AI Lab release SciGraph-SCP: AI-native scientific knowledge graph covering 8 disciplines, 370M+ entities", "Claude Code reverse engineering: core loop is just while-loop, main complexity comes from 7-mode permission system + 5-layer context compression pipeline", "OpenClaw releases Peekaboo 3.0: action-first macOS computer use tool, supports AI Agent-driven desktop", "Claude Code team member advocates HTML over Markdown as Agent output format", "SGL Project partners with Radixark team to optimize DeepSeek V4 inference, improving B200/B300 performance", "Google DeepMind Pushmeet Kohli shares AI co-mathematician, a multi-Agent system that proactively collaborates with human mathematicians to solve open-ended research problems. Scores 48% on FrontierMath Tier 4 autonomous evaluation, highest among all AI systems. Mathematicians have tested it in group theory, Hamiltonian systems, and algebraic combinatorics, reporting significant results. Previously Gemini Deep Think achieved gold medal level at IMO (35 points, solved 5 of 6 problems), AlphaEvolve improved 20% of optimal solutions among 50+ open problems, including breaking Strassen's 1969 record for 4×4 matrix multiplication (48 scalar multiplications).", "OpenRouter launches Pareto Code free experimental coding router. Users can set `min_coding_score` parameter, router automatically selects cheapest coding model meeting the score threshold, with model ratings from Artificial Analysis rankings. Router maps models to different performance/price tiers by coding capability, developers can flexibly choose based on speed or cost preference, Pareto frontier updates in real-time.", "According to CNBC, NVIDIA has committed over $40B to AI company equity investments in 2026 so far. Largest is $30B to OpenAI. Additionally announced 7 public company investments including Corning $3.2B and data center operator IREN $2.1B. NVIDIA completed 67 VC investments in 2025, and has participated in ~24 private funding rounds in 2026. Wedbush analyst Matthew Bryson describes these investments as a \"circular investment theme\", but if successful could help NVIDIA build a \"competitive moat\".", "AMD releases vLLM-ATOM plugin, integrating ATOM inference engine into vLLM in out-of-tree manner, providing AMD hardware optimization without modifying vLLM core code. Supports FP4/FP8 precision, AITER fused attention, DeepSeek V2/V3 MLA architecture, Kimi-K2.5 multimodal, etc. Supported models include Qwen3-235B, DeepSeek-R1-0528, Kimi-K2/K2.5, GLM-4.7, etc. Design philosophy: ATOM quickly validates new optimizations → upstream merges to vLLM ROCm backend when mature.", "Robo.ai (NASDAQ: AIIO) announces acquisition of 100% equity in Neurovia AI Limited for $100M all-stock. Neurovia focuses on AI video compression, edge computing and real-time analysis, solving transmission and compute bottlenecks for massive video data in the Physical AI era. Transaction uses Class B common stock payment with 8-year lockup period (first 3 years fully locked, next 5 years gradual release). After completion, Robo.ai plans to upgrade from traditional video encoding to global AI video data infrastructure platform covering robotaxi, autonomous driving, drones and humanoid robot scenarios. AIIO stock surged 70% after announcement.", "Sakana AI and NVIDIA release ICML 2026 paper \"Sparser, Faster, Lighter Transformer Language Models\" (authors include Transformer co-author Llion Jones), open-sourcing GPU kernel and data format. Proposes TwELL (Tile-wise ELLPACK) sparse packing format with companion CUDA kernel, reshaping sparsity for GPU rather than vice versa: induces >99% sparsity via L1 regularization (negligible impact on downstream performance), achieving up to 30% inference speedup and 24% training speedup on H100 with >24% peak memory reduction. Benefits scale with size: non-zero activations decrease 38% from 0.5B to 2B.", "OpenAI researcher Jiayi Weng publishes blog post \"Learning Beyond Gradients\", proposing Heuristic Learning (HL) paradigm: using Coding Agent (Codex/GPT-5.4) to continuously maintain program code system instead of neural network gradient updates. Experimental results: Atari Breakout achieves theoretical max 864, MuJoCo Ant reaches 6146 (matches Deep RL), HalfCheetah reaches 11837, Atari57 median HNS exceeds PPO baseline at 1M steps. HL system includes policy code + state detection + regression testing + failure replay + version memory, coding agent directly edits code rather than backpropagation. Weng believes this could be the next paradigm after pretraining → RLHF → RL/RLVR.", "HKUST and community open-source StarVLA, using modular backbone-action head architecture, supporting independent interchange of VLM backbones (e.g., Qwen-VL) and World Model backbones (e.g., Cosmos). Provides reusable training strategies (cross-embodiment learning, multimodal joint training), integrates unified evaluation interface for five benchmarks: LIBERO, SimplerEnv, RoboTwin 2.0, RoboCasa-GR1, BEHAVIOR-1K, supporting simulation and real robot deployment. Paper states single-benchmark training recipe already matches or surpasses prior methods across multiple benchmarks.", "Zhejiang University and Shanghai AI Lab, together with Tongji University, release SciGraph-SCP Server, covering 8 scientific domains, 370M+ entities, 3.7B+ triplets, integrated with Scientific AI Context Protocol (SCP) providing native invocation interface for AI agents. Skill-based encapsulation completed via SkillNet, supporting direct invocation from open-source agent frameworks like OpenClaw and Huawei JiuwenClaw.", "Jiacheng Liu et al. analyzed Claude Code's public TypeScript source code, identifying 5 major design philosophies traced to 13 design principles. System core is a simple while-loop, but main code volume surrounds this loop: 7-mode permission system, 5-layer context compression pipeline, 4 extension mechanisms (MCP/plugins/skills/hooks), and subagent delegation with worktree isolation.", "OpenClaw founder Peter Steinberger releases Peekaboo 3.0, saying \"started last year but models weren't good enough yet, now they are\". Core upgrades: action-first macOS computer use (upgraded from passive screenshots to active input driving), unified screenshot + UI detection (unified screenshot with accessibility tree detection), cleaner JSON across CLI + MCP (unified JSON format for CLI and MCP interfaces), better snapshots. Peekaboo enables Codex, Claude Code, Cursor and other AI clients to drive macOS desktop via MCP protocol — capturing pixels, reading accessibility tree, simulating clicks/input/scroll/drag. Tweet received 305K+ views.", "Claude Code team member trq212 posts about using HTML instead of Markdown as Agent output format. Reasons: HTML can express tables/SVG/interactivity/animation, much higher information density than Markdown; combined with Opus 4.7's 1M context window, token growth is negligible. Typical scenarios include plan exploration comparison, PR code explanation, interactive playground editor. Drawback: HTML diff is not version-control friendly, generation takes 2-4x longer than Markdown.", "SGL Project collaborates with Radixark team to optimize DeepSeek V4 inference performance on NVIDIA B200, B300, and 4x iso-interactive configurations. SemiAnalysis called it \"Amazing work\".", "AI-assisted mathematics upgrades from \"tool\" to \"research collaborator\". On FrontierMath Tier 4, previously GPT-5.5 Pro scored 39.6%, AI co-mathematician significantly improved to 48%, and the multi-Agent collaboration mode may be replicated in more scientific fields.", "Router's flexible pricing/performance trade-off meets different developer needs, and Sakana Fugu's multi-model orchestration approach is being adopted by more products.", "$40 billion scale exceeds most AI unicorn valuations, NVIDIA is transforming from a chip supplier to the biggest capital player in the AI ecosystem. But the \"circular investment\" controversy continues—investing clients purchase their own GPUs, essentially using capital to lock in demand.", "AMD bypasses vLLM upstream integration cycle through plugin mode, directly delivering hardware advantages to users. Advanced support for MI355X FP4 and MI400 rack-level inference will attract large-scale deployment users.", "All-stock + 8-year lock-up indicates acquirer binds team with equity rather than cash acquisition. Video data infrastructure in the Physical AI era is a new track, but Robo.ai as a small-cap company carries high execution risk.", "TwELL solves the hardware paradox of \"doing fewer computations but being slower\"—tile-aligned design enables sparsity to seamlessly integrate with existing GPU kernel pipelines rather than fight them. Benefits scaling with model size is a key signal: if the trend continues, sparsity could become the third main axis of LLM efficiency alongside quantization/pruning.", "Heuristic Learning is essentially \"having AI write code to replace training neural networks\". If coding agents continue to improve, many traditional RL tasks could be replaced by pure program systems. Direct implications for embodied AI: low-level control can be layered as HL + shallow NN + LLM Agent.", "StarVLA solves VLA field's core pain point of \"architecture incompatibility and code base fragmentation\". Decoupled design of backbone and action head enables researchers to iterate independently, comparable to PyTorch's unification moment in early deep learning.", "SciGraph advances AI4Science infrastructure from two dimensions of data scale and agent integration: 370 million entities + 3.7 billion triples open knowledge graph directly callable by agents via SCP protocol, bypassing traditional API layer.", "This is the most systematic Claude Code architecture reverse analysis. 5-layer context compression pipeline and 7-mode permission system are worth referencing for all Agent developers—the core complexity of Agent lies not in the reasoning loop itself, but in the surrounding security/context/extension systems.", "Peekaboo 3.0 represents Computer Use evolution from \"seeing\" to \"doing\": not just screenshot analysis, but enabling AI Agent to directly manipulate desktop applications.", "trq212's practice reveals the path of Agent output evolving from pure text to rich media. HTML as \"universal canvas\" may change the interaction paradigm of AI-assisted work, but VC-unfriendliness is a hard flaw at the engineering level.", "Open-source model inference optimization continues advancing, SGL and Radixark collaboration strengthens DeepSeek ecosystem.", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Google DeepMind releases AI co-mathematician, scores 48% on FrontierMath Tier 4, setting new AI record", "OpenRouter launches Pareto Code free programming router.", "NVIDIA commits $40B equity investment in AI ecosystem in 2026, with $30B to OpenAI", "AMD releases vLLM-ATOM plugin, AMD Instinct GPU native inference performance directly via vLLM.", "Robo.ai acquires Neurovia AI for $100M all-stock, building Physical AI video data infrastructure", "Sakana AI and NVIDIA open source TwELL sparse format, reshaping sparsity for GPU adaptation, 30% inference acceleration and 24% training acceleration.", "OpenAI Weng Jiayi proposes Heuristic Learning, Codex writing pure code comparable to Deep RL on Atari/MuJoCo.", "HKUST open-sources StarVLA framework, modular architecture unifies VLM and World Model VLA paradigms", "Zhejiang University and Shanghai AI Lab release SciGraph-SCP, AI-native scientific knowledge graph covering 370 million entities across 8 major disciplines.", "Claude Code source code reverse analysis, core loop is just while-loop, 7-mode permissions + 5-layer context compression constitute main complexity.", "OpenClaw releases Peekaboo 3.0, action-first macOS computer use tool supporting AI Agent-driven desktop.", "Claude Code team member advocates HTML over Markdown as Agent output format", "SGL Project partners with Radixark team to optimize DeepSeek V4 inference, improving B200/B300 performance", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Google DeepMind releases AI co-mathematician, FrontierMath Tie…", "OpenRouter launches Pareto Code free programming router, scoring by coding…", "NVIDIA has committed $40 billion equity investment in AI ecosystem within 2026, with $30 billion going to O…", "AMD releases vLLM-ATOM plugin: AMD Instinct GPU native inference…", "Robo.ai Acquires Neurovia AI in $100M All-Stock Deal to Build Physical AI Video…", "Sakana AI and NVIDIA Open-Source TwELL Sparse Format: Reshaping Sparsity to Adapt to G…", "OpenAI's Weng Jiayi Proposes Heuristic Learning: Codex Writes…", "HKUST Open-Sources StarVLA Framework: Modular Architecture Unifies VLM and World Model VLA Paradigms…", "Zhejiang University and Shanghai AI Lab Release SciGraph-SCP: Covering 8 Disciplines, 3.…", "Claude Code Source Code Reverse Analysis: Core Loop is Just a while-loop, 7 Mod…", "OpenClaw Releases Peekaboo 3.0: Action-First …", "Claude Code Team Member Advocates HTML over Markdown as Age…", "SGL Project and Radixark Team Collaborate to Optimize DeepSeek V…", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

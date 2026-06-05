@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1064,6 +1085,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["AntLingAGI Open-Sources Ring-2.6-1T Trillion-Parameter Model, Dual Breakthrough in Agent Execution and Reasoning", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "AntLingAGI Open-Sources Ring-2.6-1T Trillion-Parameter Model, Dual Breakthrough in Agent Execution and Reasoning", "xAI Launches Grok Build Early Beta Agent CLI", "OpenAI Launches Codex Programming Preview in ChatGPT Mobile", "OpenAI Says Cyberattack Led to Theft of Some Employee Data", "US Approves H200 Chip Sales to China, But China Has Not Received a Single Unit", "Cerebras IPO Prices at $185/Share, $56B Valuation, Far Exceeding Expected Range", "SemiAnalysis Analyzes Google Broadfly TPU Network Architecture: Single Pod Scales to 1,152 TPUs", "Lovable Invests in Danish Hardware Startup Atech, Bringing Vibe Coding to Hardware Prototyping", "Guoguang Quantum Completes A+ Round Financing, Deep in Optical Quantum Chips", "Wirestock Completes $23M Series A, Supplying Multimodal Creative Data to AI Labs", "MIT Proposes ELF: Language Generation in Continuous Embedding Space, Using Only 1/10 Training Data", "Nous Research Proposes Token Superposition Training, Reducing Pretraining Time by 2.5x", "HuggingFace Blog: Unlocking Async in Continuous Batching, GPU Utilization from 76% to 99.4%", "Anthropic Releases \"2028: Two Scenarios for Global AI Leadership\" Blog, Elaborating US-China AI Competition Stance", "AntLingAGI (Ant Group) Open-Sources Trillion-Parameter Reasoning Model Ring-2.6-1T, Designed for Agent Execution and Complex Reasoning. Three Major Upgrades: (1) Agent Execution: PinchBench 87.60 (exceeding GPT-5.4 xHigh and Gemini-3.1-Pro), Tau2-Bench Telecom 95.32; (2) Reasoning Effort Mechanism: Supports high/xhigh intensity levels, dynamically adjusting based on task complexity; (3) Async RL Training + IcePop Algorithm: Decouples policy sampling from parameter updates, solving GPU waiting and instability issues in RL training for trillion-parameter models. Reasoning Scores: ARC-AGI-V2 66.18 (exceeding Gemini-3.1-Pro and Claude-Opus-4.7 xhigh), AIME 26 95.83. MIT Licensed, SGLang deployment supported.", "xAI Releases Grok Build Early Beta, an Agent CLI Tool for Programming, App Building, and Workflow Automation. Currently exclusive to SuperGrok Heavy subscribers. The tool gathers user feedback through early beta to continuously improve models and products. Received 13.5M views within 24 hours of release. Access at http://x.ai/cli.", "OpenAI Announces Codex Programming Capabilities Now Available in Preview on iOS and Android ChatGPT. Users Can Experience Codex's Coding Assistance on Mobile. OpenAI Previously Committed to Launching This Feature for Plus and Pro Users.", "OpenAI Discloses Latest Security Incident, Saying Two Employees' Devices Were Affected. Attack Originated from Open-Source Library TanStack Being Hacked Earlier This Week, with 84 Malicious Versions Pushed to Dozens of Companies Within 6 Minutes. Malware Can Steal Computer Credentials and Self-Propagate. OpenAI States Incident Scope Limited to Employee Devices, No Impact on User Data or Production Systems, No IP Involved; However, Attackers Unauthorizedly Accessed Internal Source Code Repositories Accessible to Two Employees, Stealing Limited Credential Materials.", "Reuters Exclusive: US Approves ~10 Chinese Companies to Purchase NVIDIA H200 Chips, Including Alibaba, Tencent, ByteDance, and JD.com, with Up to 75,000 Units Per Company. Lenovo and Foxconn Approved as Distributors. However, No Units Delivered Yet. Double Barriers: US Requires Chips Pass Through US Territory (25% Revenue Share), While China Strengthens Supply Chain Security Review, Fearing Hidden Backdoors. Jensen Huang Attempted to Break Deadlock by Visiting China with Trump. NVIDIA Once Held 95% of China's Advanced Chip Market, China's AI Market Estimated at $50B This Year, But Huang Says NVIDIA's AI Accelerator Share in China \"Has Effectively Gone to Zero\".", "AI Chip Company Cerebras Systems IPO Prices at $185/Share, Far Above Initial Expected Range of $115-$125. Issuing 30M Shares (Originally Planned 28M), $56B Valuation (Including Options and Warrants). Underwriters Have Greenshoe Option.", "SemiAnalysis Analyzes Google's New Inference-Specific TPU Network Topology Broadfly Announced at Cloud Next. Through High-Radix Design, Single Pod Scales to 1,152 TPUs, 4.5x Larger Than Previous Gen Ironwood, While Network Diameter Reduced, Maximum 7 Hops Between Any Two Chips.", "AI App Building Platform Lovable Participates in $800K Pre-Seed Round for Danish Hardware Startup Atech, Alongside a16z Scout Fund, Sequoia Scout Fund, and Nordic Makers. Atech Product Model: Users Purchase Hardware Starter Kit, Describe Hardware Concept via AI Chat on Website, AI Auto-Generates Code to Help Build Working Prototypes. User Range From \"4-Year-Olds Riding Cars to Precision Voltage Sensing in Hydrogen Synthesis Factories\".", "Guoguang Quantum Completes ~100M RMB A-Round Financing, Led by Guangdong Weide Information Technology, with Participation from Macrolink Group and Others. Company Founded by USTC PhD Team, Deep in Quantum Communication, Quantum Sensing, and Quantum Computing, Products Applied in Government, Military, Power, Energy, and Finance Industries.", "Wirestock Transforms from Photography Distribution Platform to AI Data Supplier, Platform with 700K+ Creators, Providing Image, Video, 3D and Design Asset Datasets to 6 Leading Foundation Model Companies. $23M Series A Led by Nava Ventures, with Participation from SBVP (Co-founded by Sheryl Sandberg), Formula VC and I2BF. Current ARR $40M, $15M Paid to Creators. Company Expanding Audio and Music Modalities, Building Data Collaboration Tools for Enterprise Clients.", "MIT Research Team Publishes Embedded Language Flows (ELF) Paper, Proposing New Diffusion Language Model Method. Core Idea: Convert Words to Continuous Embeddings, Start from Random Noise, Gradually \"Clean\" to Meaningful Embeddings via Flow Matching, Only Converting Embeddings Back to Discrete Tokens at Final Step. Denoising and Final Embedding→Token Conversion Use Same Network, Simplifying System Architecture. Advantages: Higher Text Quality, Fewer Generation Steps, 10x Reduction in Training Data Requirements.", "Nous Research proposes Token-Superposition Training (TST), a plug-and-play pretraining acceleration method without modifying parallel strategies, optimizers, tokenizers, data, or model architecture. The core mechanism has two phases: (i) Superposition phase - merging multiple consecutive tokens into one bag, trained with multi-hot cross-entropy (MCE) objective; (ii) Recovery phase - returning to standard training. Validated at 270M and 600M parameter scales, confirmed effective on 3B and 10B A1B MoE models. At equivalent loss, pretraining time at 10B scale is reduced by 2.5x.", "HuggingFace publishes technical blog detailing how to achieve CPU-GPU async parallelism in continuous batching. Problem: In synchronous batching, CPU and GPU alternate waiting, GPU idle time accounts for 24%. Solution: Using CUDA non-default streams (compute/H2D/D2H three streams) to decouple CPU and GPU operations, cross-stream synchronization via CUDA events, dual-slot alternation to avoid race conditions, carry-over mechanism to pass cross-batch tokens. Real test on 8B model, batch 32, 8K token generation: Total time reduced from 300.6s to 234.5s (22% speedup), GPU activity rate increased from 76.0% to 99.4%.", "Anthropic publishes paper proposing two scenarios for global AI leadership by 2028. Core argument: Compute chip export controls are a key tool for maintaining US AI advantage, recent history proves controls are \"extremely successful\". Anthropic believes Chinese AI labs approach US level mainly relying on three factors: talent, exploitation of export control loopholes, large-scale distillation attacks (illegally extracting US company innovations). Scenario One: US maintains compute advantage, democratic nations lead AI governance, most likely reach cooperation with China on safety. Scenario Two: Controls loosen, China narrows gap or even surpasses. Anthropic expects transformative AI systems to arrive by 2028, current is a limited window for setting competitive conditions.", "Trillion-parameter open-source model first surpasses GPT-5.4 on Agent execution benchmark, async RL training paradigm provides engineering solution for ultra-large-scale model RL training", "xAI completes developer toolchain, expanding into DevTools field", "OpenAI extends coding assistance to mobile, further covering developer fragmented scenarios", "AI company code security vulnerabilities become attack targets, employee data becomes new security weak point", "US-China dual controls create \"approved but cannot deliver\" deadlock, China accelerates shift to domestic alternatives like Huawei", "AI chip IPO heat continues, Cerebras pricing exceeds expectations reflecting market demand for NVIDIA alternatives", "Google self-developed inference TPU network architecture significantly expands single pod scale, inference cluster capability notably enhanced", "vibe coding extends from software to hardware prototype development, lowering hardware development barriers", "Quantum computing commercialization accelerates, domestic quantum sector continues attracting investment", "AI training data supply chain continues professionalizing, multimodal creative data becomes new commodity", "Diffusion models achieve breakthrough in language generation, order-of-magnitude training efficiency improvement may change language model training paradigm", "Non-invasive pretraining acceleration method, dramatically reduces training cost without architecture changes, significant for compute-constrained teams", "Zero model changes, zero new kernels, just 22% inference speedup through hardware-level async scheduling, significant for RL long generation scenarios (16K+)", "Anthropic publicly supports chip export controls and names distillation attacks, directly influences US AI policy direction, also direct response to opponents of controls like NVIDIA", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "AntLingAGI open-sources Ring-2.6-1T trillion-parameter model, Agent execution surpasses GPT-5.4", "xAI Launches Grok Build Early Beta Agent CLI", "OpenAI Launches Codex Programming Preview in ChatGPT Mobile", "OpenAI Says Cyberattack Led to Theft of Some Employee Data", "US Approves H200 Chip Sales to China, But China Has Not Received a Single Unit", "Cerebras IPO priced at $185/share, valuation $56 billion", "SemiAnalysis analyzes Google Broadfly TPU network: single pod scales to 1152 TPUs", "Lovable invests $800K in Atech company, layout hardware vibe coding", "Guoguang Quantum Completes A+ Round Financing, Deep in Optical Quantum Chips", "Wirestock Completes $23M Series A, Supplying Multimodal Creative Data to AI Labs", "MIT proposes ELF new method: generating language in continuous embedding space, training data only needs 1/10", "Nous Research achieves 2.5x pretraining speedup with Token superposition", "HuggingFace Blog: Continuous batching unlocks async, GPU utilization 76%→99.4%", "Anthropic publishes \"2028 Global AI Leadership Two Scenarios\" blog", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "AntLingAGI Open Sources Ring-2.6-1T Trillion Parameter Model, Agent Executes...", "xAI Launches Grok Build Early Beta Agent CLI", "OpenAI Launches Codex Programming Preview in ChatGPT Mobile", "OpenAI Says Cyberattack Led to Theft of Some Employee Data", "US Approves H200 Chip Sales to China, But China Has Not Received a Single Unit", "Cerebras IPO Prices at $185/Share, $56B Valuation, Far Exceeding Expected Range", "SemiAnalysis Breaks Down Google Broadfly TPU Network Architecture...", "Lovable Invests in Danish Hardware Startup Atech, Brings Vibe Coding to...", "Guoguang Quantum Completes A+ Round Financing, Deep in Optical Quantum Chips", "Wirestock Closes $23M Series A, Supplying Multimodal Creative Content to AI Labs...", "MIT Proposes ELF: Language Generation in Continuous Embedding Space, Using Only 1/10 Training Data", "Nous Research Proposes Token Superposition T...", "HuggingFace Blog: Unlocking Asynchronicity in Continuous Batching, GPU Utilization From...", "Anthropic Publishes \"2028: Two Scenarios of Global AI Leadership\" Blog, Elaborates...", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

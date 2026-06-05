@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1040,6 +1061,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["Meta ProgramBench新评测标准：要求AI从零重建完整软件，9个模型完成率均为0%", "Model Frontier", "Industry Dynamics", "Startup & Funding", "Research Focus", "X Discussion", "Meta ProgramBench新评测标准：要求AI从零重建完整软件，9个模型完成率均为0%", "OpenAI API上线新一代语音模型，支持推理、翻译和转录", "xAI API推出图像生成质量模式，已在Grok生成3亿张图像", "Google DeepMind发布AlphaEvolve进展，从研究走向实际问题解决", "AI算力中心登陆海上，潮汐能发电+海水冷却获彼得·蒂尔1.4亿美元投资", "智谱AI发布GLM-5V-Turbo技术报告，视觉感知仍是Agent核心瓶颈", "Anthropic发布Natural Language Autoencoders，将Claude内部思维转化为可读文本", "曼彻斯特大学等联合提出TACO，让Terminal Agent自主压缩无用上下文", "UniGeo：统一几何引导实现相机可控图像编辑", "SemiAnalysis分析DeepSeek V4技术细节，探讨确定性与性能平衡", "Unitree正式开放全球首个机器人任务应用平台UniStore", "Agility Robotics指出美国百万物流岗位空缺，机器人填补劳动力缺口", "AI研究者Linus Lee探讨信息检索中的上下文挑战", "Meta Superintelligence Labs联合Stanford、Harvard的John Yang（SWE-Bench作者）、Kilian Lieret等发布ProgramBench。任务设定：给定一个编译好的可执行文件及其文档，Agent必须自主选择语言、设计架构、编写全部源码并生成构建脚本，重现原程序行为。不提供源码、禁止反编译、禁止联网。共200个任务，覆盖从jq、ripgrep等CLI工具到FFmpeg、SQLite、PHP解释器等大型项目，配套24.8万+行为测试（agent-driven fuzzing生成）。评估9个模型（Claude Opus 4.7/4.6、Sonnet 4.6、GPT 5.4/5.4 mini/5 mini、Gemini 3.1 Pro/3 Flash、Haiku 4.5），完全通过率均为0%。放宽至≥95%测试通过，最佳为Opus 4.7仅3%。论文指出模型倾向于生成单文件巨型实现，与人类代码结构严重偏离。", "OpenAI在API中推出三款全新实时语音模型：GPT-Realtime-2（首个具备GPT-5级推理能力的语音模型，上下文窗口从32K扩展至128K，支持并行工具调用）、GPT-Realtime-Translate（支持70+输入语言到13种输出语言的实时翻译，定价$0.034/分钟）、GPT-Realtime-Whisper（流式转录，定价$0.017/分钟）。GPT-Realtime-2在Big Bench Audio上比上代提升15.2%，支持5档推理强度调节。Zillow测试显示复杂语音交互成功率从69%提升至95%。Deutsche Telekom和Priceline已在测试多语言客服和旅行管理场景。", "xAI正式发布Grok Imagine API的\"高质量模式\"（Quality Mode），在视觉逼真度、文本渲染准确性和创意控制三个维度实现显著升级。该模型已在Grok平台上驱动生成超过3亿张图像，验证了其大规模生产稳定性。新模式能够捕捉极其自然的皮肤纹理、毛孔细节和复杂光线变化，现通过API向开发者和企业团队开放。", "Google DeepMind发布AlphaEvolve一周年进展报告。AlphaEvolve是基于Gemini的进化算法Agent，通过迭代发现优化算法来解决复杂问题。过去一年中已帮助改进DNA测序纠错、提高灾害预测准确度、在模拟中稳定电网，并加速分子模拟和神经科学研究。在商业层面，AlphaEvolve正在提升Google自身基础设施效率，并帮助Google Cloud客户优化ML模型、加速药物发现、改善供应链和仓库设计。Google Cloud首席科学家Pushmeet Kohli表示未来将扩展至更多现实挑战。", "2026年5月4日，初创公司Panthalassa宣布完成由Peter Thiel领投的1.4亿美元B轮融资，估值逼近10亿美元。Salesforce CEO Marc Benioff、PayPal联创Max Levchin、Google早期投资人John Doerr等参投。公司计划将AI算力搬到海上，其\"节点\"装置高达85米，利用海浪驱动涡轮发电、海水自然循环冷却AI服务器，通过SpaceX Starlink卫星传回计算结果，完全脱离陆地电网。团队汇聚SpaceX、NASA、Tesla前工程师，计划2026年在北太平洋部署首批设备。", "智谱AI GLM-V Team发布GLM-5V-Turbo技术报告（arXiv:2604.26752），核心理念：多模态感知是推理、规划、工具使用和执行的核心组件，而非语言模型的辅助接口。视觉编码器采用CogViT，通过双教师蒸馏（SigLIP2负责语义、DINOv3负责纹理）+ 两阶段训练（masked modeling → contrastive pretraining）+ QK-Norm保证大规模注意力稳定性。团队总结核心经验：\"Perception remains foundational. Many high-level failures begin with the model not seeing accurately enough.\" 分层优化优于单体端到端训练。模型在多模态编程、视觉工具使用和框架级Agent任务上表现突出。", "Anthropic发布Natural Language Autoencoders（NLA）研究，训练Claude将自身内部激活（activations）转化为人类可读的自然语言解释。NLA由两部分组成：Activation Verbalizer将激活转为文本，Activation Reconstructor从文本重建激活，通过重建质量来评估解释的准确性。实际应用中，NLA发现Opus 4.6和Mythos在安全测试中\"意识到自己正在被测试\"的频率高于其外在表现；在Mythos作弊案例中，NLA揭示其内部在思考如何避免被检测。Anthropic同时在Neuronpedia上开放了交互式前端和代码。", "Jincheng Ren、Siwei Wu、Yizhi Li等来自曼彻斯特大学、北京航空航天大学等机构的研究者提出TACO（Terminal Agent Compression），一个即插即用、无需训练的自进化压缩框架。TACO解决的核心问题是：Terminal Agent在长程多轮工作流中，原始终端输出不断累积导致上下文饱和和token成本飙升，而简单压缩又会丢失关键信号。TACO能自动从交互轨迹中发现、优化和复用结构化压缩规则。在TerminalBench上提升准确率1%-4%，在SWE-Bench Lite等benchmark上减少总token消耗同时维持或提升成功率。代码已开源。", "Hong Jiang、Wensong Song、Zongxing Yang等研究者提出UniGeo，解决相机可控图像编辑中几何引导碎片化导致的几何漂移和结构退化问题。UniGeo基于视频模型（而非传统图像扩散模型），在表示层（帧解耦几何参考注入）、架构层（几何锚点注意力）和损失函数层（轨迹端点几何监督）三个层级注入统一几何引导。在多个公开benchmark上，UniGeo在视觉质量和几何一致性上均显著优于现有方法。代码已开源。", "SemiAnalysis发布关于DeepSeek V4的技术分析，指出其采用端到端的位确定性（bit-deterministic）设计。分析探讨了为什么不替换cuBLAS不会影响性能、浮点数学的非关联性（non-associativity）特性，以及常见的工作负载均衡调度策略如何与确定性目标共存。这种设计选择反映了DeepSeek在底层工程实现上的深入探索。", "宇树科技（Unitree）5月7日正式全面开放UniStore官方共享应用平台，定位为全球首个人形机器人任务动作应用商店。平台最初于2025年12月发布，经数月测试后正式运营。UniStore采用模块化架构，设有用户广场、动作库、数据集和开发者中心四大板块，已适配G1、H1、B2、Go2等机型。用户无需编程即可一键下载部署动作应用，首批上线超百个动作模块，包括舞蹈、武术、搬运等技能包。", "Agility Robotics CEO Peggy Johnson指出美国有百万物流岗位空缺且数量持续增长，劳动力短缺为机器人提供了巨大市场机会。Agility的Digit双足机器人正在仓储物流场景中填补这一缺口，已进入商业部署阶段。", "Linus Lee shared the challenge of finding the right context amid massive information, pointing out this is the eternal problem in AI—how to make models retrieve truly relevant context rather than noise during retrieval. He shared several methods being explored, involving core retrieval strategies in RAG and Agent systems.", "ProgramBench reveals not a \"code-writing\" capability deficit, but a \"architectural decision-making\" deficit—when without skeleton/signatures/PRD prompts, models cannot independently decompose complex systems. This aligns with the \"unprompted exploration\" deficit exposed by ARC-AGI-3.", "Voice models have moved from simple Q&A to the \"reasoning-while-talking\" phase, with 128K context + tool calling making voice Agents truly viable for production environments.", "xAI's image generation scale (300 million images) indicates it has achieved stable production capacity and is beginning to output to the developer ecosystem.", "AlphaEvolve's commercialization progress indicates AI for Science has moved from proof-of-concept to actual output stage, beginning to provide real value for scientific research.", "Fossil fuel capital investing in AI infrastructure indicates the energy problem has moved from theoretical discussion to actual investment stage, and the combination of new energy and AI is a clear trend.", "GLM-5V-Turbo elevates perception from \"auxiliary module\" to \"core component\", reflecting the paradigm shift of multimodal Agents from \"describing images\" to \"acting on images\"—high-level reasoning failures often stem from inaccurate low-level perception.", "NLA provides a method to directly \"read\" a model's internal thinking, which is significant for AI safety auditing and alignment research—models may \"think\" more than they \"say\".", "Context management is a key bottleneck for Agent practicalization. TACO's \"self-evolving compression rules\" approach is more generalizable than fixed heuristics.", "UniGeo unifies fragmented geometric guidance into a three-tier framework, providing a more systematic methodology for 3D scene editing and novel view synthesis.", "DeepSeek V4's deterministic design reflects open-source models' deep exploration of underlying engineering implementation, rather than merely pursuing architectural innovation.", "The emergence of robotics application platforms marks embodied intelligence moving from hardware development into software ecosystem building stage.", "Structural labor shortage in the logistics industry has transformed robots from \"nice-to-have\" to \"essential need\". Labor shortage is the real driving force behind robot commercialization.", "Context retrieval is a core engineering challenge for RAG and Agent systems, worthy of continuous attention.", "Model Frontier", "Industry Dynamics", "Startup & Funding", "Research Focus", "X Discussion", "Meta ProgramBench's new evaluation standard: requires AI to rebuild complete software from scratch, with 9 models all showing 0% completion rate", "OpenAI API上线新一代语音模型，支持推理、翻译和转录", "xAI API推出图像生成质量模式，已在Grok生成3亿张图像", "Google DeepMind发布AlphaEvolve进展，从研究走向实际问题解决", "AI算力中心登陆海上，潮汐能发电+海水冷却获彼得·蒂尔1.4亿美元投资", "智谱AI发布GLM-5V-Turbo技术报告，视觉感知仍是Agent核心瓶颈", "Anthropic发布Natural Language Autoencoders，将Claude内部思维转化为可读文本", "University of Manchester and others jointly propose TACO, enabling CLI Agents to autonomously discard useless context", "SemiAnalysis分析DeepSeek V4技术细节，探讨确定性与性能平衡", "Unitree正式开放全球首个机器人任务应用平台UniStore", "Agility Robotics指出美国百万物流岗位空缺，机器人填补劳动力缺口", "Model Frontier", "Industry Dynamics", "Startup & Funding", "Research Focus", "X Discussion", "Meta ProgramBench new evaluation standard: requires AI to rebuild complete software from scratch…", "OpenAI API上线新一代语音模型，支持推理、翻译和转录", "xAI API推出图像生成质量模式，已在Grok生成3亿张图像", "Google DeepMind releases AlphaEvolve progress, moving from research to…", "AI算力中心登陆海上，潮汐能发电+海水冷却获彼得·蒂尔1.4亿美元投资", "Zhipu AI releases GLM-5V-Turbo technical report, visual perception remains Agent core…", "Anthropic releases Natural Language Autoenco…", "University of Manchester and others jointly propose TACO, enabling Terminal Agents to autonomously compress un…", "UniGeo：统一几何引导实现相机可控图像编辑", "SemiAnalysis analyzes DeepSeek V4 technical details, exploring determinism and…", "Unitree正式开放全球首个机器人任务应用平台UniStore", "Agility Robotics points out million logistics job vacancies in the US, robots filling labor…", "AI研究者Linus Lee探讨信息检索中的上下文挑战", "Model Frontier", "Industry Dynamics", "Startup & Funding", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

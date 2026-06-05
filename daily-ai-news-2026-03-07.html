@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1033,6 +1054,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["FlashAttention-4 Officially Released: Major Upgrade for Deep Learning Attention Mechanism", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "FlashAttention-4 Officially Released: Major Upgrade for Deep Learning Attention Mechanism", "Claude Consumer Growth Continues Accelerating: New Installs Surpass ChatGPT", "SenseTime Releases New Multimodal Architecture: Eliminates All Intermediate Encoders", "Silicon Valley Giants Defect to Custom AI Chips: Nvidia Invests 150 Billion Yuan in Self-Rescue", "Science Completes $230 Million Series C: Developing Vision-Restoring Brain-Computer Interface", "French Quantum Computing Company Pasqal Plans Nasdaq Listing via SPAC, Valuation $2 Billion", "AI City Management Company City Detect Completes $13 Million Series A", "DUT Partners with Kuaishou KLING to Release MultiShotMaster: 1B Parameter Model Enables Multi-Shot Video Generation", "Nature Publishes Long Article: First AI Society Taking Shape", "Transformer Paper Authors Reconstruct Lobster: Rust Implements Hardware Security Protection", "FlashAttention-4 is officially released, representing a significant underlying optimization technology for deep learning. After a year of development, it welcomes a major version update with substantial improvements to the algorithm pipeline and faster matrix multiplication.", "Anthropic's Claude app new installs have surpassed ChatGPT, with daily active users continuing to grow, maintaining momentum despite Pentagon contract controversy.", "SenseTime releases a hardcore multimodal architecture redesign, eliminating all intermediate encoders, with 2B parameters outperforming traditional VAE/VE paradigms.", "Silicon Valley tech giants collectively shift to custom AI chips, market reports Nvidia investing 150 billion yuan in self-rescue, GPU era may face termination.", "Medical device developer Science completes $230 million Series C, flagship product Science Eye brain-computer interface aims to restore vision for the blind, tested on rabbits, human trials planned for next year.", "French quantum computing company Pasqal plans Nasdaq listing via SPAC, pre-IPO valuation $2 billion, commits to maintaining French identity.", "City Detect is an AI company helping cities stay safe and clean, currently operating in at least 17 cities including Dallas and Miami, completes $13 million Series A.", "DUT, Kuaishou KLING team, and CUHK jointly release MultiShotMaster paper, a 1B parameter video generation model enabling multi-shot directing functionality, published at CVPR 2026.", "Nature publishes long article exploring the \"AI society\" 3 million AI agents might form, analyzing formation mechanisms and social impacts of the first AI society.", "Transformer paper authors redesign lobster hardware security scheme, using Rust to implement steel-version protection, building four-layer defense-in-depth system isolating cryptography from large models.", "FlashAttention-4 is a deep learning low-level optimization technology", "Algorithm pipeline significantly improved", "Speed improvement at the matrix multiplication level", "Claude's new installs have exceeded ChatGPT's", "Daily active users continue to grow", "SenseTime removes all intermediate encoders in multimodal architecture", "2B parameters surpass traditional VAE/VE paradigm", "Silicon Valley giants collectively develop AI chips in-house", "NVIDIA invests 150 billion to respond to market changes", "Raised $230 million in Series C funding, investors include Khosla Ventures, Lightspeed, etc.", "Brain-computer interface technology Science Eye used to restore blind people's vision", "Rabbit tests completed, human trials planned for next year", "Pasqal is a French quantum computing company", "Listed on Nasdaq via SPAC, valuation at $2 billion", "City Detect uses AI to help city management", "Covering at least 17 cities", "Completed $13 million Series A financing", "1B parameter model can serve as multi-camera director", "Jointly completed by Dalian University of Technology, Kuaishou Keling, and CUHK", "First author is Wang Qinghe, PhD student at Dalian University of Technology", "Nature publishes long article exploring AI society formation", "Research involving approximately 3 million AI Agents in socialization", "Transformer authors' team conducts hardware security research", "Adopts Rust language to implement security solution", "Four-layer defense isolates passwords from large models", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "FlashAttention-4 Officially Released", "Claude Consumer Growth Continues to Accelerate", "SenseTime Releases New Multimodal Architecture", "Silicon Valley Giants 'Defect' from Nvidia with Self-Developed Chips", "Science Completes $230 Million Series C Funding Round", "French Quantum Computing Company Pasqal Plans to List via SPAC at $2 Billion Valuation", "AI City Management Company City Detect Completes $13 Million Series A", "DUT and Kuaishou Keling Jointly Release MultiShotMaster", "Nature Publishes Long Article Exploring", "Transformer Paper Author Rebuilds Lobster", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "FlashAttention-4 Officially Released: Major Upgrade for Deep Learning Attention Mechanism", "Claude Consumer Growth Continues Accelerating: New Installs Surpass ChatGPT", "SenseTime Releases New Multimodal Architecture: Eliminates All Intermediate Encoders", "Silicon Valley Giants Defect to Custom AI Chips: Nvidia Invests 150 Billion Yuan in Self-Rescue", "Science Completes $230 Million Series C: Developing Vision-Restoring Brain-Computer Interface", "French Quantum Computing Company Pasqal Plans Nasdaq Listing via SPAC, Valuation $2 Billion", "AI City Management Company City Detect Completes $13 Million Series A", "DUT and Kuaishou Keling Jointly Release MultiShotMaster: 1B Parameter Model Achieves...", "Nature Publishes Long Article: First AI Society Taking Shape", "Transformer Paper Authors Reconstruct Lobster: Rust Implements Hardware Security Protection", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

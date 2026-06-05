@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1058,6 +1079,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["OpenAI releases GPT-5.4-Cyber: Expanding Trusted Access Program for Cybersecurity Defenders", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "OpenAI releases GPT-5.4-Cyber: Expanding Trusted Access Program for Cybersecurity Defenders", "OpenAI releases new generation Agents SDK: Native sandbox execution and secure operation", "Google Accelerates Desktop AI Layout: Native Gemini Mac App + Chrome Skills One-Click AI Workflow", "Anthropic Rejects Financing Offer Valued at Over $800 Billion", "NVIDIA Releases Ising: World's First Open-Source Quantum AI Model Family", "NVIDIA Explores AI Data Center TCO: Why Token Cost is a Key Metric", "US Requires Data Centers to Disclose Energy Usage Details for First Time", "(Portfolio) BeingBeyond Releases Being-H0.7: Strongest Embodied World Model Trained on 200K Hours of Human Video", "(Portfolio) Shengshitech Releases Vidu Q3 with Reference Video Generation Feature Now Live", "Hightouch AI Marketing Platform ARR Exceeds $100 Million", "VAKRA Research Deep-Dives into Agent Reasoning, Tool Use, and Failure Modes", "Peking University and LLaMA-Factory Launch DataFlex: Dynamic Training Framework for Data Centers", "Alibaba Qwen3.6-Plus and Qwen3.5-Plus Integrated into Go Language", "Google Releases Gemini 3.1 Flash TTS: Most Expressive Text-to-Speech Model", "Xenova Demonstrates 1-bit LLM Browser Inference: 1.7B Model Achieves 100 tok/s with WebGPU Acceleration", "OpenAI Expands Trusted Access for Cyber (TAC) Program, Releasing GPT-5.4-Cyber Model for Thousands of Security Defenders and Hundreds of Critical Software Teams. The model is fine-tuned from GPT-5.4, specifically lowering the rejection threshold for cybersecurity defense scenarios, adding advanced capabilities like binary reverse engineering. Since launch, Codex Security has helped fix over 3,000 critical and high-severity vulnerabilities. This strategy marks a shift in AI security governance from 'limiting capabilities' to a dual-track model of 'trust + verification,' providing a framework for defensive deployment of future more powerful models.", "OpenAI Updates Agents SDK, Adding Native Sandbox Execution and Model-Native Harness Features Aimed at Helping Developers Build Safe, Long-Running AI Agents. The update lowers the security barrier for Agent development.", "Google Releases Native macOS Gemini App, Summonable from Any Interface via Option+Space Shortcut, Supporting Screen Sharing and Local File Recognition. Same day, Chrome Launches Skills Feature Allowing Users to Save Common AI Prompts as One-Click Tools, Reusable Across Any Page via `/` or `+` Buttons, with a Ready-Made Skills Library. Google is Infiltrating AI into Every Browser Interaction—Mac Native App Completes Desktop Coverage, Chrome Skills Turns Repetitive AI Tasks into Savable, Shareable Workflows.", "Venture Capital Firms Willing to Provide More Funding to Anthropic at Match or Exceed OpenAI's Valuation, but Anthropic Currently Rejects This Financing Offer. This Reflects High Market Expectations for Anthropic as a Major AI Competitor.", "NVIDIA Releases World's First Open-Source Quantum AI Model Family Ising, Including Two Core Models: Ising Calibration (Quantum Processor Calibration) and Ising Decoding (Quantum Error Correction Decoding). Ising Decoding Model is 2.5x Faster and 3x More Accurate Than Current Industry Standard pyMatching, Reducing Calibration Time from Days to Hours. Jensen Huang States 'AI Will Become the Control Plane and Operating System for Quantum Machines.' Harvard, IonQ, Fermilab and Other Top Institutions Have Already Adopted It. This Means NVIDIA is Extending GPU Ecosystem Advantages to Quantum Computing, Positioning AI + Open Source to Stake Out Quantum Computing Software Stack.", "Traditional Data Centers Only Store, Retrieve and Process Data; in the Generative and AI Agent Era, These Facilities Have Evolved into AI Token Factories. NVIDIA Believes in the AI Era, Data Center TCO Should Use Per-Token Cost as the Core Metric Rather Than Traditional IT Metrics. This View Reflects the Fundamental Difference Between AI Computing Demand and Traditional Computing.", "US Energy Information Administration (EIA) Requires Data Centers to Disclose Detailed Energy Usage for First Time, A Regulatory Measure Aimed at Better Understanding AI Infrastructure Power Demand Growth. With AI Computing Demand Surging, Data Center Energy Consumption Has Become a Critical Issue.", "BeingBeyond Releases Third-Generation Embodied World Model Being-H0.7, Trained on 200K Hours of Human Video, Proposing New Paradigm Based on Latent Space Reasoning. H0.7 No Longer Pursues Pixel-Level Reconstruction but Learns Fast Judgment Mechanisms Similar to 'Physical Intuition,' Ranking First Across 6 International Authoritative Benchmarks (4 Championships), First to Cover 7 Dimensions Including Cross-Embodiment, Cross-Scene, Continuous Dynamics, Fluids, and Flexible Objects. Reasoning Speed is 11x Faster Than Fast-WAM and 40x+ Faster Than Generative World Models, World's First World Model Deployable Stably on Edge Devices in Real-Time. This Work Directly Targets LeCun JEPA Architecture's Core Vision, Forming Differentiated Competition with NVIDIA Cosmos Video Generation Approach.", "Shengshitech Video Large Model Vidu Q3 Officially Launches 'Reference Video Generation' Feature. The Model Can Generate Video Based on Reference Images, Significantly Improving AI Video Generation Controllability and Quality. From Concept to Final Approval Takes Less Than Two Weeks.", "Marketing Data Platform Hightouch Announces $100 Million Annual Recurring Revenue (ARR), with $70 Million Achieved in Just 20 Months After Launching AI Agent Platform. The Platform Uses AI Technology to Help Marketers Improve Customer Acquisition Efficiency and Personalized Recommendation Capabilities.", "HuggingFace Releases VAKRA Research, Deep-Diving into AI Agent Reasoning Capabilities, Tool Use Patterns, and Failure Modes. The Research Provides Important Insights for Understanding and Improving Agent Systems.", "Peking University Professor Zhang Wentao, Academician E Weinan's Team Collaborate with LLaMA-Factory to Launch Open-Source Data Center Dynamic Training Framework DataFlex. The Framework Unifies Dynamic Sample Selection, Data Mixing, and Sample Weighting into Training Loop, Transforming Data from 'Static Input' into 'Schedulable Optimizable Objects.' Experiments Show Dynamic Methods Overall Superior to Static Training, 57% Training Time Reduction on 8x H20. Work Quickly Tops HuggingFace Daily Papers Monthly Ranking. DataFlex Addresses the Most Overlooked Bottleneck in Large Model Industrial Training—not How to Train the Model, but What Data to Train and How to Train It.", "Alibaba Qwen team announces Qwen3.6-Plus and Qwen3.5-Plus have been integrated into the Go programming language, providing Go developers with seamless AI model access. This is an important step in Qwen ecosystem expansion.", "Google releases Gemini 3.1 Flash TTS, officially described as the most expressive and controllable text-to-speech model. The model is now live in Google Vids and available for preview via Gemini API and Google AI Studio.", "Xenova demonstrates breakthrough application of 1-bit quantization technology in browser - a 1.7B parameter 1-bit quantized model is only 290MB in size, achieving approximately 100 tokens/second inference speed in browser via WebGPU acceleration. This means edge AI inference is moving from theory to practice, with users able to run large language models in browser without any backend services. 1-bit quantization (weights represented using only 1 bit) greatly compresses model size and computational requirements, representing an important direction for LLM deployment on edge devices.", "Key Shift in AI Security Governance: Rather than restricting model capabilities, establishing a layered trust mechanism to expand defender advantages", "OpenAI is completing the toolchain for Agent ecosystem, with security being key for enterprise applications", "AI assistant competition shifts from cloud to native desktop experience, workflow automation capability becomes key differentiator", "Anthropic's independent development strategy is clear, $800 billion valuation may be strategic restraint before IPO", "NVIDIA enters quantum computing software stack with open-source AI models, extending GPU ecosystem's 'hardware + software' integrated strategy", "Token cost theory redefines AI infrastructure value evaluation framework, with profound implications for compute providers and data center operators", "Energy disclosure requirements will force data centers to improve energy efficiency, potentially promoting liquid cooling and renewable energy adoption", "The combination of latent space reasoning and human video pre-training provides embodied intelligence with a more efficient path than video generation, edge real-time deployment is the key breakthrough", "Controllability breakthrough in video generation models will accelerate AI film content creation commercialization", "AI Agent monetization capability verified in enterprise marketing scenarios, B2B AI applications are accelerating deployment", "Systematic research on Agent systems helps improve reliability, serving as a necessary foundation for AGI", "Data-centric training moves from academic exploration to industrial-grade infrastructure, combining with DataFlow to form a complete data-training closed loop", "Multilingual binding is key for model ecosystem penetration, Go has an important position in cloud-native and AI Agent development", "Google continues to lead in edge AI model multimodal capabilities, TTS is a key touchpoint for user experience", "The combination of 1-bit LLM + WebGPU completely decentralizes AI inference, with significant value for privacy-first scenarios and offline applications", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "OpenAI releases GPT-5.4-Cyber expanding cybersecurity defender trusted access program", "OpenAI releases new generation Agents SDK: Native sandbox execution and secure operation", "Google accelerates desktop AI布局: native Gemini Mac app + Chrome Skills", "Anthropic Rejects Financing Offer Valued at Over $800 Billion", "NVIDIA releases Ising, the world's first open-source quantum AI model family", "NVIDIA Explores AI Data Center TCO: Why Token Cost is a Key Metric", "US Requires Data Centers to Disclose Energy Usage Details for First Time", "(Portfolio) BeingBeyond Releases Being-H0.7: Strongest Embodied World Model Trained on 200K Hours of Human Video", "(Portfolio) Shengshitech Releases Vidu Q3 with Reference Video Generation Feature Now Live", "Hightouch AI Marketing Platform ARR Exceeds $100 Million", "VAKRA Research Deep-Dives into Agent Reasoning, Tool Use, and Failure Modes", "Peking University and LLaMA-Factory jointly release DataFlex data-centric dynamic training framework", "Alibaba Qwen3.6-Plus and Qwen3.5-Plus Integrated into Go Language", "Google Releases Gemini 3.1 Flash TTS: Most Expressive Text-to-Speech Model", "Xenova demonstrates 1-bit LLM browser inference", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "OpenAI releases GPT-5.4-Cyber: expanding cybersecurity defender trusted access program", "OpenAI releases new generation Agents SDK: Native sandbox execution and secure operation", "Google accelerates desktop AI layout: native Gemini Mac app + Chrome Skills", "Anthropic Rejects Financing Offer Valued at Over $800 Billion", "NVIDIA Releases Ising: World's First Open-Source Quantum AI Model Family", "NVIDIA Explores AI Data Center TCO: Why Token Cost is a Key Metric", "US Requires Data Centers to Disclose Energy Usage Details for First Time", "(Portfolio) ZhiZaiWujie Releases Being-H0.7: 200K Hours of Human Video Training, Strongest Embodied AI...", "(Portfolio) Shengshitech Releases Vidu Q3 with Reference Video Generation Feature Now Live", "Hightouch AI Marketing Platform ARR Exceeds $100 Million", "VAKRA Research Deep-Dives into Agent Reasoning, Tool Use, and Failure Modes", "Peking University and LLaMA-Factory Launch DataFlex: Data Center Dynamic Training...", "Alibaba Qwen3.6-Plus and Qwen3.5-Plus Integrated into Go Language", "Google Releases Gemini 3.1 Flash TTS: Most Expressive Text-to...", "Xenova Demonstrates 1-bit LLM Browser Inference: 1.7B Model with WebGPU...", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1024,6 +1045,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["Alibaba Qwen 3.7 Preview Lands on Arena, Text Ranking Rises to Sixth Globally", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Alibaba Qwen 3.7 Preview Lands on Arena, Text Ranking Rises to Sixth Globally", "openJiuwen Open-Sources JiuwenSwarm Swarm Agent Architecture, Supporting Multi-Agent Autonomous Evolution", "Anthropic Acquires Development Tools Startup Stainless, Deal Valued Over $300M to Shut Down Within Year", "Microsoft Executives Warn of GitHub AI Advantage Erosion, Copilot Growth Falls Short of Expectations", "Meta Transfers Thousands of Employees to AI Business Division, Planning Massive Layoffs", "NVIDIA Delivers First Vera CPUs to Anthropic/OpenAI/SpaceX, Targeting Agent Inference Scenarios", "Brain-Inspired Computing Chip Company BrainChip Computing Raises Angel Round Led by Inno/Fudan Tech Innovation", "ICML 2026 | DPA: Replacing Vision Encoder with Small VLM Improves Multimodal Benchmark by 3 Points", "Figure Humanoid Robot Runs Continuously Over 119 Hours, Completes 149,000 Sorts", "Alibaba Qwen Team Announces Qwen3.7-Max-Preview and Qwen3.7-Plus-Preview Launch on LMSYS Chatbot Arena. Results Show Qwen3.7-Max Ranks 13th Globally on Text Leaderboard, Making Alibaba Arena's 6th Largest Lab with Math at 7th, Expert Reasoning 9th, Coding & IT 10th. Vision-wise Qwen3.7-Plus Ranks 16th, Comprehensively Making Alibaba the 5th Largest Vision Lab. Qwen3.7 Series Continues MoE Architecture Route, Full Version Coming Soon.", "Huawei-backed openJiuwen AI Agent Platform Releases JiuwenSwarm Swarm Agent Architecture, Enabling Multiple AI Agents to Collaborate Efficiently Like a Swarm and Achieve Autonomous Evolution. The Architecture Inherits Multi-Agent Communication Protocol from Previous 'Shrimp-Horse' Project, Adding Hierarchical Task Decomposition, Dynamic Role Assignment and Collective Error Correction. Community Simultaneously Releases Pretrained Weights and Example Workflows Covering Code Generation, Math Reasoning, Multimodal Dialogue Scenarios.", "Anthropic Monday Officially Announced Acquisition of New York Startup Stainless, Founded in 2022 by Former Stripe Engineer Alex Rattray. Stainless Products Auto-convert API Specs to TypeScript, Python, Go, Java, Kotlin Multi-language SDKs, Support MCP Server Generation, Adopted by OpenAI, Google, Cloudflare, Replicate, Runway. Anthropic Blog Reveals Stainless Has Provided SDK Generation for All Official SDKs Since Early Anthropic API, Will Shut Down All Hosted Products Post-acquisition, SDK Generator to Stop Service Within Year, Existing Users Can Continue Using and Modifying Generated SDKs. The Information Previously Reported Deal Over $300M, Backed by Sequoia Capital and Andreessen Horowitz. Anthropic Says Move Aims to Strengthen Claude Platform Connection to External Systems and Tools, Fully Integrating Stainless Team Internally.", "The Information Discloses Microsoft Internal Concerns Over GitHub AI Competitiveness Decline. While GitHub Benefits from AI Boom with More Users and Revenue, Its AI Features Face Erosion from Competitors Like Cursor and Codeium. Microsoft Views GitHub Copilot as Key AI Monetization Vehicle, But Internal Assessment Shows Growth Trajectory Deviating from Expected Targets. GitHub Copilot Market Share Being Divided by Vertical AI Coding Tools, While Microsoft Overall Faces Complex Interest Games from OpenAI Partnership Model in AI Space.", "Meta Undergoing Major Organizational Restructuring, Redistributing Thousands of Employees to New AI Business Groups to Support AI Strategy. Restructuring Expected to Include Massive Layoffs, Specific Scale and Affected Departments Not Yet Fully Disclosed. The Information Reports Meta Hopes to Maintain AI Competitiveness Against OpenAI, Google and Other Competitors.", "NVIDIA Announces First Vera CPUs Delivered Friday to Three Top AI Labs: San Francisco's Anthropic, OpenAI, and SpaceX. Vera is NVIDIA's First CPU Chip Designed for AI Agents, Accompanied by NVL72 Rack System. Jensen Wong at Dell Technologies World Reveals Vera Enables 50% Faster Agent Sandbox Inference Than Traditional CPUs, Single Token Cost Reduced to One-Tenth.", "BrainChip Computing Recently Completed Angel Round Led by Inno Angel Fund and Fudan Tech Innovation, with Participation from Tsinghua Alumni Seed Fund. Company Focuses on High-Efficiency, High-Autonomous Controllable Brain-Inspired Computing Chips Providing Computing Infrastructure for AGI Scenarios. Unlike Traditional CNN/GPU Architectures, Brain-Inspired Chips Reference Neuronal Spike Timing Information, Theoretical Efficiency Ratio可达 Traditional Chips' 100x, But Engineering Implementation Faces Dual Challenges of Precision and Chip Process.", "Shanghai AI Lab and Institutions Propose Deep Pre-Alignment (DPA) Architecture, Published at ICML 2026. Existing VLMs Use Lightweight Projectors to Directly Map ViT Encoder Outputs to LLM, but Research Points Out This Approach Causes Visual Features to Be Too Far from Text Space in LLM's Early Layers, Wasting Model Depth on Shallow Modality Alignment. DPA Replaces Standard ViT with Small VLM as Perceiver, Enabling Visual Features to Deeply Align with Text Space Before Entering LLM. Across 8 Multimodal Benchmarks, DPA Improves Baseline by 1.9 Points at 4B Scale, Expanding to 3.0 Points at 32B Scale; Meanwhile on 3 Text Benchmarks, Language Forgetting Reduced by 32.9%. Experiments Cover Qwen3 and LLaMA 3.2 Families, Proving Method Generality. DPA Requires Only Modular Vision Encoder Replacement, Minimal Computational Overhead, Seamless Upgrade Path for Existing VLMs.", "Figure Updates Humanoid Robot Deployment Progress on X Platform: Robot Has Entered 24/7 Unattended Operation Mode, Running Continuously Over 119 Hours by Day 6, Completing Approximately 149,000 Package Sorting Tasks. Company States This Is Embodied Intelligence's First Milestone-Scale Continuous Operation Verification in Real Logistics Scenarios, Indicating System Can Autonomously Handle Anomalies in Real Warehouse Environments Without Human Intervention.", "Qwen Continues High-Frequency Iteration, 3.7 Arena Ranking Confirms Stable Position in China-US Large Model First Tier. For Developers Needing Open-Source Multimodal Capabilities, Qwen Remains the Primary Foundation Choice After Llama.", "JiuwenSwarm Represents Latest Attempt in Domestic AI Agent Framework at Multi-Agent Coordination Level, Its Deep Binding with Huawei Pangu Large Model May Form Vertical Integration Advantage from Bottom Model to Upper Orchestration.", "Anthropic's Acquisition of Stainless Is Not Just Ecosystem Moat - Shutting Down Hosted Products Means Competitors Must Build Own SDK Systems, Substantive Strike Against OpenAI/Google. Stainless Was Industry Infrastructure, Its Disappearance Will Accelerate SDK Maintenance Arms Race Among Vendors.", "GitHub's Dilemma Reflects Structural Contradiction: General AI Assistance Tools Are Being Segmented by Deeper Vertical Tools. Even With Copilot Endorsement, Microsoft Struggles to Prevent Developers Choosing More Focused Products for Specific Workflows.", "Meta Is in Pains of Transitioning from Social Media to AI Infrastructure Company, Organizational Adjustment Intensity Exceeding Expectations.", "NVIDIA Defining 'Agent-Specific CPU' as New Category Expands Hardware Competition from GPU to Entire Compute Stack - This Is Key Step in Transition from Chip Supplier to AI System Integrator, Also Defensive Positioning Against Inference-Side Custom Chip Threats.", "Brain-Inspired Computing Has Been Explored by Zhejiang University and Other Teams for Years Domestically, This Funding Indicates Capital Market Beginning to Provide Real Support for Technology Paths 'Transcending Transformer Efficiency Ceiling', But Commercialization Cycle Expected to Be Long.", "DPA reveals an overlooked bottleneck in VLM architecture—modal alignment should not be the LLM's task but completed before entering the LLM. This holds significant reference value for next-generation VLM architecture design.", "Figure's continuous operation data is its commercial declaration against competitors like 1X and Unitree—emphasizing not individual action capabilities but the system's reliability in complex environments, which is crucial for enterprise procurement decisions.", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Alibaba Qwen 3.7 Preview Lands on Arena, Text Ranking Rises to Sixth Globally", "openJiuwen Open-Sources JiuwenSwarm Swarm Agent Architecture, Supporting Multi-Agent Autonomous Evolution", "Anthropic Acquires Development Tools Startup Stainless, Deal Valued Over $300M to Shut Down Within Year", "Microsoft Executives Warn of GitHub AI Advantage Erosion, Copilot Growth Falls Short of Expectations", "Meta Transfers Thousands of Employees to AI Business Division, Planning Massive Layoffs", "NVIDIA Delivers First Vera CPUs to Anthropic/OpenAI/SpaceX, Targeting Agent Inference Scenarios", "Brain-Inspired Computing Chip Company BrainChip Computing Raises Angel Round Led by Inno/Fudan Tech Innovation", "ICML 2026 | DPA: Replacing Vision Encoder with Small VLM Improves Multimodal Benchmark by 3 Points", "Figure Humanoid Robot Runs Continuously Over 119 Hours, Completes 149,000 Sorts", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Alibaba Qwen 3.7 Preview Lands on Arena, Text Ranking Rises to Sixth Globally", "openJiuwen open-sources JiuwenSwarm swarm agent architecture, supporting multi-Ag…", "Anthropic acquires development tools startup Stainless, deal valued at over $300 million…", "Microsoft execs warn of GitHub's AI advantage erosion, Copilot growth…", "Meta Transfers Thousands of Employees to AI Business Division, Planning Massive Layoffs", "NVIDIA's first Vera CPU deliveries to Anthropic/OpenAI/S…", "Brain-Inspired Computing Chip Company BrainChip Computing Raises Angel Round Led by Inno/Fudan Tech Innovation", "ICML 2026 | DPA: Replacing visual encoder with small VLM, multimodal ben…", "Figure Humanoid Robot Runs Continuously Over 119 Hours, Completes 149,000 Sorts", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

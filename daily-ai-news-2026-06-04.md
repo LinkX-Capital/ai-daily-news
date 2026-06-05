@@ -6,11 +6,11 @@
 
 ## 要点汇总
 
-- 模型前沿：Microsoft 7款自研MAI模型，MAI-Thinking-1达97% AIME 2025、53% SWE-Bench Pro，零蒸馏训练
+- 模型前沿：Google DeepMind发布Gemma 4 12B，无编码器统一多模态架构，16GB内存笔记本可运行; Microsoft 7款自研MAI模型，MAI-Thinking-1达97% AIME 2025、53% SWE-Bench Pro，零蒸馏训练
 - 产业动态：OpenAI为GPT-Rosalind引入GPT-5.5能力，强化企业级生命科学研究; Anthropic推出ant CLI，Claude Platform全API端点可从终端直接调用; Cognition推出Devin Desktop：统一管理本地与云端Agent集群; Perplexity Computer将支持混合Agentic推理：本地模型与云端前沿模型协同; Meta计划推出Hatch AI Agent，月费最高200美元; GitLab裁员14%约350人，全面重建基础设施以支撑AI Agent工作负载
 - 算力追踪：Lovable与Google Cloud签署多年扩展协议：AI使用量扩大5倍; Apple新Siri 9月上线：采用Google Cloud算力与Nvidia芯片; OpenRouter Pareto Router日处理近10亿tokens
 - 初创&融资：AI音乐生成公司Suno完成4亿美元D轮，估值54亿美元; AethexAI完成300万美元Pre-Seed，为非洲和中东市场构建本地化Voice AI; Special获a16z领投融资，前DOGE团队打造AI产业操作系统; NVIDIA收购企业预测AI公司Kumo AI，交易金额超4亿美元
-- 研究关注：NVIDIA CVPR 2026 Physical AI研究：Advanced Grasping、自动驾驶感知与Agent训练; VSTAT基准揭示MLLM瓶颈在视觉感知而非推理，GPT-5/Claude Code等Agent接近随机水平; Tilde Research提出Wall Attention：数据依赖型位置编码替代RoPE，实现长文本外推; Neel Nanda论文：揭示Subliminal Learning中模型隐式学习的机制
+- 研究关注：VSTAT基准揭示MLLM瓶颈在视觉感知而非推理，GPT-5/Claude Code等Agent接近随机水平; Tilde Research提出Wall Attention：数据依赖型位置编码替代RoPE，实现长文本外推; Neel Nanda论文：揭示Subliminal Learning中模型隐式学习的机制; WRIT：面向多轮用户Agent的读写密集轨迹合成方法; NVIDIA CVPR 2026 Physical AI研究：Advanced Grasping、自动驾驶感知与Agent训练; OCC-RAG：面向忠实问答的最优认知核心方法; BrainCause：从激活最大化到因果验证的脑区表征发现框架
 - X讨论：SemiAnalysis分析太空数据中心：总拥有成本与物理限制全面解读; Boston Dynamics Stretch机器人已自主搬运数千万箱子; Agility Robotics引用农业转型类比：自动化催生新型工作机会; Intel AutoRound 4-bit量化技术原生集成至vLLM-Omni; Anthropic研究AI网络攻击：评估832个恶意账户的攻防博弈
 
 ---
@@ -18,6 +18,11 @@
 ## 📖 详细参考
 
 ### 模型前沿
+**Google DeepMind发布Gemma 4 12B：无编码器统一多模态架构，16GB内存笔记本可运行**
+- Google DeepMind发布Gemma 4 12B，填补E4B（4B）与26B MoE之间的产品空白。核心创新是**统一无编码器架构**：视觉输入通过轻量 embedding 模块（单次矩阵乘法+位置编码）替代 vision encoder，音频输入则完全移除 audio encoder，原始音频信号直接投射到与 text token 同维度空间，视觉和音频均直接输入 LLM backbone。这是Gemma系列**首个支持原生音频输入的中型模型**。性能接近26B MoE但内存占用不到一半，**16GB VRAM/统一内存即可本地运行**。内置Multi-Token Prediction (MTP) drafters降低推理延迟，Apache 2.0协议开源，支持LM Studio、Ollama、Google AI Edge等。Gemma 4系列累计下载量超**1.5亿次**。
+  > 💡 无编码器架构是多模态模型轻量化的重要方向，Gemma 4 12B在12B量级实现接近26B模型性能，对笔记本端多模态Agent部署有实际推动意义。
+   - 来源: [Google Blog](https://blog.google/innovation-and-ai/technology/developers-tools/introducing-gemma-4-12b/) & [@googlegemma](https://x.com/googlegemma/status/2062202706882883696)
+
 **Microsoft 7款自研MAI模型：MAI-Thinking-1达97% AIME 2025、53% SWE-Bench Pro，零蒸馏训练**
 - Microsoft Build 2026发布7款MAI系列自研模型。旗舰推理模型MAI-Thinking-1为35B活跃参数MoE（总参1T），256K上下文，30T tokens预训练，8192颗GB200 GPU，AIME 2025达97%、SWE-Bench Pro达53%，盲测中人类评估者总体偏好超过Sonnet 4.6。代码模型MAI-Code-1-Flash仅5B活跃参数即达51% SWE-Bench Pro；图像模型MAI-Image-2.5以1401分登顶Image Edit Arena第二。Microsoft同步发布109页技术报告，披露**全程零蒸馏、零合成数据训练**，被研究者称为"同规模最透明"。Mustafa Suleyman称模型在MAIA 200自研芯片上运行，性能每美元提升30%。Build还推出Frontier Tuning企业微调技术、Web IQ搜索API、GitHub Copilot桌面应用及Project Solara/Scout概念硬件。
   > 💡 Microsoft从依赖OpenAI转向自研模型全家桶，MAI-Thinking-1的benchmark数据和零蒸馏透明度是最大亮点。MAIA 200芯片性能数据则表明Microsoft正加速自研硬件以降低对NVIDIA的依赖。
@@ -92,11 +97,6 @@
    - 来源: [The Information](https://www.theinformation.com/articles/nvidia-buys-enterprise-model-maker-kumo-ai-least-400-million) & [Fortune](https://fortune.com/2026/06/03/nvidia-snaps-up-kumo-ai-in-latest-acquisition/)
 
 ### 研究关注
-**NVIDIA CVPR 2026 Physical AI研究：Advanced Grasping、自动驾驶感知与Agent训练**
-- NVIDIA在CVPR 2026发布Physical AI系列研究，涵盖自动驾驶、机器人和视觉AI三个领域。具体包括Advanced Grasping（使机器人在无需重新校准的情况下连续抓取不同物品）、更智能的自动驾驶感知、以及大规模Agent训练能力。同日NVIDIA Research博客详细披露Advanced Grasping核心机制：通过工具中心坐标变换（tool-centric coordinate transforms）让机械臂能在杂乱环境中持续抓取新物体，而非仅限于单一物品。
-  > 💡 NVIDIA的Physical AI研究覆盖从底层抓取到高层Agent训练的完整链条，tool-centric坐标变换是对传统固定夹具方案的实质性改进。
-   - 来源: [NVIDIA Blog](https://blogs.nvidia.com/blog/cvpr-research-grasping-driving-agent-training/)
-
 **VSTAT：视觉时空推理基准揭示MLLM瓶颈在感知而非推理，前沿Agent均接近随机水平**
 - NYU Vision-X实验室发布视觉时空推理基准VSTAT，测试多模态大语言模型在视频理解任务上的表现。研究发现当前MLLM的核心瓶颈在于视觉感知而非文本推理：增加thinking budget反而降低准确率，GPT-5+Codex、Opus 4.7+Claude Code等编码Agent在n=39子集上均接近随机水平，单个问题平均耗时约30分钟。超过50%的失败源于事件识别（底层感知），而非视觉推理。研究者通过对比视频输入与等价文本描述发现，同一模型在文本条件下表现大幅提升，证实瓶颈在感知层。
   > 💡 VSTAT揭示了一个重要盲区：当前最强模型和Agent框架在视觉感知任务上几乎完全失效，thinking更多反而加重幻觉，表明多模态模型的感知能力远落后于推理能力。
@@ -116,6 +116,11 @@
 - 论文WRIT（Write-Read Intensive Trajectory Synthesis）针对多轮用户面向Agent提出轨迹合成方法。多轮Agent需从用户不完整请求中推断意图、通过对话和工具收集缺失信息并执行操作。现有轨迹合成流水线通常通过组合多个用户请求来增加任务复杂度，产生写入密集型轨迹。WRIT的核心改进是引入读操作：在轨迹中穿插信息收集步骤，使Agent在执行前充分理解用户意图，从而提升复杂多轮对话的表现。
   > 💡 轨迹合成是提升Agent能力的数据瓶颈，WRIT方法若开源将加速Agent应用开发。
    - 来源: [arXiv cs.CL](https://arxiv.org/abs/2606.02908)
+
+**NVIDIA CVPR 2026 Physical AI研究：Advanced Grasping、自动驾驶感知与Agent训练**
+- NVIDIA在CVPR 2026发布Physical AI系列研究，涵盖自动驾驶、机器人和视觉AI三个领域。具体包括Advanced Grasping（使机器人在无需重新校准的情况下连续抓取不同物品）、更智能的自动驾驶感知、以及大规模Agent训练能力。同日NVIDIA Research博客详细披露Advanced Grasping核心机制：通过工具中心坐标变换（tool-centric coordinate transforms）让机械臂能在杂乱环境中持续抓取新物体，而非仅限于单一物品。
+  > 💡 NVIDIA的Physical AI研究覆盖从底层抓取到高层Agent训练的完整链条，tool-centric坐标变换是对传统固定夹具方案的实质性改进。
+   - 来源: [NVIDIA Blog](https://blogs.nvidia.com/blog/cvpr-research-grasping-driving-agent-training/)
 
 **OCC-RAG：面向忠实问答的最优认知核心方法，专注多跳推理而非参数化知识**
 - 论文提出OCC（Optimal Cognitive Core）系列小型语言模型，核心思路是：许多实际应用更需要鲁棒推理而非海量参数化知识。OCC-RAG专注于基于上下文的忠实问答，要求模型对提供的段落做多跳推理，同时忽略已记忆的知识。论文实现了全新的合成训练数据流水线，专门针对忠实问答场景优化。

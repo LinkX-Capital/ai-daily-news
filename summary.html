@@ -17,9 +17,56 @@
         .cat-tag { display: inline-block; background: #e8f4fd; color: #0066cc; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 8px; }
         .title { font-size: 14px; font-weight: 600; color: #1a1a2e; margin: 4px 0; }
         .source { font-size: 12px; color: #999; }
+    
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
+    
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
+/* Floating variant for pages without topbar */
+.lang-toggle-float {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
     </style>
 </head>
 <body>
+<button class="lang-toggle lang-toggle-float" id="lang-toggle">EN</button>
     <div class="header">
         <h1>📡 AI前沿动态 - 3月7日-3月9日</h1>
     </div>
@@ -210,5 +257,129 @@
     <div style="text-align:center; padding: 20px; color: #999; font-size: 12px;">
         更新时间: 2026-03-09
     </div>
+<script>
+
+// ── Bilingual toggle (generic) ──
+(function() {
+    const EN = {"📡 AI前沿动态 - 3月7日-3月9日": "📡 AI Frontier Trends - March 7-9", "📅 03-07 查看详情 →": "📅 03-07 View Details →", "📅 03-08 查看详情 →": "📅 03-08 View Details →", "📅 03-09 查看详情 →": "📅 03-09 View Details →"};
+    const PH_EN = "Search news...";
+
+    const SEL = ["h1", "h2", "h3", "h4", "p", "li", "a.topbar-btn", "a.topbar-nav", "span.topbar-brand", "span.topbar-tagline", "div.hero-eyebrow", "div.hero-title", "div.hero-sub", "div.hero-meta", "div.section-label", "div.edition-title", "div.edition-sub", "div.edition-date-label", "div.edition-date-month", "span.model-chip", "div.toc-title", "div.toc-sub", "span.nav-item", "a.nav-item", "span.te-date", "div.te-title", "div.te-sub", "div.sec-title", "span.sec-title", "h1.hero-title", "p.hero-sub", "a.edition-title", "div.card-title", "div.card-sub"];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                // Get plain text (skip elements with child elements that aren't just text)
+                if (el.children.length > 0) {
+                    // Check if has nested elements
+                    var hasNested = false;
+                    for (var c of el.children) {
+                        if (c.tagName !== 'BR' && c.tagName !== 'SPAN' && c.tagName !== 'STRONG' && c.tagName !== 'EM') {
+                            hasNested = true; break;
+                        }
+                    }
+                    if (hasNested) return;
+                }
+
+                var zh = el.textContent.trim();
+                if (!zh || !EN[zh]) return;
+
+                if (isEn) {
+                    if (!cache.has(el)) cache.set(el, el.innerHTML);
+                    el.textContent = EN[zh];
+                } else {
+                    var saved = cache.get(el);
+                    if (saved) el.innerHTML = saved;
+                }
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+    if (isEn) applyLang();
+})();
+
+    </script>
+<script>
+
+// ── Bilingual toggle (generic) ──
+(function() {
+    const EN = {"📡 AI前沿动态 - 3月7日-3月9日": "📡 AI Frontier Trends - March 7-9", "📅 03-07 查看详情 →": "📅 03-07 View Details →", "📅 03-08 查看详情 →": "📅 03-08 View Details →", "📅 03-09 查看详情 →": "📅 03-09 View Details →"};
+    const PH_EN = "Search news...";
+
+    const SEL = ["h1", "h2", "h3", "h4", "p", "li", "a.topbar-btn", "a.topbar-nav", "span.topbar-brand", "span.topbar-tagline", "div.hero-eyebrow", "div.hero-title", "div.hero-sub", "div.hero-meta", "div.section-label", "div.edition-title", "div.edition-sub", "div.edition-date-label", "div.edition-date-month", "span.model-chip", "div.toc-title", "div.toc-sub", "span.nav-item", "a.nav-item", "span.te-date", "div.te-title", "div.te-sub", "div.sec-title", "span.sec-title", "h1.hero-title", "p.hero-sub", "a.edition-title", "div.card-title", "div.card-sub"];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                // Get plain text (skip elements with child elements that aren't just text)
+                if (el.children.length > 0) {
+                    // Check if has nested elements
+                    var hasNested = false;
+                    for (var c of el.children) {
+                        if (c.tagName !== 'BR' && c.tagName !== 'SPAN' && c.tagName !== 'STRONG' && c.tagName !== 'EM') {
+                            hasNested = true; break;
+                        }
+                    }
+                    if (hasNested) return;
+                }
+
+                var zh = el.textContent.trim();
+                if (!zh || !EN[zh]) return;
+
+                if (isEn) {
+                    if (!cache.has(el)) cache.set(el, el.innerHTML);
+                    el.textContent = EN[zh];
+                } else {
+                    var saved = cache.get(el);
+                    if (saved) el.innerHTML = saved;
+                }
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+    if (isEn) applyLang();
+})();
+
+    </script>
 </body>
 </html>

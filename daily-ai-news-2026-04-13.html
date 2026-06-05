@@ -533,6 +533,25 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
     </style>
 </head>
 <body>
@@ -548,6 +567,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -944,6 +965,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["HumanX AI Conference: Claude Takes Center Stage, \"Falling Behind\" Talk Rises Around OpenAI", "Industry Dynamics", "X Discussion", "HumanX AI Conference: Claude Takes Center Stage, \"Falling Behind\" Talk Rises Around OpenAI", "Physical AI Sparks Talent War: Autonomous Driving Engineers' Base Salary Pushed to $300K-$500K", "Lingchu Intelligence Releases Psi-MobiDex Embodied AI Dataset: 100K Hours of Real Human Operation Data Covering 294 Scenarios", "Zhejiang City College Partners with ZJU, CityUHK and Others to Release US-365K Ultrasound AI Dataset: 364K Image-Text Pairs", "BrainCo Releases BrainCo Revo 3 Intelligent Dexterous Hand: 21 DOF, 70N Full Grip Force, Targeting Robotics Applications", "Luma AI Launches Environment Control Feature: Upload Reference Image to Control Video Generation Scene", "Thousands attend HumanX AI Conference in San Francisco; Claude is the most mentioned chatbot while ChatGPT is hardly discussed. Multiple exhibitors proactively stated their teams have switched to Claude, believing OpenAI \"lost its footing\". WSJ recent analysis calls both companies \"the fastest-growing enterprises in tech history\"; Anthropic is closing in on OpenAI in enterprise user base. OpenAI keeps facing negatives: abandoning Sora video generation, injecting ads into ChatGPT, New Yorker questioning Sam Altman's credibility. In response, OpenAI launched $100/month ChatGPT subscription tier this week, featuring Codex programming tool, clearly targeting Claude Code.", "Robotics and defense tech companies are massively recruiting from autonomous driving industry, targeting talent with \"classical robotics + AI\" hybrid skills. Defense startups offer the most generous packages, backed by持续大额预算支撑. continuous substantial Pentagon budget support. Waymo is unaffected (price-insensitive), but startups and automakers will bear the biggest pressure. Eclipse Ventures just closed a $1.3B new fund focused on Physical AI, including $591M early-stage incubation fund. Founders predict chain effects: automakers' autonomous driving engineers will mass exodus, startups need to raise more money or spend smarter.", "Lingchu Intelligence releases large-scale embodied AI training dataset Psi-MobiDex: 5,417 hours real machine data + 95,472 hours human data, covering 294 scenarios, 4,821 tasks, 1,382 objects. Currently 1,000 hours open-sourced, full release by end of year. The dataset has attracted high attention from international AI academia, with reactions from PI, NVIDIA and other institutions.", "Zhejiang City College partners with Zhejiang University, City University of Hong Kong, Hong Kong Baptist University and others to build the first large-scale ultrasound-specific dataset US-365K: 364K ultrasound images with diagnostic text pairs, covering 11,676 clinical cases. Accompanied by Ultrasound-CLIP model to help AI understand clinical diagnostic semantics. Paper accepted by CVPR 2026, will significantly advance ultrasound AI diagnostic capabilities.", "Brain-machine interface unicorn BrainCo releases new-generation intelligent dexterous hand BrainCo Revo 3, featuring 21 degrees of freedom, full grip force of 70N, using full direct-drive reversible design, with dexterity approaching human hand level. The product extends from medical rehabilitation to robot control, forming a technical barrier at the intersection of brain-machine interfaces and robotic manipulation.", "Luma AI releases new feature, allowing users to upload reference images and set directions, with AI transforming any space into specified scenes. Addressing customization needs for creation scenarios like film and gaming.", "This is not simply a product reputation reversal—the user stickiness in the AI assistant market is being reshuffled, with developer tool experience becoming the key battlefield for determining victory or defeat.", "Physical AI is replaying the 2016 autonomous driving talent bubble, the difference being this time the bill is being paid by defense budgets, with structural supply-side shortages unable to be alleviated in the short term.", "The breakthrough bottleneck for embodied intelligence lies in data rather than algorithms, with China establishing structural advantages in accumulating real human operational data.", "Medical imaging data is the key bottleneck for AI healthcare implementation, with large-scale annotated datasets in vertical domains being far more valuable than general-purpose data.", "Brain-machine interfaces are moving from medical rehabilitation to robot control, with the human-machine fusion embodied intelligence approach being validated.", "Competition focus in 3D/video generation is shifting from \"can it generate\" to \"can it control precisely\", with controllability becoming the new differentiated battleground.", "Industry Dynamics", "X Discussion", "Claude emerges as the biggest winner at HumanX conference, with OpenAI accused of \"falling behind\".", "Talent war erupts in Physical AI field, autonomous driving engineer salaries surge to $300K-$500K.", "Lingchu Intelligence Releases Psi-MobiDex Embodied Intelligence Dataset: 100,000 Hours of Real Human Operation Data", "Zhejiang University City College and Zhejiang University Release US-365K Ultrasound Dataset with 364,000 Image-Text Pairs", "BrainCo Technology Releases BrainCo Revo 3 Smart Dexterous Hand", "Luma AI Launches Environment Control Feature, Supporting Reference Image-Controlled Video Generation", "Industry Dynamics", "X Discussion", "HumanX AI Conference: Claude Takes Center Stage, Calls for OpenAI to Catch Up...", "Physical AI Talent War Heats Up: Autonomous Driving Engineers' Base Salary Pushed to $300K...", "Lingchu Intelligence Releases Psi-MobiDex Embodied Intelligence Dataset: 100K Hours of Real Human Operation Data...", "ZJU City College Joins ZJU, CityU HK and Others to Release US-365K Ultrasound AI Dataset: 36.4...", "BrainCo Releases BrainCo Revo 3 Intelligent Dexterous Hand: 21 DOF, Full Grip Capability...", "Luma AI Launches Environment Control Feature: Upload Reference Image to Control Video Generation Scene", "Industry Dynamics", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>
