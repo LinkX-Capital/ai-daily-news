@@ -6,12 +6,12 @@
 
 ## 要点汇总
 
-- 模型前沿：NVIDIA发布Nemotron 3 Ultra（550B MoE）及3.5内容安全模型; Ideogram发布4.0开源图像模型; Nex-AGI生态发布Nex-N2智能体模型
-- 产业动态：OpenAI发布ChatGPT Memory Dreaming V3; Google推出Kaggle Benchmarks本地开发; Uber限制AI编程工具每人每月$1,500
-- 算力追踪：Pinterest签约AWS 40亿美元采用Trainium芯片
-- 初创&融资：Ramp完成$7.5亿融资估值$440亿; Helion Energy融资$4.65亿估值$155亿
-- 研究关注：LingBot-VA自回归扩散框架实现机器人因果世界建模; RUBAS：基于评分表的强化学习方法提升Agent安全性; ServiceNow发布EVA-Bench 2.0
-- X讨论：Anthropic发布递归自改进研究报告，工程师代码产出提升8倍，警示递归自改进风险
+- 模型前沿：NVIDIA发布Nemotron 3 Ultra推理模型及Nemotron 3.5内容安全模型; Ideogram发布4.0开源图像模型：开放权重下载与本地微调; Nex-AGI生态发布Nex-N2智能体模型：Adaptive Thinking节省20% token消耗
+- 产业动态：OpenAI发布ChatGPT Memory Dreaming V3：后台综合记忆取代手动保存; Google推出Kaggle Benchmarks本地开发：支持AI编码Agent直接构建评测任务; Uber限制AI编程工具每人每月$1,500：应对Token支出失控
+- 算力追踪：Pinterest签约AWS 40亿美元基础设施协议，采用Trainium芯片
+- 初创&融资：Ramp完成$7.5亿融资，估值达$440亿; 核聚变公司Helion Energy融资$4.65亿，估值$155亿
+- 研究关注：LingBot-VA：自回归扩散框架实现机器人因果世界建模与控制; RUBAS：基于评分表的强化学习方法提升Agent安全性; ServiceNow发布EVA-Bench 2.0：121工具与213场景的多领域Agent评测基准
+- X讨论：Anthropic发布递归自改进研究报告：工程师代码产出提升8倍，警示自改进风险
 
 ---
 
@@ -45,13 +45,13 @@
   > 💡 从"手动记笔记"到"自动综合理解"是AI记忆的范式升级，后台Dreaming架构解决了亿级用户规模下记忆的时效性和准确性问题。
    - 来源: [OpenAI Blog](https://openai.com/index/chatgpt-memory-dreaming)
 
-**Google推出Kaggle Benchmarks本地开发：支持AI编码Agent直接构建评测任务**
+**Google推出Kaggle Benchmarks本地开发功能：支持AI编码Agent直接构建评测任务**
 - Google发布Kaggle Benchmarks本地开发功能，开发者可通过Kaggle CLI在本地环境中编写、推送、运行和下载评测任务。自Kaggle Benchmarks上线以来，全球AI社区已创建超过**10,000个**评测任务。本地开发功能使开发者能够结合AI编码Agent更快速地构建模型评测。
   > 💡 评测基础设施的民主化正在加速，本地开发降低了构建高质量AI评测的门槛。
    - 来源: [Google Blog](https://blog.google/innovation-and-ai/technology/developers-tools/build-kaggle--benchmarks-locally/)
 
 **Uber限制AI编程工具每人每月$1,500：应对Token支出失控**
-- 据Bloomberg报道，Uber限制所有员工每个AI编程工具每月**$1,500**的token支出上限，该限制仅适用于Cursor、Claude Code等Agentic编码工具。按每人两个活跃工具估算，年支出上限约$36,000，约占Uber美国工程师中位薪酬$330,000的**11%**。此前Uber在四个月内耗尽了2026年AI预算。
+- Uber限制所有员工每个AI编程工具每月**$1,500**的token支出上限，该限制仅适用于Cursor、Claude Code等Agentic编码工具。按每人两个活跃工具估算，年支出上限约$36,000，约占Uber美国工程师中位薪酬$330,000的**11%**。此前Uber在四个月内耗尽了2026年AI预算。
   > 💡 AI编程工具成本控制成为大型科技公司的普遍议题，token消耗增速远超预算预期。
    - 来源: [Simon Willison](https://simonwillison.net/2026/Jun/3/uber-caps-usage/) | [Simon Willison (@simonw)](https://x.com/simonw/status/2062143151184465964) | Bloomberg
 
