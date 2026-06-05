@@ -7,7 +7,7 @@
 ## 要点汇总
 
 - 模型前沿：NVIDIA发布Nemotron 3 Ultra推理模型及Nemotron 3.5内容安全模型; Ideogram发布4.0开源图像模型：开放权重下载与本地微调; Nex-AGI生态发布Nex-N2智能体模型：Adaptive Thinking节省20% token消耗
-- 产业动态：OpenAI发布ChatGPT Memory Dreaming V3：后台综合记忆取代手动保存; Google推出Kaggle Benchmarks本地开发：支持AI编码Agent直接构建评测任务; Uber限制AI编程工具每人每月$1,500：应对Token支出失控
+- 产业动态：OpenAI发布ChatGPT Memory Dreaming V3：后台综合记忆取代手动保存; Google推出Kaggle Benchmarks本地开发功能：支持AI编码Agent直接构建评测任务; Uber限制AI编程工具每人每月$1,500：应对Token支出失控; Harvey联合FireworksAI：开源法律Agent混合路由击败前沿模型，成本降11倍
 - 算力追踪：Pinterest签约AWS 40亿美元基础设施协议，采用Trainium芯片
 - 初创&融资：Ramp完成$7.5亿融资，估值达$440亿; 核聚变公司Helion Energy融资$4.65亿，估值$155亿
 - 研究关注：LingBot-VA：自回归扩散框架实现机器人因果世界建模与控制; RUBAS：基于评分表的强化学习方法提升Agent安全性; ServiceNow发布EVA-Bench 2.0：121工具与213场景的多领域Agent评测基准
@@ -46,7 +46,7 @@
    - 来源: [OpenAI Blog](https://openai.com/index/chatgpt-memory-dreaming)
 
 **Google推出Kaggle Benchmarks本地开发功能：支持AI编码Agent直接构建评测任务**
-- Google发布Kaggle Benchmarks本地开发功能，开发者可通过Kaggle CLI在本地环境中编写、推送、运行和下载评测任务。自Kaggle Benchmarks上线以来，全球AI社区已创建超过**10,000个**评测任务。本地开发功能使开发者能够结合AI编码Agent更快速地构建模型评测。
+- Google发布Kaggle Benchmarks本地开发功能，开发者可通过Kaggle CLI在本地环境中编写、推送、运行和下载评测任务。随着AI模型从聊天机器人演变为能编码、使用工具、解决复杂问题的推理Agent，传统benchmark已不足以评估这些能力。Kaggle Benchmarks上线以来全球社区已创建超过**10,000个**评测任务，本地开发功能使开发者能直接结合AI编码Agent构建评测任务，无需依赖Web界面，加速模型能力评估。
   > 💡 评测基础设施的民主化正在加速，本地开发降低了构建高质量AI评测的门槛。
    - 来源: [Google Blog](https://blog.google/innovation-and-ai/technology/developers-tools/build-kaggle--benchmarks-locally/)
 
@@ -54,6 +54,11 @@
 - Uber限制所有员工每个AI编程工具每月**$1,500**的token支出上限，该限制仅适用于Cursor、Claude Code等Agentic编码工具。按每人两个活跃工具估算，年支出上限约$36,000，约占Uber美国工程师中位薪酬$330,000的**11%**。此前Uber在四个月内耗尽了2026年AI预算。
   > 💡 AI编程工具成本控制成为大型科技公司的普遍议题，token消耗增速远超预算预期。
    - 来源: [Simon Willison](https://simonwillison.net/2026/Jun/3/uber-caps-usage/) | [Simon Willison (@simonw)](https://x.com/simonw/status/2062143151184465964) | Bloomberg
+
+**Harvey联合FireworksAI：开源法律Agent混合路由击败前沿模型，成本降11倍**
+- Harvey AI联合FireworksAI发布法律Agent实验结果。混合路由架构中GLM 5.1作为主worker、Opus 4.7作为按需advisor（平均每任务仅调用0.83次），在Legal Agent Benchmark 100任务测试中all-pass率达**18%**，超过纯Opus的14%，总成本**$368**对**$954**。SFT微调后的Kimi 2.6同样达到**15%** all-pass率（超过Opus的14%），成本仅**$84**，约为Opus的**1/11**。
+  > 💡 垂直场景下开源模型+SFT+混合路由可同时超越前沿模型的质量和成本，挑战了"前沿模型通吃"的假设。
+   - 来源: [Harvey (@harvey)](https://x.com/harvey/status/2062218656420167785) | [FireworksAI](https://www.harvey.ai/blog/agentic-platform-updates)
 
 ### 初创&融资
 **Ramp完成$7.5亿融资，估值达$440亿**
@@ -68,12 +73,12 @@
 
 ### 研究关注
 **LingBot-VA：自回归扩散框架实现机器人因果世界建模与控制**
-- 论文提出LingBot-VA，通过视频世界建模实现机器人的因果推理与控制。模型采用自回归扩散框架，同时学习帧预测和策略执行，核心设计包括：共享隐空间（整合视觉和动作token）由**Mixture-of-Transformers (MoT)** 架构驱动，闭环rollout机制持续获取环境反馈，异步推理流水线并行执行动作预测与电机控制。研究表明视频世界模型与视觉语言预训练共同构成了机器人学习的独立基础，为机器人提供在行动前"想象"近未来的能力。第一作者为Lin Li。
+- 论文提出LingBot-VA，通过视频世界建模实现机器人的因果推理与控制。模型采用自回归扩散框架，同时学习帧预测和策略执行，核心设计包括：共享隐空间（整合视觉和动作token）由**Mixture-of-Transformers (MoT)** 架构驱动，闭环rollout机制持续获取环境反馈，异步推理流水线并行执行动作预测与电机控制。研究表明视频世界模型与视觉语言预训练共同构成了机器人学习的独立基础，为机器人提供在行动前"想象"近未来的能力。
   > 💡 视频世界模型为机器人学习提供了超越传统强化学习的新范式，因果推理使机器人能在行动前预判未来。
    - 来源: [arXiv](https://arxiv.org/abs/2601.21998) | [机器之心](https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651036834&idx=2&sn=2ee913b69d3841ccae7b2fa64b0704d4)
 
 **RUBAS：基于评分表的强化学习方法提升Agent安全性**
-- 论文提出RUBAS（Rubric-Based Agent Safety），将Agent行为分解为四个维度：工具使用安全性、参数安全性、响应安全性和有用性，通过结构化评分表为完整Agent轨迹提供细粒度、可解释的奖励信号。相比依赖粗粒度拒绝信号或静态监督的传统对齐方法，RUBAS在多个Agent安全benchmark上提升了安全性，减少了工具驱动的幻觉，同时保持了任务完成率。第一作者为Xian Qi Loye。
+- 论文提出RUBAS（Rubric-Based Agent Safety），将Agent行为分解为四个维度：工具使用安全性、参数安全性、响应安全性和有用性，通过结构化评分表为完整Agent轨迹提供细粒度、可解释的奖励信号。相比依赖粗粒度拒绝信号或静态监督的传统对齐方法，RUBAS在多个Agent安全benchmark上提升了安全性，减少了工具驱动的幻觉，同时保持了任务完成率。
   > 💡 将Agent安全从"拒绝/不拒绝"二分法升级为多维度结构化评估，是Agent安全对齐的重要进展。
    - 来源: [arXiv](https://arxiv.org/abs/2606.04051)
 
@@ -84,7 +89,7 @@
 
 ### X讨论
 **Anthropic发布递归自改进研究报告：工程师代码产出提升8倍，警示自改进风险**
-- Anthropic发布《When AI Builds Itself》研究报告，披露Anthropic工程师平均每季度代码产出较2021-2025基线提升**8倍**。报告指出AI正在加速AI自身开发，这一趋势指向AI系统能够完全自主设计开发自身后代的"递归自改进"能力。报告强调递归自改进并非必然但可能比多数机构预想的更早到来，呼吁加强对自改进风险的评估。该话题在Hacker News获得260+点赞和352条讨论。
+- Anthropic发布《When AI Builds Itself》研究报告，披露Anthropic工程师平均每季度代码产出较2021-2025基线提升**8倍**。报告指出AI正在加速AI自身开发，这一趋势指向AI系统能够完全自主设计开发自身后代的"递归自改进"能力。报告强调递归自改进并非必然但可能比多数机构预想的更早到来，呼吁加强对自改进风险的评估。
   > 💡 递归自改进从理论讨论进入实际数据验证阶段，AI参与自身开发的速度远超预期。
    - 来源: [Anthropic Institute](https://www.anthropic.com/institute/recursive-self-improvement) | [Anthropic (@AnthropicAI)](https://x.com/AnthropicAI/status/2062568873321513443)
 
