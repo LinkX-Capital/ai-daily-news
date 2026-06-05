@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-06-06 07:15
-**总计**：28 条推文
+**总计**：29 条推文
 
 ---
 
@@ -13,28 +13,30 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **Claude Cowork 使用上限翻倍**
+1. **Rohin: A Fantastic AGI Safety Lead with Underrated Takes on AI**
+   @neelnanda5
+2. **Improving Activation Oracles: Qualitative Tool Enhancement**
+   @neelnanda5
+3. **The Unsung MLCC Component Behind Every AI Server**
+   @semianalysis_
+4. **American Open Models Won't Catch Up via 'Coalition' Approach**
+   @semianalysis_
+5. **Fundamental Disagreement with 'Nemotron Coalition' OSS Model Approach**
+   @semianalysis_
+6. **NVIDIA Open Sources Rubin NVSwitch Tray BoM with AMD EPYC 3151 CPU**
+   @semianalysis_
+7. **Services Productivity Is Structurally Invisible to Macro Data**
+   @semianalysis_
+8. **Claude Doubles Cowork Usage Limits for the Next Month**
    @claudeai
-2. **Riverflow 2.5 图像模型上线 OpenRouter**
-   @openrouter
-3. **Riverflow V2.5 Pro：支持深度思考与多档输出控制**
-   @openrouter
-4. **Riverflow 支持透明/纯色背景与自定义评分标准**
-   @openrouter
-5. **开源权重正在重塑编码与智能体工作负载**
-   @artificialanlys
-6. **Activation Oracles 工具能力改进**
-   @neelnanda5
-7. **AGI Safety 负责人 Rohin 观点推荐**
-   @neelnanda5
-8. **两类 AI 进步：单点突破 vs. 系列微改进**
-   @percyliang
-9. **祝贺 Flourish AI Labs 团队成立**
-   @soumithchintala
+9. **Meta's SAM 3D Team Receives Best Paper Honorable Mention at CVPR26**
+   @aiatmeta
+10. **3 Weeks Left for AI Engineer World's Fair 2026**
+   @swyx
 
 ---
 
-## 🏢 公司发布（20条）
+## 🏢 公司发布（21条）
 
 ### @agilityrobotics | App
 
@@ -70,6 +72,11 @@
 
 - RT by @Humanoid_AI: 【AJ034 黑皮】来自山东185体育生难得有几天不训练，被朋友忽悠来参加抓痒挑战。可爱痞帅的脸搭配敏感的黑皮身材，刚开始还有些不服愤怒，最后46大脚在各种工具下挣扎，连连喊停，在笑声中屈服。咨询加Q3070729003。纯绿TK。深造播放器观看。Foreig...
   [查看](https://x.com/AJSTUDIOTK/status/2062874573985747001#m)
+
+### @openai | Model
+
+- An issue caused some user accounts to be incorrectly suspended.   We’re restoring access and working through related subscription and credit issues. h...
+  [查看](https://x.com/OpenAI/status/2062927046448431587#m)
 
 ### @openrouter | Infra
 
@@ -130,12 +137,12 @@
 
 ### @swyx [AI社区] | App
 
+- 3 weeks left til @aidotengineer world's fair!  if you want to get on this year's map of top ai engineering companies, theres a few spots left  we are ...
+  [查看](https://x.com/swyx/status/2062952591869493684#m)
 - R to @aiDotEngineer: lmao designer vincent back at it again with the frontier capability tests
   [查看](https://x.com/swyx/status/2063013079974367557#m)
 - R to @aiDotEngineer: we're also launching our special data track - here's a preview https://x.com/latentspacepod/status/2062972030606274785
   [查看](https://x.com/swyx/status/2062972169693630755#m)
-- R to @aiDotEngineer: (if you are still waiting for CFP responses, sorry we got >2000 of them, way more than the past, most responses should go out tod...
-  [查看](https://x.com/swyx/status/2062952836955316433#m)
 
 ### @thesephist [Anthropic] | Research
 
