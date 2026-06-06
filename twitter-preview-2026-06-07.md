@@ -13,16 +13,20 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **Google发布开源模型Gemma 4 12B，支持语音转录但距前沿仍有差距**
-   @artificialanlys
-2. **Gemma 4 12B语音识别性能：在VoxPopuli-Cleaned-AA上WER为5.3%，AA-AgentTalk上为8.0%，Earnings22-Cleaned-AA上为13.7%**
-   @artificialanlys
-3. **Sequential Monte Carlo推测解码技术：并行保留多个草稿token，避免回退失败的匹配**
+1. **Sequential Monte Carlo Speculative Decoding - New Method Keeps Multiple Draft Tokens Alive in Parallel**
    @semianalysis_
-4. **Vector Policy Optimization (VPO)：一种新的策略优化方法，针对多样化的优质答案进行优化**
+2. **Vector Policy Optimization (VPO) - A New Policy Optimization Method for Diverse High-Quality Answers**
    @theturingpost
-5. **AI与人类审稿人对比研究：45位科学家花费469小时评估2960条来自人类和AI的审稿意见**
+3. **Study: 45 Scientists Spent 469 Hours Judging 2,960 Review Criticisms - AI vs Human Reviewers**
    @theturingpost
+4. **Google Releases Gemma 4 12B Open Weights Model - Speech-to-Text Evaluation Results**
+   @artificialanlys
+5. **Gemma 4 12B Achieves 5.3% WER on VoxPopuli-Cleaned-AA, Performance on Speech Recognition Benchmarks**
+   @artificialanlys
+6. **A Smarter Alternative to 'Always Use Plan Mode': Frame Your Task as a Question**
+   @swyx
+7. **Ayanna Howard (@robotsmarts) Named Next President of Spelman College**
+   @jeffdean
 
 ---
 
