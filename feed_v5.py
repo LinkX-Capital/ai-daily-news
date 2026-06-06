@@ -1237,20 +1237,68 @@ def process_with_llm(articles, recent_articles=None):
 
     ai_filtered = [a for a in sorted_articles if not is_likely_non_ai(a)]
 
-    # 每个来源最多保留N条，避免单一源占满名额
+    # ========== arXiv 论文预筛：用 _HF_RESEARCH_KEYWORDS 过滤，优中选优 ==========
+    ARXIV_SOURCES = {"arXiv cs.CL", "arXiv cs.LG"}
+    ARXIV_MAX = 10  # arXiv 论文独立通道上限
+
+    def _score_arxiv_relevance(article):
+        """按 _HF_RESEARCH_KEYWORDS 匹配打分，返回 (score, matched_field)"""
+        title = (article.get('title', '') or '').lower()
+        summary = (article.get('summary', '') or article.get('content', '') or '').lower()[:600]
+        text = title + " " + summary
+        best_score, best_field = 0, None
+        for field, keywords in _HF_RESEARCH_KEYWORDS.items():
+            hits = sum(1 for kw in keywords if kw in text)
+            if hits > best_score:
+                best_score = hits
+                best_field = field
+        # 标题命中权重更高
+        all_kw = [kw for kws in _HF_RESEARCH_KEYWORDS.values() for kw in kws]
+        title_hits = sum(1 for kw in all_kw if kw in title)
+        return best_score + title_hits, best_field
+
+    arxiv_papers = []
+    other_articles = []
+    for a in ai_filtered:
+        if a.get('source', '') in ARXIV_SOURCES:
+            score, field = _score_arxiv_relevance(a)
+            if score >= 1:  # 至少匹配 1 个关注方向
+                a['_research_score'] = score
+                a['_research_field'] = field
+                arxiv_papers.append(a)
+        else:
+            other_articles.append(a)
+
+    # arXiv 按分数排序，取 top N
+    arxiv_papers.sort(key=lambda x: -x.get('_research_score', 0))
+    arxiv_selected = arxiv_papers[:ARXIV_MAX]
+    if arxiv_selected:
+        top_fields = [a.get('_research_field', '?') for a in arxiv_selected[:3]]
+        print(f"   📚 arXiv 预筛: {len(arxiv_papers)} 篇匹配关注方向，选 {len(arxiv_selected)} 篇 (top领域: {', '.join(top_fields)})")
+
+    # ========== 非arXiv源：每源上限 ==========
     from collections import Counter
     src_count = Counter()
     diversified = []
-    for a in ai_filtered:
+    CN_SOURCES = {"机器之心", "量子位", "新智元", "DeepTech深科技", "PaperWeekly", "IT桔子", "HuggingFace Daily Papers"}
+    for a in other_articles:
         src = a.get('source', '')
-        limit = 6 if src == "TechCrunch" else 3
+        if src == "TechCrunch":
+            limit = 8
+        elif src in CN_SOURCES:
+            limit = 3
+        else:
+            limit = 5
         if src_count[src] < limit:
             diversified.append(a)
             src_count[src] += 1
 
+    # 合并：arXiv 独立通道 + 其他源 diversification
+    diversified = arxiv_selected + diversified
+
     # 构建清晰的新闻列表，每条独立
     news_list = []
-    for i, a in enumerate(diversified[:40]):  # 取前40条AI相关新闻
+    for i, a in enumerate(diversified[:60]):  # 取前60条AI相关新闻
         summary = a.get('summary', '') or a.get('content', '')
         news_list.append(f"""【新闻{i+1}】
 标题：{a['title']}
@@ -1557,21 +1605,31 @@ _HF_RESEARCH_KEYWORDS = {
              "prefill", "decode", "context length", "kv cache", "reasoning", "chain of thought",
              "rlhf", "dpo", "grpo", "fine-tun", "instruction follow", "agent"],
     "多模态": ["multimodal", "vision language", "vlm", "image generation", "video generation",
-              "diffusion", "text-to-image", "text-to-video", "speech", "audio"],
-    "具身智能": ["robot", "embodied", "world model", "simulation", "manipulation", "locomotion",
-               "autonomous driv", "physical ai"],
+              "diffusion", "text-to-image", "text-to-video", "speech", "audio languag"],
+    "世界模型": ["world model", "video prediction", "visual foresight", "scene generation",
+               "dynamics model", "generative simulator", "interactive simulation"],
+    "认知模型": ["cognitive", "causal reason", "theory of mind", "mental model",
+               "grounded language", "concept learning", "neurosymbolic"],
+    "具身智能": ["robot", "embodied", "manipulation", "locomotion", "navigation",
+               "sim-to-real", "dexterous", "grasp", "physical ai", "autonomous driv"],
+    "agent": ["agent", "tool use", "tool-augment", "agentic", "autonomous",
+             "multi-agent", "web agent", "code agent", "gui agent",
+             "function call", "api call", "workflow"],
+    "推理": ["reasoning", "math", "code", "programming", "search", "planning",
+            "tool use", "agentic", "self-improv", "process reward", "verif"],
+    "MLSys": ["mlsys", "inference", "training", "distributed", "gpu", "serving", "compiler",
+              "quantiz", "prun", "distill", "efficient", "optimiz",
+              "kv cache", "speculativ", "offload"],
+    "benchmark": ["benchmark", "evaluat", "leaderboard", "dataset",
+                  "human prefer", "arena"],
+    "AI安全": ["alignment", "safety", "interpretab", "red team", "jailbreak", "bias",
+              "fairness", "robust", "guardrail", "constitutional", "scalable oversight"],
     "AI4S": ["ai for science", "protein", "drug", "molecule", "material", "physics",
              "climate", "biology", "alphafold"],
-    "MLSys": ["mlsys", "inference", "training", "distributed", "gpu", "serving", "compiler",
-              "quantiz", "prun", "distill", "efficient", "optimiz"],
-    "AI安全": ["alignment", "safety", "interpretab", "red team", "jailbreak", "bias",
-              "fairness", "robust", "guardrail"],
-    "推理": ["reasoning", "math", "code", "programming", "search", "planning",
-            "tool use", "agentic"],
 }
 
 
-def _fetch_hf_daily_papers(max_papers=5):
+def _fetch_hf_daily_papers(max_papers=10):
     """从 HuggingFace Daily Papers API 抓取当天热门论文，按领域关键词过滤。
     返回与 feed_v5 文章格式兼容的列表，不设特殊标记，进入 LLM 正常处理流程。
     """
@@ -1620,7 +1678,7 @@ def _fetch_hf_daily_papers(max_papers=5):
             "_upvotes": upvotes,
         })
 
-    # 每个领域最多取 top 1，总共不超过 max_papers
+    # 每个领域最多取 top 2，总共不超过 max_papers
     by_field = {}
     for a in matched:
         sf = a.get("_subfield", "")
@@ -1629,9 +1687,11 @@ def _fetch_hf_daily_papers(max_papers=5):
         by_field[sf].append(a)
 
     result = []
-    for sf in ["LLM", "推理", "多模态", "具身智能", "MLSys", "AI安全", "AI4S"]:
+    for sf in ["LLM", "推理", "agent", "世界模型", "认知模型", "多模态", "具身智能", "MLSys", "benchmark", "AI安全", "AI4S"]:
         if sf in by_field and len(result) < max_papers:
-            result.append(by_field[sf][0])
+            for paper in by_field[sf][:2]:
+                if len(result) < max_papers:
+                    result.append(paper)
 
     return result
 
@@ -2248,7 +2308,7 @@ def main():
 
         # 抓取 HuggingFace Daily Papers（进入 LLM 正常处理流程）
         print("📡 抓取 HuggingFace Daily Papers...")
-        hf_papers = _fetch_hf_daily_papers(max_papers=5)
+        hf_papers = _fetch_hf_daily_papers(max_papers=10)
         if hf_papers:
             for p in hf_papers:
                 print(f"   [{p.get('_subfield')}] [{p.get('_upvotes', 0)}👍] {p.get('title', '')[:60]}")
