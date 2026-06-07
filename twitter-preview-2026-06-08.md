@@ -13,18 +13,20 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **Steipete: 不应再提示编码Agent，而应设计循环来提示Agent**
+1. **重磅代码评估产品即将发布**
+   @swyx
+2. **研究论文影响力衰退？关于学术发表与营销部门博弈的理论**
+   @swyx
+3. **不应再直接提示编码代理，而应设计循环来调度代理**
    @steipete
-2. **NVIDIA新Nemotron3 Ultra在TerminalBench等编码任务上被Kimi K2.6和GLM5.1击败**
-   @semianalysis_
-3. **Swyx: 研究论文与实验室发表模式的衰亡——研究者意识到与营销部门斗争不如其他选择**
-   @swyx
-4. **长视野Q学习（LQL）：通过限制差异防止复合引导误差，将RL扩展到长视野仍是一大挑战**
-   @chelseabfinn
-5. **OpenRouter新增实时缓存命中率与历史流量数据，展示不同模型提供商的定价差异**
+4. **OpenRouter上线实时缓存命中率与历史流量数据**
    @openrouter
-6. **Swyx预告明日发布——年度最大规模的代码评估项目启动**
-   @swyx
+5. **NVIDIA Nemotron3 Ultra在编码任务中被Kimi K2.6与GLM5.1击败**
+   @semianalysis_
+6. **深度对话Google AI Studio产品负责人：人们低估了提示的复杂性与潜力**
+   @theturingpost
+7. **长视野强化学习新进展：LQL通过有界差分防止自举误差累积**
+   @chelseabfinn
 
 ---
 
