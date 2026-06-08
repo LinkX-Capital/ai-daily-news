@@ -13,22 +13,26 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **Great example of #vLLM serving key agentic production workloads: persistent memory, reusable skills, and a built-in scheduler, deployed in under 10 mi...**
+1. **vLLM 关键 agentic 生产工作负载示例**
    @vllm_project
-2. **🎉 Meet vLLM-Omni v0.22.0, a major upgrade for omnimodal world models and production-grade multimodal serving. 🌍 Day-0 @NVIDIAAI Cosmos 3 world models...**
+2. **vLLM-Omni v0.22.0 发布**
    @vllm_project
-3. **Meet Kimi Work - a local AI agent on your desktop that does the work for you. 🔹Native agent swarm: Up to 300 AI agents running in parallel on your lo...**
-   @kimi_moonshot
-4. **Agent Swarm & Instant Document Delivery - Kimi will automatically coordinate 300 sub-agents to break down and execute your tasks.**
-   @kimi_moonshot
-5. **Pair it with WebBridge and your agent will navigate websites in your browser: search, scroll, click, type and complete tasks.**
-   @kimi_moonshot
-6. **Warning: this video will unlock new capabilities for your @LumaLabsAI creative agent. If you're unsure other ways to use your age...**
+3. **Meta 推出 America’s Workforce Academy**
+   @meta
+4. **LumaLabsAI 创意 agent 新能力**
    @lumalabsai
-7. **Turns out a jumping jack class is a solid stress test for whole-body range of motion. Every joint moving in sync, timing, velocity, balance. That's th...**
-   @agilityrobotics
-8. **It's finally out!!! @METR_Evals found that more than half of SWEBench results is unmergeable slop. FrontierCode represents over 1000+ hours of mainta...**
-   @swyx
+5. **OpenRouter 关于模型评估和性能测量**
+   @openrouter
+6. **OpenRouter 本月主题：成本降低**
+   @openrouter
+7. **OpenRouter 工作流：可检验的数据源**
+   @openrouter
+8. **智能体在需要时使用前沿级推理**
+   @openrouter
+9. **在决策点切换不同模型以减少自我偏好偏差**
+   @openrouter
+10. **Kimi Work 新功能发布**
+   @kimi_moonshot
 
 ---
 
@@ -95,10 +99,10 @@
 
 ### @semianalysis_ | Infra
 
-- The DoD just added Unitree to its Section 1260H list of Chinese military companies. BYD, Alibaba, Baidu, and Tencent are on there too. (1/2)🧵
-  [查看](https://x.com/SemiAnalysis_/status/2064106983062384689#m)
 - R to @SemiAnalysis_: We just published a deep dive on why Unitree is going to dominate global robotics. Timing could not be better. (2/2) https://news...
   [查看](https://x.com/SemiAnalysis_/status/2064106984538771700#m)
+- The DoD just added Unitree to its Section 1260H list of Chinese military companies. BYD, Alibaba, Baidu, and Tencent are on there too. (1/2)🧵
+  [查看](https://x.com/SemiAnalysis_/status/2064106983062384689#m)
 - China's Unitree Will Dominate Global Robotics The Fastest Iteration Cycle In Next-Gen Robotics Should See Unprecedented Acceleration  https://newslett...
   [查看](https://x.com/SemiAnalysis_/status/2064024715623116810#m)
 - Our Vera SOCAMM note is causing a bit of a stir. As always some folks are jumping to the wrong conclusions. Those saying this is fake news clearly did...
