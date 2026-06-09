@@ -6,8 +6,7 @@
 
 ## 要点汇总
 
-- 模型前沿：OpenEnv 开源社区化，Meta/Nvidia/PyTorch 等联合推进 Agentic RL 标准化
-- 产业动态：WWDC 2026 发布 Siri AI 整合 Gemini，推出独立 App 和"Write with Siri"; 月之暗面发布桌面 Agent Kimi Work 支持最高 300 子 Agent 协作; Google NotebookLM 升级支持从聊天自动构建知识库; OpenAI 披露经济数据（周活近 9 亿）+ SEC 保密提交 S-1
+- 产业动态：OpenEnv 开源社区化，Meta/Nvidia/PyTorch 等联合推进 Agentic RL 标准化; WWDC 2026 发布 Siri AI 整合 Gemini，推出独立 App 和"Write with Siri"; 月之暗面发布桌面 Agent Kimi Work 支持最高 300 子 Agent 协作; Google NotebookLM 升级支持从聊天自动构建知识库; OpenAI 披露经济数据（周活近 9 亿）+ SEC 保密提交 S-1
 - 算力追踪：Google 和 Nvidia 考虑 Intel 作为芯片代工备选; Nvidia 与 SK Hynix 签署多年 HBM 供应协议覆盖 Vera Rubin 平台; OpenAI Stargate 数据中心面临成本与能源挑战
 - 初创&融资：潜空间具身智能完成数千万种子轮，打造"潜镜大脑+潜擎小脑"双脑架构
 - 研究关注：Stanford 揭示 LLM 推理失败两种可诊断模式; AI2 发现 LLM 个性化在合成与真实数据间存在显著差距; Agentopia 实现 100 Agent 模拟 10 年社会生活训练 LLM; AdaWAM：自适应多模态推理的世界动作模型; MacArena 揭示 macOS GUI Agent 落后 26%
@@ -17,13 +16,11 @@
 
 ## 📖 详细参考
 
-### 模型前沿
+### 产业动态
 
 **OpenEnv 开源社区化：Meta/Nvidia/PyTorch 等联合推进 Agentic RL 标准化**
 - OpenEnv 是用于创建 Agent 执行环境（终端、浏览器等）的工具库，定位为 RL 环境的**互操作协议层**（不定义奖励函数，只标准化环境发布、部署和消费方式）。此次从 HuggingFace 主导升级为**社区委员会治理**，成员包括 Meta-PyTorch、Reflection、Unsloth、Modal、Prime Intellect、Nvidia、Mercor、Fleet AI 和 HuggingFace。**核心意义**：前沿实验室训练模型与 harness 配合默契，但开源社区用任意模型+任意 harness，缺乏统一环境接口。OpenEnv 解决的就是这个"插座"问题——一个 trainer 只要对接 OpenEnv 协议就能驱动任何合规环境，MCP 作为一等公民实现仿真和生产模式的一致行为。支持者还包括 vLLM、SkyRL (UCB)、Lightning AI、Stanford Scaling Intelligence Lab、Scale AI 等。
 - 来源: [HuggingFace Blog](https://huggingface.co/blog/openenv-agentic-rl)
-
-### 产业动态
 
 **WWDC 2026：Apple 发布 Siri AI 整合 Gemini，推出独立 App 和"Write with Siri"**
 - Apple 在 WWDC 2026 上发布全新 **Siri AI**，将 Siri 从语音控制助手转型为完整对话式 AI。底层采用 Google Gemini 模型（苹果每年支付约 10 亿美元获取定制化 Gemini 2.5 Pro 使用权）。Siri AI 首次以**独立 App 形式**存在，从灵动岛（Dynamic Island）弹出，支持语音和文字输入。"Write with Siri"功能可根据用户与特定联系人的沟通风格自动生成邮件和消息。Siri 能读取屏幕内容、整合日历/通讯录/邮件信息来执行复杂任务。macOS 上 Siri 整合进 Spotlight 搜索，watchOS 上可直接在手表提问。本届 WWDC 也是 CEO Tim Cook 任内最后一届，John Ternus 将接任。同时发布 iOS 27、macOS 27。
