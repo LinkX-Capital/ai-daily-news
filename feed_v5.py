@@ -1181,7 +1181,7 @@ def call_llm(prompt):
         return None
 
     data = {
-        "model": "MiniMax-M2.7", "temperature": 0.2,
+        "model": "MiniMax-M3", "temperature": 0.2,
         "max_tokens": 16000,
         "system": system_prompt,
         "messages": [{"role": "user", "content": prompt}]
@@ -1359,43 +1359,56 @@ def process_with_llm(articles, recent_articles=None):
 
         batch_prompt = prompt + "\n\n## 今日新闻\n\n" + "\n\n".join(batch_news)
         print(f"   📦 批次 {batch_idx+1}/{total_batches}（{len(batch)} 条）...")
-        result = call_llm(batch_prompt)
 
-        if not result:
-            print(f"   ⚠️ 批次 {batch_idx+1} LLM 返回空，跳过")
-            continue
-
-        # 解析 JSON
-        import json as json_module
-        import re as re_module
-
-        def clean_json_string(s):
-            s = re_module.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', '', s)
-            s = s.replace('\\', '\\\\').replace('\\\\\\\\', '\\\\')
-            s = re_module.sub(r'^```json\s*', '', s)
-            s = re_module.sub(r'^```\s*', '', s)
-            s = re_module.sub(r'\s*```$', '', s)
-            return s.strip()
-
-        json_match = re_module.search(r'\[[\s\S]*\]', result)
-        if not json_match:
-            print(f"   ⚠️ 批次 {batch_idx+1} 返回内容无 JSON 数组")
-            continue
-
-        raw = clean_json_string(json_match.group())
+        # 每批最多重试 3 次
         batch_results = None
-        try:
-            batch_results = json_module.loads(raw)
-        except Exception:
+        for retry in range(3):
+            result = call_llm(batch_prompt)
+            if not result:
+                print(f"   ⚠️ 批次 {batch_idx+1} LLM 返回空{'（重试 '+str(retry+1)+'/3）' if retry < 2 else ''}")
+                if retry < 2:
+                    import time; time.sleep(3)
+                continue
+
+            # 解析 JSON
+            import json as json_module
+            import re as re_module
+
+            def clean_json_string(s):
+                s = re_module.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', '', s)
+                s = s.replace('\\', '\\\\').replace('\\\\\\\\', '\\\\')
+                s = re_module.sub(r'^```json\s*', '', s)
+                s = re_module.sub(r'^```\s*', '', s)
+                s = re_module.sub(r'\s*```$', '', s)
+                return s.strip()
+
+            json_match = re_module.search(r'\[[\s\S]*\]', result)
+            if not json_match:
+                print(f"   ⚠️ 批次 {batch_idx+1} 返回内容无 JSON 数组{'（重试 '+str(retry+1)+'/3）' if retry < 2 else ''}")
+                if retry < 2:
+                    import time; time.sleep(3)
+                continue
+
+            raw = clean_json_string(json_match.group())
             try:
-                raw_fixed = re_module.sub(r',(\s*[\]\}])', r'\1', raw)
-                batch_results = json_module.loads(raw_fixed)
+                batch_results = json_module.loads(raw)
             except Exception:
                 try:
-                    objects = re_module.findall(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', raw)
-                    batch_results = [json_module.loads(obj) for obj in objects if obj]
+                    raw_fixed = re_module.sub(r',(\s*[\]\}])', r'\1', raw)
+                    batch_results = json_module.loads(raw_fixed)
                 except Exception:
-                    pass
+                    try:
+                        objects = re_module.findall(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', raw)
+                        batch_results = [json_module.loads(obj) for obj in objects if obj]
+                    except Exception:
+                        pass
+
+            if batch_results:
+                break
+            else:
+                print(f"   ⚠️ 批次 {batch_idx+1} JSON 解析失败{'（重试 '+str(retry+1)+'/3）' if retry < 2 else ''}")
+                if retry < 2:
+                    import time; time.sleep(3)
 
         if batch_results:
             if isinstance(batch_results, list) and len(batch_results) > 0:
@@ -1404,7 +1417,7 @@ def process_with_llm(articles, recent_articles=None):
             else:
                 print(f"   ⚠️ 批次 {batch_idx+1}: LLM 返回空数组 []，跳过")
         else:
-            print(f"   ⚠️ 批次 {batch_idx+1}: JSON 解析失败，跳过")
+            print(f"   ⚠️ 批次 {batch_idx+1}: 3 次重试后仍失败，跳过")
 
     # ========== 合并所有批次的 LLM 结果 ==========
     if not all_llm_results:
