@@ -552,6 +552,14 @@
     background: var(--purple);
     color: #fff;
 }
+/* Floating variant for pages without topbar */
+.lang-toggle-float {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
     </style>
 </head>
 <body>
@@ -942,7 +950,7 @@
 
 // ── Bilingual toggle ──
 (function() {
-    const EN = ["Meta's 100B+ Parameter Avocado Model Delayed, Performance Below Expectations and Trailed Gemini in Internal Testing", "Industry Dynamics", "X Discussion", "Meta's 100B+ Parameter Avocado Model Delayed, Performance Below Expectations and Trailed Gemini in Internal Testing", "Karpathy on the Future of AI Programming: IDEs Won't Die But Need to Scale Up", "Meta's next-gen foundational model Avocado, originally planned for release this month, has been delayed due to underwhelming performance. Reports indicate the model lost to Google's Gemini in internal testing and faces accusations of being a 'rebranded' model. This suggests Meta may be falling behind OpenAI and Google in foundation model competition, raising questions about the effectiveness of its $100B AI investment. Previously, Meta CEO", "Renowned AI researcher Karpathy published an article discussing the future of AI programming tools. He noted that while many expect the era of IDEs (Integrated Development Environments) to end, the reality is that 'we need a bigger IDE'. He believes this is because humans will move up in the AI era, taking on higher-level work. This reflects that AI programming tools will fundamentally change developers' working methods rather than simply replacing developers.", "Avocado Model Lost to Gemini in Internal Testing, Performance Below Meta's Internal Expectations", "Originally Planned for Release This Month but Forced to Delay, Timeline Unknown", "Sources Question Whether Model Has 'Repackaging' Problem", "Karpathy Believes IDEs Won't Disappear but Will Become Bigger and Stronger", "AI Will Transform Rather Than Eliminate Developer Roles", "Humans Will Collaborate with AI to Move Toward Higher-Level Tasks", "Industry Dynamics", "X Discussion", "Meta's 100B+ Parameter Avocado Model Delayed, Performance Below Expectations and Trailed Gemini in Internal Testing", "Karpathy on the Future of AI Programming", "Industry Dynamics", "X Discussion", "Meta's 100B+ Parameter Avocado Model Delayed, Performance Below Expectations and Trailed Ge...", "Karpathy on the Future of AI Programming: IDEs Won't Die But Need to Scale Up", "Industry Dynamics", "X Discussion", "← Previous Issue", "Past News", "Special Report"];
+    const EN = ["Meta's 100B+ Parameter Avocado Model Delayed, Performance Below Expectations and Trailed Gemini in Internal Testing", "Industry Dynamics", "X Discussion", "Karpathy on the Future of AI Programming: IDEs Won't Die But Need to Scale Up", "Meta's next-gen foundational model Avocado, originally planned for release this month, has been delayed due to underwhelming performance. Reports indicate the model lost to Google's Gemini in internal testing and faces accusations of being a 'rebranded' model. This suggests Meta may be falling behind OpenAI and Google in foundation model competition, raising questions about the effectiveness of its $100B AI investment. Previously, Meta CEO", "Renowned AI researcher Karpathy published an article discussing the future of AI programming tools. He noted that while many expect the era of IDEs (Integrated Development Environments) to end, the reality is that 'we need a bigger IDE'. He believes this is because humans will move up in the AI era, taking on higher-level work. This reflects that AI programming tools will fundamentally change developers' working methods rather than simply replacing developers.", "Avocado Model Lost to Gemini in Internal Testing, Performance Below Meta's Internal Expectations", "Originally Planned for Release This Month but Forced to Delay, Timeline Unknown", "Sources Question Whether Model Has 'Repackaging' Problem", "Karpathy Believes IDEs Won't Disappear but Will Become Bigger and Stronger", "AI Will Transform Rather Than Eliminate Developer Roles", "Humans Will Collaborate with AI to Move Toward Higher-Level Tasks", "Karpathy on the Future of AI Programming", "Meta's 100B+ Parameter Avocado Model Delayed, Performance Below Expectations and Trailed Ge...", "← Previous Issue", "Next Issue &rarr;", "Past News", "Special Report"];
     const PH_EN = "Search news...";
 
     // Selectors in the SAME ORDER as Python extract_texts()
@@ -958,6 +966,7 @@
         '.nav-item',
         '.mob-toc a',
         '.issue-prev',
+        '.issue-next',
         '.topbar-btn',
     ];
 
@@ -972,23 +981,27 @@
                 var en = EN[idx];
                 if (!en) { idx++; return; }
 
-                if (isEn) {
-                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
-                    if (sel === '.card-note') {
-                        var label = el.querySelector('.note-label');
-                        if (label) {
-                            el.textContent = '';
-                            el.appendChild(label);
-                            el.append(' ' + en);
-                        } else {
-                            el.textContent = en;
-                        }
+                if (!isEn) {
+                    // Switching back to Chinese: restore cached innerHTML
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                    idx++;
+                    return;
+                }
+
+                // Switching to English
+                if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                if (sel === '.card-note') {
+                    var label = el.querySelector('.note-label');
+                    if (label) {
+                        el.textContent = '';
+                        el.appendChild(label);
+                        el.append(' ' + en);
                     } else {
                         el.textContent = en;
                     }
                 } else {
-                    var saved = cache.get(idx);
-                    if (saved) el.innerHTML = saved;
+                    el.textContent = en;
                 }
                 idx++;
             });

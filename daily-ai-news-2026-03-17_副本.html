@@ -154,6 +154,33 @@
     background: var(--purple);
     color: #fff;
 }
+    
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
+/* Floating variant for pages without topbar */
+.lang-toggle-float {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
     </style>
 </head>
 <body>
@@ -296,6 +323,90 @@
                 } else {
                     var saved = cache.get(idx);
                     if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["📡 March 17 AI Frontier Updates"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.issue-next',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (!isEn) {
+                    // Switching back to Chinese: restore cached innerHTML
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                    idx++;
+                    return;
+                }
+
+                // Switching to English
+                if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                if (sel === '.card-note') {
+                    var label = el.querySelector('.note-label');
+                    if (label) {
+                        el.textContent = '';
+                        el.appendChild(label);
+                        el.append(' ' + en);
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    el.textContent = en;
                 }
                 idx++;
             });

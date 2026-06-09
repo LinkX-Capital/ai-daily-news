@@ -533,7 +533,7 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
-    
+
 /* ── Lang toggle ── */
 .lang-toggle {
     background: var(--purple-20);
@@ -1124,6 +1124,7 @@
         '.nav-item',
         '.mob-toc a',
         '.issue-prev',
+        '.issue-next',
         '.topbar-btn',
     ];
 
@@ -1138,23 +1139,27 @@
                 var en = EN[idx];
                 if (!en) { idx++; return; }
 
-                if (isEn) {
-                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
-                    if (sel === '.card-note') {
-                        var label = el.querySelector('.note-label');
-                        if (label) {
-                            el.textContent = '';
-                            el.appendChild(label);
-                            el.append(' ' + en);
-                        } else {
-                            el.textContent = en;
-                        }
+                if (!isEn) {
+                    // Switching back to Chinese: restore cached innerHTML
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                    idx++;
+                    return;
+                }
+
+                // Switching to English
+                if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                if (sel === '.card-note') {
+                    var label = el.querySelector('.note-label');
+                    if (label) {
+                        el.textContent = '';
+                        el.appendChild(label);
+                        el.append(' ' + en);
                     } else {
                         el.textContent = en;
                     }
                 } else {
-                    var saved = cache.get(idx);
-                    if (saved) el.innerHTML = saved;
+                    el.textContent = en;
                 }
                 idx++;
             });

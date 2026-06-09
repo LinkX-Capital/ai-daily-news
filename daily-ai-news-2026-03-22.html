@@ -552,6 +552,14 @@
     background: var(--purple);
     color: #fff;
 }
+/* Floating variant for pages without topbar */
+.lang-toggle-float {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
     </style>
 </head>
 <body>
@@ -957,7 +965,7 @@
 
 // ── Bilingual toggle ──
 (function() {
-    const EN = ["Court Documents Show Pentagon Told Anthropic Both Parties Nearly Reached Agreement", "Industry Dynamics", "Research Focus", "Court Documents Show Pentagon Told Anthropic Both Parties Nearly Reached Agreement", "GuangLun Intelligence Defines Physical AI Infrastructure", "xAI Announces Terafab Project", "ChuangZhi × Fudan Proposes New RL Paradigm to Give LLMs Scientific Taste", "HIT Shenzhen Pioneers Same-Layer Hybrid Architecture STILL, Ultra-Low-Cost Linearized LLM", "Anthropic Filed Two Sworn Declarations with California Federal Court, Disputing Pentagon's Claims About AI Cooperation. Documents Reveal DOD Said Both Parties Nearly Reached Agreement One Week Before Trump Announced Termination.", "GuangLun Intelligence Demonstrated Its Capabilities as Physical AI Infrastructure at Nvidia GTC, Supporting Jensen Huang's Robot Demo.", "xAI Announces Terafab Project, Aiming for Next Step Toward Becoming an Interplanetary Civilization.", "ChuangZhi and Fudan University Collaborate to Propose New RL Paradigm Aiming to Give LLMs Scientific Taste, Enabling them to Identify Research Idea Potential at a Glance, Moving Toward Expert-Level AI Scientists.", "Harbin Institute of Technology Shenzhen Proposes Same-Layer Hybrid Architecture STILL, Achieving Ultra-Low-Cost Linearized LLM with Only 0.04B Parameters, Breaking Quadratic Complexity Limit and Providing New Approach for Lightweight LLMs.", "Industry Dynamics", "Research Focus", "Court Documents Show Pentagon Told Anthropic Both Parties Nearly Reached Agreement", "GuangLun Intelligence Defines Physical AI Infrastructure", "xAI Announces Terafab Project", "ChuangZhi × Fudan Proposes New RL Paradigm to Give LLMs Scientific Taste", "HIT Shenzhen Pioneers Same-Layer Hybrid Architecture STILL, Ultra-Low-Cost Linearized LLM", "Industry Dynamics", "Research Focus", "Court Documents Show Pentagon Told Anthropic Both Parties Nearly Reached Agreement", "GuangLun Intelligence Defines Physical AI Infrastructure", "xAI Announces Terafab Project", "ChuangZhi × Fudan Proposes New RL Paradigm to Give LLMs Scientific Taste", "HIT Shenzhen Pioneers Same-Layer Hybrid Architecture STILL, Ultra-Low-Cost Linearized LLM", "Industry Dynamics", "Research Focus", "← Previous Issue", "Past News", "Special Report"];
+    const EN = ["Court Documents Show Pentagon Told Anthropic Both Parties Nearly Reached Agreement", "Industry Dynamics", "Research Focus", "GuangLun Intelligence Defines Physical AI Infrastructure", "xAI Announces Terafab Project", "ChuangZhi × Fudan Proposes New RL Paradigm to Give LLMs Scientific Taste", "HIT Shenzhen Pioneers Same-Layer Hybrid Architecture STILL, Ultra-Low-Cost Linearized LLM", "Anthropic Filed Two Sworn Declarations with California Federal Court, Disputing Pentagon's Claims About AI Cooperation. Documents Reveal DOD Said Both Parties Nearly Reached Agreement One Week Before Trump Announced Termination.", "GuangLun Intelligence Demonstrated Its Capabilities as Physical AI Infrastructure at Nvidia GTC, Supporting Jensen Huang's Robot Demo.", "xAI Announces Terafab Project, Aiming for Next Step Toward Becoming an Interplanetary Civilization.", "ChuangZhi and Fudan University Collaborate to Propose New RL Paradigm Aiming to Give LLMs Scientific Taste, Enabling them to Identify Research Idea Potential at a Glance, Moving Toward Expert-Level AI Scientists.", "Harbin Institute of Technology Shenzhen Proposes Same-Layer Hybrid Architecture STILL, Achieving Ultra-Low-Cost Linearized LLM with Only 0.04B Parameters, Breaking Quadratic Complexity Limit and Providing New Approach for Lightweight LLMs.", "← Previous Issue", "Next Issue &rarr;", "Past News", "Special Report"];
     const PH_EN = "Search news...";
 
     // Selectors in the SAME ORDER as Python extract_texts()
@@ -973,6 +981,7 @@
         '.nav-item',
         '.mob-toc a',
         '.issue-prev',
+        '.issue-next',
         '.topbar-btn',
     ];
 
@@ -987,23 +996,27 @@
                 var en = EN[idx];
                 if (!en) { idx++; return; }
 
-                if (isEn) {
-                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
-                    if (sel === '.card-note') {
-                        var label = el.querySelector('.note-label');
-                        if (label) {
-                            el.textContent = '';
-                            el.appendChild(label);
-                            el.append(' ' + en);
-                        } else {
-                            el.textContent = en;
-                        }
+                if (!isEn) {
+                    // Switching back to Chinese: restore cached innerHTML
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                    idx++;
+                    return;
+                }
+
+                // Switching to English
+                if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                if (sel === '.card-note') {
+                    var label = el.querySelector('.note-label');
+                    if (label) {
+                        el.textContent = '';
+                        el.appendChild(label);
+                        el.append(' ' + en);
                     } else {
                         el.textContent = en;
                     }
                 } else {
-                    var saved = cache.get(idx);
-                    if (saved) el.innerHTML = saved;
+                    el.textContent = en;
                 }
                 idx++;
             });

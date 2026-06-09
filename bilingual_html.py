@@ -174,6 +174,10 @@ def extract_texts(html):
     for m in re.finditer(r'<a[^>]*class="issue-prev"[^>]*>(.*?)</a>', html):
         texts.append(strip_html(m.group(1)))
 
+    # 11b. .issue-next
+    for m in re.finditer(r'<a[^>]*class="issue-next"[^>]*>(.*?)</a>', html):
+        texts.append(strip_html(m.group(1)))
+
     # 12. .topbar-btn
     for m in re.finditer(r'<a[^>]*class="topbar-btn"[^>]*>(.*?)</a>', html):
         texts.append(strip_html(m.group(1)))
@@ -574,6 +578,7 @@ def build_toggle_js(en_texts, ph_en):
         '.nav-item',
         '.mob-toc a',
         '.issue-prev',
+        '.issue-next',
         '.topbar-btn',
     ];
 
@@ -588,23 +593,27 @@ def build_toggle_js(en_texts, ph_en):
                 var en = EN[idx];
                 if (!en) {{ idx++; return; }}
 
-                if (isEn) {{
-                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
-                    if (sel === '.card-note') {{
-                        var label = el.querySelector('.note-label');
-                        if (label) {{
-                            el.textContent = '';
-                            el.appendChild(label);
-                            el.append(' ' + en);
-                        }} else {{
-                            el.textContent = en;
-                        }}
+                if (!isEn) {{
+                    // Switching back to Chinese: restore cached innerHTML
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                    idx++;
+                    return;
+                }}
+
+                // Switching to English
+                if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                if (sel === '.card-note') {{
+                    var label = el.querySelector('.note-label');
+                    if (label) {{
+                        el.textContent = '';
+                        el.appendChild(label);
+                        el.append(' ' + en);
                     }} else {{
                         el.textContent = en;
                     }}
                 }} else {{
-                    var saved = cache.get(idx);
-                    if (saved) el.innerHTML = saved;
+                    el.textContent = en;
                 }}
                 idx++;
             }});
