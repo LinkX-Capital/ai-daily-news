@@ -533,6 +533,33 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+    
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
+/* Floating variant for pages without topbar */
+.lang-toggle-float {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
     </style>
 </head>
 <body>
@@ -548,6 +575,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1098,6 +1127,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["Sakana AI Establishes Recursive Self-Improvement Lab RSI Lab, Integrating 6 Core Achievements to Advance AI Autonomous Evolution", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Airbnb CEO Brian Chesky Plans to Establish AI Lab, Focusing on User Interaction and Design", "Apple Approves Poke as First AI Agent for Messages for Business Platform", "Google Releases Gemma 4 QAT Quantized Checkpoints, E2B Model Memory Reduced to 1GB", "Anthropic President Daniela Amodei Responds to AI ROI Doubts: Annualized Revenue Exceeds $47 Billion", "NVIDIA CEO Jensen Huang's Second Visit to Korea, Building AI Factory with SK Group Deploying Over 50,000 GPUs", "Google Signs Cloud Services Agreement with SpaceX: Paying $920 Million Monthly to Rent Approximately 110,000 GPUs", "AirTrunk Invests $30 Billion to Build 5GW AI Data Center in India", "Meta Adopts Tesla Strategy, Using Tents to Rapidly Deploy Data Centers and Shorten Construction Cycle", "Flourish Labs Raises $500 Million, Bezos Bets on Brain-Inspired AI to Find Brain's Core Algorithms", "Financial Time-Series LLM Developer Grace Investment Machine Completes Over 100M Yuan Series Angel Funding", "Supabase Completes $500M Series F Funding at $10.5B Post-Money Valuation, Doubling in 8 Months", "Helion Completes $465M Series G Funding, Valuation Increases to $15.5 Billion to Advance Fusion Power", "Airwallex Acquires AI Financial Data Platform Leapfin", "SkillOpt: Microsoft Proposes Agent Skill Text Space Optimizer, Leading Across All 52 Evaluation Cells", "ScientistOne: Verifiable Autonomous Research System with Zero Hallucination Citation Rate", "CMU Proposes Sleep-Wake Memory Consolidation Mechanism to Improve LLM Long-Context Learning", "State Commitment Learning: Training LLM to Distinguish Computational Tokens from Memory Tokens", "Anthropic Science Blog: Making Claude a Chemist", "Meta SAM 3D Team Receives CVPR 2026 Best Paper Honorable Mention", "Sakana AI Formally Establishes Recursive Self-Improvement Lab (RSI Lab) in Tokyo, Dedicated to Shifting AI Development from Manual Research to Self-Evolving Intelligent Engines. The lab integrates six core achievements from the past two years: LLM-Squared with Oxford/Cambridge (enabling LLM to invent better training methods), Darwin Gödel Machine with UBC (automatically doubling software engineering baseline performance on SWE-bench), ShinkaEvolve solving complex optimization problems with only 150 samples, ALE-Agent defeating 804 human competitors to win first place in AtCoder competition, Digital Red Queen adversarial coevolution system with MIT, and AI Scientist fully automated scientific discovery system published in Nature. RSI Lab positions itself as a self-improving engine pursuing sample efficiency over compute scaling, emphasizing compoundable capability growth at national-level compute budgets.", "Airbnb CEO Brian Chesky is establishing a new AI lab, his first formal entry into the AI competition. Chesky plans to found an AI company developing models, focusing on user interaction and design, currently in early fundraising stage. Chesky maintains long-term close contact with OpenAI founder Sam Altman, and stated last year that existing LLM products have not yet reached the level Airbnb needs.", "Apple approves AI agent Poke as the first third-party AI agent on Messages for Business platform. Poke allows users to access AI agent functions through simple text messages, including replying to emails and setting reminders. Previously Messages for Business primarily served enterprise customer service, and this adjustment expands iMessage from a communication tool to a task gateway.", "Google releases Gemma 4 Quantization-Aware Training (QAT) checkpoints, minimizing quality loss after compression by simulating quantization during training. Releases include Q4_0 format for mainstream hardware and a custom quantization scheme designed for mobile—featuring static activation, channel-wise quantization, and targeted 2-bit compression (compressing only the token generation portion while keeping inference layers at high precision), reducing Gemma 4 E2B text model memory footprint to under 1GB. Google also introduces MTP (Multi-Token Prediction) QAT checkpoints, preserving MTP's inference acceleration effect after quantization. Weights are available on HuggingFace, supporting mainstream inference frameworks including llama.cpp, vLLM, SGLang, MLX, Ollama, and LM Studio.", "Anthropic co-founder Daniela Amodei stated at Bloomberg Tech conference that the company's annualized revenue exceeded $47 billion in May, a significant increase from approximately $9 billion at end of 2025. She responded to external doubts about AI ROI, stating that upfront costs for training models and providing inference services are substantial, and frontier AI companies need to continuously raise significant capital from public markets, driving the company's IPO plans. Previously Anthropic just completed $65 billion Series H funding at a $96.5 billion post-money valuation, with subscription demand far exceeding the planned size.", "NVIDIA CEO Jensen Huang visited South Korea for the first time in about 7 months, meeting with SK Group Chairman Choi Tae-yong to discuss AI infrastructure cooperation. NVIDIA and SK Group are building an AI factory focused on semiconductor R&D, digital twin cloud infrastructure, and AI agent development, expected to be completed by end of 2027, deploying over 50,000 NVIDIA GPUs. SK Telecom plans to build an industrial-grade AI cloud platform based on NVIDIA GPUs, and SK Hynix is developing HBM4 memory for the Blackwell GPU series while using CUDA-X technology to improve chip design efficiency. NVIDIA is also collaborating with Korean startup Upstage to develop Korean sovereign AI models.", "According to SpaceX's filing with the SEC, Google has agreed to pay SpaceX $920 million monthly from October 2026 to June 2029, obtaining approximately 110,000 NVIDIA GPUs along with supporting CPUs, memory, and other computing resources. Google stated the agreement stems from unexpected growth in recent AI product demand. The agreement requires SpaceX to deliver the committed GPU count by September 30, 2026, otherwise Google has the right to terminate the agreement or proportionally reduce monthly payments. Starting 2027, either party may terminate the cooperation with 90 days' notice.", "Australian data center operator AirTrunk announced plans to invest approximately $30 billion (3 trillion rupees) in India to build 5GW data center capacity. AirTrunk, backed by Blackstone and the Canada Pension Plan Investment Board, is a global leading hyperscale data center operator. Indian Prime Minister Modi welcomed the project. An index tracking 28 Indian data center ecosystem companies has accumulated approximately $47 billion in market cap gain this year.", "Meta is building 6 rapid-deployment structures (tent-style data centers) in the outskirts of New Albany, Ohio,借鉴Tesla and xAI's approach to halve construction time. Modular gas turbines are also being used to address power supply. According to Michael Thomas, founder of data center deployment tracker Cleanview, this represents Meta's unconventional move to accelerate AI computing infrastructure deployment.", "Flourish Labs, a brain-inspired AI company led by Jeff Bezos, completed a $500 million funding round with a valuation of approximately $2.5 billion. The company was co-founded by neuroscientist Thomas Reardon (former Meta) and former Amazon S-team executive Rob Williams, with a team of approximately 24 top neuroscientists and AI researchers. Flourish aims to discover the brain's \"core algorithm\" through wet lab research on cortical columns, building synthetic AI brains under 50 watts that enable continuous learning. Co-founder Joshua Vogelstein recently published a paper on fruit fly neural networks, discovering its efficiency is 10x that of Transformers. The company has developed hippocampus-inspired memory processing methods and sustainable learning models, and is negotiating with major chip manufacturers for silicon tape-out. Target is breakthrough within 5 years.", "GIM (Grace Investment Machine) was founded in July 2025 by investor Xu Jiahao and Assistant Professor Liu Qi from HKU's Computer Science Department (Oxford PhD, former DeepMind/Meta FAIR researcher), positioning itself as a financial domain reasoning large model. The angel+ round was led by SAIF Investments with participation from a family office of a CEO of an internet company with market cap in the hundreds of billions; the angel round was co-invested by Monolith and 5Y Capital. The team has completed Scaling Law verification from 30M to 1.5B to 8B parameters, with the model introducing temporal encoding mechanisms and nonlinear gating structures for financial data. Recent research published under the name CogAlpha has been accepted by ACL 2026 main conference.", "Open-source Postgres development platform Supabase announced completion of a $500 million Series F round led by Singapore sovereign fund GIC, with participation from Stripe, Accel, Y Combinator, Craft, Felicis, Coatue, reaching a post-money valuation of $10.5 billion, doubling from the previous round 8 months ago. CEO Paul Copplestone said funds will accelerate development of open-source Postgres tools like Multigres. Supabase stated that over 60% of new databases are created by AI agents, and the company significantly benefits from growth of AI coding platforms like Claude and Codex.", "Helion, a fusion energy company backed by Sam Altman, completed a $465 million Series G round led by Thrive Capital, reaching a post-money valuation of $15.5 billion, nearly tripling from the $5.43 billion valuation in January 2025. Helion previously heated plasma to 150 million degrees Celsius (reaching about three-quarters of the commercial fusion temperature threshold) and is accelerating toward the goal of supplying 50MW of fusion electricity to Microsoft in 2028.", "Airwallex announces acquisition of US-based California financial data automation platform Leapfin, which focuses on using AI technology to automate revenue recognition and reconciliation processes, helping global finance teams accelerate month-end close. Leapfin's core products, management, and R&D team will maintain original operational rhythm to ensure smooth business transition for existing customers. This acquisition integrates Leapfin's AI financial automation capabilities into Airwallex's global financial infrastructure, expanding its service scope across the entire enterprise finance lifecycle.", "Microsoft proposes SkillOpt, the first systematic text-space skill optimizer: an independent optimizer model transforms scoring rollouts into bounded add/delete/replace edits, accepting modifications only when strictly improving validation scores. Text learning rate budgets, rejection edit buffers, and epoch-level slow/meta updates ensure stability, with zero additional inference calls at deployment. Across 6 benchmarks, 7 models, and 3 execution frameworks totaling 52 evaluation cells, SkillOpt achieves best or tied-best on all, outperforming humans, one-shot LLMs, TextGrad, GEPA, and all other competitors. On GPT-5.5, it improves no-skill baseline accuracy by +23.5 points (direct conversation), +24.8 points (Codex agent loop), +19.1 points (Claude Code). Cross-model scale and execution environment transfer experiments show optimized skill artifacts retain value.", "Current autonomous research agent outputs have reliability issues undetectable by surface evaluation: hallucinated citations, non-reproducible scores, inconsistencies between method descriptions and implementations. This research proposes Chain-of-Evidence (CoE) verifiability framework requiring each claim to be traceable to evidence source, and builds ScientistOne, an end-to-end autonomous research system based on it. Auditing 75 papers across 5 systems and 5 frontier research tasks reveals: all baselines have at least one systemic defect—21% hallucinated citation rate, score validation pass rate as low as 42%, method-code alignment 20%-80%. ScientistOne achieves zero hallucinated citations (0/337), perfect score validation (12/12), highest method-code alignment (14/15), while matching or exceeding human expert performance on all 5 tasks and winning gold medal on MLE-Bench.", "CMU proposes a sleep-like memory consolidation mechanism where models periodically transform recent context into persistent fast weights, then clear key-value cache. During sleep phase, the model performs N offline recurrent updates on SSM module weights for accumulated context; during inference, additional computation shifts to sleep phase, maintaining wake phase prediction latency unchanged. Experiments on cellular automata, multi-hop graph retrieval, and mathematical reasoning tasks verify that increasing sleep rounds N significantly improves performance, especially on samples requiring deep reasoning with largest gains; regular Transformers and SSM-Attention hybrid models cannot complete these tasks.", "Reasoning language models do not distinguish tokens used for computation from tokens constituting persistent state, causing failed reasoning attempts and draft work to affect subsequent predictions. This research proposes State Commitment Learning training objective, defining persistent-state sufficiency standard, and designs Counterfactual Erasure RL (CERL) method: simultaneously evaluating two paths (retaining vs. erasing hidden thoughts) on same prefix, only rewarding when erased path remains correct. Experiments across four evaluation scenarios—mathematical reasoning, long-chain logic, science QA, and multi-round tool use—show CERL significantly reduces answer dependence on hidden thoughts without sacrificing accuracy, consistently outperforming correctness-only RL and long-answer SFT baselines.", "Anthropic's science blog publishes a new article on enabling Claude to understand and manipulate molecular structures. The core challenge is NMR spectroscopy analysis—the primary tool chemists use to determine molecular structures. Claude infers molecular structures by analyzing NMR spectra, demonstrating LLM reasoning capabilities in scientific experimental data interpretation, a concrete validation of Claude entering formal scientific workflows.", "Meta SAM 3D team received Best Paper Honorable Mention at CVPR 2026 for research in Segment Anything 3D. SAM 3D can reconstruct complete 3D structure from a single 2D image, precisely capturing fine hand and foot movements, trained on over 7 million annotated images, extending SAM's segmentation capabilities to 3D point clouds and scenes.", "Sakana AI is pushing RSI from theoretical concept to engineering practice, with its \"sample efficiency over compute scale\" approach forming differentiated competition against US and Chinese giants' brute-force scaling. Nature paper endorsement enhances academic credibility.", "Airbnb enters AI from interaction/design layer rather than model layer—this is a differentiated path for consumer internet companies' AI transformation, but whether it can attract top AI talent is the key challenge.", "Apple opening AI agent entry points on its own messaging platform is an important signal for platform-level infrastructure, but current positioning is limited to business messaging scenarios; consumer-grade expansion remains to be seen.", "1GB running 2B models is a key threshold breakthrough for edge deployment; custom mobile quantization scheme (targeting 2-bit + static activation) is more aggressive than general PTQ and could become a new paradigm for open-source model edge optimization.", "Anthropic's growth from $9B to $47B in annualized revenue reflects the exponential curve of AI infrastructure spending, but whether revenue growth rate is sustainable is a key variable for IPO pricing.", "NVIDIA CEO's high-frequency visits to South Korea reflect Korea's rising strategic position in global AI computing supply chain (GPU + HBM); from chip supply to joint AI factory construction, supply chain depth and cooperation breadth are advancing simultaneously.", "SpaceX's transformation from aerospace company to AI computing supplier, with $920 million monthly payment transaction, sets a new record for single cloud service agreement, reflecting structural tension in AI computing supply and demand.", "$30 billion single investment is one of the largest in India's AI infrastructure sector; AirTrunk's entry will significantly change India's data center market landscape.", "From traditional brick-and-mortar buildings to tent-style rapid deployment, this reflects that AI computing demand growth rate has exceeded the capacity of traditional data center construction cycles; agile infrastructure has become a new competitive dimension.", "Bezos shifting from investing in general AI (Amazon self-developed) to brain-inspired AI reflects top-tier capital beginning to hedge against LLM brute-force scaling approach. But advisor Ben Recht frankly stated \"not sure if it can succeed\"—whether brain-inspired approach can produce usable systems within 5 years is the core risk.", "Building financial domain-specific reasoning LLMs from scratch rather than fine-tuning general models is a path for AI to move from auxiliary tool to autonomous investment decision-making in finance, but regulatory compliance and model interpretability are core challenges.", "Supabase's valuation doubled riding the AI coding wave, the flywheel effect of open-source BaaS+AI Agent is being validated, but the alignment between valuation growth and revenue growth deserves attention.", "Fusion energy company valuations surged from $5 billion to $15.5 billion in two years, reflecting that market expectations for urgent AI computing power electricity demand are transmitting to the energy infrastructure layer.", "Airwallex incorporates AI financial automation into its financial infrastructure through acquisitions, expanding from cross-border payments to enterprise financial full-chain management.", "Treating agent skills as \"external states\" and optimizing with deep learning discipline is a key step for prompt engineering to move toward systematic training. The zero inference overhead design enables direct deployment, and cross-model migration capability is the core of practical application.", "The reliability problem of autonomous research agents is the biggest obstacle to their entry into formal scientific processes. The CoE framework provides actionable audit standards, and ScientistOne's zero-hallucination results show that structured evidence chains are more effective than post-hoc detection.", "Introducing sleep consolidation mechanisms from neuroscience into LLM context management is an elegant direction, solving long-context problems by shifting computational burden from inference to offline stages, with practical value depending on sleep phase overhead control.", "Distinguishing computation from memory is a promising direction for improving reasoning model efficiency. CERL enables models to learn \"self-cleaning\" of invalid intermediate steps through counterfactual erasure reward mechanism.", "Anthropic continuously demonstrates Claude's scientific reasoning capabilities through science blog posts. NMR spectrum analysis is a key step for LLMs to move from text understanding to experimental data interpretation.", "SAM 3D award indicates that migration of foundational vision-language models to 3D world remains a focus of the academic community, with Meta maintaining leadership in this field.", "Airbnb CEO Brian Chesky Plans to Establish AI Lab", "Supabase Completes $500M Series F Funding, Valuation Doubles to $10.5B in 8 Months", "SkillOpt: Microsoft Proposes Agent Skill Text Space Optimizer, Leading All 52 Benchmarks", "Sakana AI Establishes Recursive Self-Improvement Lab RSI Lab, Integrating 6 Core Achievements…", "Airbnb CEO Brian Chesky Plans to Establish AI Lab, Focused on Using…", "Apple Approves Poke as First for Messages for Business Platform…", "Google Releases Gemma 4 QAT Quantized Checkpoints, E2B Model Memory Drops to 1GB…", "Anthropic President Daniela Amodei Responds to AI Returns Question: Annualized…", "NVIDIA CEO Jensen Huang's Second Visit to Korea, Building AI Factory with SK Group Deploying Over 50K G…", "Google Signs Cloud Service Agreement with SpaceX: Paying $920M Monthly to Rent Approximately 110K…", "Flourish Labs Raises $500M, Bezos Bets on Brain-Inspired AI Seeking Brain…", "Financial Time-Series LLM Developer Grace Investment Machine Completes…", "SkillOpt: Microsoft Proposes Agent Skill Text Space Optimizer, 52 Eva…", "CMU Proposes Sleep-Wake Memory Consolidation…", "State Commitment Learning: Training LLM to Distinguish Computatio…", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

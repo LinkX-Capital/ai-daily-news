@@ -297,19 +297,20 @@ def build_toggle_js_generic(en_map, ph_en):
                     if (hasNested) return;
                 }}
 
-                // Try direct text first (excludes nested span/strong children),
-                // then fall back to the full textContent (covers div.te-summary with <strong>).
+                if (!isEn) {{
+                    // Switching back to Chinese: restore cached innerHTML
+                    var saved = cache.get(el);
+                    if (saved) el.innerHTML = saved;
+                    return;
+                }}
+
+                // Switching to English: look up translation
                 var zh = getDirectText(el);
                 if (!EN[zh]) zh = el.textContent.trim();
                 if (!zh || !EN[zh]) return;
 
-                if (isEn) {{
-                    if (!cache.has(el)) cache.set(el, el.innerHTML);
-                    el.textContent = EN[zh];
-                }} else {{
-                    var saved = cache.get(el);
-                    if (saved) el.innerHTML = saved;
-                }}
+                if (!cache.has(el)) cache.set(el, el.innerHTML);
+                el.textContent = EN[zh];
             }});
         }});
 
@@ -329,9 +330,86 @@ def build_toggle_js_generic(en_map, ph_en):
         localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
     }}
 
+    // Expose for search integration
+    window.__I18N_EN = EN;
+    window.__I18N_isEn = function() {{ return isEn; }};
+
     var btn = document.getElementById('lang-toggle');
     if (btn) btn.addEventListener('click', function() {{ isEn = !isEn; applyLang(); }});
     if (isEn) applyLang();
+}})();
+
+// ── Bilingual search augmentation ──
+(function() {{
+    var EN = window.__I18N_EN || {{}};
+    var searchEN = {{}};  // EN maps from fetched pages
+    var dropdown = document.getElementById('search-results');
+    var input = document.getElementById('search');
+    if (!dropdown || !input) return;
+
+    // Intercept fetch to extract EN maps from fetched HTML pages
+    var origFetch = window.fetch;
+    window.fetch = function(url) {{
+        return origFetch.apply(this, arguments).then(function(response) {{
+            var clone = response.clone();
+            if (typeof url === 'string' && url.indexOf('.html') !== -1) {{
+                clone.text().then(function(html) {{
+                    var m = html.match(/const EN = (\\{{.*?\\}});/s);
+                    if (m) {{
+                        try {{ Object.assign(searchEN, JSON.parse(m[1])); }}
+                        catch(e) {{}}
+                    }}
+                }}).catch(function(){{}});
+            }}
+            return response;
+        }});
+    }};
+
+    // Translate search results when they appear
+    var observer = new MutationObserver(function() {{
+        if (!window.__I18N_isEn()) return;
+        dropdown.querySelectorAll('.search-result').forEach(function(el) {{
+            var titleEl = el.querySelector('.sr-title');
+            if (titleEl && !titleEl.dataset.i18n) {{
+                var zh = titleEl.textContent.trim();
+                titleEl.dataset.i18n = zh;
+                var en = searchEN[zh] || EN[zh];
+                if (en) titleEl.textContent = en;
+            }}
+            var catEl = el.querySelector('.sr-cat');
+            if (catEl && !catEl.dataset.i18n) {{
+                var zh = catEl.textContent.trim();
+                catEl.dataset.i18n = zh;
+                var en = searchEN[zh] || EN[zh];
+                if (en) catEl.textContent = en;
+            }}
+        }});
+        var empty = dropdown.querySelector('.search-empty');
+        if (empty) {{
+            if (empty.textContent.indexOf('无匹配') !== -1) empty.textContent = 'No results found';
+            else if (empty.textContent.indexOf('正在加载') !== -1) empty.textContent = 'Loading...';
+        }}
+    }});
+    observer.observe(dropdown, {{ childList: true, subtree: true }});
+
+    // When switching back to Chinese, restore original search result text
+    var origApplyLang = window.__I18N_applyLang;
+    var toggleBtn = document.getElementById('lang-toggle');
+    if (toggleBtn) {{
+        var origClick = toggleBtn.onclick;
+        toggleBtn.addEventListener('click', function() {{
+            // After toggle, restore search result text if switching to Chinese
+            setTimeout(function() {{
+                if (!window.__I18N_isEn()) {{
+                    dropdown.querySelectorAll('[data-i18n]').forEach(function(el) {{
+                        el.textContent = el.dataset.i18n;
+                    }});
+                    // Re-trigger search to show Chinese results
+                    if (input.value) input.dispatchEvent(new Event('input'));
+                }}
+            }}, 50);
+        }});
+    }}
 }})();
 """
 

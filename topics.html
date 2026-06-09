@@ -208,7 +208,6 @@
             .hero-meta { display: none; }
         }
 
-
 /* ── Lang toggle ── */
 .lang-toggle {
     background: var(--purple-20);
@@ -381,19 +380,20 @@
                     if (hasNested) return;
                 }
 
-                // Try direct text first (excludes nested span/strong children),
-                // then fall back to the full textContent (covers div.te-summary with <strong>).
+                if (!isEn) {
+                    // Switching back to Chinese: restore cached innerHTML
+                    var saved = cache.get(el);
+                    if (saved) el.innerHTML = saved;
+                    return;
+                }
+
+                // Switching to English: look up translation
                 var zh = getDirectText(el);
                 if (!EN[zh]) zh = el.textContent.trim();
                 if (!zh || !EN[zh]) return;
 
-                if (isEn) {
-                    if (!cache.has(el)) cache.set(el, el.innerHTML);
-                    el.textContent = EN[zh];
-                } else {
-                    var saved = cache.get(el);
-                    if (saved) el.innerHTML = saved;
-                }
+                if (!cache.has(el)) cache.set(el, el.innerHTML);
+                el.textContent = EN[zh];
             });
         });
 

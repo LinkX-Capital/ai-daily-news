@@ -533,6 +533,33 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+    
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
+/* Floating variant for pages without topbar */
+.lang-toggle-float {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
     </style>
 </head>
 <body>
@@ -548,6 +575,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1074,6 +1103,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["OpenEnv Goes Community-Led: Meta/Nvidia/PyTorch and Others Jointly Advance Agentic RL Standardization", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "WWDC 2026: Apple Unveils Siri AI Integration with Gemini, Launches Standalone App and 'Write with Siri'", "Moonshot AI Releases Desktop Agent Kimi Work: Supports Up to 300 Sub-Agent Collaboration", "Google NotebookLM Upgrade: Default Switch to Gemini 3.5, Supports Auto Knowledge Base Building from Chat", "OpenAI Confidentially Submits S-1 to SEC, Formally Kicking Off IPO Process", "OpenAI Discloses Economic Data: Nearly 900M Weekly Active Users, API Reasoning Token Annual Growth of 320x", "Google and Nvidia Consider Intel as Chip Foundry Backup, Addressing TSMC Capacity Bottleneck", "Nvidia Signs Multi-Year HBM Supply Agreement with SK Hynix, Covering Vera Rubin Platform", "OpenAI Stargate Data Center Faces Cost and Energy Challenges", "Qiankong Embodied Intelligence Completes Tens of Millions Seed Round, Building 'Qianjing Brain + Qianqing Cerebellum' Dual-Brain Architecture", "How Language Models Fail: Revealing Two Diagnosable Patterns of LLM Reasoning Failure", "Re-Centering Humans: LLM Personalization Shows Significant Gap Between Synthetic and Real Human Data", "Agentopia: 100 Agents Simulate 10 Years of Social Life, Downstream Role-Playing Improves 15.6% After Life Reward Training", "AdaWAM: Adaptive World Action Model for Multimodal Reasoning, Dynamic Routing Text/Visual Reasoning", "MacArena: 421-Task macOS GUI Agent Benchmark, Leading Models Lag 26% on macOS Native Tasks", "EmbedFilter: Filtering High-Frequency Tokens Using LLM Unembedding Matrix, Zero-Shot Text Embedding Quality Improvement", "FAIR-Calib: Frontier-Aware Calibration Framework for Post-Training Quantization of Diffusion Language Models", "Anthropic Research Blog: Biological Agent Bottleneck Lies in Data Infrastructure, Not Reasoning Ability", "Turing Post Publishes 2026 Inference RL Methods Landscape: 16 Methods from PPO to GRPO Family", "SemiAnalysis Deep Dive: Unitree Replicates BYD/DJI Path, Will Dominate Global Humanoid Robot Market", "OpenEnv is a toolkit for creating Agent execution environments (terminals, browsers, etc.), positioned as an interoperability protocol layer for RL environments (does not define reward functions, only standardizes environment publishing, deployment, and consumption). This upgrade shifts from HuggingFace-led to community committee governance, with members including Meta-PyTorch, Reflection, Unsloth, Modal, Prime Intellect, Nvidia, Mercor, Fleet AI, and HuggingFace. Core significance: Frontier labs train models that work seamlessly with harnesses, but the open-source community uses any model + any harness, lacking a unified environment interface. OpenEnv solves this 'socket' problem—a trainer only needs to interface with OpenEnv protocol to drive any compliant environment, with MCP as a first-class citizen enabling consistent behavior between simulation and production modes. Supporters also include vLLM, SkyRL (UCB), Lightning AI, Stanford Scaling Intelligence Lab, Scale AI, and others.", "Apple Unveils New Siri AI at WWDC 2026, Transforming Siri from Voice Control Assistant to Full Conversational AI. Underlying it uses Google Gemini model (Apple pays approximately $1 billion annually for customized Gemini 2.5 Pro usage rights). Siri AI debuts as a standalone App, popping up from Dynamic Island, supporting voice and text input. 'Write with Siri' feature can automatically generate emails and messages based on the user's communication style with specific contacts. Siri can read screen content, integrate calendar/contacts/email information to execute complex tasks. On macOS, Siri integrates into Spotlight search; on watchOS, users can ask questions directly from the watch. This WWDC is also CEO Tim Cook's last, with John Ternus set to take over. iOS 27 and macOS 27 are also released.", "Moonshot AI Releases General-Purpose Local Agent Kimi Work for Knowledge Workers, Available with Latest Beta Mac/Windows Clients. Kernel is Kimi Code, supports automatic task decomposition after natural language description, parallel execution, tool calling, browser control, and delivery of documents/spreadsheets/presentations. Underlying model is Kimi K2.6, supports 13 hours of continuous coding, can autonomously call tools over 4,000 times per task, and create up to 300 sub-agents for collaboration. During development, over 50,000 lines of code were generated, with 92% autonomously created by AI.", "Google Updates NotebookLM Research Tool, Default Model Switches to Gemini 3.5. New Core Features: Users can discuss projects in chat, and NotebookLM automatically suggests and adds sources via Google Search to build knowledge bases (previously required manual source upload). Supports multi-language source discovery and relevant author material recommendations. Output formats expand to data visualization (.png/.svg), documents (PDF/.docx/Markdown), structured data (.csv/.json), and Excel/PowerPoint. Deep Research mode adds transparent step display. Update targets Google AI Ultra users and Workspace business customers.", "OpenAI Confidentially Submits Draft S-1 Registration Statement for IPO to the SEC, but has not yet determined the specific timing of the initial public offering. Previously, OpenAI collaborated with investment banks including Goldman Sachs and Morgan Stanley to prepare for the listing. The company's valuation is expected to exceed $1 trillion, targeting completion of listing as early as Fall 2026. Notably, competitor Anthropic also submitted a confidential S-1 to the SEC in early June, with the two AI giants entering an IPO race.", "OpenAI launches \"Economic Research Exchange\" platform, disclosing core operational data: annualized revenue exceeding $25 billion, ChatGPT weekly active users approaching 900 million, enterprise customers exceeding 1 million. API inference tokens grew 320x in one year, nearly 200 organizations processing over 1 trillion tokens. OpenAI expects $112 billion in non-subscription revenue from free users by 2030, with ChatGPT user base planned to expand to 2.6 billion.", "TSMC advanced process capacity severely insufficient, Google and Nvidia quietly turning to Intel as alternative chip manufacturer. Google TPU chips and Nvidia GPUs both evaluating Intel foundry feasibility. This trend may bring a turnaround for Intel's foundry business while adding redundancy to the AI chip supply chain.", "Nvidia CEO Jensen Huang visits South Korea, announces multi-year cooperation agreement with SK Hynix covering advanced memory chip design and manufacturing. Agreement includes HBM4 memory supply for Nvidia's next-generation AI system Vera Rubin platform. SK Hynix gains first-mover advantage in HBM4 mass production. Global AI demand continues to pressure memory supply chain.", "In OpenAI Stargate data center project in Abilene, Texas, engineers from developer Crusoe (serving both OpenAI and Oracle) are working overtime to solve coordination issues between gas turbines and AI supercomputers. Natural gas power volatility poses stability challenges for one of the most expensive AI supercomputers, with operational costs and energy expenses exceeding initial projections. Stargate is a large-scale infrastructure project between OpenAI and Oracle, aimed at building ultra-large AI training clusters.", "Peking University Wuhan AI Research Institute (PWU-AI) incubated company Qianspace Embodied Intelligence (Wuhan) Technology Co., Ltd. completes tens of millions RMB seed round. Company builds embodied intelligence brain platform centered around \"Qianspace Simulator\", covering full-cycle simulation: data production, governance compilation, model training, evaluation deployment, and feedback evolution. Two core modules built on top: cognitive decision model \"Qianjing Brain\" handles high-level perception and decision-making, whole-body motion control engine \"Qianqing Cerebellum\" handles low-level motion execution, promoting deep fusion of perception, decision, and execution. \"Motion Creation Platform\" built on Qianqing Cerebellum is ready to accelerate large-scale deployment of embodied intelligence in real scenarios.", "Paper identifies LLM reasoning failures arising through two distinct processes, leaving identifiable token-level signals. First is Committed Failure: model locks onto incorrect path early in reasoning, with a \"commitment point\" beyond which additional tokens actually impair detection. Second is Persistent Uncertainty: uncertainty persists throughout entire reasoning process. Framework's falsifiable predictions held in 20 out of 23 model-dataset configurations. Study also reveals these signals' direct impact on self-consistency. (Authors: Mykel J. Kochenderfer et al., Stanford)", "Paper systematically investigates performance gap between LLM personalization on synthetic versus real human data. Study collected 550 human conversations and judgment data covering three personalization stages: extracting user attributes from conversations (5,949 judgments), pairing relevant attributes with new prompts (11,919 judgments), integrating attributes into personalized responses (1,101 judgments). Key findings: models struggle to extract attributes from real human dialogues, exhibiting disagreements with human judgments on attribute relevance; generated personalized responses rated by humans as no better than generic responses (though LLM evaluators consistently gave higher scores). Paper proposes two lightweight training interventions that narrowed automated evaluation-human data gap in first two stages, but found only weak correlation between learned reward models and human ratings in third stage. (Authors: Tal August et al., Allen Institute for AI)", "Paper proposes Agentopia framework for long-term life simulation in multi-Agent society. 100 Agents autonomously pursue personal growth, build social relationships, satisfy needs and goals over 10 simulated years. Study defines \"life reward\" to map human well-being, training underlying LLM through rejection sampling. Experiments show Agents exhibit rich emergent social behaviors; life reward training effectively enhances underlying LLM, improving Agent well-being in simulation and generalizing to downstream role-playing benchmark with 15.6% improvement.", "Existing World Action Models (WAMs) rely on video prediction as motion prior, lacking adaptive multimodal reasoning capability. AdaWAM's core observation: Agents need different reasoning modes at different execution stages—text reasoning guides high-level motion prediction during task transitions, visual reasoning precisely controls during fine manipulation. Paper proposes lightweight dynamic router that autonomously triggers text or visual reasoning during task execution. Experiments on simulated and real embodied tasks show AdaWAM surpasses SOTA embodied policies while improving reasoning efficiency.", "MacArena releases macOS GUI Agent benchmark with 421 manually verified tasks covering 50 applications. Testing runs on Apple Silicon native virtualization framework (not x86 VM). Research finds: strong performance on existing benchmarks may reflect familiarity with task distribution rather than genuine cross-platform GUI capability. On macOS native tasks, leading models' rankings reverse, falling behind by over 26%, indicating macOS presents a harder challenge environment for current GUI Agents.", "Research finds LLM text embeddings tend to align with high-frequency but uninformative tokens when projected into vocabulary space, suppressing semantic capture capability. Paper proposes EmbedFilter, a simple linear transform that enhances semantic representation by removing high-frequency token subspace encoded in unembedding matrix. Bonus: natural dimensionality reduction effect, reducing index storage and retrieval latency while fully preserving embedding quality. Experiments on multiple LLM backbones show LLM equipped with EmbedFilter achieves superior zero-shot downstream performance even with significantly reduced embedding dimensions.", "Diffusion Language Models (dLLMs) iteratively optimize tokens but commit irreversibly, causing \"stability lag\"—early decisions remain fragile after writing. Paper finds post-training quantization (PTQ) errors easily flip these boundary decisions, and once locked, are permanently amplified. Proposes FAIR-Calib two-stage PTQ framework: Stage 1 probes full-precision teacher model to estimate positional priors; Stage 2 performs layer-wise calibration by minimizing reweighted hidden state MSE, prioritizing protection of fragile frontier states without expensive end-to-end diffusion rollout. Theoretically proves weighted objective serves as proxy for output KL divergence. On W4A4 quantization experiments with LLaDA and Dream, FAIR-Calib consistently outperforms SOTA baselines, significantly reducing frontier decision flips and post-commitment mismatches.", "Anthropic publishes research article titled \"Paving the Way for Agents in Biology\". Authors Laura Luebbert et al. use NCBI Virus database as test scenario, having Claude, Biomni, Edison Analysis, GPT and other Agents perform virus data retrieval tasks. Even the strongest models fail to consistently achieve accuracy required for reliable dataset construction. But adding deterministic retrieval layer (gget virus) improves accuracy to near 100%. Article draws analogy to Andrej Karpathy's viewpoint—code Agents develop fast because software infrastructure naturally suits Agents (version control, APIs, package management), while biology databases resemble \"Italian hill towns designed for carriages\" (heterogeneous formats, implicit conventions, browser click operations). Using Congo Ebola outbreak as example, researchers still need to manually click complex filters on NCBI Virus web interface.", "Turing Post publishes comprehensive guide to 2026 inference RL methods, mapping complete evolution from classic PPO to latest critic-free methods. 2026 mainstream toolkit core methods: GRPO (critic-free PPO alternative, RLVR main baseline), DAPO (more stable GRPO, Qwen2.5-32B scores 50 on AIME 2024), GSPO (sequence-level importance ratio), DHPO (hybrid optimization fusing token-level and sequence-level). Agent-specific methods: ARPO (multi-turn Agent step-level optimization) and VPO (training diverse solution sets for test-time search). DPO variants: InSPO (self-reflective preference optimization), TI-DPO (token importance-weighted DPO), RAPPO (ranking-aware preference learning). Overall trend shifting from expensive PPO pipelines to cheaper critic-free, in-group relative, preference-driven methods.", "SemiAnalysis publishes 10,000-word deep analysis arguing Unitree is replicating BYD and DJI's success path—mastering core components (actuators account for 50-70% of humanoid BoM), using enthusiast/researcher market for cold start, unlocking new markets generation by generation. Key data: G1 pricing cut from $50K+ to $27.3K within 12-18 months, some transactions below $20K, still maintaining 67% gross margin; G1 BoM only $8,976 (SemiAnalysis cross-validated through component-level supplier breakdown). Unitree revenue growing 3x annually, planning nearly $300M AI R&D investment, about to ship 10,000th humanoid robot. Actuator evolved from early \"overheats lifting 2kg in 5 minutes, requires 30 minutes cooling\" to \"bent-arm lifting 5kg for 10-15 minutes continuously\". Approximately 250 G1 units deployed in actual labor scenarios (e-commerce bin handling), with even full remote operation under conservative assumptions costing less than $30/hour human wage. QDD actuators 80% cheaper than competing solutions, iteration cycles in weeks vs 3+ months for Western competitors. Unitree self-develops BLDC motors, planetary gearboxes, LiDAR and depth cameras, quadruped robot gross margin rising from 42.36% to 55.49%.", "OpenEnv goes open-source community-driven, Meta/Nvidia/PyTorch jointly pushing Agentic RL standardization", "WWDC 2026 announces Siri AI integration with Gemini, launching standalone App and \"Write with Siri\"", "Moonshot AI releases desktop Agent Kimi Work supporting up to 300 sub-Agent collaboration", "Google NotebookLM upgrades to auto-build knowledge bases from chat", "OpenAI discloses economic data (weekly active users near 900 million) + confidential S-1 filing with SEC", "Google and Nvidia considering Intel as chip foundry backup", "Nvidia signs multi-year HBM supply agreement with SK Hynix covering Vera Rubin platform", "Stanford reveals two diagnosable patterns of LLM reasoning failure", "AI2 discovers significant gap in LLM personalization between synthetic and real data", "Agentopia achieves 100-Agent 10-year simulated social life to train LLM", "AdaWAM: Adaptive Multimodal Reasoning World Action Model", "MacArena Reveals macOS GUI Agent Lags Behind by 26%", "Anthropic Research Blog Reveals Biology Agent Bottleneck is Data Infrastructure", "Turing Post Releases 2026 Inference RL Methods Panorama", "SemiAnalysis Deep Analysis: Unitree Will Dominate Global Humanoid Robot Market", "OpenEnv Open Source Community: Meta/Nvidia/PyTorch and Others Join...", "WWDC 2026: Apple Releases Siri AI Integration Gemini...", "Moonshot Releases Desktop Agent Kimi Work: Supports Up to 300 Sub...", "Google NotebookLM Upgrade: Default Switch to Gemini 3.5...", "OpenAI Discloses Economic Data: Weekly Active Users Near 900M, API Inference Tokens Annual...", "Google and Nvidia Consider Intel as Chip Foundry Alternative, Addressing...", "Nvidia and SK Hynix Sign Multi-Year HBM Supply Agreement, Covering V...", "How Language Models Fail: Revealing LLM Reasoning Failures...", "Re-Centering Humans: LLM Personalization in Synthetic Data and Real Humans...", "Agentopia: 100 Agents Simulate 10 Years of Social Life, li...", "MacArena: 421-Task macOS GUI Agent Benchmark...", "EmbedFilter: Using LLM Unembedding Matrix to Filter High...", "Anthropic Research Blog: Biology Agent Bottleneck is Data Infrastructure...", "Turing Post Releases 2026 Inference RL Methods Panorama: From PP...", "SemiAnalysis Deep Analysis: Unitree Replicates BYD/DJI...", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>

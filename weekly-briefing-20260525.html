@@ -305,9 +305,37 @@ footer .footer-dot{width:4px;height:4px;border-radius:50%;background:var(--accen
   .section{padding:30px 0}.trend-card::before{display:none}
 }
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
-</style>
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
+/* Floating variant for pages without topbar */
+.lang-toggle-float {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+    </style>
 </head>
 <body>
+<button class="lang-toggle lang-toggle-float" id="lang-toggle">EN</button>
 
 <nav>
   <div class="nav-inner">
@@ -1080,5 +1108,83 @@ document.querySelectorAll('nav a').forEach(a=>{
 });
 </script>
 
+<script>
+
+// ── Bilingual toggle (generic) ──
+(function() {
+    const EN = {"AI 行业周报五大关键趋势与核心信号": "Five Key Trends and Core Signals in AI Industry Weekly", "后训练 Infra 正在成为独立战场": "Post-training Infra is Becoming an Independent Battlefield", "RSI 叙事增强": "RSI Narrative Enhancement", "Agent 企业端渗透，中间层 Infra 价值显现": "Agent Enterprise Penetration, Middle-layer Infra Value Emerging", "算力供给异构化，推理优化成主战场": "Computing Power Supply Heterogenization, Inference Optimization Becomes Main Battlefield", "物理 Agent 闭环系统演进": "Physical Agent Closed-loop System Evolution", "后训练的价值持续被证实": "Post-training Value Continues to Be Validated", "RL 帮助 Agent 在真实环境中实现自我进化，需要构建新的训练基础设施": "RL Helps Agents Achieve Self-evolution in Real Environments, Requiring New Training Infrastructure", "RLVR 瓶颈诊断：从\"算力不够\"转向\"算力使用方式\"": "RLVR Bottleneck Diagnosis: From 'Insufficient Compute' to 'Compute Usage Method'", "方向一：轨迹发现 — 瓶颈在\"找不到值得学的东西\"": "Direction 1: Trajectory Discovery — Bottleneck in 'Can't Find Things Worth Learning'", "方向二：参数动力学 — 瓶颈在\"更新方向不稳定\"": "Direction 2: Parameter Dynamics — Bottleneck in 'Unstable Update Direction'", "方向三：集群调度 — 瓶颈在 GPU 闲置": "Direction 3: Cluster Scheduling — Bottleneck in GPU Idling", "Sakana AI 发布 RSI Lab": "Sakana AI Releases RSI Lab", "社区反馈与关键框架": "Community Feedback and Key Frameworks", "核心判断": "Core Judgment", "为什么中间层值得关注": "Why Middle Layer Matters", "关键公司": "Key Companies", "芯片厂商开始推云服务": "Chip Manufacturers Begin Pushing Cloud Services", "与模型厂商的无缝协同": "Seamless Collaboration with Model Manufacturers", "华为韬定律": "Huawei Tao's Law", "世界模型和 VLA 的协同": "World Model and VLA Synergy", "仿真平台与 Foundation Model 的协同": "Simulation Platform and Foundation Model Synergy", "本周关键进展": "Key Progress This Week", "评测：端到端、长程任务聚焦": "Evaluation: End-to-end, Long-horizon Task Focus", "前沿：触觉/力觉模型": "Frontier: Tactile/Force Sensing Models", "发展时间线": "Development Timeline", "后训练基础设施成为独立战场 · RSI叙事加速 · Agent企业端渗透深化 · 推理优化主战场成型 · 物理Agent闭环系统演进": "Post-training infrastructure becomes an independent battlefield · RSI narrative accelerates · Agent enterprise penetration deepens · Reasoning optimization main battlefield takes shape · Physical Agent closed-loop system evolves", "Cursor Composer 2.0 和 2.5 基于 TB 级开源模型（Kimi K2.5）做中训练 + 大规模 RL，在 coding 能力排名上处于领先水平。围绕训练目标和 Fireworks 合作打造了 RL 基础设施，用一个集群运行全部训练，但强化学习中的推理部分在全球各地的小集群之间分布式进行。OpenAI o3/o4、Claude 的推理能力均来自 RLVR（Reinforcement Learning from Verifiable Rewards）。": "Cursor Composer 2.0 and 2.5 use TB-level open-source models (Kimi K2.5) for mid-training + large-scale RL, ranking at the forefront in coding capability. They partnered with Fireworks to build RL infrastructure around training objectives, running all training on a single cluster, while the reasoning component of reinforcement learning is distributed across small clusters globally. OpenAI o3/o4 and Claude's reasoning capabilities both come from RLVR (Reinforcement Learning from Verifiable Rewards).", "Ineffable（AlphaGo 核心团队创业）与 NVIDIA 合作共建大规模 RL 训练基础设施。与预训练使用固定数据集不同，RL 工作负载实时生成数据，形成\"行动→观测→评分→更新\"的紧密循环。": "Ineffable (AlphaGo core team startup) collaborates with NVIDIA to build large-scale RL training infrastructure. Unlike pretraining which uses fixed datasets, RL workloads generate data in real-time, forming a tight cycle of \"action → observation → scoring → update\".", "RL 基础设施天然比预训练更复杂：既需要数万块 GPU 协同做前向-反向传播，又需要编排大量逼真模拟用户电脑的环境并运行高吞吐推理。RL 环境由三个组件构成——harness（工具执行层）、操作系统（模型交互的真实世界与状态，需虚拟机栈支持高并发 + 弹性扩容 + 快速冷启动）、奖励组件（检查任务是否正确完成）。": "RL infrastructure is inherently more complex than pretraining: it requires tens of thousands of GPUs working in concert for forward-backward propagation, while also orchestrating numerous realistic user environment simulations and running high-throughput inference. RL environments consist of three components - harness (tool execution layer), operating system (the real world and states that models interact with, requiring virtual machine stacks supporting high concurrency + elastic scaling + fast cold start), and reward component (verifying task completion correctness).", "当前答案越来越偏向算力使用方式：如何找到更好的轨迹、如何更高效地利用轨迹、如何更充分地利用算力。": "Current answers increasingly tilt toward computational resource utilization: how to find better trajectories, how to utilize trajectories more efficiently, how to more fully leverage computational power.", "Pedagogical RL（MIT/UMD/UND/UCF）核心洞察：现有 on-policy RL（如 GRPO）依赖模型自己偶然碰到成功轨迹来学习。如果模型初始能力不够，根本碰不到成功轨迹，RL 就会停滞——这是探索空间的问题，不是奖励信号的问题。": "Pedagogical RL (MIT/UMD/UND/UCF) core insight: existing on-policy RL (e.g., GRPO) relies on models accidentally stumbling upon successful trajectories to learn. If the model's initial capability is insufficient, it simply cannot encounter successful trajectories, causing RL to stagnate - this is a problem of exploration space, not reward signal.", "解法：训练一个拥有特权信息（标准答案）的自教师，要求轨迹正确且每一步对学生模型可学习（spike-aware pedagogy reward），然后用 surprisal-gated imitation 迁移知识。": "Solution: Train a self-teacher with privileged information (ground truth), requiring trajectories to be correct and learnable at each step for the student model (spike-aware pedagogy reward), then transfer knowledge via surprisal-gated imitation.", "Llama-3.2-3B AIME 2020-2024 达 22.5%（+40%），用 2-3 倍更少 rollout 达最优": "Llama-3.2-3B achieves 22.5% on AIME 2020-2024 (+40%), reaching optimal performance with 2-3x fewer rollouts", "核心结论：从\"更多采样\"转向\"更聪明的采样\"。": "Core conclusion: Shift from \"more sampling\" to \"smarter sampling\".", "EffOPD（中科大等）确认了 OPD 的效率源于一种\"预见\"能力——在训练早期就建立起指向最终模型的稳定更新轨迹。": "EffOPD (USTC et al.) confirms OPD's efficiency stems from a \"foresight\" capability - establishing stable update trajectories pointing to the final model during early training.", "模块分配层面：OPD 识别低边际效用区域，将更新集中在关键推理模块上。更新方向层面：OPD 的主导子空间在训练早期就与最终更新子空间对齐。": "At module allocation level: OPD identifies low marginal utility regions, concentrating updates on critical reasoning modules. At update direction level: OPD's dominant subspace aligns with the final update subspace during early training.", "EffOPD 即插即用，平均 3 倍加速，无需额外模块或超参数调优": "EffOPD is plug-and-play, delivering 3x average speedup without additional modules or hyperparameter tuning", "与 Pedagogical RL 互补——一个在数据空间做筛选，一个在参数空间做筛选。": "Complementary to Pedagogical RL - one filters in data space, the other in parameter space.", "PlexRL：面向 RLVR 训练的集群级运行时系统。RLVR 训练的低效是结构性的：长尾 rollout、工具调用阻塞和资源需求不对称在单个任务内无法消除。但不同任务之间的空闲时段呈反相关性，可在集群层面利用。": "PlexRL: A cluster-level runtime system for RLVR training. RLVR training inefficiency is structural: long-tail rollouts, tool call blocking, and asymmetric resource demands cannot be eliminated within individual tasks. However, idle periods across different tasks exhibit negative correlation, which can be leveraged at the cluster level.", "PlexRL：用户 GPU 小时成本最高降低 37.58%": "PlexRL: User GPU hour costs reduced by up to 37.58%", "讨论了 AI 系统参与 AI 研发流程的现实证据。随着更多代码由 AI 推动，组织中的瓶颈开始转移到人类代码审查等环节。同时，AI 带来了大量新想法、工具和模拟，组织吸收能力成为新的限制。": "Discusses concrete evidence of AI systems participating in AI R&D processes. As more code becomes AI-driven, organizational bottlenecks shift toward human code review and similar stages. Simultaneously, AI brings an abundance of new ideas, tools, and simulations, making organizational absorption capacity a new constraint.", "明确提出用 AI 重新设计 AI 开发流程。六项成果：训练算法发现、代码自我改写、程序进化、启发式优化、对抗共进化、自动科学发现。共同目标是证明 AI 进步可以通过\"思想和搜索效率\"复利推进，不只依赖更大模型和更多算力。": "Explicitly proposes redesigning AI development processes using AI. Six outcomes: training algorithm discovery, code self-rewriting, program evolution, heuristic optimization, adversarial co-evolution, automated scientific discovery. Shared goal: demonstrate AI progress can compound through \"thinking and search efficiency\", not just relying on larger models and more compute.", "Hacker News：一方面认可 Sakana 研究创造性，另一方面质疑 RSI 是否退化为\"围绕指标优化的 benchmark chasing\"。": "Hacker News: While acknowledging Sakana Research's creativity, questions whether RSI has devolved into \"benchmark chasing around metric optimization\".", "Reddit：更关注工程效率数字——代码产出提升、Claude 参与代码合并比例、任务时间跨度增长。": "Reddit: Focuses more on engineering efficiency metrics - code output improvement, Claude's involvement in code merge ratios, and expanding task time horizons.", "METR Ajeya Cotra 将 RSI 划分三阶段：adequacy（无人也能产出研究，预计 1-2 年实现）、parity（AI 等同人类）、supremacy（AI 超越人机协作，parity 后 1 年内可能到来）。": "METR Ajeya Cotra divides RSI into three phases: adequacy (research output without humans, estimated 1-2 years), parity (AI matching human capabilities), supremacy (AI surpassing human-machine collaboration, potentially within 1 year after parity).", "CSET Helen Toner：目前所有所谓的 RSI \"只是尽可能多地用 AI 做 AI 研究\"，而非经典定义中\"不需要人类\"的闭环。": "CSET Helen Toner: All current so-called RSI \"merely uses as much AI as possible to conduct AI research,\" not the closed-loop \"without humans\" in the classic definition.", "RSI 已进入早期可观察阶段，但受制于人类审查、评测可靠性和实验资源。当前更准确的表述是 \"AI 正在加速 AI 研发流程\"，完全自主的模型自我重写仍缺乏可靠证据。": "RSI has entered an early observable stage, constrained by human review, evaluation reliability, and experimental resources. The more accurate description is \"AI is accelerating AI R&D processes\" - fully autonomous model self-rewriting still lacks reliable evidence.", "RSI 把 AI 竞争重点从\"模型能力有多强\"推进到\"AI 是否能自动推动下一代 AI 研发\"。如果闭环成立，AI 进步速度将不再主要受限于人类研究员，而更多受限于算力、数据和实验基础设施。这也是一个强烈的产业信号：创业公司、知名研究者和 AI 实验室正在把\"自动化 AI 研发\"包装成下一阶段目标。": "RSI shifts the AI competition focus from \"how strong model capabilities are\" to \"whether AI can automatically drive next-generation AI R&D.\" If the closed loop holds, AI progress speed will no longer be primarily limited by human researchers, but more constrained by compute, data, and experimental infrastructure. This is also a strong industry signal: startups, renowned researchers, and AI labs are packaging \"automated AI R&D\" as the next phase objective.", "参考：Anthropic RSI 报告 OP · RSI 行业叙事分析 OP": "Reference: Anthropic RSI Report OP · RSI Industry Narrative Analysis OP", "这些厂商的能力可能生存于模型本身能力提升的缝隙中。国内一般不把搜索这样的中间层当成一条细分赛道（认为 LLM 公司能从模型本身解决这个问题——事实是体验并不好，现在用户绝大多数无用的算力浪费都发生在不能高效且正确地调用 AI 进行搜索），但海外看已经演化出中间层，并且已经盈利。": "These vendors' capabilities may survive in the gaps left by improvements in model capabilities themselves. In China, search as an intermediate layer is generally not considered a separate track (since LLM companies are expected to solve this through model improvements—but the fact is the experience is not good; most of the useless compute waste users experience today happens in inefficient and incorrect AI search calls). However, overseas markets have already evolved an intermediate layer and are already profitable.", "Pinecone 发布 Nexus 知识引擎层，可减少 AI agent 高达 90% 的 token 使用。": "Pinecone releases Nexus knowledge engine layer, which can reduce AI agent token usage by up to 90%.", "Modal Labs：核心是 AI Agent Runtime / Sandbox，已启动超 10 亿个 Sandboxes，贡献超 1/3 收入。三个重点方向：大规模低延迟推理、打通训练和推理闭环、扩展 Agent 计算层。": "Modal Labs: Core is AI Agent Runtime / Sandbox, has launched over 1 billion Sandboxes, contributing over 1/3 of revenue. Three key directions: large-scale low-latency inference, closing the training-inference loop, and expanding the Agent compute layer.", "Exa：从零搭建搜索引擎，优化模型对查询意图的理解。搜索 API 在低延迟场景可做到 sub-450ms。使用数百张 H200 组成的自有集群训练端到端 neural retrieval architecture。": "Exa builds a search engine from scratch, optimizing model understanding of query intent. Search API achieves sub-450ms latency in low-latency scenarios. Uses a self-built cluster of hundreds of H200s to train an end-to-end neural retrieval architecture.", "Glean：企业 AI 搜索引擎，100+ 应用连接器，15+ LLM 支持，模型中立策略。85%+ 客户在 5+ 部门部署。周活跃比 wDAU/wMAU 维持 45%，SaaS 行业基准的 2 倍。": "Glean: enterprise AI search engine, 100+ app connectors, 15+ LLM support, model-neutral strategy. 85%+ of customers deploy in 5+ departments. Weekly active ratio wDAU/wMAU maintains 45%, 2x SaaS industry benchmark.", "turbopuffer：向量搜索引擎，SPFresh 索引替代 HNSW，存储维度成本优势约 100 倍。跨过 $100 万 ARR 后仅 19 个月突破 $1 亿。": "turbopuffer: vector search engine, SPFresh index replaces HNSW, approximately 100x cost advantage per stored dimension. Reached $100 million ARR in just 19 months after crossing $1 million.", "Baseten 洽谈 $10 亿融资，AI 推理服务商估值达 $110 亿，较上一轮 $50 亿估值翻倍以上。": "Baseten in talks for $1 billion funding, AI inference service provider valuation reaches $11 billion, more than doubling from previous $5 billion valuation.", "字节跳动考虑今年资本开支提升至 $700 亿，与高通达成数百万枚 ASIC 芯片采购协议。同时自研 AI 芯片，路线类似 NVIDIA 合作伙伴 Groq。": "ByteDance considering increasing capital expenditure to $70 billion this year, reaching agreement with Qualcomm for millions of ASIC chips. Also developing AI chips in-house, similar approach to NVIDIA partner Groq.", "Snowflake 与 AWS 签 $60 亿 Graviton 芯片五年合同，云厂商自研 CPU 加速替代 NVIDIA。": "Snowflake signs $6 billion five-year Graviton chip contract with AWS, cloud vendors accelerating self-developed CPU to replace NVIDIA.", "Groq 据报融资 $6.5 亿，从芯片转向推理云服务。": "Groq reportedly raises $650 million, pivoting from chips to inference cloud services.", "General Compute 融资 $1500 万押注 SambaNova，推理专用芯片挑战 GPU。": "General Compute raises $15 million betting on SambaNova, inference-dedicated chips challenge GPU.", "韩国 XCENA 融资 $1.35 亿，押注 AI 瓶颈在内存而非算力。": "Korean XCENA raises $135 million, betting AI bottleneck is in memory rather than compute.", "vLLM 正式合并 Rust 前端：解决 GPU 变快后 CPU 时间占比过高问题。": "vLLM officially merges Rust frontend: solving the problem of excessive CPU time proportion after GPUs get faster.", "Together AI 解析 MiniMax-M3 高效推理方案：支持百万 Token 上下文。": "Together AI analyzes MiniMax-M3 efficient inference solution: supporting million-token context.", "华为正式发表\"韬定律\"：以\"时间缩微\"替代\"几何缩微\"，提出 τ 缩放定律和 LogicFolding 架构，通过三维逻辑折叠和缩短信号延迟，在不完全依赖几何制程缩小的情况下，争取于 2031 年实现相当于 1.4 纳米级的密度或系统性能。": "Huawei formally presents the 'Tao's Law': replacing 'geometric scaling' with 'temporal scaling,' proposing the τ scaling law and LogicFolding architecture. Through 3D logic folding and reduced signal latency, without fully relying on geometric process shrinking, aiming to achieve equivalent of 1.4nm-level density or system performance by 2031.", "训练层：世界模型帮助 VLA 获得更多动作后果数据。决策层：世界模型帮助 VLA 预演和筛选动作。架构层：世界预测和动作生成逐渐被统一进共享模型。": "Training layer: world models help VLA acquire more action consequence data. Decision layer: world models help VLA simulate and filter actions. Architecture layer: world prediction and action generation are gradually unified into shared model.", "VLA 解决\"根据当前观察应该做什么\"，世界模型解决\"这样做之后世界会如何变化\"。物理智能系统的关键是把动作生成与后果预测连接成闭环——这种协同既可以发生在多个模型之间，也可以被压缩进统一的 world-action model 内部。": "VLA solves 'what should be done given current observation,' world models solve 'how the world will change after doing this.' The key for physical intelligence systems is connecting action generation with consequence prediction into a closed loop—this synergy can occur between multiple models or be compressed within a unified world-action model.", "趋势不是世界模型替代 VLA，而是：VLA 从反应式策略，逐渐升级为由世界模型支持的预测式策略。": "The trend is not world models replacing VLA, but: VLA gradually upgrading from reactive strategy to world model-supported predictive strategy.", "仿真平台/世界模拟器的作用：生成多样化视觉环境用于感知与策略模型训练；根据 Agent 动作实时生成下一观察用于闭环评测；模拟稀有、危险或长尾场景；作为传统物理仿真的视觉生成层。": "Roles of simulation platforms/world simulators: generating diverse visual environments for perception and policy model training; real-time generation of next observation based on Agent actions for closed-loop evaluation; simulating rare, dangerous, or long-tail scenarios; serving as visual generation layer for traditional physics simulation.", "未来推演：基础模型提出动作 → 世界模型快速想象可能结果 → 物理仿真验证关键动力学和安全约束 → 机器人执行 → 真实数据反哺模型与仿真。": "Future trajectory: base model proposes action → world model rapidly imagines possible outcomes → physics simulation verifies critical dynamics and safety constraints → robot executes → real data feeds back to model and simulation.", "NVIDIA Cosmos 3（GTC Taipei）：Mixture-of-Transformers 架构，结合视觉推理和多模态生成于单一模型。分为推理块（解析场景）和生成块（生成物理仿真输出），支持原生动作生成（关节角度、夹爪位置等数值数据）。": "NVIDIA Cosmos 3 (GTC Taipei): Mixture-of-Transformers architecture, combining visual reasoning and multimodal generation in a single model. Divided into inference blocks (parsing scenes) and generation blocks (generating physics simulation outputs), supporting native action generation (joint angles, gripper positions, and other numerical data).", "τ₀-WM：基于共享视频扩散骨干，同时提供视频动作模型和动作条件视频模拟器。训练数据约 27,300 小时真实机器人遥操作和失败轨迹。推理时通过采样 + 重去噪一致性筛选 + 模拟器修正的测试时计算策略选最优动作。": "τ₀-WM: based on shared video diffusion backbone, simultaneously providing video action model and action-conditioned video simulator. Training data approximately 27,300 hours of real robot teleoperation and failure trajectories. At inference, selects optimal actions through test-time compute strategy of sampling + re-denoising consistency filtering + simulator correction.", "HiF-VLA（西湖大学等，CVPR 2026）：以 motion 为中心实现\"边想边做\"的世界动作模型。": "HiF-VLA (Westlake University et al., CVPR 2026): motion-centered world action model achieving 'think-while-doing.'", "γ-World（NVIDIA + 清华）：多智能体世界模型。核心创新包括 Simplex Rotary Agent Encoding（无参数 3D RoPE 扩展，置换对称的 Agent 身份编码）和 Sparse Hub Attention（可学习 hub token 中介跨 Agent 通信，注意力从二次降至线性）。可从 2 玩家泛化到 4 玩家交互，无需额外训练。": "γ-World (NVIDIA + Tsinghua): multi-agent world model. Core innovations include Simplex Rotary Agent Encoding (parameter-free 3D RoPE extension, permutation-symmetric Agent identity encoding) and Sparse Hub Attention (learnable hub tokens mediating cross-Agent communication, reducing attention from quadratic to linear). Can generalize from 2-player to 4-player interactions without additional training.", "ESI-Bench（李飞飞团队）：首个闭合感知-行动回路的具身空间智能评测基准。关键发现：感知不是瓶颈，行动策略才是（\"动作盲视\"现象）；不完美的 3D 重建比 2D 基线更差；模型存在元认知缺陷——过早以高置信度做出判断，不会寻找反驳证据。": "ESI-Bench (Li Fei-Fei team): first embodied spatial intelligence benchmark that closes perception-action loop. Key findings: perception is not the bottleneck, action strategy is ('action blindness' phenomenon); imperfect 3D reconstruction is worse than 2D baselines; models have metacognitive deficiencies—making high-confidence judgments too early without seeking counter-evidence.", "WEM：提出世界-自我解耦的具身世界模型新范式，隐式分离的世界-自我规划器 + 级联并行 MoE 扩散生成器，解决长程任务中导航+操作交替性能退化。": "WEM: Proposes a world-ego decoupled embodied world model new paradigm, with implicitly separated world-ego planner + cascaded parallel MoE diffusion generator to solve performance degradation in navigation+manipulation alternation during long-horizon tasks.", "新智具身完成近亿元天使轮融资，布局触觉具身智能。": "Xinzhi Embodied AI Completes Nearly 100 Million Yuan Angel Round Financing, Deploying Tactile Embodied Intelligence.", "灵巧手挑战：强化学习在仿真中使用低自由度夹爪训练的模型很难兼容高自由度灵巧手；柔性皮肤的仿真环境难以精确模拟柔性、弹性及摩擦力。基于刚性肢体模拟训练的模型迁移到真实机器人差距不大，但高自由度五指型灵巧手很难适配。现在的灵巧操作是真实采集和仿真联合在做。": "Dexterous Hand Challenges: Models trained with low-DOF grippers in simulation via reinforcement learning struggle to adapt to high-DOF dexterous hands; simulation environments for flexible skin have difficulty accurately modeling flexibility, elasticity, and friction. Models trained on rigid limb simulation transfer to real robots with acceptable gaps, but high-DOF five-finger dexterous hands are difficult to adapt. Current dexterous manipulation is conducted jointly through real data collection and simulation.", "趋势洞察": "Trend Insights", "融资关注": "Financing Focus", "资本流向": "Capital Flow", "算力追踪": "Computing Power Tracking", "信息概览": "Information Overview", "观点分享": "Insights Sharing", "公司深度": "Company Deep Dive", "23Q1 — 26Q1 全球物理 AI 投资分布": "23Q1 — 26Q1 Global Physical AI Investment Distribution"};
+    const PH_EN = "Search news...";
+
+    const SEL = ["h1", "h2", "h3", "h4", "p", "li", "a.topbar-btn", "a.topbar-nav", "span.topbar-brand", "span.topbar-tagline", "div.hero-eyebrow", "h1.hero-title", "p.hero-sub", "div.hero-meta", "div.hero-date", "div.hero-stat-num", "div.hero-stat-label", "div.section-label", "div.sec-title", "span.sec-title", "span.sec-num", "div.edition-title", "div.edition-sub", "div.edition-date-label", "div.edition-date-val", "div.edition-date-month", "span.model-chip", "span.edition-tag", "div.topic-title", "div.topic-desc", "span.topic-meta-item", "span.topic-badge", "span.edition-chip", "div.sp-title", "div.sp-desc", "div.te-date", "div.te-summary", "div.te-count", "div.card-title", "div.card-sub", "div.card-body", "div.card-tag", "div.mini-stat-val", "div.mini-stat-label", "div.sub-title", "div.stat-item", "div.stat-val", "div.stat-label", "div.info-card", "span.cat-tag", "div.source", "div.toc-title", "div.toc-sub", "span.nav-item", "a.nav-item", "details.nav-details > summary > span:not(.nav-count)"];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    // Get text from direct text nodes only (excludes nested span/strong/em children).
+    // Useful for elements like <div class="te-date">May 31 <span>最新</span></div>
+    // where the visible date should match the extracted date text, not the badge text.
+    function getDirectText(el) {
+        var result = '';
+        for (var i = 0; i < el.childNodes.length; i++) {
+            var node = el.childNodes[i];
+            if (node.nodeType === 3) {  // TEXT_NODE
+                result += node.textContent;
+            }
+        }
+        return result.trim();
+    }
+
+    function applyLang() {
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                // Skip elements with disallowed nested children
+                if (el.children.length > 0) {
+                    var hasNested = false;
+                    for (var c of el.children) {
+                        if (c.tagName !== 'BR' && c.tagName !== 'SPAN' && c.tagName !== 'STRONG' && c.tagName !== 'EM' && c.tagName !== 'A') {
+                            hasNested = true; break;
+                        }
+                    }
+                    if (hasNested) return;
+                }
+
+                // Try direct text first (excludes nested span/strong children),
+                // then fall back to the full textContent (covers div.te-summary with <strong>).
+                var zh = getDirectText(el);
+                if (!EN[zh]) zh = el.textContent.trim();
+                if (!zh || !EN[zh]) return;
+
+                if (isEn) {
+                    if (!cache.has(el)) cache.set(el, el.innerHTML);
+                    el.textContent = EN[zh];
+                } else {
+                    var saved = cache.get(el);
+                    if (saved) el.innerHTML = saved;
+                }
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+    if (isEn) applyLang();
+})();
+
+    </script>
 </body>
 </html>

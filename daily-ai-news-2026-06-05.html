@@ -533,6 +533,33 @@
             .topbar-search { display: none; }
             .search-dropdown { display: none !important; }
         }
+    
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
+/* Floating variant for pages without topbar */
+.lang-toggle-float {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
     </style>
 </head>
 <body>
@@ -548,6 +575,8 @@
                 <span class="search-icon">&#128269;</span>
                 <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
             </div>
+            
+            <button class="lang-toggle" id="lang-toggle">EN</button>
             <a href="index.html" class="topbar-btn">往期动态</a>
             <a href="topics.html" class="topbar-btn">专题报告</a>
         </div>
@@ -1064,6 +1093,85 @@
         window.addEventListener('resize', resize);
         requestAnimationFrame(loop);
     })();
+    </script>
+<script>
+
+// ── Bilingual toggle ──
+(function() {
+    const EN = ["NVIDIA Releases Nemotron 3 Ultra Reasoning Model and Nemotron 3.5 Content Safety Model", "Model Frontier", "Industry Dynamics", "Computing Power Tracking", "Startup & Funding", "Research Focus", "X Discussion", "Ideogram Releases 4.0 Open-Source Image Model: Open Weight Download and Local Fine-tuning", "Nex-AGI Ecosystem Releases Nex-N2 Agent Model: Adaptive Thinking Saves 20% Token Consumption", "OpenAI Releases ChatGPT Memory Dreaming V3: Backend Comprehensive Memory Replaces Manual Saving", "Google Launches Kaggle Benchmarks Local Development Feature: Supports AI Coding Agent Building Evaluation Tasks Directly", "Uber Limits AI Coding Tools to $1,500 Per Person Per Month: Addressing Token Spending Out of Control", "Harvey Partners with FireworksAI: Open-Source Legal Agent Hybrid Routing Beats Frontier Models, Costs Reduced 11x", "Pinterest Signs $40 Billion Infrastructure Agreement with AWS, Adopting Trainium Chips", "Ramp Completes $750M Funding Round, Valuation Reaches $44B", "Fusion Company Helion Energy Raises $465M, Valuation $15.5B", "LingBot-VA: Autoregressive Diffusion Framework Achieves Robotic Causal World Modeling and Control", "RUBAS: Reinforcement Learning Method Based on Scoring Table Improves Agent Safety", "ServiceNow Releases EVA-Bench 2.0: Multi-Domain Agent Evaluation Benchmark with 121 Tools and 213 Scenarios", "Anthropic Releases Recursive Self-Improvement Research Report: Engineer Code Output Increases 8x, Warns of Self-Improvement Risks", "NVIDIA releases Nemotron 3 Ultra, 550B parameter MoE architecture (55B active parameters), using Hybrid Mamba Transformer design, optimized for reasoning and orchestration of long-running agents. The model achieves 5x throughput improvement among similar open-source models, 30% cost reduction in task completion, supporting NVFP4 precision on Hopper/Blackwell/Ampere GPUs. NVIDIA simultaneously releases Nemotron 3.5 Content Safety, a small content safety moderation model fine-tuned based on Google Gemma-3-4B-it, supporting multilingual multimodal (text + image) safety detection, usable as guardrail for LLM/VLM input and output. vLLM provides Day-0 deployment support for Nemotron 3 Ultra.", "Ideogram releases version 4.0 image generation model, self-described as \"the world's best open-source image model\" (Open image model at the forefront of design). Open model weights available for download, supporting fine-tuning on proprietary data and running on local hardware. The model is live on all Ideogram subscription plans and API, with weights released open-source on GitHub (ideogram-oss/ideogram4), receiving 954+ stars from the open-source community.", "Nex-AGI (jointly built by Shanghai Chuangzhi Academy together with Shanghai Qiji Zhifeng, Mosi Intelligence, Jiliu Technology, Kuaibu Technology, etc.) releases agency model Nex-N2 for real production scenarios. Nex-N2-Pro scores 80.8 on SWE-Bench Verified, 75.3 on Terminal-Bench 2.1, 90.7 on GPQA Diamond. The model implements global unification of Agentic Thinking framework, supporting three reasoning configurations: Search, Coding, and Agentic Tool Calling. Adaptive Thinking mechanism can autonomously decide whether to enable reasoning based on task complexity, saving approximately 20% token consumption compared to forced activation.", "OpenAI releases major ChatGPT memory system upgrade \"Dreaming V3\". Memory functionality was first launched in April 2024 (Saved Memories), requiring users to explicitly ask to remember information; April 2025 introduced initial Dreaming, allowing automatic memory extraction from conversation history in the background. New Dreaming V3 upgrades to an independent memory architecture, automatically updating memory state through background processes synthesizing multiple conversation rounds, solving issues of memory expiration, inaccuracy, and non-scalability from the old version. Users can view and manage what ChatGPT knows about them on the memory summary page. This feature is now available to US Plus and Pro users, with expansion to more countries and Free users coming in the coming weeks.", "Google releases Kaggle Benchmarks local development functionality, allowing developers to write, push, run, and download evaluation tasks in local environments through Kaggle CLI. As AI models have evolved from chatbots to reasoning agents capable of coding, using tools, and solving complex problems, traditional benchmarks are no longer sufficient to evaluate these capabilities. Since Kaggle Benchmarks launched, the global community has created over 10,000 evaluation tasks. Local development functionality enables developers to directly leverage AI coding agents to build evaluation tasks without relying on web interfaces, accelerating model capability assessment.", "Uber limits all employees to a $1,500 monthly token spending cap for AI coding tools, applying only to Agentic coding tools such as Cursor and Claude Code. Estimated at two active tools per person, the annual spending cap is approximately $36,000, about 11% of Uber's US engineer median salary of $330,000. Previously, Uber exhausted its 2026 AI budget within four months.", "Harvey AI partners with FireworksAI to release legal agent experiment results. In the hybrid routing architecture with GLM 5.1 as main worker and Opus 4.7 as on-demand advisor (averaging only 0.83 calls per task), the all-pass rate reached 18% on 100 Legal Agent Benchmark tasks, exceeding pure Opus's 14%, with total cost of $368 vs $954. SFT fine-tuned Kimi 2.6 also achieved 15% all-pass rate (exceeding Opus's 14%), at only $84, approximately 1/11th of Opus.", "Pinterest announces a $40 billion infrastructure agreement with AWS, extending through 2031, the largest infrastructure commitment in company history. Pinterest will use AWS Trainium chips for AI workloads and expand usage of Amazon Graviton CPUs. Pinterest has been an AWS customer since 2010.", "Enterprise expense management platform Ramp completes $750 million funding round, valuation reaching $44 billion, nearly tripling in value over the past year. Investors have shown strong interest in fintech companies with AI narratives. Ramp leverages AI to automate enterprise expense management, bill payment, and procurement processes.", "Fusion startup Helion Energy completes $465 million funding round led by Thrive Capital, valuation tripling to $15.5 billion. Helion is backed by Sam Altman and is dedicated to producing electricity for customers like data centers. The company has yet to prove it can commercialize power generation.", "Paper proposes LingBot-VA, achieving robotic causal reasoning and control through video world modeling. The model uses autoregressive diffusion framework to simultaneously learn frame prediction and policy execution, with core designs including: shared latent space (integrating visual and action tokens) driven by Mixture-of-Transformers (MoT) architecture, closed-loop rollout mechanism for continuous environmental feedback, asynchronous inference pipeline for parallel action prediction and motor control. Research shows video world models and visual language pre-training together form an independent foundation for robot learning, providing robots with the ability to \"imagine\" the near future before acting.", "The paper proposes RUBAS (Rubric-Based Agent Safety), decomposing Agent behavior into four dimensions: tool use safety, parameter safety, response safety, and usefulness, providing fine-grained, interpretable reward signals for complete Agent trajectories through structured scoring rubrics. Compared to traditional alignment methods relying on coarse-grained rejection signals or static supervision, RUBAS improves safety on multiple Agent security benchmarks, reduces tool-driven hallucinations, while maintaining task completion rates.", "ServiceNow updates EVA-Bench to version 2.0, expanding coverage to 3 domains, covering 121 tools and 213 evaluation scenarios. EVA-Bench focuses on evaluating AI Agent tool use and multi-step reasoning capabilities in real environments. The new version adds more complex cross-domain tasks and long-horizon planning scenarios, providing more comprehensive evaluation of Agent systems.", "Anthropic releases research report \"When AI Builds Itself\", disclosing that Anthropic engineers' average quarterly code output increased 8x compared to the 2021-2025 baseline. The report points out that AI is accelerating AI's own development, a trend indicating AI systems' ability to completely autonomously design and develop their own descendants - \"recursive self-improvement\" capability. The report emphasizes that recursive self-improvement is not inevitable but may arrive earlier than most institutions anticipate, calling for strengthened assessment of self-improvement risks.", "NVIDIA covers the full Agent chain through a model matrix: Ultra handles deep reasoning and orchestration, 3.5 handles safety auditing, with open-source ecosystem deeply bound with proprietary hardware.", "The open-source vs. closed-source route competition in image generation intensifies, with Ideogram choosing a fully open weights strategy to win over developer ecosystem.", "Industry-university-research collaborative ecosystem models are emerging, with adaptive inference mechanisms being an important innovation in engineering efficiency.", "The transition from \"manual note-taking\" to \"automatic comprehensive understanding\" is a paradigm upgrade for AI memory, with the backend Dreaming architecture solving the timeliness and accuracy issues of memory at a billion-user scale.", "The democratization of evaluation infrastructure is accelerating, with local development lowering the barrier to building high-quality AI evaluations.", "Cost control for AI coding tools has become a common issue for large tech companies, with token consumption growth rate far exceeding budget expectations.", "In vertical scenarios, open-source model + SFT + hybrid routing can simultaneously surpass frontier models in quality and cost, challenging the assumption that frontier models dominate all.", "AWS Trainium chips gain adoption among large internet clients, with self-developed AI chips bound to cloud services becoming a new strategy for customer lock-in.", "AI narrative is reshaping fintech valuation logic, with embedding AI capabilities into traditional enterprise SaaS becoming a valuation multiplier.", "AI computing power demand is driving energy infrastructure investment, with nuclear fusion viewed as a long-term solution to AI data center energy consumption issues.", "Video world models provide a new paradigm for robot learning beyond traditional reinforcement learning, with causal reasoning enabling robots to predict the future before acting.", "Upgrading Agent safety from \"reject/don't reject\" dichotomy to multi-dimensional structured evaluation is an important advancement in Agent safety alignment.", "Agent evaluation benchmarks continue to improve, providing references for industry standardization, but it is also necessary to beware of the gap between evaluation and actual deployment capabilities.", "Recursive self-improvement has entered actual data validation stage from theoretical discussion, with AI's participation in its own development far exceeding expectations.", "NVIDIA releases Nemotron 3 Ultra reasoning model and Nemotro...", "Nex-AGI ecosystem releases Nex-N2 Agent model: Adaptive Thin...", "OpenAI releases ChatGPT Memory Dreaming V3: backend...", "Google launches Kaggle Benchmarks local development feature: supporting AI...", "Harvey partners with FireworksAI: open-source legal Agent hybrid routing outperforms previous...", "Pinterest signs $40 billion AWS infrastructure agreement, adopting Trainiu...", "ServiceNow releases EVA-Bench 2.0: 121 tools and 213 scenarios...", "Anthropic releases recursive self-improvement research report: engineers' code output increases 8x, warning about self...", "← Previous Issue", "Past News", "Special Report"];
+    const PH_EN = "Search news...";
+
+    // Selectors in the SAME ORDER as Python extract_texts()
+    const SEL = [
+        'h1',
+        '.sec-h',
+        '.card-h',
+        '.card-body',
+        '.card-note',
+        '.sum-cat-name',
+        '.sum-item',
+        'summary.nav-section > span:not(.nav-count)',
+        '.nav-item',
+        '.mob-toc a',
+        '.issue-prev',
+        '.topbar-btn',
+    ];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    function applyLang() {
+        let idx = 0;
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                if (idx >= EN.length) return;
+                var en = EN[idx];
+                if (!en) { idx++; return; }
+
+                if (isEn) {
+                    if (!cache.has(idx)) cache.set(idx, el.innerHTML);
+                    if (sel === '.card-note') {
+                        var label = el.querySelector('.note-label');
+                        if (label) {
+                            el.textContent = '';
+                            el.appendChild(label);
+                            el.append(' ' + en);
+                        } else {
+                            el.textContent = en;
+                        }
+                    } else {
+                        el.textContent = en;
+                    }
+                } else {
+                    var saved = cache.get(idx);
+                    if (saved) el.innerHTML = saved;
+                }
+                idx++;
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+
+    if (isEn) applyLang();
+})();
+
     </script>
 </body>
 </html>
