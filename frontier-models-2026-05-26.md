@@ -876,13 +876,12 @@ EAGLE 团队、vLLM 团队和 TorchSpec 团队联合发布 EAGLE 3.1 推测解�
 
 ### 趋势 C — 物理世界模型 × VLA：被低估的下半年爆发点
 
-本期被低估的赛道。三条独立技术路线同步推进：
+本期被低估的赛道。两条技术路线同步推进：
 
 | 路线 | 代表 | 当前状态 | 商业化距离 |
 |------|------|---------|-----------|
 | **路线 1**：World Model（生成式视频理解 + 模拟） | Gemini Omni（5/19）、**NVIDIA Cosmos 3**（6/2） | Cosmos 3 将推理+生成+动作统一于单一模型，支持原生动作生成 | 中（Cosmos 3 已被机器人团队采用） |
 | **路线 2**：VLA（机器人专用） | Wall-OSS-0.5（5/29，开源）、π0/π0.5、Gemini Robotics | 开源 VLA 在 RoboCaca 精密插入达 39.6% vs π0.5 的 4.0%——**开源已显著领先闭源** | 近（工业落地最快） |
-| **路线 3**：端云协同消费助手 | 苹果定制 1.2T Google 模型（WWDC 6 月）、子曰4 27B 端侧 | 即将公开形态 | 中（消费级最大单一市场） |
 
 **学术对照**：
 - **π0**（2024）：Internet-scale VLM + flow matching + 多机器人形态预训练，奠定 VLA 范式
@@ -890,13 +889,12 @@ EAGLE 团队、vLLM 团队和 TorchSpec 团队联合发布 EAGLE 3.1 推测解�
 - **GeoAware-VLA**（2025）：几何先验加入 VLA，未知视角成功率 +35pp（LIBERO）
 - **VLAPS**（2025）：VLA + MCTS，特定任务成功率 +67pp
 
-**深层判断：三条路线在 2026 下半年可能开始合流**——理想的端云助手需要 World Model 的物理理解 + VLA 的动作能力 + 大模型的语言理解。Wall-OSS-0.5 的开源比 Mistral / Sora 这类闭源更值得关注，因为它降低了整个赛道的入场门槛。
+**深层判断：两条路线在 2026 下半年可能开始合流**——理想的物理智能体需要 World Model 的物理理解 + VLA 的动作执行能力，Cosmos 3 已在尝试统一两者。Wall-OSS-0.5 的开源比 Mistral / Sora 这类闭源更值得关注，因为它降低了整个赛道的入场门槛。
 
 **待跟踪：**
-1. WWDC 苹果 Siri 实际形态（端云比例、模型架构）
-2. Gemini Omni 是否能预测物理交互结果（"球放斜坡上会怎样"）
-3. Wall-OSS-0.5 vs π0.5 vs Gemini Robotics 的全面对比
-4. VLA scaling law（参数量、机器人形态数、轨迹数的最优配比）
+1. Gemini Omni 是否能预测物理交互结果（"球放斜坡上会怎样"）
+2. Wall-OSS-0.5 vs π0.5 vs Gemini Robotics 的全面对比
+3. VLA scaling law（参数量、机器人形态数、轨迹数的最优配比）
 
 ---
 
