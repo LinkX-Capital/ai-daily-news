@@ -1339,112 +1339,129 @@ def process_with_llm(articles, recent_articles=None):
 - 如果多条新闻属于同一故事的不同面（如：同一公司的多个动作、同一赛道的多个玩家），在body中简要关联
 - 参考下方"近期动态"，如果今天的事件是某条近期的延续/升级，简要说明变化
 - insight不要重复body已说的事实，而是给出独立的判断
-""" + ("\n\n" + recent_summary if recent_summary else "") + "\n\n## 今日新闻\n\n" + "\n\n".join(news_list)
-    result = call_llm(prompt)
-    if not result:
-        return articles
-    try:
+""" + ("\n\n" + recent_summary if recent_summary else "")
+
+    # ========== 分批调用 LLM（每批 10 条，避免 prompt 过长导致空返回） ==========
+    BATCH_SIZE = 10
+    to_process = diversified[:60]
+    all_llm_results = []
+    total_batches = (len(to_process) + BATCH_SIZE - 1) // BATCH_SIZE
+
+    for batch_idx in range(total_batches):
+        batch = to_process[batch_idx * BATCH_SIZE : (batch_idx + 1) * BATCH_SIZE]
+        batch_news = []
+        for i, a in enumerate(batch):
+            summary = a.get('summary', '') or a.get('content', '')
+            batch_news.append(f"""【新闻{i+1}】
+标题：{a['title']}
+来源：{a['source']}
+摘要：{summary[:300]}""")
+
+        batch_prompt = prompt + "\n\n## 今日新闻\n\n" + "\n\n".join(batch_news)
+        print(f"   📦 批次 {batch_idx+1}/{total_batches}（{len(batch)} 条）...")
+        result = call_llm(batch_prompt)
+
+        if not result:
+            print(f"   ⚠️ 批次 {batch_idx+1} LLM 返回空，跳过")
+            continue
+
+        # 解析 JSON
         import json as json_module
         import re as re_module
 
         def clean_json_string(s):
-            """清理 JSON 字符串中的问题字符"""
-            # 移除控制字符（除了 \n \r \t）
             s = re_module.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', '', s)
-            # 修复未转义的引号（在字符串值内）
-            # 修复未转义的反斜杠
             s = s.replace('\\', '\\\\').replace('\\\\\\\\', '\\\\')
-            # 移除 markdown 代码块
             s = re_module.sub(r'^```json\s*', '', s)
             s = re_module.sub(r'^```\s*', '', s)
             s = re_module.sub(r'\s*```$', '', s)
             return s.strip()
 
-        # 尝试多种方式解析JSON
         json_match = re_module.search(r'\[[\s\S]*\]', result)
-        llm_results = None
-        if json_match:
-            raw = json_match.group()
-            raw = clean_json_string(raw)
+        if not json_match:
+            print(f"   ⚠️ 批次 {batch_idx+1} 返回内容无 JSON 数组")
+            continue
 
-            # 尝试直接解析
+        raw = clean_json_string(json_match.group())
+        batch_results = None
+        try:
+            batch_results = json_module.loads(raw)
+        except Exception:
             try:
-                llm_results = json_module.loads(raw)
-            except Exception as e1:
-                # 尝试修复常见问题
+                raw_fixed = re_module.sub(r',(\s*[\]\}])', r'\1', raw)
+                batch_results = json_module.loads(raw_fixed)
+            except Exception:
                 try:
-                    # 移除多余逗号
-                    raw_fixed = re_module.sub(r',(\s*[\]\}])', r'\1', raw)
-                    llm_results = json_module.loads(raw_fixed)
-                except Exception as e2:
-                    # 尝试逐个对象解析
-                    try:
-                        objects = re_module.findall(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', raw)
-                        llm_results = []
-                        for obj in objects:
-                            try:
-                                llm_results.append(json_module.loads(obj))
-                            except Exception:
-                                pass
-                        if not llm_results:
-                            print(f"   ⚠️ JSON解析失败: {e1}")
-                            return articles
-                    except Exception as e3:
-                        print(f"   ⚠️ JSON解析失败: {e1}, {e3}")
-                        return articles
-            # 建立原始标题到文章的映射
-            title_to_article = {}
-            for a in articles:
-                orig_title = a.get('title', '')
-                if orig_title:
-                    title_to_article[orig_title] = a
+                    objects = re_module.findall(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', raw)
+                    batch_results = [json_module.loads(obj) for obj in objects if obj]
+                except Exception:
+                    pass
 
-            filtered_articles = []
-            for lr in llm_results:
-                # 通过原始标题匹配文章
-                original_title = lr.get('original_title', '')
-                article = title_to_article.get(original_title)
+        if batch_results:
+            if isinstance(batch_results, list) and len(batch_results) > 0:
+                all_llm_results.extend(batch_results)
+                print(f"   ✅ 批次 {batch_idx+1}: 返回 {len(batch_results)} 条")
+            else:
+                print(f"   ⚠️ 批次 {batch_idx+1}: LLM 返回空数组 []，跳过")
+        else:
+            print(f"   ⚠️ 批次 {batch_idx+1}: JSON 解析失败，跳过")
 
-                if not article:
-                    # 尝试模糊匹配
-                    for t, a in title_to_article.items():
-                        if original_title[:30] in t or t[:30] in original_title:
-                            article = a
-                            break
+    # ========== 合并所有批次的 LLM 结果 ==========
+    if not all_llm_results:
+        print(f"   ⚠️ 所有批次均未返回有效结果，保留原始 articles")
+        return articles
 
-                if not article:
-                    continue
+    # 建立原始标题到文章的映射
+    title_to_article = {}
+    for a in articles:
+        orig_title = a.get('title', '')
+        if orig_title:
+            title_to_article[orig_title] = a
 
-                orig_summary = article.get('summary', '')
+    filtered_articles = []
+    for lr in all_llm_results:
+        # 通过原始标题匹配文章
+        original_title = lr.get('original_title', '')
+        article = title_to_article.get(original_title)
 
-                # 使用 LLM 生成的标题
-                llm_title = lr.get('title', '')
-                if llm_title and len(llm_title) > 5:
-                    article['title'] = llm_title[:80]
+        if not article:
+            # 尝试模糊匹配
+            for t, a in title_to_article.items():
+                if original_title[:30] in t or t[:30] in original_title:
+                    article = a
+                    break
 
-                # 使用 LLM 判断的分类
-                llm_cat = lr.get('category', '')
-                if llm_cat:
-                    article['categories'] = [llm_cat]
+        if not article:
+            continue
 
-                # 使用 LLM 生成的 body
-                llm_body = lr.get('body', '')
-                if llm_body and len(llm_body) > 10:
-                    article['body'] = llm_body[:400]
-                else:
-                    article['body'] = orig_summary[:150] if orig_summary else article['title']
+        orig_summary = article.get('summary', '')
 
-                # 使用 LLM 生成的 insight（一句话点评）
-                llm_insight = lr.get('insight', '')
-                if llm_insight:
-                    article['insight'] = llm_insight[:150]
+        # 使用 LLM 生成的标题
+        llm_title = lr.get('title', '')
+        if llm_title and len(llm_title) > 5:
+            article['title'] = llm_title[:80]
 
-                filtered_articles.append(article)
-            
-            articles = filtered_articles
-            print(f"✅ LLM处理了 {len(llm_results)} 条新闻，过滤后 {len(articles)} 条")
-    except Exception as e:
-        print(f"⚠️ 解析LLM结果失败: {e}")
+        # 使用 LLM 判断的分类
+        llm_cat = lr.get('category', '')
+        if llm_cat:
+            article['categories'] = [llm_cat]
+
+        # 使用 LLM 生成的 body
+        llm_body = lr.get('body', '')
+        if llm_body and len(llm_body) > 10:
+            article['body'] = llm_body[:400]
+        else:
+            article['body'] = orig_summary[:150] if orig_summary else article['title']
+
+        # 使用 LLM 生成的 insight（一句话点评）
+        llm_insight = lr.get('insight', '')
+        if llm_insight:
+            article['insight'] = llm_insight[:150]
+
+        filtered_articles.append(article)
+
+    articles = filtered_articles
+    print(f"✅ LLM处理了 {len(all_llm_results)} 条新闻，过滤后 {len(articles)} 条（共 {total_batches} 批）")
     return articles
 
 # ========== 论文自动溯源 + Body 校验 ==========
