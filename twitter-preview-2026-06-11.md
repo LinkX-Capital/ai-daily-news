@@ -13,26 +13,26 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **DiffusionGemma 26B扩散语言模型原生支持vLLM**
-   @vllm_project
-2. **Inferoa基于vLLM构建社区Agent框架**
-   @vllm_project
-3. **Muon/Shampoo优化器之争改编Hamilton歌曲招募歌手研究员**
-   @swyx
-4. **利用Claude Code审查Fable代码可获取大量洞见**
-   @swyx
-5. **GXO全面部署Digit人形机器人**
-   @agilityrobotics
-6. **Agility Robotics十年发展：从大学实验室到仓储工厂部署**
-   @agilityrobotics
-7. **期待River AI未来发展**
-   @thegregyang
-8. **扩散/流模型作为策略优秀但RL训练困难**
+1. **人类必须拥有并塑造自己的AI**
+   @hyhieu226
+2. **扩散模型作为策略的优秀表现及RL训练的挑战**
    @svlevine
-9. **致敬Markie及其对计算本质的深刻见解**
-   @thesephist
-10. **AI订阅制vs API定价的权衡分析**
-   @semianalysis_
+3. **招募歌手研究员以戏剧化演绎Muon/Shampoo辩论**
+   @swyx
+4. **让Claude Code审查代码的巨大价值**
+   @swyx
+5. **祝贺GoogleDeepMind发布DiffusionGemma**
+   @vllm_project
+6. **Inferoa基于vLLM构建社区智能体框架**
+   @vllm_project
+7. **GitHub在智能体时代的平台变革**
+   @theturingpost
+8. **先进AI框架：政府如何应对前沿AI系统的灾难性风险**
+   @anthropicai
+9. **即将推出1.5亿美元的国家奖学金计划**
+   @anthropicai
+10. **这些项目不足以应对先进AI的挑战，但表明了我们的意图**
+   @anthropicai
 
 ---
 
