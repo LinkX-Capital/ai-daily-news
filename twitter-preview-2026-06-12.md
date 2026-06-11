@@ -13,26 +13,26 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **GPU Racks hitting 400kW? Legacy data centers wont be able to handle it and the grid WILL get throttled.**
-   @semianalysis_
-2. **Intel Should Raise Capital**
-   @semianalysis_
-3. **SLOP ALERT: Claude Code UI is complete slop**
-   @semianalysis_
-4. **really looking forward to working together!**
-   @sama
-5. **Vote on Ideogram 4.0 now in the Artificial Analysis Image Arena!**
-   @artificialanlys
-6. **Text to Image Prompt: Steampunk anime characters**
-   @artificialanlys
-7. **Text to Image Prompt: Yeti snowball fight in Himalayas**
-   @artificialanlys
-8. **Text to Image Prompt: Clumsy robot cooking in cartoon kitchen**
-   @artificialanlys
-9. **Text to Image Prompt: Tokyo street at night with neon signs**
-   @artificialanlys
-10. **Dream Brief named Cannes contender for shots**
+1. **Google DeepMind teams up with Palmeiras to advance TacticAI for football**
+   @googledeepmind
+2. **TacticAI uses graph neural networks to map the pitch and model 22-player interactions**
+   @googledeepmind
+3. **Why live sports match scenarios matter for solving partial observability and multimodal AI challenges**
+   @googledeepmind
+4. **Research on emergent collective behaviors from millions of interacting AI agents**
+   @googledeepmind
+5. **DiffusionGemma: 4x faster text diffusion model innovation**
+   @demishassabis
+6. **Agility Robotics launches Research & Analysis hub for humanoid robotics**
+   @agilityrobotics
+7. **Luma's Dream Brief named Cannes contender for AI-powered creative work**
    @lumalabsai
+8. **Luma at Cannes Lions 2026 showcasing AI & Tech partnerships**
+   @lumalabsai
+9. **Pareto curve exploration across 10 different benchmarks**
+   @openrouter
+10. **OpenRouter Analytics API for user activity tracking**
+   @openrouter
 
 ---
 
