@@ -23,7 +23,7 @@ source ~/.zshrc
 # 飞书通知
 export FEISHU_WEBHOOK="https://open.feishu.cn/open-apis/bot/v2/hook/362a7cc7-5bce-4184-9ae3-7d6b6c0c429a"
 
-# 0. 先抓取 Twitter，刷新缓存
+# 0. 刷新推文缓存 + 飞书推送
 python3 twitter_push.py
 
 # 1. 抓取 + LLM处理 → 生成 md + archive
