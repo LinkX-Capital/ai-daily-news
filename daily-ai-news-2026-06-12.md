@@ -9,7 +9,7 @@
 - 产业动态：OpenAI展示天体物理学家Chi-kwan Chan利用Codex辅助黑洞模拟研究; Meta与Manus完成业务切割，20亿美元收购案因中国监管要求终止; OpenRouter上线基准探索工具与Analytics API; Palmeiras成为首个在TacticAI基础上构建应用的足球俱乐部
 - 算力追踪：KKR、NVIDIA等联合成立100亿美元AI数据中心公司Helix; Anthropic签署十余份数据中心意向书寻求Google资金支持; Google考虑将先进AI芯片组件交由三星代工
 - 初创&融资：前SpaceX工程师创办Endurance Energy获5400万美元A轮开发深海地热; 德国Neura Robotics完成最高14亿美元C轮融资，构建物理AI平台
-- 研究关注：Agora多Agent框架发现15个共识协议零日漏洞，现有LLM方法零检出; Arbor假设树框架MLE-Bench Lite达86.36%，增益超Codex/Claude Code 2.5倍; MPI流形幂迭代法重设计MoE路由器，1B-11B预训练验证有效; LLM Agentic环境工程综述：建模-合成-评估全周期
+- 研究关注：Agora多Agent框架发现15个共识协议零日漏洞，现有LLM方法零检出; Arbor假设树框架MLE-Bench Lite达86.36%，增益超Codex/Claude Code 2.5倍; MPI流形幂迭代法重设计MoE路由器，1B-11B预训练验证有效; LLM Agentic环境工程综述：建模-合成-评估全周期; Bebop阿里通义MTP+拒绝采样加速RL训练1.8倍; DeepMind Shane Legg发布AGI→ASI四路径报告; DIRECT Stanford具身规划器测试时计算动态分配，延迟降低65%
 - X讨论：SemiAnalysis指出GPU机柜功率突破400kW; Google DeepMind联合多方发起最高1000万美元多Agent安全研究资助
 
 ---
@@ -84,6 +84,21 @@
 - 论文提出Manifold Power Iteration（MPI）方法重新设计MoE模型的路由器权重，将每个路由行与对应专家矩阵的主奇异方向对齐。MPI采用"Power-then-Retract"范式：先对路由权重做幂迭代，再通过回退施加范数约束以保证效率与稳定性。作者在**1B到11B参数规模**上预训练MoE模型，验证该对齐策略能有效提升模型表现。
   > 💡 MoE路由器设计长期缺乏理论指导，MPI从矩阵分解角度给出了路由权重与专家矩阵的显式对齐原则，对MoE架构的后续优化有方法论参考价值。
    - 来源: [HuggingFace Daily Papers](https://huggingface.co/papers/2606.12397) | [arXiv](https://arxiv.org/abs/2606.12397)
+
+**Bebop：阿里通义提出MTP+拒绝采样加速RL训练，Qwen3.5-3.7端到端提速1.8倍**
+- 阿里通义团队提出Bebop方法，系统研究多token预测（MTP）在大规模RL训练中的应用。论文揭示MTP接受率受模型熵波动约束，提出概率拒绝采样替代贪心草稿采样，并设计端到端TV loss直接优化多步拒绝采样接受率。方法在数学推理、代码生成和Agent任务上实现**最高95%接受率和25%额外推理吞吐增益**，在Qwen3.5、Qwen3.6、Qwen3.7的异步RL训练中实现**最高1.8倍端到端加速**。
+  > 💡 RL训练的rollout阶段是当前LLM后训练的关键瓶颈，Bebop从熵波动角度给出了MTP在RL场景下失效的理论解释和实用修复方案，对大规模RL训练基础设施有直接工程价值。
+   - 来源: [arXiv](https://arxiv.org/abs/2606.12370)
+
+**DeepMind Shane Legg等发布报告：探讨从AGI到ASI的四条路径与摩擦瓶颈**
+- Google DeepMind团队（含Shane Legg、Marcus Hutter、Iason Gabriel等）发布报告，研究后AGI时代AI如何沿机器智能连续体继续发展。报告定义了人工通用超级智能（ASI）为比大型人类组织更智能的系统，提出四条AGI→ASI路径：**规模化AGI、AI范式转换、递归自我改进、大规模多Agent集体涌现**。报告分析了各路径的摩擦和瓶颈，指出不能排除AI进步持续加速的可能性。
+  > 💡 这是DeepMind首次系统性地从理论（Universal AI框架）到实践路径全面论述AGI→ASI过渡，Shane Legg作为AGI概念共同提出者，该报告代表了业界对超级智能的前沿系统性思考。
+   - 来源: [arXiv](https://arxiv.org/abs/2606.12683)
+
+**DIRECT：Stanford团队提出具身规划器测试时计算动态分配框架，延迟降低65%**
+- Stanford团队（Chelsea Finn、Jiajun Wu、Marco Pavone等）提出DIRECT框架，解决VLM具身规划器中测试时计算的"何时何地"分配问题。DIRECT利用多模态场景上下文为每个提示路由计算资源，沿CoT深度、模型大小、记忆历史三个维度实验表明测试时计算并非均匀杠杆。在物理Franka机械臂上验证，路由器以**最高65%的更低平均延迟**匹配或超越更强模型的成功率。
+  > 💡 测试时计算scaling是当前AI热点，但DIRECT首次在具身场景中证明"暴力scaling"是浪费的，按需动态路由才是将前沿性能带入真实机器人的关键。
+   - 来源: [arXiv](https://arxiv.org/abs/2606.12402)
 
 ### X讨论
 **SemiAnalysis指出GPU机柜功率突破400kW，遗留数据中心与电网将面临瓶颈**
