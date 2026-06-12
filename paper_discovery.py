@@ -19,10 +19,12 @@ arXiv 每日论文发现脚本
 """
 
 import argparse
+import os
 import re
 import sys
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
+from pathlib import Path
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
@@ -30,6 +32,12 @@ from urllib.parse import quote
 # ============ 配置 ============
 
 ARXIV_API = "https://export.arxiv.org/api/query"
+
+# 信号源信息 Excel 路径
+SIGNAL_SOURCE_FILE = Path.home() / "Desktop" / "情报系统" / "信号源信息.xlsx"
+
+# 作者影响力加成
+AUTHOR_PRIORITY_BOOST = {"P0": 5, "P1": 3}
 
 # 覆盖的 arXiv 分类
 CATEGORIES = ["cs.CL", "cs.LG", "cs.AI", "cs.CV", "stat.ML"]
@@ -100,6 +108,51 @@ FILTER_GROUPS = [
 ]
 
 
+def load_researcher_influence(xlsx_path: str = None) -> dict:
+    """从信号源信息.xlsx加载 P0/P1 研究者影响力数据。
+
+    返回: {normalized_name: {"priority": "P0"|"P1", "org": str, "direction": str, "original_name": str}}
+    """
+    try:
+        import openpyxl
+    except ImportError:
+        print("⚠️ openpyxl 未安装，跳过作者影响力匹配", file=sys.stderr)
+        return {}
+
+    path = Path(xlsx_path) if xlsx_path else SIGNAL_SOURCE_FILE
+    if not path.exists():
+        print(f"⚠️ 信号源文件不存在: {path}", file=sys.stderr)
+        return {}
+
+    wb = openpyxl.load_workbook(path)
+    ws = wb["Table"]
+
+    lookup = {}
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        name = row[2]       # name
+        org = row[5]        # 组织/机构/单位
+        pa = str(row[6]) if row[6] else ""  # 论文活跃度
+        direction = row[3]  # 研究方向
+
+        if pa not in ("P0", "P1") or not name:
+            continue
+
+        normalized = name.strip().lower()
+        # 保留最高优先级（同一人可能有多行）
+        if normalized in lookup and lookup[normalized]["priority"] == "P0":
+            continue
+        lookup[normalized] = {
+            "priority": pa,
+            "org": str(org) if org else "",
+            "direction": str(direction) if direction else "",
+            "original_name": name.strip(),
+        }
+
+    wb.close()
+    print(f"📊 加载 {len(lookup)} 位 P0/P1 研究者", file=sys.stderr)
+    return lookup
+
+
 def fetch_arxiv_papers(start_date: str, end_date: str, max_per_cat: int = 200) -> list:
     """从 arXiv API 抓取指定日期范围内的论文"""
     all_entries = []
@@ -161,9 +214,9 @@ def fetch_arxiv_papers(start_date: str, end_date: str, max_per_cat: int = 200) -
     return all_entries
 
 
-def score_paper(paper: dict) -> tuple:
-    """对论文打分：返回 (总权重, 匹配组标签列表)
-    每篇最多取权重最高的 3 个方向，避免泛泛论文得分虚高
+def score_paper(paper: dict, researcher_lookup: dict = None) -> tuple:
+    """对论文打分：关键词权重 + 作者影响力加成
+    返回 (总权重, 匹配组标签列表, 影响力作者列表)
     """
     text = f"{paper['title']} {paper['abstract']}".lower()
     matches = []
@@ -177,10 +230,25 @@ def score_paper(paper: dict) -> tuple:
     # 按权重降序，取前 3 个方向
     matches.sort(key=lambda x: x[0], reverse=True)
     top_matches = matches[:3]
-    total_weight = sum(w for w, _ in top_matches)
+    keyword_weight = sum(w for w, _ in top_matches)
     matched_groups = [g for _, g in top_matches]
 
-    return total_weight, matched_groups
+    # 作者影响力加成
+    author_boost = 0
+    influence_authors = []
+    if researcher_lookup:
+        for author in paper.get("authors", []):
+            normalized = author.strip().lower()
+            if normalized in researcher_lookup:
+                info = researcher_lookup[normalized]
+                boost = AUTHOR_PRIORITY_BOOST.get(info["priority"], 0)
+                author_boost = max(author_boost, boost)
+                influence_authors.append(
+                    f"{info['original_name']}({info['priority']}, {info['org']})"
+                )
+
+    total_weight = keyword_weight + author_boost
+    return total_weight, matched_groups, influence_authors
 
 
 def format_authors(authors: list, max_names: int = 3) -> str:
@@ -219,13 +287,17 @@ def main():
     papers = fetch_arxiv_papers(start_date, end_date)
     print(f"\n📊 共抓取 {len(papers)} 篇论文", file=sys.stderr)
 
+    # 加载研究者影响力数据
+    researcher_lookup = load_researcher_influence()
+
     # 打分筛选
     scored = []
     for p in papers:
-        weight, groups = score_paper(p)
+        weight, groups, influence_authors = score_paper(p, researcher_lookup)
         if weight >= args.min_weight:
             p["weight"] = weight
             p["matched_groups"] = groups
+            p["influence_authors"] = influence_authors
             scored.append(p)
 
     # 按权重降序，同权重按日期降序
@@ -254,9 +326,13 @@ def main():
         abstract = p["abstract"]
         weight = p["weight"]
         groups = ", ".join(p["matched_groups"])
+        influence = " | ".join(p["influence_authors"])
 
         print(f"### {i}. {title}")
-        print(f"- **日期**: {published} | **权重**: {weight} | **方向**: {groups} | **作者**: {authors}")
+        meta = f"- **日期**: {published} | **权重**: {weight} | **方向**: {groups} | **作者**: {authors}"
+        if influence:
+            meta += f"\n- **⭐ 影响力作者**: {influence}"
+        print(meta)
         print(f"- **arXiv**: [{arxiv_id}](https://arxiv.org/abs/{arxiv_id})")
         if abstract:
             short = abstract[:300] + ("..." if len(abstract) > 300 else "")
