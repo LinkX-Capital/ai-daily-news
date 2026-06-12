@@ -303,9 +303,33 @@ def main():
     # 按权重降序，同权重按日期降序
     scored.sort(key=lambda x: (x["weight"], x["published"]), reverse=True)
 
-    # 截断
+    # 按领域分组保底截断：每个领域至少取 top 2，再按总分补齐至 top N
     if not args.all:
-        scored = scored[:args.top]
+        PER_GROUP_QUOTA = 2  # 每个领域保底名额
+
+        # 收集所有匹配到的领域标签
+        all_groups = set()
+        for p in scored:
+            all_groups.update(p["matched_groups"])
+
+        # 按领域分组取保底
+        selected_ids = set()
+        group_selected = []
+        for group in sorted(all_groups):
+            group_papers = [p for p in scored if group in p["matched_groups"] and p["arxiv_id"] not in selected_ids]
+            for p in group_papers[:PER_GROUP_QUOTA]:
+                selected_ids.add(p["arxiv_id"])
+                group_selected.append(p)
+
+        # 剩余名额按总分补齐
+        remaining = [p for p in scored if p["arxiv_id"] not in selected_ids]
+        remaining_slots = args.top - len(group_selected)
+        if remaining_slots > 0:
+            group_selected.extend(remaining[:remaining_slots])
+
+        # 最终按权重排序输出，截断到 top N
+        group_selected.sort(key=lambda x: (x["weight"], x["published"]), reverse=True)
+        scored = group_selected[:args.top]
 
     # 输出 markdown
     date_label = f"{start.strftime('%Y-%m-%d')} ~ {today.strftime('%Y-%m-%d')}"
