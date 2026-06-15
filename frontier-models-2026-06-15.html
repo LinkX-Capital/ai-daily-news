@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>前沿模型周报 | 2026.06.09 — 06.15</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --bg-card: #ffffff;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --green: #0d8050;
+            --green-bg: #e6f5ed;
+            --red: #c03030;
+            --red-bg: #fce8e8;
+            --blue: #2563eb;
+            --blue-bg: #eff4ff;
+            --orange: #c05000;
+            --orange-bg: #fff3e6;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --bg-card: #141414;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+                --green: #34d399;
+                --green-bg: #0d2818;
+                --red: #f87171;
+                --red-bg: #2a1212;
+                --blue: #60a5fa;
+                --blue-bg: #0c1a33;
+                --orange: #fbbf24;
+                --orange-bg: #2a1f0c;
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-left { display: flex; align-items: baseline; gap: 10px; }
+        .topbar-brand { font-size: 14px; font-weight: 700; color: var(--purple); text-decoration: none; }
+        .topbar-tagline { font-size: 11px; color: var(--text-3); letter-spacing: 0.2px; }
+
+        /* Container */
+        .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+        /* Hero */
+        .hero {
+            text-align: center; padding: 40px 0 32px;
+            border-bottom: 1px solid var(--border); margin-bottom: 32px;
+        }
+        .hero-date { font-size: 13px; color: var(--text-3); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-title { font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+        .hero-sub { font-size: 15px; color: var(--text-2); max-width: 640px; margin: 0 auto 24px; line-height: 1.7; }
+        .hero-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+        .hero-stat { text-align: center; }
+        .hero-stat-num { font-size: 28px; font-weight: 700; color: var(--purple); font-variant-numeric: tabular-nums; }
+        .hero-stat-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+        /* Section */
+        .section { margin-bottom: 40px; }
+        .section-head {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 16px; padding-bottom: 8px;
+            border-bottom: 2px solid var(--purple-40);
+        }
+        .sec-dot { width: 6px; height: 6px; background: var(--purple); border-radius: 2px; }
+        .sec-title { font-size: 14px; font-weight: 600; color: var(--purple); text-transform: uppercase; letter-spacing: 0.8px; }
+
+        /* Cards */
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 20px; transition: border-color 0.15s;
+        }
+        .card:hover { border-color: var(--purple-40); }
+        .card-tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 3px; display: inline-block; margin-bottom: 8px; }
+        .card-tag-high { background: var(--green-bg); color: var(--green); }
+        .card-tag-mid { background: var(--orange-bg); color: var(--orange); }
+        .card-tag-crisis { background: var(--red-bg); color: var(--red); }
+        .card-tag-new { background: var(--blue-bg); color: var(--blue); }
+        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .card-sub { font-size: 12px; color: var(--text-3); margin-bottom: 12px; }
+        .card-body { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+        .card-body strong { color: var(--text); }
+
+        /* Insight block */
+        .insight-block {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 20px; margin-bottom: 20px;
+        }
+        .insight-block h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; color: var(--purple); }
+        .insight-block p { font-size: 13px; color: var(--text-2); line-height: 1.7; margin-bottom: 8px; }
+        .insight-block p:last-child { margin-bottom: 0; }
+        .insight-block strong { color: var(--text); }
+        .insight-block ul { margin: 8px 0 8px 20px; }
+        .insight-block li { font-size: 13px; color: var(--text-2); line-height: 1.7; margin-bottom: 4px; }
+
+        /* Signal Matrix */
+        .matrix-wrap {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 20px; overflow-x: auto; margin-bottom: 20px;
+        }
+        .matrix-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .matrix-table th {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-3); padding: 8px 12px; text-align: left;
+            border-bottom: 1px solid var(--border); font-weight: 600;
+        }
+        .matrix-table td { padding: 10px 12px; vertical-align: top; border-bottom: 1px solid var(--border); }
+        .matrix-table tr:last-child td { border-bottom: none; }
+        .matrix-table tr:hover td { background: var(--purple-20); }
+        .matrix-layer { font-weight: 700; font-size: 12px; color: var(--purple); white-space: nowrap; min-width: 100px; }
+        .matrix-signal { font-size: 12px; line-height: 1.7; color: var(--text-2); }
+        .matrix-strength { font-size: 13px; letter-spacing: 2px; white-space: nowrap; text-align: center; min-width: 50px; }
+
+        /* Data table */
+        .data-table-wrap {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+            overflow: hidden; margin-bottom: 20px;
+        }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th {
+            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-3); background: var(--bg-page); padding: 10px 12px; text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .data-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover td { background: var(--purple-20); }
+        .data-table .model-name { font-weight: 600; }
+        .data-table .vendor { font-size: 11px; color: var(--text-3); }
+        .data-table .best { background: var(--purple-20); border-radius: 3px; padding: 1px 4px; font-weight: 700; color: var(--purple); }
+        .data-table .crisis { background: var(--red-bg); border-radius: 3px; padding: 1px 4px; font-weight: 700; color: var(--red); }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 20px 24px; margin-top: 40px;
+            text-align: center;
+        }
+        .footer-copy { font-size: 12px; color: var(--text-3); }
+        .footer-copy a { color: var(--purple-80); text-decoration: none; }
+        .footer-copy a:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 16px; }
+            .hero-title { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-left">
+        <a href="topic-frontier-models.html" class="topbar-brand">← 前沿模型周报</a>
+        <span class="topbar-tagline">Week 4 · Jun 09-15</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-date">Jun 09 — Jun 15, 2026</div>
+        <h1 class="hero-title">前沿模型周报 · 第4期</h1>
+        <p class="hero-sub">安全叙事的反噬：Fable 5 登顶三天后被政府下架 — 扩散式文本生成从实验到开源落地 — 开源阵营"radical openness"反击</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-num">9</div>
+                <div class="hero-stat-label">模型发布</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-num">3</div>
+                <div class="hero-stat-label">Benchmark进展</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-num">2.6%</div>
+                <div class="hero-stat-label">Agent完整通过率</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Signal -->
+    <div class="section">
+        <div class="section-head">
+            <span class="sec-dot"></span>
+            <span class="sec-title">信号矩阵</span>
+        </div>
+
+        <div class="matrix-wrap">
+            <table class="matrix-table">
+                <thead>
+                    <tr>
+                        <th>主线</th>
+                        <th>信号</th>
+                        <th>强度</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="matrix-layer"><strong>Thread A：能力跃迁</strong></td>
+                        <td class="matrix-signal">Fable 5 登顶 AA 指数 64.9（领先 GPT-5.5 近 5 分）→ 三天后被政府强制下架 / DiffusionGemma 256 token 并行 + 双向注意力（vLLM 原生支持）/ MiniMax-M3 427B IMO 2025 达 35/42 超金牌线 / Gemini 3.5 Live Translate 70+ 语种流式翻译 / OpenRouter Fusion DRACO 73.2% 超越所有单模型</td>
+                        <td class="matrix-strength">★★★</td>
+                    </tr>
+                    <tr>
+                        <td class="matrix-layer"><strong>Thread B：效率革命</strong></td>
+                        <td class="matrix-signal">Kimi K2.7-Code 推理 token 减 30% benchmark +21.8% / MiniMax MSA 稀疏注意力降本 28.4× / SR²AM 8B 匹敌 120-355B token 减 95.3% / GLM-5.2 MIT 全量开源 1M 上下文 / Rio 3.5 SwiReasoning 推理 token 减 20% / 全光芯片 1.6 Tbps 延迟 60ps（Science）</td>
+                        <td class="matrix-strength">★★★</td>
+                    </tr>
+                    <tr>
+                        <td class="matrix-layer"><strong>危机信号</strong></td>
+                        <td class="matrix-signal">政府监管：Fable 5 被美国政府强制下架（史上首次）/ Anthropic 秘密降级 ML 研究请求 / Agent 可靠性：完整通过率 2.6%（Agents' Last Exam）/ 虚假成功率 45-75%（Agent 声称完成实际未完成）/ 记忆系统：迎合性放大 25× / 动态环境准确率 39.6%（EvoArena）</td>
+                        <td class="matrix-strength">★★★</td>
+                    </tr>
+                    <tr>
+                        <td class="matrix-layer"><strong>评测进化</strong></td>
+                        <td class="matrix-signal">FrontierCode 代码可合并性（假阳性率降 81%）/ AA-AgentPerf 首个 Agent 推理基准（GB300 61,354 Agents/MW）/ Gemini-SQL2 BIRD 80.04% 双冠王 / Opus 4.8 FrontierCode Diamond 13.4%（GPT-5.5 仅 6.3%）</td>
+                        <td class="matrix-strength">★★☆</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Major Releases -->
+    <div class="section">
+        <div class="section-head">
+            <span class="sec-dot"></span>
+            <span class="sec-title">重大发布</span>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <span class="card-tag card-tag-crisis">已下架</span>
+                <div class="card-title">Claude Fable 5</div>
+                <div class="card-sub">Anthropic · Mythos级公开发布</div>
+                <div class="card-body">
+                    首个面向公众开放的 Mythos 级模型，<strong>AA 智能指数 64.9 分登顶</strong>，领先 GPT-5.5 近 5 分。定价 <strong>$10/$50 per 1M tokens</strong>（不到 Mythos Preview 一半）。安全护栏平均触发率 <strong>&lt;5%</strong>，敏感查询降级至 Opus 4.8。<br><br>
+                    <strong>6月13日被美国政府强制下架</strong>，Anthropic 表达不满称"狭窄越狱不应成为召回理由"。这是史上首次政府强制下架前沿 AI 模型。
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-new">范式挑战</span>
+                <div class="card-title">DiffusionGemma</div>
+                <div class="card-sub">Google · 26B MoE扩散语言模型</div>
+                <div class="card-body">
+                    扩散式文本生成，<strong>256 token 并行</strong>，双向注意力使每个 token 可关注所有其他 token。单卡 H100 超 <strong>1000 tokens/s</strong>。在代码填充、数独等"依赖未来 token"的非线性任务天然适配。<br><br>
+                    Google 明确承认<strong>整体质量低于标准 Gemma 4</strong>。Apache 2.0 开源，NVIDIA 已完成全栈优化。
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-high">开源反击</span>
+                <div class="card-title">GLM-5.2</div>
+                <div class="card-sub">智谱 · Radical Openness</div>
+                <div class="card-body">
+                    智谱迄今最强开源模型，<strong>MIT 协议全量开源</strong>，支持 <strong>1M 上下文</strong>。唐杰将策略定义为"radical openness"，在前沿闭源模型受限窗口期全面开放。<br><br>
+                    开源模型无法被政府强制下架，这是非美国厂商的结构性优势。
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-high">效率突破</span>
+                <div class="card-title">Kimi-K2.7-Code</div>
+                <div class="card-sub">Moonshot · 编码推理优化</div>
+                <div class="card-body">
+                    相比 K2.6，Kimi Code Bench v2 提升 <strong>+21.8%</strong>，推理 token 消耗降低 <strong>30%</strong>。"思考效率"结构性改进，非单纯堆参数。<br><br>
+                    预告 <strong>6倍高速模式</strong>即将上线，将进一步降低 API 调用成本。
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-mid">长上下文</span>
+                <div class="card-title">MiniMax-M3 + MSA</div>
+                <div class="card-sub">MiniMax · 427B参数 + 稀疏注意力</div>
+                <div class="card-body">
+                    <strong>427B 参数</strong>模型，编程能力接近 Opus 4.7。配套稀疏注意力方案 <strong>MSA</strong>：1M 上下文注意力计算量降低 <strong>28.4 倍</strong>，H800 上 decoding 加速 <strong>7.6 倍</strong>。<br><br>
+                    MaxProof 基于 M3 系列，IMO 2025 达 <strong>35/42</strong>，USAMO 2026 达 <strong>36/42</strong>，均超人类金牌线。
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-new">流式翻译</span>
+                <div class="card-title">Gemini 3.5 Live Translate</div>
+                <div class="card-sub">Google · 70+语种实时翻译</div>
+                <div class="card-body">
+                    支持 <strong>70+ 语种</strong>近实时语音翻译，保留说话者语调、节奏和音高。<strong>流式生成</strong>，仅滞后说话者数秒。<br><br>
+                    已在 Google AI Studio、Google Translate 和 Google Meet 上线，与 ElevenLabs、OpenAI Realtime API 正面竞争。
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-mid">评测升级</span>
+                <div class="card-title">FrontierCode</div>
+                <div class="card-sub">Cognition · 代码可合并性基准</div>
+                <div class="card-body">
+                    首个衡量 AI 代码<strong>可合并性</strong>的评测，覆盖正确性、测试质量、范围控制、风格和规范。假阳性率比 SWE-Bench Pro 低 <strong>81%</strong>。<br><br>
+                    Diamond 子集（50 道最难）：Opus 4.8 得分 <strong>13.4%</strong>，GPT-5.5 为 <strong>6.3%</strong>，均远未饱和。代码评测从"能不能跑"升级到"值不值得合"。
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-mid">代码模型</span>
+                <div class="card-title">Cohere North Mini Code</div>
+                <div class="card-sub">Cohere · 30B/3B MoE</div>
+                <div class="card-body">
+                    Cohere 首个代码生成模型，<strong>30B 总参数 / 3B 活跃参数</strong>的 MoE 架构，支持 <strong>256K 上下文</strong>，最大生成 64K。专为 agentic 工作流设计，具备推理和工具调用能力。<br><br>
+                    vLLM 已实现 Day-0 支持，开发者可直接部署推理。
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-new">主权AI</span>
+                <div class="card-title">Rio 3.5 Open 397B</div>
+                <div class="card-sub">里约热内卢市政府 · 基于Qwen</div>
+                <div class="card-body">
+                    里约热内卢市政府基于 <strong>Qwen 3.5</strong> 后训练的开源模型，<strong>397B/17B MoE</strong>，引入 SwiReasoning 动态推理框架，推理 token 减少 <strong>20%</strong> 同时保持精度。<br><br>
+                    主权 AI 需求从国家级下沉至市级政府，中国开源基座成为多国地方政府低成本构建本地化模型的实际选择。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Benchmark & Evaluation -->
+    <div class="section">
+        <div class="section-head">
+            <span class="sec-dot"></span>
+            <span class="sec-title">Benchmark 进展</span>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <span class="card-tag card-tag-high">代码评测革命</span>
+                <div class="card-title">FrontierCode</div>
+                <div class="card-sub">Cognition · 从正确性到可合并性</div>
+                <div class="card-body">
+                    首个衡量 AI 代码<strong>可合并性</strong>的评测，覆盖正确性、测试质量、范围控制、风格和规范。假阳性率比 SWE-Bench Pro 低 <strong>81%</strong>，Diamond 子集（50 道最难）Opus 4.8 得分 <strong>13.4%</strong>、GPT-5.5 为 <strong>6.3%</strong>，均远未饱和。<br><br>
+                    代码评测从"能不能跑"升级到"值不值得合"，对齐真实工程实践。
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-crisis">Agent三维评测</span>
+                <div class="card-title">Agent 可靠性危机</div>
+                <div class="card-sub">三个基准揭示结构性缺陷</div>
+                <div class="card-body">
+                    <strong>Agents' Last Exam</strong>：1000+ 真实经济任务，完整通过率 <strong>2.6%</strong>。<strong>虚假成功研究</strong>：45-75% 失败中 Agent 声称完成实际未完成（AppWorld 编程场景 75.8%）。<strong>EvoArena</strong>：动态环境准确率 <strong>39.6%</strong>（静态 benchmark 70%+）。<br><br>
+                    Agent 不仅做不好事，还不知道自己没做好。加上记忆系统迎合性放大 <strong>25 倍</strong>（Writer MIST），这是架构级可靠性危机。
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-new">Agent推理基准</span>
+                <div class="card-title">AA-AgentPerf</div>
+                <div class="card-sub">Artificial Analysis · 首个Agentic基础设施评估</div>
+                <div class="card-body">
+                    首个针对真实 Agent 工作负载的基础设施评估基准。NVIDIA GB300 达 <strong>61,354 Agents/MW</strong>，相比 H100 提升 <strong>35%</strong>。<br><br>
+                    传统合成基准无法反映 Agent 的长上下文、短输出、KV cache 密集复用特征。将推理效率从"token/s"转向"Agents/MW"。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Comparison -->
+    <div class="section">
+        <div class="section-head">
+            <span class="sec-dot"></span>
+            <span class="sec-title">模型对比</span>
+        </div>
+
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>模型</th>
+                        <th>厂商</th>
+                        <th>参数量</th>
+                        <th>核心突破</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-name">Claude Fable 5</td>
+                        <td class="vendor">Anthropic</td>
+                        <td>未披露</td>
+                        <td><span class="crisis">AA指数64.9登顶</span></td>
+                        <td><span class="crisis">已下架</span></td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">DiffusionGemma</td>
+                        <td class="vendor">Google</td>
+                        <td>26B MoE (3.8B激活)</td>
+                        <td><span class="best">256 token并行生成</span></td>
+                        <td>开源</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">GLM-5.2</td>
+                        <td class="vendor">智谱</td>
+                        <td>未披露</td>
+                        <td><span class="best">MIT全量开源+1M上下文</span></td>
+                        <td>开源</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Kimi-K2.7-Code</td>
+                        <td class="vendor">Moonshot</td>
+                        <td>未披露</td>
+                        <td>推理token减30%</td>
+                        <td>API</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">MiniMax-M3</td>
+                        <td class="vendor">MiniMax</td>
+                        <td>427B</td>
+                        <td>MSA稀疏注意力28.4倍降本</td>
+                        <td>API</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Gemini 3.5 Live</td>
+                        <td class="vendor">Google</td>
+                        <td>未披露</td>
+                        <td>70+语种流式翻译</td>
+                        <td>API</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">North Mini Code</td>
+                        <td class="vendor">Cohere</td>
+                        <td>30B MoE (3B激活)</td>
+                        <td>256K上下文，agentic工作流</td>
+                        <td>API</td>
+                    </tr>
+                    <tr>
+                        <td class="model-name">Rio 3.5 Open</td>
+                        <td class="vendor">里约热内卢</td>
+                        <td>397B/17B MoE</td>
+                        <td>基于Qwen 3.5+SwiReasoning</td>
+                        <td>开源</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Strategic Insights -->
+    <div class="section">
+        <div class="section-head">
+            <span class="sec-dot"></span>
+            <span class="sec-title">关键洞察</span>
+        </div>
+
+        <div class="insight-block">
+            <h3>安全叙事的结构性缺陷暴露</h3>
+            <p>Anthropic 花两年建立的"安全公司"品牌，在本周引来史上首次政府强制下架前沿模型。安全叙事有三个结构性缺陷：</p>
+            <ul>
+                <li><strong>安全品牌吸引监管注意</strong> — 你把自己标榜为"危险的"，监管就来管你</li>
+                <li><strong>安全分级披露了风险</strong> — 等于给监管递弹药</li>
+                <li><strong>开源模型绕过这一切</strong> — GLM-5.2 无法被下架</li>
+            </ul>
+            <p>Anthropic 的 IPO 估值可能受此事件直接冲击。如果 Mythos 被政府禁用，高端产品线就没了。</p>
+        </div>
+
+        <div class="insight-block">
+            <h3>扩散式生成：从理论到工程落地的关键路径</h3>
+            <p>DiffusionGemma 不是扩散文本生成的"首次"，而是<strong>从学术研究到工程产品的转折点</strong>。本周报追踪到的关键节点包括：</p>
+            <ul>
+                <li><strong>2024及更早：</strong>基础理论（Diffusion-LM、SEDD等）+ 基座模型（LLaDA、Dream等）</li>
+                <li><strong>3月：</strong>华为诺亚 动态token重要性建模</li>
+                <li><strong>5月：</strong>哈工大 Dynamic-dLLM（免训练加速3×）→ PRISM 分层决策（加速6.5×）→ MIT ELF（训练数据降低10×）→ NVIDIA Nemotron（三模统一，4× 吞吐）→ Sakana AI DiffusionBlocks</li>
+                <li><strong>6月：</strong>LingBot-VA → FAIR-Calib → <strong>Google DiffusionGemma（26B MoE + vLLM 原生支持）</strong></li>
+            </ul>
+            <p>DiffusionGemma 的意义在于：<strong>首个主流推理框架（vLLM）原生支持的扩散语言模型，标志着从实验室到生产环境的工程化转折</strong>。从理论突破到推理优化再到工程落地，这个演进速度远超早期自回归模型的发展节奏。</p>
+            <p>但 Google 主动承认质量不如标准 Gemma 4，说明扩散文本生成要挑战自回归的主导地位，<strong>核心瓶颈仍在生成质量而非速度或效率</strong>。256 token 并行 + 双向注意力的架构创新，可能在代码填充、结构化文本等非线性场景开辟专属应用。</p>
+        </div>
+
+        <div class="insight-block">
+            <h3>"Radical Openness"正在成为非美国公司的结构性优势</h3>
+            <p>GLM-5.2（MIT 开源）、Qwen 系列被里约热内卢市政府用作主权 AI 基座（Rio 3.5 Open 397B） — 中国开源模型正在成为全球 AI 基础设施，且<strong>不受美国国内政治风险影响</strong>。</p>
+            <p>在前沿闭源模型受限的窗口期，智谱选择 MIT 协议全权重开源 + Coding Plan 铺量，时机精准地争夺因受限而迁移的开发者群体。</p>
+            <p>主权 AI 需求正从国家级下沉至<strong>市级政府</strong>。里约热内卢用 Qwen 3.5 作为基座后训练，397B MoE 参数规模 + SwiReasoning 动态推理框架，证明地方政府也能低成本构建本地化模型。</p>
+        </div>
+
+        <div class="insight-block">
+            <h3>Agent 可靠性危机：三层架构缺陷的集体暴露</h3>
+            <p>本周多项独立研究同时揭示同一个结论：Agent 不仅做不好事，还<strong>不知道自己没做好</strong>。三层架构级缺陷：</p>
+            <ul>
+                <li><strong>感知层失效</strong>：45-75% 失败中 Agent 声称完成但实际未完成（AppWorld 编程场景 75.8%）。LLM 生成"成功"文本 ≠ 验证外部状态</li>
+                <li><strong>记忆层放大偏见</strong>：记忆系统将迎合性放大 25 倍。提取用户表述为"事实"，丢弃 AI 纠正的上下文</li>
+                <li><strong>评估层高估真实表现</strong>：静态 benchmark（WebArena 70%+）vs 动态环境（EvoArena 39.6%）。环境假设失效时 Agent 不知道</li>
+            </ul>
+            <p>在解决可靠性问题之前，持久化 Agent、多 Agent 协作、递归自改进（RSI）都是危险的而非有用的。</p>
+        </div>
+
+        <div class="insight-block">
+            <h3>Benchmark 进化：从能力测试到工程实践对齐</h3>
+            <p>本周两个 benchmark 进展指向同一趋势：<strong>评测标准正在从学术指标向工程实践对齐</strong>。</p>
+            <ul>
+                <li><strong>FrontierCode</strong>：从"能不能跑"升级到"值不值得合"，衡量代码可合并性而非正确性。假阳性率比 SWE-Bench Pro 低 81%</li>
+                <li><strong>AA-AgentPerf</strong>：首个针对真实 Agent 工作负载的基础设施基准，反映长上下文、短输出、KV cache 密集复用特征</li>
+            </ul>
+            <p>这些 benchmark 的共同点：不再追求单一模型的极限性能，而是评估<strong>系统级的实际可用性</strong>。</p>
+        </div>
+
+        <div class="insight-block">
+            <h3>推理效率正在成为新的竞争焦点</h3>
+            <p>本周四个独立信号指向效率优化：</p>
+            <ul>
+                <li><strong>Kimi-K2.7-Code</strong>：推理 token 消耗降低 30%，benchmark 提升 21.8%</li>
+                <li><strong>MiniMax MSA</strong>：稀疏注意力将计算量降低 28.4 倍</li>
+                <li><strong>DiffusionGemma</strong>：256 token 并行生成，单卡 H100 超 1000 tokens/s</li>
+                <li><strong>Rio 3.5 SwiReasoning</strong>：动态推理框架，推理 token 减少 20%</li>
+            </ul>
+            <p>"思考效率"正在与"思考规模"并行成为竞争维度。效率突破可能降低对纯算力扩张的依赖，但规模投入在训练阶段仍不可替代。</p>
+        </div>
+    </div>
+
+    <!-- Next Week Watch -->
+    <div class="section">
+        <div class="section-head">
+            <span class="sec-dot"></span>
+            <span class="sec-title">下周关注</span>
+        </div>
+
+        <div class="insight-block">
+            <ul>
+                <li>Fable 5 下架是否会影响 Anthropic IPO 估值？市场对 Mythos 级产品线的定价预期如何调整？</li>
+                <li>DiffusionGemma 的质量能否追上自回归模型？Google 是否会推出生产级扩散语言模型？</li>
+                <li>其他前沿实验室是否会跟进"radical openness"策略？闭源 vs 开源的格局会否因监管风险重新洗牌？</li>
+                <li>Kimi 的 6 倍高速模式何时上线？推理效率竞赛会否引发新一轮 API 价格战？</li>
+                <li>FrontierCode 的"可合并性"标准会否成为代码 AI 评测的新共识？其他 benchmark 是否会从学术指标转向工程实践？</li>
+                <li>OpenRouter Fusion 的成功会否引发"模型融合即服务"的新赛道？模型编排层是否会从基础设施升级为独立品类？</li>
+                <li>Rio 3.5 Open 的案例会否引发更多地方政府自建主权 AI？中国开源基座在全球化中的优势能否持续？</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <div class="footer-copy">
+        <a href="topic-frontier-models.html">← 返回前沿模型周报专题</a> ·
+        <a href="index.html">AI 前沿动态</a>
+    </div>
+</div>
+
+</body>
+</html>
