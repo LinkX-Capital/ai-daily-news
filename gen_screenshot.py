@@ -67,11 +67,11 @@ def build_screenshot_html(md_content):
         for c in a.get("categories", []):
             by_cat[c].append(a)
 
-    # logos base64
-    logo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "assets-logo.png"))
-    with open(logo_path, "rb") as f:
-        logo_b64 = base64.b64encode(f.read()).decode()
-    logo_url = f"data:image/png;base64,{logo_b64}"
+    # logos
+    logo_svg_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "assets-logo.svg"))
+    with open(logo_svg_path, "r", encoding="utf-8") as f:
+        logo_svg = f.read()
+    logo_url = f"data:image/svg+xml;base64,{base64.b64encode(logo_svg.encode()).decode()}"
 
     inc_logo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "assets-incubator-logo.png"))
     with open(inc_logo_path, "rb") as f:
