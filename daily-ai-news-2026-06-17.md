@@ -10,7 +10,7 @@
 - 产业动态：AI会议记录设备商Plaud软件ARR突破1亿美元，累计出货超200万台; Google发布Android 17与Wear OS 7，多任务功能升级并扩展Gemini能力; OpenAI提出部署模拟方法，在模型发布前预测其实际行为; Google开源OKF规范，为AI Agent知识库提供通用Markdown格式标准
 - 算力追踪：Coherent扩建德州工厂，扩大AI数据中心光通信器件产能
 - 初创&融资：DeepSeek完成超70亿元融资，采用非常规交易结构; SpaceX以600亿美元股票收购Cursor，创AI并购纪录; 马来西亚Respond.io完成6250万美元B轮融资; Probably获900万美元种子轮构建高可靠AI
-- 研究关注：Stop When Further Reasoning Won't Help：基于注意力分布的推理模型自适应早停; Next-ToBE：用概率化token-bag替代one-hot目标，激活LLM前瞻推理能力（ICLR 2026）; RHO：自监督Agent Harness优化，无需标注数据即可持续改进Agent能力; Rethinking the Role of Efficient Attention in Hybrid Architectures：混合架构中高效注意力的系统性分析; Bayesian-Agent：将Agent技能视为假设，用贝叶斯后验驱动技能演化; Fill the GAP：诊断视觉latent reasoning的特征空间不匹配问题并提出对齐方案
+- 研究关注：SEAGym：自进化LLM Agent的评估环境，区分真实改进与过拟合; Stop When Further Reasoning Won't Help：基于注意力分布的推理模型自适应早停; Next-ToBE：用概率化token-bag替代one-hot目标，激活LLM前瞻推理能力（ICLR 2026）; RHO：自监督Agent Harness优化，无需标注数据即可持续改进Agent能力; Rethinking the Role of Efficient Attention in Hybrid Architectures：混合架构中高效注意力的系统性分析; Bayesian-Agent：将Agent技能视为假设，用贝叶斯后验驱动技能演化; Fill the GAP：诊断视觉latent reasoning的特征空间不匹配问题并提出对齐方案
 - X讨论：Artificial Analysis发布Intelligence Index v4.1，转向agentic评测; SemiAnalysis深度分析RL训练系统效率瓶颈; Anthropic分析40万条Claude Code对话，领域专业知识比编程技能更决定AI工具效果; Agility Robotics分享人形机器人数据飞轮方法论，真实部署数据为核心壁垒
 
 ---
@@ -82,6 +82,11 @@
    - 来源: [TechCrunch](https://techcrunch.com/2026/06/16/probably-raises-9m-to-build-a-more-reliable-kind-of-ai/)
 
 ### 研究关注
+**SEAGym：自进化LLM Agent的评估环境，区分真实改进与过拟合**
+- 论文（Congjie Zheng、Chuanyi Xue、张长水 等）指出自进化 LLM agent 的评估通常只看任务分数，无法区分一次 harness 更新是产生了可复用的改进、过拟合了近期任务、增加了成本，还是损害了旧能力。SEAGym 将 Harbor 兼容的 benchmark 转化为动态自进化任务源，提供训练/验证/测试/replay/成本记录的完整评估视图，包含 frozen update-validation、held-out ID 和 OOD transfer views。在 Terminal-Bench 2.0 和 HLE 上对比了 ACE、TF-GRPO 和 AHE 三种方法，结果显示这些评估视图能提供关于改进 vs 过拟合 vs 成本的互补信号。
+  > 💡 agent 自进化（RHO、Bayesian-Agent 等）是当前研究热点，但缺乏标准化评估环境使得不同方法难以公平比较。SEAGym 填补了这一空白，其 train/validation/replay/cost 四维评估框架为 agent harness 更新提供了可量化的质量控制标准。
+   - 来源: [arXiv](https://arxiv.org/abs/2606.17546)
+
 **Stop When Further Reasoning Won't Help：基于注意力分布的推理模型自适应早停**
 - 论文针对大型推理模型（LRM）的 overthinking 问题——冗余 token 输出导致准确率下降。作者从注意力分布角度分析推理过程，提出一种简单的免训练早停方法：当注意力分布表明继续推理不会带来增益时自动停止生成。该方法无需额外训练资源，也不依赖精心设计的 prompt 或不可靠的置信度信号。
   > 💡 overthinking 是当前推理模型（o1/R1 类）的普遍问题，基于注意力状态的早停提供了一种零成本、可即插即用的解决方案，对推理 API 的 token 成本优化有直接实用价值。
