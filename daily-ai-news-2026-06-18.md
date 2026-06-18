@@ -7,10 +7,10 @@
 ## 要点汇总
 
 - 模型前沿：OpenAI发布LifeSciBench：750个专家任务的生命科学评测基准，GPT-Rosalind pass rate达36.1%
-- 产业动态：Genesis AI发布首款通用人形机器人Eno，计划2026年底客户部署; Claude Design更新：跨项目保持品牌一致并与Claude Code同步;微信支付发布AI专属卡，支持Agent在用户授权范围内自动消费; DeepTech盘点2026上半年顶级AI研究员流动去向：Anthropic留存率领先; Pinterest推出AI购物App「Ask Pinterest」并发布MCP广告接口; AWS为Bedrock AgentCore推出Web Search工具，使AI Agent可获取实时网络知识; 社交媒体进入用户可控算法时代：Threads/Instagram/TikTok让用户自定义推荐
+- 产业动态：Genesis AI发布首款通用人形机器人Eno，计划2026年底客户部署; Claude Design更新：跨项目保持品牌一致并与Claude Code同步;微信支付发布AI专属卡，支持Agent在用户授权范围内自动消费; Pinterest推出AI购物App「Ask Pinterest」并发布MCP广告接口; AWS为Bedrock AgentCore推出Web Search工具，使AI Agent可获取实时网络知识; 社交媒体进入用户可控算法时代：Threads/Instagram/TikTok让用户自定义推荐; DeepTech盘点2026上半年顶级AI研究员流动去向：Anthropic留存率领先
 - 算力追踪：Apple计划因内存与存储芯片短缺涨价
 - 初创&融资：世界模型公司Odyssey获Amazon等参投，估值达14.5亿美元; XDOF走出隐身：融7000万美元建机器人训练数据基础设施，已签约20家前沿AI实验室; Pramaana Labs融2700万美元种子轮，用LEAN形式化验证为AI输出提供确定性保障; Stanford毕业生创立Clair Health，融1160万美元打造激素追踪AI可穿戴
-- 研究关注：DeepMind论文：Transformer存在拓扑缺陷，思维链只是打补丁; LoopCoder-v2：双循环并行Transformer在SWE-bench上提升21个百分点; Google DeepMind AMIE医疗AI从诊断扩展到长期疾病管理，在OSCE盲测中非劣于21名初级保健医师; DreamX-World 1.0：通用交互式世界模型，支持长时视频生成与场景记忆; 腾讯混元团队开源统一强化学习框架，支持视频与图文多模态; DECODE：解耦并编辑多模态大模型中模态特异神经元的知识编辑方法
+- 研究关注：DeepMind论文：Transformer存在拓扑缺陷，思维链只是打补丁; LoopCoder-v2：双循环并行Transformer在SWE-bench上提升21个百分点; ExpRL：用参考答案做奖励脚手架的RL mid-training，数学推理上超越SFT和GRPO; DreamX-World 1.0：通用交互式世界模型，支持长时视频生成与场景记忆; T-Rex：触觉反应灵巧操作，Fei-Fei Li/Pieter Abbeel/Jitendra Malik等推出触觉VLA框架; Google DeepMind AMIE医疗AI从诊断扩展到长期疾病管理，在OSCE盲测中非劣于21名初级保健医师
 - X讨论：Lisan al Gaib推测Cursor模型1.5T+参数，Opus/GPT-5均<2T，Anthropic已到~10T规模; OpenRouter发布Cost Simulator工具帮助用户预估真实流量成本; Epoch AI提议建立AI研发领域的O*NET：60+任务分类追踪AI研究自动化进度
 
 ---
@@ -39,11 +39,6 @@
   > 💡 这是国内首个将支付能力结构化开放给AI Agent的产品，主账隔离+逐笔确认的设计平衡了自动化便利与安全可控，为Agent商业化闭环提供了基础设施。
    - 来源: [微信支付](https://mp.weixin.qq.com/s/TChOFDI3-lg75rnQD_9ysw)
 
-**DeepTech盘点2026上半年顶级AI研究员流动去向：Anthropic留存率领先**
-- DeepTech盘点显示，Anthropic近两年员工留存率约**80%**，高于Google DeepMind的78%、OpenAI的67%和Meta的64%。OpenAI工程师流向Anthropic与反向流动之比约**8:1**，DeepMind流向Anthropic约**11:1**。Meta以资本改写人才价格——Superintelligence Labs从OpenAI挖走赵晟佳、Jason Wei等核心研究员，Andrew Tulloch薪酬包据报道达六年**15亿美元**量级，但两年留存率仅**64%**。Thinking Machines Lab创始团队约**三分之一**流失。中美双向流动信号出现：吴永辉、Yan Wu加入字节Seed，Hao Zhou转向阿里Qwen，同时也有字节研究员流向DeepMind的反向案例。2026年5月后AI高管出境管控趋严。
-  > 💡 留存率而非薪酬才是AI Lab竞争力的真正指标——Anthropic以使命认同和稳定性赢得人才战，Meta的高薪低留存模式可持续性存疑。
-   - 来源: [DeepTech深科技](http://mp.weixin.qq.com/s?__biz=MzA3NTIyODUzNA==&mid=2649798807&idx=1&sn=fa9187c9589b8b3140c68661fe09e7a4&chksm=86735aead56889afc78d67d7beb38ed6f53dce90d98d2b82d3dc9ffdf5f17989e14971f1bf3a&scene=0&xtrack=1#rd)
-
 **Pinterest推出AI购物App「Ask Pinterest」并发布MCP广告接口**
 - Pinterest发布实验性AI购物应用「Ask Pinterest」，基于其Taste Graph数据，以对话式界面提供个性化购物推荐，支持多步复杂查询（如「帮我策划一场晚宴」），并利用用户已保存的Pin和Board个性化回答。同步发布Pinterest MCP（Model Context Protocol）供广告主通过第三方Agent工具标准化管理和监控广告活动，以及Performance+创意AI模型帮助广告主自动选择最优广告创意。Ask Pinterest目前限量网页端开放。
   > 💡 Pinterest以独立App试水AI购物而非在主App中改动，降低了对核心产品的风险。MCP接口的发布标志着广告行业正跟进Agent标准化协议。
@@ -58,6 +53,11 @@
 - 社交平台正将推荐算法的控制权部分交给用户。Threads上线「Your Algo」功能，用户可私密设定想看更多/更少的主题，并选择生效时长（1/3/7天）。Instagram将「Your Algorithm」工具从Reels扩展到Feed、Explore和Reels全场景，用户可查看和调整推荐主题。Instagram负责人Adam Mosseri表示LLM使推荐系统更透明，用户可明确表达偏好。TikTok的「Manage Topics」功能则允许用户通过滑块调整各主题（体育、旅行、幽默等）在For You Feed中的权重，并新增AI驱动的Smart Keyword Filters自动扩展同义词过滤。
   > 💡 从「算法决定一切」到「用户训练自己的算法」，社交平台的推荐范式正从电视频道模式转向流媒体模式——LLM的可解释性使这一转变在产品层面成为可能。
    - 来源: [TechCrunch](https://techcrunch.com/2026/06/17/social-medias-next-evolution-user-controlled-algorithms/)
+
+**DeepTech盘点2026上半年顶级AI研究员流动去向：Anthropic留存率领先**
+- DeepTech盘点显示，Anthropic近两年员工留存率约**80%**，高于Google DeepMind的78%、OpenAI的67%和Meta的64%。OpenAI工程师流向Anthropic与反向流动之比约**8:1**，DeepMind流向Anthropic约**11:1**。Meta以资本改写人才价格——Superintelligence Labs从OpenAI挖走赵晟佳、Jason Wei等核心研究员，Andrew Tulloch薪酬包据报道达六年**15亿美元**量级，但两年留存率仅**64%**。Thinking Machines Lab创始团队约**三分之一**流失。中美双向流动信号出现：吴永辉、Yan Wu加入字节Seed，Hao Zhou转向阿里Qwen，同时也有字节研究员流向DeepMind的反向案例。2026年5月后AI高管出境管控趋严。
+  > 💡 留存率而非薪酬才是AI Lab竞争力的真正指标——Anthropic以使命认同和稳定性赢得人才战，Meta的高薪低留存模式可持续性存疑。
+   - 来源: [DeepTech深科技](http://mp.weixin.qq.com/s?__biz=MzA3NTIyODUzNA==&mid=2649798807&idx=1&sn=fa9187c9589b8b3140c68661fe09e7a4&chksm=86735aead56889afc78d67d7beb38ed6f53dce90d98d2b82d3dc9ffdf5f17989e14971f1bf3a&scene=0&xtrack=1#rd)
 
 ### 算力追踪
 **Apple计划因内存与存储芯片短缺涨价**
@@ -97,25 +97,25 @@
   > 💡 「双循环即最优」的结论挑战了「更多计算=更好性能」的直觉，为测试时计算扩展提供了高效且可预测的配置方案。
    - 来源: [arXiv](https://arxiv.org/abs/2606.18023) | [HuggingFace](https://huggingface.co/Multilingual-Multimodal-NLP/LoopCoder-V2)
 
-**Google DeepMind AMIE医疗AI从诊断扩展到长期疾病管理，在OSCE盲测中非劣于21名初级保健医师**
-- Nature发表Google DeepMind研究（Valentin Liévin、Anil Palepu共同第一作者，Alan Karthikesalingam、Mike Schaekermann通讯作者），AMIE从一次性诊断对话进化到多访视临床管理。基于Gemini长上下文能力，AMIE结合上下文检索与结构化推理，将输出对齐最新临床实践指南和药物处方集。在随机盲测虚拟OSCE研究中，AMIE与**21名初级保健医师**在**100个多访视病例场景**中对照（场景设计基于UK NICE Guidance和BMJ Best Practice指南），由专科医生评估。AMIE在管理推理上**非劣于**初级保健医师，在治疗和检查方案精确性以及指南对齐度上**优于人类医师**。研究还推出RxQA基准——基于美国和英国两国国家药物处方集构建的多选题benchmark，由委员会认证药师验证，AMIE在高难度问题上**优于初级保健医师**。Google同步启动全美真实世界虚拟护理AI研究。
-  > 💡 AMIE从诊断走向管理是医疗AI能力边界的关键扩展——长期疾病管理需要跨多次随访追踪症状、更新指南和调整用药，复杂度远超单次诊断。RxQA基准为药物推理评测提供了新工具，AMIE在高难度问题上超越人类说明AI在规则密集型推理任务上有结构性优势。
-   - 来源: [Nature](https://www.nature.com/articles/s41586-026-10764-5) | [Google DeepMind](https://blog.google/innovation-and-ai/models-and-research/google-research/amie-for-disease-management-in-nature/)
+**ExpRL：用参考答案做奖励脚手架的RL mid-training，数学推理上超越SFT和GRPO**
+- Violet Xiang、Amrith Setlur、Nick Haber（Stanford）、Aviral Kumar（CMU）提出ExpRL，一种基于RL的LLM mid-training方法。核心思路：不将人类参考答案作为SFT模仿目标，而是将其隐藏于策略之外，仅用于构建问题特定的评分rubric——LLM judge将策略生成的推理轨迹与参考答案对比，给出结果级或过程级的dense reward。这使得ExpRL能强化部分进展、有用的中间约简和有效推理行为，而稀疏的最终答案奖励往往无法覆盖这些。在挑战性数学推理任务上，ExpRL的RL priming效果**强于SFT、稀疏奖励GRPO和自蒸馏**，并为后续稀疏奖励RL提供更好的初始化。混合领域实验表明ExpRL可扩展到纯数学以外的场景。
+  > 💡 将参考答案从"模仿目标"重新定义为"奖励构建材料"是一个思路转换——它让mid-training无需人工指定模型应学什么技能，而是自动发现并强化有用的推理行为模式。
+   - 来源: [arXiv](https://arxiv.org/abs/2606.17024)
 
 **DreamX-World 1.0：通用交互式世界模型，支持长时视频生成与场景记忆**
 - DreamX Team（Yancheng Bai、Rui Chen等）提出DreamX-World 1.0，定位为通用交互式文本/图像到视频世界模型，支持相机导航、区域重访和可提示事件，覆盖写实、游戏风格和风格化领域。数据引擎结合Unreal Engine精确相机渲染、游戏录像和真实世界视频。提出E-PRoPE轻量相机位置编码，将双向视频生成器通过因果强制和DMD风格蒸馏转为少步自回归世界模型。引入Memory-Conditioned Scene Persistence通过相机几何检索实现跨帧场景一致性。在8张RTX 5090 GPU上达到**16 FPS**。在5秒基础评测中，相机控制得分**73.75**，总分**84.76**，超过HY-WorldPlay 1.5（80.79）和LingBot-World（80.45）。
   > 💡 长时自回归生成+场景记忆检索的组合解决了世界模型中风格漂移和空间不一致的核心痛点，16 FPS的推理效率已接近实时交互门槛。
    - 来源: [arXiv](https://arxiv.org/abs/2606.16993) | [项目主页](https://amap-ml.github.io/DreamX_World/)
 
-**腾讯混元团队开源统一强化学习框架，支持视频与图文多模态**
-- 腾讯混元团队（庞天宇主导）开源UniRL统一强化学习框架，支持视频、图文等多模态任务，开箱即用。该框架基于**1B参数**的轻量级视觉语言模型构建，采用原生ViT与轻量LLM结合的架构。针对多模态图文交织数据设计了attention mask和2D位置编码，可隔离噪声图像与干净图像，使不同图像间互不影响。同步开放了业界领先的文生图、视频生成和3D生成能力，提供接近商业模型性能的开源基座。此前已开源HunyuanCustom一致性视频生成模型。
-  > 💡 统一多模态RL框架降低跨模态训练工程门槛，对学术界和中小团队更友好。
-   - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247898050&idx=4&sn=031ff938f8a26f84c99ccc8316c22eff) | [官方文档](https://unirl-project.github.io/unirl/)
+**T-Rex：触觉反应灵巧操作，Fei-Fei Li/Pieter Abbeel/Jitendra Malik等推出触觉VLA框架**
+- Dantong Niu、Zhuoyang Liu等发表论文（作者含Fei-Fei Li、Pieter Abbeel、Jitendra Malik、Trevor Darrell、Ken Goldberg、Yuke Zhu、Danfei Xu、Jim (Linxi) Fan），针对当前VLA模型忽略触觉模态的局限，提出T-Rex触觉反应灵巧操作框架。贡献包括三部分：（1）大规模**100小时**触觉丰富数据集，通过优先采集基础运动原语的高效数据策略收集；（2）变速率Mixture-of-Transformers（MoT）架构搭配新型时序触觉VQ-VAE编码器，可在不牺牲现有VLA能力的情况下利用高频触觉信号；（3）在**12个**需要精细力控和可变形物体操作的任务上验证，平均成功率比最强基线**高出30%以上**。
+  > 💡 触觉是当前VLA模型最大的感知盲区——视觉无法预测接触力、滑动和形变。T-Rex证明将高频触觉信号融入VLA可获得显著性能提升，100小时触觉数据集和MoT架构设计为后续研究提供了可复用的基座。
+   - 来源: [arXiv](https://arxiv.org/abs/2606.17055)
 
-**DECODE：解耦并编辑多模态大模型中模态特异神经元的知识编辑方法**
-- 论文指出当前知识编辑方法存在编辑解耦失败问题，即实体相关知识在多模态输入（文本-图像配对）时可更新，但在输入拆分为单模态时会恢复到编辑前状态。深入分析发现，MLLM中实体知识并非以统一表示存储，而是分布在解耦的模态特定路径上，导致偏向多模态查询的更新无法有效传播至单模态回路。为解决此问题，论文提出DECODE方法，通过显式解耦并定位模态特异神经元实现跨模态知识同步编辑。
-  > 💡 模态解耦视角为多模态知识编辑提供了可解释的干预路径，比统一表征编辑更易定位失败模态。
-   - 来源: [arXiv cs.LG](https://arxiv.org/abs/2606.17057)
+**Google DeepMind AMIE医疗AI从诊断扩展到长期疾病管理，在OSCE盲测中非劣于21名初级保健医师**
+- Nature发表Google DeepMind研究（Valentin Liévin、Anil Palepu共同第一作者，Alan Karthikesalingam、Mike Schaekermann通讯作者），AMIE从一次性诊断对话进化到多访视临床管理。基于Gemini长上下文能力，AMIE结合上下文检索与结构化推理，将输出对齐最新临床实践指南和药物处方集。在随机盲测虚拟OSCE研究中，AMIE与**21名初级保健医师**在**100个多访视病例场景**中对照（场景设计基于UK NICE Guidance和BMJ Best Practice指南），由专科医生评估。AMIE在管理推理上**非劣于**初级保健医师，在治疗和检查方案精确性以及指南对齐度上**优于人类医师**。研究还推出RxQA基准——基于美国和英国两国国家药物处方集构建的多选题benchmark，由委员会认证药师验证，AMIE在高难度问题上**优于初级保健医师**。Google同步启动全美真实世界虚拟护理AI研究。
+  > 💡 AMIE从诊断走向管理是医疗AI能力边界的关键扩展——长期疾病管理需要跨多次随访追踪症状、更新指南和调整用药，复杂度远超单次诊断。RxQA基准为药物推理评测提供了新工具，AMIE在高难度问题上超越人类说明AI在规则密集型推理任务上有结构性优势。
+   - 来源: [Nature](https://www.nature.com/articles/s41586-026-10764-5) | [Google DeepMind](https://blog.google/innovation-and-ai/models-and-research/google-research/amie-for-disease-management-in-nature/)
 
 ### X讨论
 **Lisan al Gaib推测Cursor模型1.5T+参数，Opus/GPT-5均<2T，Anthropic已到~10T规模**
