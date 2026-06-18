@@ -10,7 +10,7 @@
 - 产业动态：Genesis AI发布首款通用人形机器人Eno，计划2026年底客户部署; Claude Design更新：跨项目保持品牌一致并与Claude Code同步;微信支付发布AI专属卡，支持Agent在用户授权范围内自动消费; Pinterest推出AI购物App「Ask Pinterest」并发布MCP广告接口; AWS为Bedrock AgentCore推出Web Search工具，使AI Agent可获取实时网络知识; 社交媒体进入用户可控算法时代：Threads/Instagram/TikTok让用户自定义推荐; DeepTech盘点2026上半年顶级AI研究员流动去向：Anthropic留存率领先
 - 算力追踪：Apple计划因内存与存储芯片短缺涨价
 - 初创&融资：世界模型公司Odyssey获Amazon等参投，估值达14.5亿美元; XDOF走出隐身：融7000万美元建机器人训练数据基础设施，已签约20家前沿AI实验室; Pramaana Labs融2700万美元种子轮，用LEAN形式化验证为AI输出提供确定性保障; Stanford毕业生创立Clair Health，融1160万美元打造激素追踪AI可穿戴
-- 研究关注：DeepMind论文：Transformer存在拓扑缺陷，思维链只是打补丁; LoopCoder-v2：双循环并行Transformer在SWE-bench上提升21个百分点; ExpRL：用参考答案做奖励脚手架的RL mid-training，数学推理上超越SFT和GRPO; DreamX-World 1.0：通用交互式世界模型，支持长时视频生成与场景记忆; T-Rex：触觉反应灵巧操作，Fei-Fei Li/Pieter Abbeel/Jitendra Malik等推出触觉VLA框架; Google DeepMind AMIE医疗AI从诊断扩展到长期疾病管理，在OSCE盲测中非劣于21名初级保健医师
+- 研究关注：DeepMind论文：Transformer存在拓扑缺陷，思维链只是打补丁; LoopCoder-v2：双循环并行Transformer在SWE-bench上提升21个百分点; ExpRL：用参考答案做奖励脚手架的RL mid-training，数学推理上超越SFT和GRPO; DreamX-World 1.0：通用交互式世界模型，支持长时视频生成与场景记忆; T-Rex：融合高频触觉信号的VLA框架，灵巧操作成功率超最强基线30%+; Google DeepMind AMIE医疗AI从诊断扩展到长期疾病管理，在OSCE盲测中非劣于21名初级保健医师
 - X讨论：Lisan al Gaib推测Cursor模型1.5T+参数，Opus/GPT-5均<2T，Anthropic已到~10T规模; OpenRouter发布Cost Simulator工具帮助用户预估真实流量成本; Epoch AI提议建立AI研发领域的O*NET：60+任务分类追踪AI研究自动化进度
 
 ---
@@ -107,7 +107,7 @@
   > 💡 长时自回归生成+场景记忆检索的组合解决了世界模型中风格漂移和空间不一致的核心痛点，16 FPS的推理效率已接近实时交互门槛。
    - 来源: [arXiv](https://arxiv.org/abs/2606.16993) | [项目主页](https://amap-ml.github.io/DreamX_World/)
 
-**T-Rex：触觉反应灵巧操作，Fei-Fei Li/Pieter Abbeel/Jitendra Malik等推出触觉VLA框架**
+**T-Rex：融合高频触觉信号的VLA框架，灵巧操作成功率超最强基线30%+**
 - Dantong Niu、Zhuoyang Liu等发表论文（作者含Fei-Fei Li、Pieter Abbeel、Jitendra Malik、Trevor Darrell、Ken Goldberg、Yuke Zhu、Danfei Xu、Jim (Linxi) Fan），针对当前VLA模型忽略触觉模态的局限，提出T-Rex触觉反应灵巧操作框架。贡献包括三部分：（1）大规模**100小时**触觉丰富数据集，通过优先采集基础运动原语的高效数据策略收集；（2）变速率Mixture-of-Transformers（MoT）架构搭配新型时序触觉VQ-VAE编码器，可在不牺牲现有VLA能力的情况下利用高频触觉信号；（3）在**12个**需要精细力控和可变形物体操作的任务上验证，平均成功率比最强基线**高出30%以上**。
   > 💡 触觉是当前VLA模型最大的感知盲区——视觉无法预测接触力、滑动和形变。T-Rex证明将高频触觉信号融入VLA可获得显著性能提升，100小时触觉数据集和MoT架构设计为后续研究提供了可复用的基座。
    - 来源: [arXiv](https://arxiv.org/abs/2606.17055)
