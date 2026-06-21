@@ -31,7 +31,7 @@
 **Anthropic发布双重企业功能：Claude Code Artifacts实时协作 + MCP集中授权管理**
 - Anthropic同日发布两项企业功能：（1）**MCP企业集中授权**：管理员通过IdP（首批支持Okta）为组织配置MCP连接器，用户登录时自动获得权限。首批MCP提供商包括Asana、Atlassian、Canva、Figma、Granola、Linear、Supabase，Slack即将支持；（2）**Claude Code Artifacts（beta）**：将会话进展（PR审查、系统解释、仪表盘）自动转化为实时更新的可交互网页，基于完整会话上下文构建，同一链接自动刷新，支持版本历史回滚，组织内私有访问。两项功能均面向Claude Team和Enterprise用户。
   > 💡 MCP企业授权解决"每人手动授权"痛点，Artifacts将"工作状态"产品化为实时协作文档——两项更新共同降低企业AI工具链的集成与协作成本。
-   - 来源: [MCP企业授权](https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth/) | [Claude Code Artifacts](https://claude.com/blog/artifacts-in-claude-code)
+   - 来源: [Anthropic](https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth/) | [Claude Code Artifacts](https://claude.com/blog/artifacts-in-claude-code)
 
 **月之暗面Kimi Work上线Goal Mode支持桌面Agent长任务持续执行**
 - 月之暗面（Kimi）发布Kimi Work的Goal Mode功能，允许桌面Agent以**24/7持续运行**方式完成长时程、多步骤复杂任务，直至任务完成。该模式将桌面Agent从"单次指令执行"升级为"长任务守护进程"，与OpenAI Operator和Anthropic的桌面Agent路线形成直接竞争。
