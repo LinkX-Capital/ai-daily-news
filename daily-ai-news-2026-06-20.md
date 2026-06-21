@@ -54,7 +54,7 @@
    - 来源: [HuggingFace Blog](https://huggingface.co/blog/ServiceNow/mosaicleaks) | [arXiv](https://arxiv.org/abs/2605.30727)
 
 ### X讨论
-**马斯克预测GLM明年Q1追平Fable，智谱唐杰回应称时间将更短**
+**马斯克预测GLM明年Q1追平Fable，唐杰回应称时间将更短**
 - 马斯克公开预测，智谱GLM将在2027年Q1追平其xAI旗下Fable模型的水平。唐杰随后在X上直接回应马斯克称"won't take that long"（没那么久），暗示GLM追赶速度可能快于马斯克预期。
   > 💡 马斯克与唐杰的隔空交锋反映中国开源大模型在顶级闭源模型面前的追赶已进入马斯克主动定价的阶段，但唐杰的反驳若没有可验证的benchmark支撑，更像营销话术。
    - 来源: [量子位](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247898466&idx=2&sn=e860d314527de80953b2e54ee1b6226e) | [@jietang](https://x.com/jietang/status/2067580270078030088)
