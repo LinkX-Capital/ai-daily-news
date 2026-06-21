@@ -9,7 +9,7 @@
 - 产业动态：NVIDIA联合CMU、UC Berkeley推出ENPIRE机器人自我改进框架，操作任务成功率达99%; MaineCoon：22B参数实时音视频社交世界模型，单GPU达47.5 FPS; Noam Shazeer与John Jumper三天内相继离开Google，AI人才流失加剧
 - 算力追踪：SemiAnalysis：AI网络基础设施投资应超越铜缆vs光纤二元对立
 - 初创&融资：YC Spring 2026 Demo Day：8家AI agent创业公司获投资人关注，Ploy获$27M种子轮
-- 研究关注：Drifting Preference Optimization (DrPO)：西湖大学等团队提出基于排名奖励的单步文生图偏好优化方法，训练计算量降至3.51倍; Berkeley等团队提出Playful Agentic Robot Learning框架; Moebius：华中科技大学提出0.2B参数图像修复框架，性能匹敌11.9B模型并实现15倍推理加速
+- 研究关注：Drifting Preference Optimization (DrPO)：西湖大学等团队提出基于排名奖励的单步文生图偏好优化方法，训练计算量降至3.51倍; Berkeley等团队提出Playful Agentic Robot Learning框架，通过自主探索式"玩耍"学习可复用技能; Moebius：华中科技大学提出0.2B参数图像修复框架，性能匹敌11.9B模型并实现15倍推理加速
 - X讨论：Google DeepMind研究者讨论subliminal learning机制解释; OpenPipe开源Agent Reinforcement Trainer (ART)，GRPO强化学习框架训练效率提升40%
 
 ---
