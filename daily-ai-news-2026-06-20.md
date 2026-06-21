@@ -6,21 +6,14 @@
 
 ## 要点汇总
 
-- 模型前沿：Anthropic披露Claude已编写80%合并代码，递归自我改进进入早期阶段
 - 产业动态：埃森哲下调营收指引引发AI替代担忧，股价单日暴跌18%创2017年以来新低; 马斯克预测GLM明年Q1追平Fable，智谱唐杰回应称时间将更短; Amazon ECS推出高频监控指标以加速服务自动扩缩容
 - 算力追踪：AWS上线搭载NVIDIA RTX PRO 4500 Blackwell服务器版GPU的EC2 G7实例; AWS拟向外部数据中心销售自研AI芯片，Jassy称对应500亿美元市场机会
 - 初创&融资：因果世界模型公司Aether AI完成2000万美元首轮融资，经纬创投领投; 中国AI应用首次出现3亿元ARR独角兽，腾讯顺为红杉继续加注; 意图感知端点安全公司Ent Security完成1亿美元种子轮融资
 - 研究关注：UIUC团队发布ProtocolBench基准，系统评估多智能体通信协议性能; 腾讯混元ACL 2026论文发现SFT「不完全学习」现象，监督微调后模型仍漏学约15%训练数据; MosaicLeaks评测显示研究类AI Agent普遍存在数据泄露风险
-- X讨论：SemiAnalysis暗示2026年内存严重短缺，AI算力基础设施承压; SemiAnalysis发布重大报告MYTHOS
+
 ---
 
 ## 📖 详细参考
-
-### 模型前沿
-**Anthropic披露Claude已编写80%合并代码，递归自我改进进入早期阶段**
-- Anthropic公布的数据显示，合并到其代码库中的代码有80%由Claude编写。Turing Post将该进展作为递归自我改进（RSI）的三个早期信号之一，RSI指AI系统参与改进下一代AI系统的能力。Anthropic的工程实践提供了首个大规模公开的代码生成AI对研发流水线渗透率数据。
-  > 💡 AI编写AI代码比例突破临界点，软件工程岗位需求结构将先行重塑，纯执行类岗位最先承压。
-   - 来源: [@theturingpost](https://x.com/TheTuringPost/status/2068495106441912824#m)
 
 ### 产业动态
 **埃森哲下调营收指引引发AI替代担忧，股价单日暴跌18%创2017年以来新低**
@@ -39,11 +32,6 @@
    - 来源: [AWS Blog](https://aws.amazon.com/blogs/aws/amazon-ecs-introduces-new-high-resolution-metrics-for-faster-service-auto-scaling/)
 
 ### 算力追踪
-**AWS上线搭载NVIDIA RTX PRO 4500 Blackwell服务器版GPU的EC2 G7实例**
-- AWS宣布EC2 G7实例正式可用，搭载NVIDIA RTX PRO 4500 Blackwell Server Edition GPU，面向AI推理、图形渲染和虚拟工作站等场景。Blackwell架构进入企业级云实例阶段，AWS成为首批将该架构企业级GPU产品线落地的超大规模云厂商之一。
-  > 💡 Blackwell架构从旗舰加速卡下沉至RTX PRO企业产品线，AWS云端供给将带动中型企业AI推理工作负载迁移。
-   - 来源: [AWS Blog](https://aws.amazon.com/blogs/aws/announcing-amazon-ec2-g7-instances-accelerated-by-nvidia-rtx-pro-4500-blackwell-server-edition-gpus/)
-
 **AWS拟向外部数据中心销售自研AI芯片，Jassy称对应500亿美元市场机会**
 - AWS正与外部数据中心运营商洽谈销售其自研AI芯片（Trainium/Inferentia系列），CEO Andy Jassy表示这代表公司500亿美元的市场机会。AWS AI主管Peter DeSantis在接受Bloomberg采访时透露了外销谈判进展，但拒绝透露潜在买家。AWS此举意在打破NVIDIA在AI加速器市场的主导地位，将自研芯片从内部使用扩展为对外商品。
   > 💡 AWS自研芯片外销标志着超大规模云厂商正从'自用'走向'对外输出'，短期内难以撼动NVIDIA生态，但在推理与成本敏感型工作负载上可能形成实质竞争。
@@ -90,17 +78,6 @@
 - 陈德里（Princeton副教授）将其AutoResearch项目以SKILL形式开源，并配套发布SKILL.md配置文件。AutoResearch此前已因自动化研究能力在社区刷屏数周，本次正式开源意味着社区开发者可复现并扩展该工作。具体技术实现与依赖项在摘要中未披露。
   > 💡 SKILL格式正在成为Agent/研究自动化领域的标准化封装方式，陈德里采用该格式开源有望推动社区建立统一的可复用研究技能库。
    - 来源: [PaperWeekly](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw==&mid=2247721067&idx=1&sn=a8a45c05f631722c62ca81ae16c01a97)
-
-### X讨论
-**SemiAnalysis暗示2026年内存严重短缺，AI算力基础设施承压**
-- SemiAnalysis发布简短评论，借冯·诺依曼架构视角调侃2026年'内存大短缺'。未披露具体数据或行业报告，但作为顶级半导体研究机构，SemiAnalysis对存储供应链的判断在行业内有较高参考价值。
-  > 💡 若SemiAnalysis判断成立，HBM与DDR供应紧张将直接抬高AI服务器BOM成本，影响超大规模厂商的资本开支节奏。
-   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2068378619131404298#m)
-
-**SemiAnalysis发布重大报告MYTHOS**
-- SemiAnalysis发布标题为'MYTHOS'的重磅内容，来源账号为@semianalysis_。具体报告内容、覆盖主题与技术细节未在摘要中披露。⚠️来源不可达，详细信息缺失。
-  > 💡 SemiAnalysis以半导体与AI基础设施深度分析著称，'MYTHOS'命名暗示其可能对AI芯片格局或供应链给出颠覆性判断，值得追踪原文。
-   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2068499237118087498#m)
 
 ---
 *更新时间: 2026-06-21 10:52*
