@@ -7,7 +7,7 @@
 ## 要点汇总
 
 - 模型前沿：Artificial Analysis推出AA-Briefcase：91个任务的知识工作Agent评测，Claude Fable 5领跑
-- 产业动态：OpenAI同日发布双重企业更新：Codex新增Record & Replay + ChatGPT Enterprise支出控制; Anthropic发布双重企业功能：Claude Code Artifacts实时协作 + MCP集中授权管理; 月之暗面Kimi Work上线Goal Mode支持桌面Agent长任务持续执行; xAI的Grok模型接入Databricks Agent Bricks，面向企业Agent场景; Snap因成本压力剥离AI视频团队成立独立公司Dotmo
+- 产业动态：OpenAI Codex新增Record & Replay功能，将macOS工作流转化为可复用技能; Anthropic Claude Code发布Artifacts实时协作功能，MCP推出企业集中授权; 月之暗面Kimi Work上线Goal Mode支持桌面Agent长任务持续执行; xAI的Grok模型接入Databricks Agent Bricks，面向企业Agent场景; Snap因成本压力剥离AI视频团队成立独立公司Dotmo
 - 初创&融资：Elastic拟以最高8500万美元收购AI调试初创DeductiveAI; AI推理公司Baseten融资15亿美元估值130亿，5个月前刚完成3亿美元融资; 世界模型公司General Intuition融资3亿美元估值20亿，Jeff Bezos和Eric Schmidt投资
 - 研究关注：Google发布TPU五代演进架构论文，超算性能8年提升3600倍; RNG-Bench：非马尔可夫博弈基准，评估多模态LLM跨步记忆与规划能力; MolmoMotion：语言引导的3D点轨迹预测，116万视频构建最大运动预测数据集; Reversal Q-Learning：Sergey Levine等提出流匹配离线RL新算法，50个机器人任务上达SOTA; OpenAI发布Beneficial RL：用有益特质RL训练出跨域泛化的对齐改进
 - X讨论：Anthropic Project Fetch：Opus 4.7编程机器狗速度达去年最佳人类团队的20倍; World Labs展示Marble高斯溅射结果导入Unreal Engine的工作流; Luma Labs推出Skills功能将创意资产转化为可复用工作流; Poolside发布开源Agentic编码模型Laguna M.1和XS.2
@@ -23,15 +23,15 @@
    - 来源: [Artificial Analysis](https://artificialanalysis.ai/articles/aa-briefcase) | [@artificialanlys](https://x.com/ArtificialAnlys/status/2067744659498307639#m)
 
 ### 产业动态
-**OpenAI同日发布双重企业更新：Codex新增Record & Replay + ChatGPT Enterprise支出控制**
+**OpenAI Codex新增Record & Replay功能，将macOS工作流转化为可复用技能**
 - OpenAI发布两项企业功能更新：（1）**Codex Record & Replay**：app 26.616版本新增Record & Replay功能（macOS），可将用户演示的工作流程自动转化为可复用的技能（skill）。该功能首次推出时不包括欧洲经济区、英国和瑞士，需启用Computer Use权限。CLI版本0.141.0引入端到端加密Noise中继通道用于远程执行器；（2）**ChatGPT Enterprise使用分析与支出控制**：企业管理员可在Global Admin Console中查看ChatGPT和Codex的信用额度使用明细，按用户、产品、模型维度追踪消耗趋势，为工作空间设置默认额度上限，针对特定组或个人配置差异化限额。
-  > 💡 OpenAI同日推出代码工作流自动化与企业成本管控两项功能，前者降低自动化技能创建门槛（与Anthropic Computer Use、Kimi Goal Mode直接竞争），后者解决企业AI规模化部署的预算治理痛点，与Anthropic企业管理工具形成对位。
+  > 💡 Record & Replay把"演示即编程"推向实用化，降低了自动化技能创建的门槛，与Anthropic Computer Use和Kimi Goal Mode形成直接竞争。ChatGPT Enterprise支出控制解决企业AI规模化部署的预算治理痛点。
    - 来源: [OpenAI Codex Changelog](https://developers.openai.com/codex/changelog#codex-2026-06-18-app) | [OpenAI News](https://openai.com/index/chatgpt-enterprise-spend-controls)
 
-**Anthropic发布双重企业功能：Claude Code Artifacts实时协作 + MCP集中授权管理**
-- Anthropic同日发布两项企业功能：（1）**MCP企业集中授权**：管理员通过IdP（首批支持Okta）为组织配置MCP连接器，用户登录时自动获得权限。首批MCP提供商包括Asana、Atlassian、Canva、Figma、Granola、Linear、Supabase，Slack即将支持；（2）**Claude Code Artifacts（beta）**：将会话进展（PR审查、系统解释、仪表盘）自动转化为实时更新的可交互网页，基于完整会话上下文构建，同一链接自动刷新，支持版本历史回滚，组织内私有访问。两项功能均面向Claude Team和Enterprise用户。
-  > 💡 MCP企业授权解决"每人手动授权"痛点，Artifacts将"工作状态"产品化为实时协作文档——两项更新共同降低企业AI工具链的集成与协作成本。
-   - 来源: [Anthropic](https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth/) | [Claude Code Artifacts](https://claude.com/blog/artifacts-in-claude-code)
+**Anthropic Claude Code发布Artifacts实时协作功能，MCP推出企业集中授权**
+- Anthropic同日发布两项企业功能：（1）**Claude Code Artifacts（beta）**：将会话进展（PR审查、系统解释、仪表盘）自动转化为实时更新的可交互网页，基于完整会话上下文构建，同一链接自动刷新，支持版本历史回滚，组织内私有访问；（2）**MCP企业集中授权**：管理员通过IdP（首批支持Okta）为组织配置MCP连接器，用户登录时自动获得权限。首批MCP提供商包括Asana、Atlassian、Canva、Figma、Granola、Linear、Supabase，Slack即将支持。两项功能均面向Claude Team和Enterprise用户。
+  > 💡 Artifacts将"工作状态"产品化为实时协作文档，MCP企业授权解决"每人手动授权"痛点——两项更新共同降低企业AI工具链的集成与协作成本。
+   - 来源: [Claude Code Artifacts](https://claude.com/blog/artifacts-in-claude-code) | [Anthropic MCP](https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth/)
 
 **月之暗面Kimi Work上线Goal Mode支持桌面Agent长任务持续执行**
 - 月之暗面（Kimi）发布Kimi Work的Goal Mode功能，允许桌面Agent以**24/7持续运行**方式完成长时程、多步骤复杂任务，直至任务完成。该模式将桌面Agent从"单次指令执行"升级为"长任务守护进程"，与OpenAI Operator和Anthropic的桌面Agent路线形成直接竞争。

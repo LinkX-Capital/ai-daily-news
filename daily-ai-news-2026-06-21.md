@@ -9,7 +9,7 @@
 - 产业动态：NVIDIA联合CMU、UC Berkeley推出ENPIRE机器人自我改进框架，操作任务成功率达99%; MaineCoon：22B参数实时音视频社交世界模型，单GPU达47.5 FPS; Noam Shazeer与John Jumper三天内相继离开Google，AI人才流失加剧
 - 算力追踪：SemiAnalysis：AI网络基础设施投资应超越铜缆vs光纤二元对立
 - 初创&融资：YC Spring 2026 Demo Day：8家AI agent创业公司获投资人关注，Ploy获$27M种子轮
-- 研究关注：Drifting Preference Optimization (DrPO)：西湖大学等团队提出基于排名奖励的单步文生图偏好优化方法，训练计算量降至3.51倍; Berkeley等团队提出Playful Agentic Robot Learning框架，通过自主探索式"玩耍"学习可复用技能; Moebius：华中科技大学提出0.2B参数图像修复框架，性能匹敌11.9B模型并实现15倍推理加速
+- 研究关注：DrPO：西湖大学等团队提出基于排名奖励的单步文生图偏好优化方法，训练计算量降至3.51倍; Berkeley等团队提出Playful Agentic Robot Learning框架，通过自主探索式"玩耍"学习可复用技能; Moebius：华中科技大学提出0.2B参数图像修复框架，性能匹敌11.9B模型并实现15倍推理加速
 - X讨论：Google DeepMind研究者讨论subliminal learning机制解释; OpenPipe开源Agent Reinforcement Trainer (ART)，GRPO强化学习框架训练效率提升40%
 
 ---
@@ -45,7 +45,7 @@
    - 来源: [TechCrunch](https://techcrunch.com/2026/06/18/the-11-standout-startups-from-ycs-demo-day-according-to-vcs/)
 
 ### 研究关注
-**Drifting Preference Optimization (DrPO)：西湖大学等团队提出基于排名奖励的单步文生图偏好优化方法，训练计算量降至3.51倍**
+**DrPO：西湖大学等团队提出基于排名奖励的单步文生图偏好优化方法，训练计算量降至3.51倍**
 - 针对单步文生图模型的在线偏好微调方法**Drifting Preference Optimization (DrPO)**采用**ranking-only奖励机制**：对每个prompt从当前生成器采样多个候选图像，用目标奖励模型对其排序，利用高分和低分样本在特征空间合成更新方向（非参数化的偶极子偏好场+冻结基础生成器估计的参考漂移），通过分离的特征空间回归目标优化。奖励模型仅用于排序而非梯度反向传播，因此DrPO可使用大规模、黑盒或不可微奖励，推理仍保持单次生成器调用。在SD-Turbo和SDXL-Turbo上的评估显示，DrPO在匹配有效批次大小的设置下，通过移除奖励模型反向传播，将HPSv3训练计算量降至**3.51倍**，同时优于无奖励梯度的单步偏好基线。工作建立在何恺明团队此前提出的单步生成扩散模型基础之上。
   > 💡 用排序奖励替代标量奖励降低了对奖励模型的精度要求，为单步扩散类模型的偏好对齐提供了更轻量的工程路径。
    - 来源: [arXiv](https://arxiv.org/abs/2606.02521) | [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651040185&idx=2&sn=287321a45f59600797b57be39fcadfeb&chksm=8554134d725dfe9b449782e9e3a89957a8c3a9b8f3d9383c45a5329953dbacb73943d29bd739&scene=0&xtrack=1#rd)
