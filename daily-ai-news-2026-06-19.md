@@ -93,7 +93,6 @@
 ### X讨论
 **Anthropic Project Fetch：Opus 4.7编程机器狗速度达去年最佳人类团队的20倍**
 - Project Fetch测试Claude编程机器狗完成取物任务的能力。**Opus 4.7独立完成编程的速度约为去年最佳人类团队（辅助Opus 4.1）的20倍**。不过机器狗最终仍未成功取回沙滩球——说明AI在具身任务的代码生成速度大幅提升，但任务完成度的物理边界仍未突破。
-
   > 💡 Anthropic把'机器狗操控'作为对齐红队测试场，反映其对具身Agent安全风险的提前布局。
    - 来源: [@anthropicai](https://x.com/AnthropicAI/status/2067651699486200091#m)
 
