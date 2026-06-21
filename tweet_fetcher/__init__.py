@@ -76,10 +76,16 @@ def get_accounts() -> tuple[Dict[str, List[str]], Dict[str, str], List[str]]:
 X_ACCOUNT_GROUPS, X_ACCOUNT_INFO, ALL_ACCOUNTS = get_accounts()
 
 
-def is_recent(published: str) -> bool:
+def is_recent(published: str, start_time: datetime = None, end_time: datetime = None) -> bool:
     """检查推文是否在时间窗口内"""
     try:
         pub_date = parsedate_to_datetime(published)
+
+        # 自定义时间窗口
+        if start_time and end_time:
+            return start_time <= pub_date <= end_time
+
+        # 默认：现在往前 MAX_HOURS 小时
         now = datetime.now(timezone.utc)
         hours_ago = (now - pub_date).total_seconds() / 3600
         return hours_ago <= MAX_HOURS
@@ -99,7 +105,7 @@ def get_available_instance() -> Optional[str]:
     return None
 
 
-def fetch_user_tweets(username: str, instance: str, count: int = 5) -> List[Dict]:
+def fetch_user_tweets(username: str, instance: str, count: int = 5, start_time: datetime = None, end_time: datetime = None) -> List[Dict]:
     tweets = []
     url = f"{instance}/{username}/rss"
 
@@ -115,7 +121,7 @@ def fetch_user_tweets(username: str, instance: str, count: int = 5) -> List[Dict
                 title = entry.get("title", "")
                 published = entry.get("published", "")
 
-                if not is_recent(published):
+                if not is_recent(published, start_time, end_time):
                     continue
 
                 # 解析格式：RT（转推）或 R to @（回复）
@@ -156,7 +162,7 @@ def fetch_user_tweets(username: str, instance: str, count: int = 5) -> List[Dict
     return tweets
 
 
-def fetch_all_tweets(max_per_account: int = 5) -> List[Dict]:
+def fetch_all_tweets(max_per_account: int = 5, start_time: datetime = None, end_time: datetime = None) -> List[Dict]:
     instance = get_available_instance()
     if not instance:
         print("   ⚠️ 无法连接Nitter，使用缓存")
@@ -166,7 +172,7 @@ def fetch_all_tweets(max_per_account: int = 5) -> List[Dict]:
 
     all_tweets = []
     for account in ALL_ACCOUNTS:
-        tweets = fetch_user_tweets(account, instance, max_per_account)
+        tweets = fetch_user_tweets(account, instance, max_per_account, start_time, end_time)
         all_tweets.extend(tweets)
         time.sleep(0.3)
 
@@ -208,10 +214,10 @@ def load_cache() -> List[Dict]:
         return []
 
 
-def get_tweets() -> List[Dict]:
+def get_tweets(start_time: datetime = None, end_time: datetime = None) -> List[Dict]:
     """获取推文，优先抓取新推文，失败时使用缓存"""
     try:
-        tweets = fetch_all_tweets()
+        tweets = fetch_all_tweets(start_time=start_time, end_time=end_time)
         if tweets:
             return tweets
         print("   抓取结果为空，尝试使用缓存...")

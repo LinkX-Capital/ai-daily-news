@@ -186,9 +186,10 @@ def extract_single_title_llm(title: str, source: str) -> str:
     return title[:50] + "..." if len(title) > 50 else title
 
 
-def generate_preview_md(cache, output_path, highlights=None):
+def generate_preview_md(cache, output_path, highlights=None, date_str=None):
     """生成 twitter_preview.md"""
-    date_str = datetime.now().strftime("%Y-%m-%d")
+    if date_str is None:
+        date_str = datetime.now().strftime("%Y-%m-%d")
     total = len(cache)
 
     # 统计存疑内容
@@ -283,11 +284,12 @@ def generate_preview_md(cache, output_path, highlights=None):
     return total
 
 
-def push_to_feishu(cache, webhook_url, highlights=None):
+def push_to_feishu(cache, webhook_url, highlights=None, date_str=None):
     """推送到飞书"""
     import httpx
 
-    date_str = datetime.now().strftime("%m月%d日")
+    if date_str is None:
+        date_str = datetime.now().strftime("%m月%d日")
     total = len(cache)
 
     cats = Counter(t.get('category', '?') for t in cache)
@@ -351,7 +353,7 @@ def push_to_feishu(cache, webhook_url, highlights=None):
                     'actions': [{
                         'tag': 'button',
                         'text': {'tag': 'plain_text', 'content': '📖 查看详情'},
-                        'url': f'https://LinkX-Capital.github.io/ai-daily-news/twitter-preview-{datetime.now().strftime("%Y-%m-%d")}.md',
+                        'url': f'https://LinkX-Capital.github.io/ai-daily-news/twitter-preview-{date_str}.md',
                         'type': 'primary'
                     }]
                 }
@@ -364,8 +366,10 @@ def push_to_feishu(cache, webhook_url, highlights=None):
 
 
 def main():
+    import sys
     webhook = 'https://open.feishu.cn/open-apis/bot/v2/hook/362a7cc7-5bce-4184-9ae3-7d6b6c0c429a'
-    date_str = datetime.now().strftime("%Y-%m-%d")
+    # 支持命令行指定日期：python twitter_push.py 2026-06-19
+    date_str = sys.argv[1] if len(sys.argv) > 1 else datetime.now().strftime("%Y-%m-%d")
     preview_path = Path(__file__).parent / f'twitter-preview-{date_str}.md'
 
     # 1. 抓取
@@ -379,12 +383,12 @@ def main():
 
     # 3. 生成预览
     print('📝 生成 preview...')
-    generate_preview_md(tweets, preview_path, highlights)
+    generate_preview_md(tweets, preview_path, highlights, date_str=date_str)
     print(f'   已保存到 {preview_path}')
 
     # 4. 推送飞书
     print('📨 推送飞书...')
-    result = push_to_feishu(tweets, webhook, highlights)
+    result = push_to_feishu(tweets, webhook, highlights, date_str=date_str)
     if result.get('msg') == 'success':
         print('   ✅ 飞书推送成功')
     else:
@@ -393,7 +397,7 @@ def main():
     # 5. 推送到 GitHub
     print('🔄 推送到 GitHub...')
     import subprocess
-    date_str_for_git = datetime.now().strftime("%Y-%m-%d")
+    date_str_for_git = date_str  # 使用与 preview 一致的日期
     try:
         subprocess.run(['git', 'add', f'twitter-preview-{date_str_for_git}.md'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
         subprocess.run(['git', 'commit', '-m', f'twitter preview {date_str_for_git}'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')

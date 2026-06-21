@@ -1910,7 +1910,13 @@ def fetch_source(name, url, limit=15, max_retries=5):
 
 # ========== 生成报告 ==========
 def generate_report(articles):
-    month_day = END_BJ.strftime("%m月%d日")
+    # 从 OUTPUT_FILE 文件名提取日期，确保与文件名一致
+    import re as _re
+    _m = _re.search(r'daily-ai-news-(\d{4})-(\d{2})-(\d{2})', OUTPUT_FILE)
+    if _m:
+        month_day = f"{_m.group(2)}月{_m.group(3)}日"
+    else:
+        month_day = START_BJ.strftime("%m月%d日")
     by_cat = defaultdict(list)
     for a in articles:
         for c in a["categories"]: by_cat[c].append(a)
@@ -2039,7 +2045,7 @@ def _log_quality(articles):
             insight_count += 1
 
     entry = {
-        "date": END_BJ.strftime("%Y-%m-%d"),
+        "date": START_BJ.strftime("%Y-%m-%d"),
         "total": len(articles),
         "categories": dict(cat_counts),
         "body_avg_len": round(sum(body_lens) / len(body_lens), 1) if body_lens else 0,
@@ -2126,8 +2132,10 @@ def _mark_feedback_seen():
 
 
 def save_archive(articles):
-    # 使用 END_BJ（窗口结束日期）命名存档，与 run.sh skip 检查一致
-    date_str = END_BJ.strftime("%Y-%m-%d")
+    # 从 OUTPUT_FILE 文件名提取日期，与日报文件名一致
+    import re as _re
+    _m = _re.search(r'daily-ai-news-(\d{4}-\d{2}-\d{2})', OUTPUT_FILE)
+    date_str = _m.group(1) if _m else START_BJ.strftime("%Y-%m-%d")
     archive_file = os.path.join(ARCHIVE_DIR, f"news_{date_str}.json")
     data = {"date": date_str, "count": len(articles), "articles": articles}
     with open(archive_file, "w", encoding="utf-8") as f:
