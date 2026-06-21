@@ -9,7 +9,7 @@
 - 算力追踪：AWS拟向外部数据中心销售自研AI芯片，Jassy称对应500亿美元市场机会
 - 初创&融资：因果世界模型公司Aether AI完成2000万美元首轮融资，经纬创投领投; AI创作工具公司演语科技完成近3亿美元B+轮融资，ARR超3亿美元; 意图感知端点安全公司Ent Security完成1亿美元种子轮融资
 - 研究关注：UIUC团队ProtocolBench基准（ICML 2026），系统评估多智能体通信协议性能; 腾讯混元×UNSW论文（ACL 2026）发现SFT「不完全学习」现象，监督微调后模型仍漏学约15%训练数据; MosaicLeaks评测显示研究类AI Agent普遍存在数据泄露风险
-- X讨论：马斯克预测GLM明年Q1追平Fable，智谱唐杰回应称时间将更短; 陈德里开源AutoResearch SKILL及相关SKILL.md配置文件
+- X讨论：马斯克预测GLM明年Q1追平Fable，唐杰回应称时间将更短; 陈德里开源AutoResearch SKILL及相关SKILL.md配置文件
 
 ---
 
