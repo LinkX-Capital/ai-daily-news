@@ -10,7 +10,7 @@
 - 产业动态：Anthropic 推出 Claude Tag：Slack 企业版协作 AI，内部 65% 产品代码由其创建; xAI Grok Build集成官方MongoDB插件，支持数据库查询与索引优化; Google顶级AI研究人员Jonas Adler与Alexander Pritzel相继跳槽至Anthropic; Facebook 将 Creator Studio 改造为独立 AI 创作者伴侣应用，内置 AI 助手与评论管理工具; Moonshot Kimi API 上线 AWS Marketplace，整合计费降低接入门槛
 - 算力追踪：OpenAI 与 Broadcom 联合发布 Jalapeño 推理芯片：9 个月完成 tape-out，2026 年底部署
 - 初创&融资：Engram 宣布成立：获 Neo 投资，主打"上下文计算扩展"
-- 研究关注：人大与微软开源 Arbor：假设树精炼框架，6 项研究任务全胜、MLE-Bench Lite 达 86.36%; 中科大与讯飞提出 SocraticPO：教师苏格拉底式纠错引导+奖励衰减，强化 RL 训练推理能力; 南洋理工刁海文等提出原生多模态大模型 NEO-ov，无需视觉编码器实现像素到语言的端到端学习; Grouped Query Experts：在GQA自注意力上实现MoE
+- 研究关注：人大与 Microsoft 开源 Arbor：假设树精炼框架，6 项研究任务全胜、MLE-Bench Lite 达 86.36%; 中科大与讯飞提出 SocraticPO：教师苏格拉底式纠错引导+奖励衰减，强化 RL 训练推理能力; 南洋理工刁海文等提出原生多模态大模型 NEO-ov，无需视觉编码器实现像素到语言的端到端学习; Grouped Query Experts：在GQA自注意力上实现MoE; Microsoft Research 开源 Talos：罕见病基因组自动重分析系统，5.1% 新增诊断率、平均 32 天响应
 - X讨论：Meta管理层提议将7000名工程师重新分配至数据标注部门; Agility Robotics将通过与Churchill Capital Corp XI合并实现上市; 宇树 Unitree R1 起售价 4900 美元现货供应，同步开源最大规模家庭场景遥操作数据集 HIW-500; SemiAnalysis发布深度报告解析宇树进化路径与中国机器人Scaling Law
 
 ---
@@ -87,9 +87,14 @@
   > 💡 GQE 把 MoE 稀疏化从 FFN 层扩展到注意力层，且只稀疏化 query head 不动 KV head，巧妙避开了推理时 KV cache 膨胀问题。若在更大规模验证，可为长上下文模型提供新的计算效率路径。
    - 来源: [arXiv](https://arxiv.org/abs/2606.20945) | [HuggingFace Daily Papers](https://huggingface.co/papers/2606.20945)
 
+**Microsoft Research 开源 Talos：罕见病基因组自动重分析系统，5.1% 新增诊断率、平均 32 天响应**
+- Microsoft Research 联合澳大利亚人群基因组中心、Broad Institute 发布开源基因组重分析系统 Talos，在 **4,735 名**未确诊罕见病患者中新增 **241 例**诊断（**5.1%** 额外收益）。系统在验证集上恢复 **90%** 诊断范围内病例，每患者仅需审查 **1.3 个**候选变异（控制假阳性）。部署 **29 个月度**迭代周期后，从证据公开到诊断平均仅需 **32 天**，最快 **1 天**。诊断来源：32% 来自新基因-疾病关系、22% 来自变异重分类、45% 来自改进过滤。系统连接 PanelApp Australia 和 ClinVar 持续更新知识库，标注 1,000 个基因组成本约 **$11**，月度重分析仅需几美分。已部署 Azure，完全开源。
+  > 💡 Talos 将基因组重分析从一次性事件转变为持续自动程序，通过极低假阳性率（1.3 变异/患者）解决人工审查瓶颈，证明医疗 AI 可在保持临床可信度前提下实现规模化部署。
+   - 来源: [Microsoft Research](https://www.microsoft.com/en-us/research/blog/talos-scaling-rare-disease-diagnosis-with-automated-iterative-genomic-reanalysis/)
+
 ### X讨论
 **Meta管理层提议将7000名工程师重新分配至数据标注部门**
-- SemiAnalysis报道，Meta管理层正在就是否将约7000名工程师重新分配至数据标注组织进行投票表决。Meta近年来在AI基础设施和模型训练上持续加注，此次大规模人力调整反映出其在高质量训练数据供给端的投入升级。⚠️来源为SemiAnalysis X账号推文，尚未见Meta官方确认。
+- SemiAnalysis报道，Meta管理层正在就是否将约7000名工程师重新分配至数据标注组织进行投票表决。Meta近年来在AI基础设施和模型训练上持续加注，此次大规模人力调整反映出其在高质量训练数据供给端的投入升级。
   > 💡 若该方案落地，将是Meta近年最大规模的内部人力重组之一，显示顶级AI实验室已从'算力军备竞赛'延伸至'数据人力军备竞赛'，对纯软件工程师岗位结构形成挤压。
    - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2069616619513335899#m)
 
