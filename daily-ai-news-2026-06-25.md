@@ -8,8 +8,8 @@
 
 - 模型前沿：Qwen-AgentWorld：阿里开源首个七域语言世界模型，397B 在模拟质量上超越 GPT-5.4; Bespoke Labs开源OpenThoughts-Agent：100K数据训练集+32B模型，7项Agent基准均分44.8%
 - 产业动态：Anthropic 推出 Claude Tag：Slack 企业版协作 AI，内部 65% 产品代码由其创建; xAI Grok Build集成官方MongoDB插件，支持数据库查询与索引优化; Google顶级AI研究人员Jonas Adler与Alexander Pritzel相继跳槽至Anthropic; Facebook 将 Creator Studio 改造为独立 AI 创作者伴侣应用，内置 AI 助手与评论管理工具; Moonshot Kimi API 上线 AWS Marketplace，整合计费降低接入门槛
-- 算力追踪：OpenAI 与 Broadcom 联合发布 Jalapeño 推理芯片：9 个月完成 tape-out，2026 年底部署; RunPod 获1亿美元融资并拒绝收购，2026算力荒催生neocloud爆发; Ornn 获3300万美元融资，a16z领投，建算力交易市场把算力变资产
-- 初创&融资：Engram 宣布成立：获 Neo 投资，主打"上下文计算扩展"; Qualcomm 近39亿美元收购 Modular，较上次估值翻倍
+- 算力追踪：OpenAI 与 Broadcom 联合发布 Jalapeño 推理芯片：9 个月完成 tape-out，2026 年底部署
+- 初创&融资：Engram 宣布成立：获 Neo 投资，主打"上下文计算扩展"; Qualcomm 近39亿美元收购 Modular，较上次估值翻倍; RunPod 获1亿美元融资并拒绝收购，2026算力荒催生neocloud爆发; Ornn 获3300万美元融资，a16z领投，建算力交易市场把算力变资产
 - 研究关注：人大与 Microsoft 开源 Arbor：假设树精炼框架，6 项研究任务全胜、MLE-Bench Lite 达 86.36%; 中科大与讯飞提出 SocraticPO：教师苏格拉底式纠错引导+奖励衰减，强化 RL 训练推理能力; 南洋理工刁海文等提出原生多模态大模型 NEO-ov，无需视觉编码器实现像素到语言的端到端学习; Grouped Query Experts：在GQA自注意力上实现MoE; Microsoft Research 开源 Talos：罕见病基因组自动重分析系统，5.1% 新增诊断率、平均 32 天响应
 - X讨论：Meta管理层提议将7000名工程师重新分配至数据标注部门; Agility Robotics将通过与Churchill Capital Corp XI合并实现上市; 宇树 Unitree R1 起售价 4900 美元现货供应，同步开源最大规模家庭场景遥操作数据集 HIW-500; SemiAnalysis发布深度报告解析宇树进化路径与中国机器人Scaling Law
 
@@ -60,16 +60,6 @@
   > 💡 9 个月 tape-out + 用 AI 模型加速芯片设计，OpenAI 将全栈垂直整合推进到硅层，千兆瓦级部署规模直接瞄准重构云 AI 算力成本结构，对 NVIDIA GPU 垄断构成实质挑战。
    - 来源: [OpenAI News](https://openai.com/index/openai-broadcom-jalapeno-inference-chip)
 
-**RunPod 获1亿美元融资并拒绝收购，2026算力荒催生neocloud爆发**
-- 云算力租赁平台 RunPod 完成 **1亿美元** 融资，公司称已拒绝多个收购要约。The Information 报道指出，2026 年的算力紧缺比 2023 年的芯片荒更严峻，甚至迫使风险投资机构临时充当云提供商，这利好 RunPod 这类出租算力、帮开发者运行模型的 neocloud 公司。
-  > 💡 算力荒正从"芯片短缺"演变为"云产能短缺"，neocloud 成为新增量；头部玩家选择独立融资而非被巨头收购，反映算力租赁赛道的议价权在卖方。
-   - 来源: [The Information](https://www.theinformation.com/articles/cloud-startup-runpod-raises-100-million-says-turned-buyout-offers)
-
-**Ornn 获3300万美元融资，a16z领投，建算力交易市场把算力变资产**
-- 追踪 AI token 与算力成本的初创 Ornn 完成 **3300万美元** 融资，由 a16z 领投。公司计划用这笔钱建一个**算力交易市场**（marketplace for trading compute），推动算力买卖成为新的资产类别。Ornn 是多家试图将算力商品化的公司之一。
-  > 💡 算力正从基础设施走向可交易资产，a16z 押注算力交易市场押的是定价权与流动性——若算力真成为资产类别，交易层可能比持有层更值钱。
-   - 来源: [The Information](https://www.theinformation.com/briefings/compute-data-startup-ornn-raises-33-million-andreessen-horowitz-led-round)
-
 ### 初创&融资
 **Engram 宣布成立：获 Neo 投资，主打"上下文计算扩展"**
 - AI 初创公司 Engram 官方宣布成立，定位"Scaling compute on your context"，专注构建能够从用户工作中学习并深度理解上下文的 AI 系统。Neo 合伙人 Ali Partovi 在推文中确认 Neo 从项目初期即参与投资。具体产品形态、团队背景和融资金额尚未披露。
@@ -80,6 +70,16 @@
 - Qualcomm 同意以约 **39亿美元** 股票收购软件初创 Modular。Modular 让开发者写一次代码即可跨不同芯片运行、无需为每种芯片重写，由 LLVM/Swift 作者 Chris Lattner 于 2022 年创立。该收购价基于 Qualcomm 上周二收盘价计算，较 Modular 去年 9 月约 **16亿美元** 的私募估值翻倍有余。
   > 💡 芯片巨头靠收购自建跨芯片软件生态（Modular 的抽象层）以对抗 NVIDIA CUDA 护城河；收购价翻倍反映 AI 基础设施软件标的稀缺，Modular 能否借 Qualcomm 的芯片出货量成为跨厂商标准是关键。
    - 来源: [The Information](https://www.theinformation.com/briefings/qualcomm-acquire-startup-modular-nearly-4-billion)
+
+**RunPod 获1亿美元融资并拒绝收购，2026算力荒催生neocloud爆发**
+- 云算力租赁平台 RunPod 完成 **1亿美元** 融资，公司称已拒绝多个收购要约。The Information 报道指出，2026 年的算力紧缺比 2023 年的芯片荒更严峻，甚至迫使风险投资机构临时充当云提供商，这利好 RunPod 这类出租算力、帮开发者运行模型的 neocloud 公司。
+  > 💡 算力荒正从"芯片短缺"演变为"云产能短缺"，neocloud 成为新增量；头部玩家选择独立融资而非被巨头收购，反映算力租赁赛道的议价权在卖方。
+   - 来源: [The Information](https://www.theinformation.com/articles/cloud-startup-runpod-raises-100-million-says-turned-buyout-offers)
+
+**Ornn 获3300万美元融资，a16z领投，建算力交易市场把算力变资产**
+- 追踪 AI token 与算力成本的初创 Ornn 完成 **3300万美元** 融资，由 a16z 领投。公司计划用这笔钱建一个**算力交易市场**（marketplace for trading compute），推动算力买卖成为新的资产类别。Ornn 是多家试图将算力商品化的公司之一。
+  > 💡 算力正从基础设施走向可交易资产，a16z 押注算力交易市场押的是定价权与流动性——若算力真成为资产类别，交易层可能比持有层更值钱。
+   - 来源: [The Information](https://www.theinformation.com/briefings/compute-data-startup-ornn-raises-33-million-andreessen-horowitz-led-round)
 
 ### 研究关注
 **人大与Microsoft开源 Arbor：假设树精炼框架，6 项研究任务全胜、MLE-Bench Lite 达 86.36%**
