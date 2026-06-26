@@ -1436,7 +1436,7 @@ def md_to_html(md_file, output_html=None, dated_html=None):
         md_content = f.read()
 
     articles, summary_items = parse_md(md_content)
-    date_str = datetime.now().strftime("%Y-%m-%d")
+    date_str = re.search(r'\d{4}-\d{2}-\d{2}', os.path.basename(md_file)).group(0) if re.search(r'\d{4}-\d{2}-\d{2}', os.path.basename(md_file)) else datetime.now().strftime("%Y-%m-%d")
     html = generate_html(articles, summary_items, is_latest=True, file_date=date_str, raw_md=md_content)
 
     if output_html is None:
