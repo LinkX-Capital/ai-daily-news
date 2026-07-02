@@ -35,8 +35,8 @@ python3 html_generator.py
 # 3. 截图手机端长图 + 飞书推送（合并为一步）
 python3 screenshot_and_push.py "${DATE_STR}"
 
-# 4. Git push HTML/截图到 GitHub
-git add daily-ai-news-${DATE_STR}.html daily-ai-news-${DATE_STR}-mobile.png index.html
+# 4. Git push HTML/截图到 GitHub（含被回填「下一期」链接的上一期 HTML）
+git add daily-ai-news-*.html daily-ai-news-${DATE_STR}-mobile.png index.html
 git diff --cached --quiet || git commit -m "Update: ${DATE_STR}" && git push
 
 echo "✅ 任务完成: $(date)"
