@@ -1297,9 +1297,6 @@ def _update_index_html(today_date_str, articles):
         f'        </a>\n'
     )
 
-    # 移除旧的"最新"标签
-    html = html.replace(' <span class="te-badge">最新</span>', '')
-
     # 检查今天的条目是否已存在：存在则替换，不存在则插入
     entry_id = f'{month_key}-{day_num}'
     existing_pattern = rf'        <a href="daily-ai-news-{today_date_str}\.html" class="timeline-entry" id="{entry_id}">.*?</a>\n'
@@ -1310,15 +1307,58 @@ def _update_index_html(today_date_str, articles):
         html = html[:match.start()] + new_entry + html[match.end():]
         print(f"Replaced existing entry for {today_date_str}")
     else:
-        # 在对应月份的 month-body 开头插入
+        # 在对应月份的 month-body 中按日期降序插入
         month_start = html.find(f'id="{month_body_id}"')
         if month_start == -1:
-            print(f"Warning: month body '{month_body_id}' not found in index.html")
-            return
+            # 自动创建新月份段（主体时间线），插到第一个 month-group 前（最新月在最上）
+            month_cn_full = f"{dt.year} 年 {dt.month} 月"
+            new_month_group = (
+                f'            <!-- {month_label} {dt.year} -->\n'
+                f'            <div class="month-group">\n'
+                f'                <button class="month-toggle" onclick="toggleMonth(this)">\n'
+                f'                    {month_cn_full} <span class="toggle-arrow">&#9662;</span>\n'
+                f'                </button>\n'
+                f'                <div class="month-body" id="{month_body_id}">\n'
+                f'                </div>\n'
+                f'            </div>\n'
+            )
+            first_mg = html.find('<div class="month-group">')
+            if first_mg != -1:
+                html = html[:first_mg] + new_month_group + html[first_mg:]
+            else:
+                # fallback：插到「日报存档」section-label 之后
+                label_idx = html.find('>日报存档</div>')
+                if label_idx != -1:
+                    cut = label_idx + len('>日报存档</div>')
+                    html = html[:cut] + '\n\n' + new_month_group + html[cut:]
+            month_start = html.find(f'id="{month_body_id}"')
+            print(f"Auto-created month section '{month_body_id}'")
 
-        # 找到 month-body div 后面的 >
-        insert_pos = html.find('>', month_start) + 1
-        html = html[:insert_pos] + '\n' + new_entry + html[insert_pos:]
+        # 找到 month-body 内容范围（开标签后到闭合 </div>）
+        body_open_end = html.find('>', month_start) + 1
+        body_close = html.find('</div>', body_open_end)
+        existing_days = [int(d) for d in re.findall(rf'id="{month_key}-(\d+)"', html[body_open_end:body_close])]
+
+        if not existing_days or day_num > max(existing_days):
+            insert_pos = body_open_end          # 最新 → 开头
+        elif day_num < min(existing_days):
+            insert_pos = body_close             # 最旧 → 末尾
+        else:
+            target = max(d for d in existing_days if d < day_num)
+            entry_idx = html.find(f'id="{month_key}-{target}"', body_open_end, body_close)
+            insert_pos = html.rfind('<a ', body_open_end, entry_idx)
+            if insert_pos == -1:
+                insert_pos = entry_idx
+        # 历史回填（非首位）时去掉新条目自带的「最新」标签
+        entry_html = new_entry if insert_pos == body_open_end else new_entry.replace(' <span class="te-badge">最新</span>', '')
+        html = html[:insert_pos] + '\n' + entry_html + html[insert_pos:]
+
+    # 「最新」标签只保留在全站第一条时间线（即最新那期）：插在第一个 te-date 的 </div> 前
+    html = re.sub(r' <span class="te-badge">最新</span>', '', html)
+    first_te = re.search(r'<div class="te-date">[^<]*</div>', html)
+    if first_te:
+        full = first_te.group(0)
+        html = html[:first_te.start()] + full.replace('</div>', ' <span class="te-badge">最新</span></div>') + html[first_te.end():]
 
     # --- 更新侧边栏导航链接 ---
     nav_link_id = f'#{month_key}-{day_num}'
@@ -1330,6 +1370,20 @@ def _update_index_html(today_date_str, articles):
         month_cn = f"{dt.year} 年 {dt.month} 月"
         nav_section_pattern = rf'<summary><span>{month_cn}</span><span class="nav-count">\d+</span></summary>\s*<div class="nav-articles">'
         nav_match = re.search(nav_section_pattern, html)
+        if not nav_match:
+            # 自动创建侧边栏月份 <details>，插到第一个 nav-details 前（最新月在最上）
+            new_details = (
+                f'            <details class="nav-details" open>\n'
+                f'                <summary><span>{month_cn}</span><span class="nav-count">0</span></summary>\n'
+                f'                <div class="nav-articles">\n'
+                f'                </div>\n'
+                f'            </details>\n'
+            )
+            first_details = html.find('<details class="nav-details"')
+            if first_details != -1:
+                html = html[:first_details] + new_details + html[first_details:]
+                print(f"Auto-created sidebar details for {month_cn}")
+            nav_match = re.search(nav_section_pattern, html)
         if nav_match:
             # 找到正确的插入位置（按日期降序）
             nav_start = nav_match.end()
