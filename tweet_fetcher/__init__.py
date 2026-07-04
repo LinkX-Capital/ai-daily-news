@@ -93,31 +93,31 @@ def is_recent(published: str, start_time: datetime = None, end_time: datetime = 
         return False
 
 
-def get_available_instance() -> Optional[str]:
+def get_available_instance(username: str = "OpenAI") -> Optional[str]:
     for instance in NITTER_INSTANCES:
         try:
-            client = httpx.Client(timeout=5.0, headers=HEADERS)
-            resp = client.get(f"{instance}/OpenAI/rss")
-            if resp.status_code == 200 and len(resp.text) > 100:
+            with httpx.Client(timeout=5.0, headers=HEADERS, follow_redirects=True) as client:
+                resp = client.get(f"{instance}/{username}/rss")
+            if resp.status_code == 200 and len(resp.text) > 100 and resp.text.lstrip().startswith("<?xml"):
                 return instance
-        except:
+        except Exception:
             continue
     return None
 
 
-def fetch_user_tweets(username: str, instance: str, count: int = 5, start_time: datetime = None, end_time: datetime = None) -> List[Dict]:
+def fetch_user_tweets(username: str, instance: str, count: int = 10, start_time: datetime = None, end_time: datetime = None) -> List[Dict]:
     tweets = []
     url = f"{instance}/{username}/rss"
 
     try:
-        client = httpx.Client(timeout=TIMEOUT, headers=HEADERS)
+        client = httpx.Client(timeout=TIMEOUT, headers=HEADERS, follow_redirects=True)
         resp = client.get(url)
-        if resp.status_code != 200:
+        if resp.status_code != 200 or not resp.text.lstrip().startswith("<?xml"):
             return []
 
         feed = feedparser.parse(resp.text)
         if feed.entries:
-            for entry in feed.entries[:count]:
+            for entry in feed.entries:
                 title = entry.get("title", "")
                 published = entry.get("published", "")
 
@@ -146,8 +146,8 @@ def fetch_user_tweets(username: str, instance: str, count: int = 5, start_time: 
                     continue
 
                 link = entry.get("link", "")
-                if "nitter" in link:
-                    link = link.replace("nitter.net/", "x.com/").replace("nitter.", "x.com/")
+                for nitter_instance in NITTER_INSTANCES:
+                    link = link.replace(f"{nitter_instance}/", "https://x.com/")
 
                 tweets.append({
                     "title": title[:150] + "..." if len(title) > 150 else title,
@@ -156,29 +156,42 @@ def fetch_user_tweets(username: str, instance: str, count: int = 5, start_time: 
                     "source": f"@{username}",
                     **X_ACCOUNT_INFO.get(username.lower(), {})
                 })
+                if len(tweets) >= count:
+                    break
     except:
         pass
 
     return tweets
 
 
-def fetch_all_tweets(max_per_account: int = 5, start_time: datetime = None, end_time: datetime = None) -> List[Dict]:
-    instance = get_available_instance()
-    if not instance:
-        print("   ⚠️ 无法连接Nitter，使用缓存")
-        return load_cache()
-
-    print(f"   使用实例: {instance}")
-
+def fetch_all_tweets(max_per_account: int = 10, start_time: datetime = None, end_time: datetime = None) -> List[Dict]:
     all_tweets = []
+    failed_accounts = []
+
     for account in ALL_ACCOUNTS:
-        tweets = fetch_user_tweets(account, instance, max_per_account, start_time, end_time)
-        all_tweets.extend(tweets)
+        tweets = []
+        last_error = "no instance tried"
+        for instance in NITTER_INSTANCES:
+            tweets = fetch_user_tweets(account, instance, max_per_account, start_time, end_time)
+            if tweets:
+                break
+            last_error = f"{instance}: no recent tweets"
+        if tweets:
+            all_tweets.extend(tweets)
+        else:
+            failed_accounts.append((account, last_error))
         time.sleep(0.3)
+
+    if failed_accounts:
+        print(f"   ⚠️ {len(failed_accounts)} 个账号未抓到有效推文")
+        for account, reason in failed_accounts[:10]:
+            print(f"      @{account}: {reason}")
 
     if all_tweets:
         save_cache(all_tweets)
         print(f"   抓取到 {len(all_tweets)} 条新推文")
+    else:
+        print("   ⚠️ 本轮抓取为空，不覆盖缓存")
 
     return all_tweets
 
