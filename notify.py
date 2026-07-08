@@ -95,7 +95,7 @@ def send_slack(report):
     blocks = [
         {"type": "header", "text": {"type": "plain_text", "text": "📡 AI 前沿动态"}},
         {"type": "section", "text": {"type": "mrkdwn", "text": report['summary'][:500]}},
-        {"type": "actions", "elements": [{"type": "button", "text": {"type": "plain_text", "text": "查看详情"}, "url": f"https://LinkX-Capital.github.io/ai-daily-news/daily-ai-news-{datetime.now().strftime("%Y-%m-%d")}.html"}]}
+        {"type": "actions", "elements": [{"type": "button", "text": {"type": "plain_text", "text": "查看详情"}, "url": f"https://LinkX-Capital.github.io/ai-daily-news/daily-ai-news-{_NEWS_DATE}.html"}]}
     ]
 
     try:

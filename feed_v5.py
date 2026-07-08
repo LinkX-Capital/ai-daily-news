@@ -1883,7 +1883,7 @@ def fetch_source(name, url, limit=15, max_retries=5):
                 link = e.get("link", "")
                 summary = clean_text(e.get("summary") or e.get("description") or "")
                 if not title or len(title) < 5: continue
-                cats = get_cat(title, summary)
+                cats = get_cat(title, summary, name)
                 primary_cat = cats[0]
 
                 article = {
