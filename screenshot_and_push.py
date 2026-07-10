@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 """截图指定日期的日报并推送飞书
 
 用法:
