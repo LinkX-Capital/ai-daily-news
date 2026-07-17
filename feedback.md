@@ -50,6 +50,7 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 | **body — 降级/截断** | #37 | 截断检测：单字结尾/未闭合引号触发重新生成 |
 | **body — 媒体与论文** | #22 | 写body前必须读原文，区分报道者和研究者 |
 | **body — 媒体与论文** | #46 | 媒体原文事实性描述默认保留，仅当与一手来源矛盾时才修改；补充≠替换 |
+| **body — 媒体与论文** | #69 | 公司/机构不是研究者，归属表述用“机构研究人员/作者团队”或方法主体 |
 | **body — 多源合并** | #15 | 同一事件多来源合并最丰富数据 |
 | **body — 格式** | #47 | 链接只出现在来源行，body禁止inline markdown链接 |
 | **key_points** | #04 | 每条新闻必须有≥1条insight |
@@ -57,6 +58,9 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 | **category** | #10 | 企业合作→产业动态，非X讨论 |
 | **category** | #21 | 分类由核心信号决定，非表面主题 |
 | **category** | #27 | 研究博文→研究关注，非X讨论 |
+| **category** | #66 | 新评测集→模型前沿；单模型评测结果→X讨论，除非与当天模型发布合并 |
+| **category** | #67 | 分类模糊且主要来源是X时，默认归X讨论 |
+| **category** | #68 | 官方公司/产品原型功能更新→产业动态，即使来源是X |
 | **filter** | #03 | 检查来源链接可用性（替换nitter.net） |
 | **filter** | #11 | 同一条新闻只归属一个分类 |
 | **filter** | #12 | 跨天去重需实体级匹配 |
@@ -535,3 +539,35 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 删除该条，因7月4日已以“阿里巴巴禁止员工在工作电脑使用Claude”完整收录，并保留更丰富的第一财经/The Information来源版本
 - **reason**: 同一实体+同一事件跨天重复，后一天 TechCrunch 简讯信息量更低，不应重复进入日报
 - **rule_hint**: 跨天去重需按实体+事件匹配；同一事件后续低信息量简讯重复出现时删除，保留信息密度最高且来源更完整的旧条
+
+### [2026-07-11] #66
+- **file**: daily-ai-news-2026-07-11.md
+- **field**: category
+- **before**: 「Artificial Analysis评测：Meta Muse Spark 1.1 Intelligence Index得51分」归入「模型前沿」
+- **after**: 移入「X讨论」
+- **reason**: 这不是新的重要评测集发布，也不是当天模型发布的合并动态，而是第三方对具体模型的单条评测结果。具体模型评测结果更适合作为X平台讨论/数据点收录，避免模型前沿被单模型分数榜单稀释。
+- **rule_hint**: **【评测类动态分类规则】新的重要benchmark/评测集/评测框架发布可归「模型前沿」；具体模型的第三方评测结果、榜单分数、单模型对比，如果不是与当天模型发布合并成同一动态，一律归「X讨论」。判断标准：核心新闻是“评测体系本身新增”→模型前沿；核心新闻是“某已有模型拿了多少分”→X讨论。**
+
+### [2026-07-11] #67
+- **file**: daily-ai-news-2026-07-11.md
+- **field**: category
+- **before**: 「Google DeepMind与Google Labs在Project Genie中推出Street View地理接地功能」归入「模型前沿」
+- **after**: 移入「X讨论」
+- **reason**: 该条主要来源是X动态，且内容介于生成式3D、空间智能演示、产品原型更新之间，分类边界不清晰。对于这类模糊条目，放入X讨论比硬归入模型前沿更稳妥。
+- **rule_hint**: **【X来源模糊分类兜底规则】当条目分类边界模糊，且主要来源是X推文/账号动态时，默认归入「X讨论」。但如果条目有明确一手论文、官方研究博客、企业合作/融资/算力基础设施等强语义信号，仍按核心信号归入对应栏目。**
+
+### [2026-07-11] #68
+- **file**: daily-ai-news-2026-07-11.md
+- **field**: category
+- **before**: 「Google DeepMind与Google Labs在Project Genie中推出Street View地理接地功能」按模型/空间智能或X来源模糊处理
+- **after**: 移入「产业动态」
+- **reason**: 该条虽然来源是X，但主体是Google DeepMind与Google Labs，动作是Project Genie产品原型的具体功能更新。它不是新模型/benchmark/论文，也不是纯社区讨论；官方产品/平台/实验原型功能更新应归产业动态。
+- **rule_hint**: **【官方产品/原型更新分类规则】当X来源条目有明确公司/官方账号主体，且内容是产品、平台、实验原型、功能、API、集成能力更新时，优先归「产业动态」。#67 的X讨论兜底只适用于主体或事件性质不清的模糊条目，不能覆盖明确的官方产品动态。**
+
+### [2026-07-11] #69
+- **file**: daily-ai-news-2026-07-11.md
+- **field**: body — 媒体与论文
+- **before**: 「Meta等研究者在arXiv发布《Remember When It Matters: Proactive Memory Agent for Long-Horizon Agents》」
+- **after**: 「长时程Agent容易让任务事实、既有诊断和未完成子目标在不断增长的轨迹中失效，论文将这一问题称为behavioral state decay。Proactive Memory Agent把记忆作为主动干预机制……」
+- **reason**: Meta是公司/机构，不是“研究者”。即使作者机构归属已核实，也不能把机构写成研究者主体；此外“在arXiv发布”是低信息量模板句，不如直接写问题、方法和数据。
+- **rule_hint**: **【研究归属表述规则】论文/研究类条目中，公司、大学、实验室等机构不是“研究者”。需要归属时写“Meta等机构的研究人员/作者团队”或“某机构团队”，更推荐以论文方法/项目名为主体开头。禁止“Meta等研究者”“Google等研究者”这类机构人格化表达；“在arXiv发布/论文提出”模板句也应尽量替换为问题→方法→数据结构。**

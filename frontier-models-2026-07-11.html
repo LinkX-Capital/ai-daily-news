@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>前沿模型周报 | 2026.07.04 — 07.11</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --bg-card: #ffffff;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --green: #0d8050;
+            --green-bg: #e6f5ed;
+            --red: #c03030;
+            --red-bg: #fce8e8;
+            --blue: #2563eb;
+            --blue-bg: #eff4ff;
+            --orange: #c05000;
+            --orange-bg: #fff3e6;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --bg-card: #141414;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+                --green: #34d399;
+                --green-bg: #0d2818;
+                --red: #f87171;
+                --red-bg: #2a1212;
+                --blue: #60a5fa;
+                --blue-bg: #0c1a33;
+                --orange: #fbbf24;
+                --orange-bg: #2a1f0c;
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-left { display: flex; align-items: baseline; gap: 10px; }
+        .topbar-brand { font-size: 14px; font-weight: 700; color: var(--purple); text-decoration: none; }
+        .topbar-tagline { font-size: 11px; color: var(--text-3); letter-spacing: 0.2px; }
+        .topbar-right { display: flex; gap: 12px; align-items: center; }
+        .topbar-nav { font-size: 12px; color: var(--text-3); text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: all 0.12s; }
+        .topbar-nav:hover { color: var(--text); background: var(--purple-20); }
+        .topbar-nav.active { color: var(--purple); font-weight: 600; }
+        .container { max-width: 980px; margin: 0 auto; padding: 32px 24px; }
+        .hero {
+            text-align: center; padding: 40px 0 32px;
+            border-bottom: 1px solid var(--border); margin-bottom: 32px;
+        }
+        .hero-date { font-size: 13px; color: var(--text-3); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .hero-title { font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+        .hero-sub { font-size: 15px; color: var(--text-2); max-width: 720px; margin: 0 auto 24px; line-height: 1.7; }
+        .hero-stats { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+        .hero-stat { text-align: center; }
+        .hero-stat-num { font-size: 28px; font-weight: 700; color: var(--purple); font-variant-numeric: tabular-nums; }
+        .hero-stat-label { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+        .section { margin-bottom: 40px; }
+        .section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--purple-40); }
+        .sec-dot { width: 6px; height: 6px; background: var(--purple); border-radius: 2px; }
+        .sec-title { font-size: 14px; font-weight: 600; color: var(--purple); text-transform: uppercase; letter-spacing: 0.8px; }
+        .insight-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .insight-block h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; color: var(--purple); }
+        .insight-block p { font-size: 13px; color: var(--text-2); line-height: 1.75; margin-bottom: 8px; }
+        .insight-block p:last-child { margin-bottom: 0; }
+        .insight-block strong { color: var(--text); }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; transition: border-color 0.15s; }
+        .card:hover { border-color: var(--purple-40); }
+        .card-tag { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 3px; display: inline-block; margin-bottom: 8px; }
+        .card-tag-high { background: var(--green-bg); color: var(--green); }
+        .card-tag-mid { background: var(--orange-bg); color: var(--orange); }
+        .card-tag-new { background: var(--blue-bg); color: var(--blue); }
+        .card-tag-crisis { background: var(--red-bg); color: var(--red); }
+        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .card-sub { font-size: 12px; color: var(--text-3); margin-bottom: 12px; }
+        .card-body { font-size: 13px; color: var(--text-2); line-height: 1.7; }
+        .card-body strong { color: var(--text); }
+        .mini-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .mini-stat { background: var(--bg-page); border-radius: 6px; padding: 8px 10px; }
+        .mini-stat-val { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .mini-stat-label { font-size: 10px; color: var(--text-3); }
+        .data-table-wrap, .matrix-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; margin-bottom: 20px; }
+        .data-table, .matrix-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th, .matrix-table th { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); background: var(--bg-page); padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        .data-table td, .matrix-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .data-table tr:last-child td, .matrix-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover td, .matrix-table tr:hover td { background: var(--purple-20); }
+        .model-name { font-weight: 700; white-space: nowrap; }
+        .vendor { font-size: 11px; color: var(--text-3); }
+        .best { background: var(--purple-20); border-radius: 3px; padding: 1px 4px; font-weight: 700; color: var(--purple); }
+        .tag-open { font-size: 10px; background: var(--blue-bg); color: var(--blue); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+        .tag-closed { font-size: 10px; background: var(--red-bg); color: var(--red); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+        .tag-api { font-size: 10px; background: var(--green-bg); color: var(--green); padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+        .three-pole { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+        .pole { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+        .pole-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .pole-model { font-size: 12px; color: var(--purple); font-weight: 600; margin-bottom: 6px; }
+        .pole-stat { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .pole-stat-label { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+        .pole-desc { font-size: 11px; color: var(--text-3); margin-top: 8px; line-height: 1.5; }
+        .insight-bullets { margin-top: 12px; padding-left: 0; list-style: none; }
+        .insight-bullets li { font-size: 13px; color: var(--text-2); line-height: 1.65; padding: 4px 0; padding-left: 16px; position: relative; }
+        .insight-bullets li::before { content: '·'; position: absolute; left: 0; color: var(--purple); font-weight: 700; }
+        .footer { border-top: 1px solid var(--border); padding: 20px 24px; margin: 40px auto 0; max-width: 980px; }
+        .footer-copy { font-size: 12px; color: var(--text-3); line-height: 1.6; }
+        .footer-copy a { color: var(--purple-80); text-decoration: none; }
+        @media (max-width: 768px) {
+            .container { padding: 20px 16px; }
+            .hero-title { font-size: 22px; }
+            .hero-stats { gap: 20px; }
+            .hero-stat-num { font-size: 22px; }
+            .three-pole { grid-template-columns: 1fr; }
+            .cards { grid-template-columns: 1fr; }
+            .data-table { font-size: 11px; }
+            .data-table th, .data-table td { padding: 6px 8px; }
+            .topbar-right { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-left">
+        <a href="topic-frontier-models.html" class="topbar-brand">← 前沿模型周报</a>
+        <span class="topbar-tagline">AI Research · Week 6</span>
+    </div>
+    <div class="topbar-right">
+        <a href="#models" class="topbar-nav active">重要更新</a>
+        <a href="#vertical" class="topbar-nav">纵向对比</a>
+        <a href="#horizontal" class="topbar-nav">横向对比</a>
+        <a href="#signals" class="topbar-nav">关键动态</a>
+        <a href="#outlook" class="topbar-nav">前瞻</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="hero">
+        <div class="hero-date">2026.07.04 — 07.11</div>
+        <h1 class="hero-title">前沿模型周报 · 第6期</h1>
+        <p class="hero-sub">本周先确认重大模型发布：GPT-5.6、Muse Spark 1.1、SWE-1.7、LongCat-2.0、Grok 4.5 与 GPT-Live。再判断为什么值得关注：它们分别改变了模型家族分层、低价 agent routing、coding agent 环境、国产 MoE 工程化、IDE 交互轨迹训练和实时语音前台层；围绕这些发布，benchmark、价格、缓存、模型编排和非聊天型前沿也同步发生变化。</p>
+        <div class="hero-stats">
+            <div class="hero-stat"><div class="hero-stat-num">53.6</div><div class="hero-stat-label">GPT-5.6 Sol ALE</div></div>
+            <div class="hero-stat"><div class="hero-stat-num">51</div><div class="hero-stat-label">Muse Spark AA Index</div></div>
+            <div class="hero-stat"><div class="hero-stat-num">73%</div><div class="hero-stat-label">GPT-5.6 Sol DeepSWE</div></div>
+            <div class="hero-stat"><div class="hero-stat-num">$1/$6</div><div class="hero-stat-label">GPT-5.6 Luna $/M</div></div>
+        </div>
+    </div>
+
+    <div class="section" id="signal-matrix">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">信号矩阵：重大模型发布与前沿变化</span></div>
+        <div class="matrix-wrap">
+            <table class="matrix-table">
+                <thead><tr><th>重大发布 / 动态</th><th>发布性质</th><th>关键变化</th><th>为什么值得关注</th></tr></thead>
+                <tbody>
+                    <tr><td class="model-name">GPT-5.6</td><td>OpenAI 新一代通用模型家族</td><td>Sol / Terra / Luna 三档；ALE 53.6；Coding Agent Index 80；BrowseComp 92.2%；OSWorld 2.0 62.6%；Sol $5/$30，Luna $1/$6。</td><td>重点不是 Sol 单点冲高，而是能力、价格、缓存、Work、Codex、Copilot、Programmatic Tool Calling 与 multi-agent 一起发布，模型竞争单位变成任务执行系统。</td></tr>
+                    <tr><td class="model-name">Muse Spark 1.1</td><td>Meta 闭源 multimodal reasoning / agentic API</td><td>AA Intelligence Index 43 → 51；Coding 59 → 71；HLE 45%；1M context；$1.25/$4.25；cache hit $0.15/M。</td><td>Meta 从弱信号变成有第三方测评支撑的低价第二梯队模型；它不是最强主模型，但会影响 agent routing 成本。</td></tr>
+                    <tr><td class="model-name">SWE-1.7</td><td>Cognition / Devin 长程软件工程模型</td><td>FrontierCode 42.3%；Terminal-Bench 81.5%；SWE-Bench Multilingual 77.8%；Devin + Cerebras 1000 TPS。</td><td>说明 coding agent 前沿从“会写代码”转向真实工程环境、长程 rollout、验证器和失败恢复。</td></tr>
+                    <tr><td class="model-name">LongCat-2.0</td><td>Meituan 国产 MoE / agentic coding 模型</td><td>1.6T 总参；33B–56B active；1M context；SWE-bench Pro 59.5；Terminal-Bench 70.8。</td><td>看点不是参数规模本身，而是国产算力、MoE 动态激活、长上下文和开源推理闭环能否被第三方复测。</td></tr>
+                    <tr><td class="model-name">Grok 4.5</td><td>Cursor / SpaceXAI coding-to-computer-work 模型</td><td>AA Intelligence 约 54；Grok Build Coding Agent Index 76；基础价 $2/$6，fast $4/$18。</td><td>代表 IDE 交互轨迹成为模型训练资产，coding agent 从代码补全扩展到数据科学、金融、法律和通用电脑工作。</td></tr>
+                    <tr><td class="model-name">GPT-Live</td><td>OpenAI full-duplex 实时语音层</td><td>前台实时听说，后台委托 frontier model；从 turn-based voice 走向连续交互。</td><td>语音不只是交互入口，而可能成为 agent 的低延迟前台层，影响客服、教育、车载、陪伴和销售训练。</td></tr>
+                    <tr><td class="model-name">Nemotron / Robostral / SensorFM / Seedream</td><td>推理架构与非聊天型前沿</td><td>diffusion/self-speculation 解码、单 RGB 具身导航、健康传感器基础模型、设计编辑模型。</td><td>模型前沿正在外溢到推理系统、世界模型、具身、健康和设计工作流，不应只看聊天 LLM。</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section" id="models">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">一、本周重要模型更新</span></div>
+        <div class="insight-block">
+            <p>本节只做第一步：确认本周重大模型发布及其核心事实。后文再分别展开 benchmark 排名变化、前代对比、价格 / 成本变化，以及围绕模型前沿的编排、推理经济和非聊天型趋势。</p>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <span class="card-tag card-tag-high">高置信度</span><span class="card-tag card-tag-new">旗舰更新</span>
+                <div class="card-title">GPT-5.6</div>
+                <div class="card-sub">OpenAI | Sol / Terra / Luna | 7/9</div>
+                <div class="card-body">GPT-5.6 的重点不是 Sol 单点冲榜，而是把同一代模型拆成 Sol / Terra / Luna 三档，并同步交付 Work、Codex、Copilot、Responses API、Programmatic Tool Calling 与 multi-agent beta。Sol 在 Agents' Last Exam 达 <strong>53.6</strong>，Coding Agent Index 达 <strong>80</strong>，BrowseComp <strong>92.2%</strong>，OSWorld 2.0 <strong>62.6%</strong>；但在 AA Intelligence 和知识工作质量上仍需与 Claude Fable 5 分项比较。</div>
+                <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">53.6</div><div class="mini-stat-label">Agents' Last Exam</div></div><div class="mini-stat"><div class="mini-stat-val">80</div><div class="mini-stat-label">Coding Agent Index</div></div><div class="mini-stat"><div class="mini-stat-val">$5/$30</div><div class="mini-stat-label">Sol $/M</div></div><div class="mini-stat"><div class="mini-stat-val">$1/$6</div><div class="mini-stat-label">Luna $/M</div></div></div>
+                <div class="card-body" style="margin-top:12px"><strong>相对前代变化：</strong>GPT-5.6 相比 GPT-5.5 的核心变化是成本—能力曲线和工作流形态：Sol 做复杂任务上限，Luna 把接近前代旗舰的能力压到低价区间，Terra 覆盖中间任务；缓存写入、缓存读取、explicit breakpoint 和 30 分钟最小缓存期使企业级 agent 成本更可预测。</div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-high">AA 已测</span><span class="card-tag card-tag-new">低价 API</span>
+                <div class="card-title">Muse Spark 1.1</div>
+                <div class="card-sub">Meta | Model API / Meta AI | 7/9</div>
+                <div class="card-body">Muse Spark 1.1 已有 Artificial Analysis 独立测评。AA Intelligence Index 从 1.0 的 <strong>43</strong> 提升到 <strong>51</strong>，Coding Index 从 <strong>59</strong> 提升到 <strong>71</strong>，HLE <strong>45%</strong>，GDPval-AA v2 <strong>1376 Elo</strong>。API 价格为 <strong>$1.25 / $4.25</strong> per 1M input / output tokens，cache hit <strong>$0.15/M</strong>。</div>
+                <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">51</div><div class="mini-stat-label">AA Index</div></div><div class="mini-stat"><div class="mini-stat-val">71</div><div class="mini-stat-label">Coding Index</div></div><div class="mini-stat"><div class="mini-stat-val">1M</div><div class="mini-stat-label">Context</div></div><div class="mini-stat"><div class="mini-stat-val">$1.25/$4.25</div><div class="mini-stat-label">API $/M</div></div></div>
+                <div class="card-body" style="margin-top:12px"><strong>相对前代变化：</strong>1.1 的提升主要来自 scientific reasoning、coding、knowledge 与幻觉控制；长上下文从 262k 扩至 1M。它不是最强 work agent，但已经从弱信号升级为高性价比 agent routing 选项。</div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-high">高置信度</span><span class="card-tag card-tag-mid">Coding Agent</span>
+                <div class="card-title">SWE-1.7</div>
+                <div class="card-sub">Cognition | Devin 环境 | 7/9</div>
+                <div class="card-body">SWE-1.7 基于 Kimi K2.7 base 继续训练，目标是长程异步软件工程任务。FrontierCode 1.1 Main <strong>42.3%</strong>，Terminal-Bench 2.1 <strong>81.5%</strong>，SWE-Bench Multilingual <strong>77.8%</strong>，并通过 Devin + Cerebras 达到 <strong>1000 TPS</strong>。</div>
+                <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">42.3%</div><div class="mini-stat-label">FrontierCode</div></div><div class="mini-stat"><div class="mini-stat-val">81.5%</div><div class="mini-stat-label">Terminal-Bench</div></div><div class="mini-stat"><div class="mini-stat-val">77.8%</div><div class="mini-stat-label">SWE Multi</div></div><div class="mini-stat"><div class="mini-stat-val">1000</div><div class="mini-stat-label">TPS</div></div></div>
+                <div class="card-body" style="margin-top:12px"><strong>相对基座变化：</strong>相对 Kimi K2.7 Code，FrontierCode 从 30.1% 提至 42.3%，Terminal-Bench 从 72.7% 提至 81.5%。核心不是裸模型，而是 Devin 环境、长程 rollout、self-compaction 与真实任务验证。</div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-mid">中高置信度</span><span class="card-tag card-tag-new">开源 MoE</span>
+                <div class="card-title">LongCat-2.0</div>
+                <div class="card-sub">Meituan LongCat | Agentic coding | 7/5—7/9</div>
+                <div class="card-body">LongCat-2.0 是面向 agentic coding 的开源 MoE，总参数 <strong>1.6T</strong>，每 token 动态激活 <strong>33B–56B</strong>，原生 <strong>1M context</strong>。官方页面称其在国产 <strong>5 万卡</strong>算力集群上完成训练和推理，SWE-bench Pro <strong>59.5</strong>，Terminal-Bench <strong>70.8</strong>。</div>
+                <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">1.6T</div><div class="mini-stat-label">Total Params</div></div><div class="mini-stat"><div class="mini-stat-val">33B–56B</div><div class="mini-stat-label">Active Params</div></div><div class="mini-stat"><div class="mini-stat-val">1M</div><div class="mini-stat-label">Context</div></div><div class="mini-stat"><div class="mini-stat-val">59.5</div><div class="mini-stat-label">SWE-bench Pro</div></div></div>
+                <div class="card-body" style="margin-top:12px"><strong>相对上一阶段变化：</strong>国产模型叙事从“参数规模”转向“可运行闭环”：国产集群、动态激活 MoE、1M context、开源推理代码共同出现，重点是能否被第三方复现。</div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-mid">中高置信度</span><span class="card-tag card-tag-mid">通用电脑工作</span>
+                <div class="card-title">Grok 4.5</div>
+                <div class="card-sub">Cursor / SpaceXAI | MoE | 7/8</div>
+                <div class="card-body">Grok 4.5 是 Cursor 与 SpaceXAI 训练的 MoE 模型，训练数据包括数万亿 tokens 的 Cursor 用户交互数据，并把任务从软件工程扩展到数据科学、金融、法律和通用电脑工作。基础版定价 <strong>$2 / $6</strong>，fast 版 <strong>$4 / $18</strong> per 1M input / output tokens。</div>
+                <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">MoE</div><div class="mini-stat-label">Architecture</div></div><div class="mini-stat"><div class="mini-stat-val">$2/$6</div><div class="mini-stat-label">Base $/M</div></div><div class="mini-stat"><div class="mini-stat-val">$4/$18</div><div class="mini-stat-label">Fast $/M</div></div><div class="mini-stat"><div class="mini-stat-val">Cursor</div><div class="mini-stat-label">Interaction Data</div></div></div>
+                <div class="card-body" style="margin-top:12px"><strong>相对 Cursor 既有路线变化：</strong>从 IDE coding specialist 扩展到更广义电脑工作。Cursor 还主动披露 CursorBench 数据污染并排除该 benchmark，评测透明度本身是一个重要信号。</div>
+            </div>
+
+            <div class="card">
+                <span class="card-tag card-tag-high">高置信度</span><span class="card-tag card-tag-new">实时语音</span>
+                <div class="card-title">GPT-Live</div>
+                <div class="card-sub">OpenAI | Full-duplex voice | 7/8</div>
+                <div class="card-body">GPT-Live 采用 <strong>full-duplex</strong> 架构，可同时听与说，并在对话中持续判断说话、暂停、打断或调用工具。它把连续交互层与后台深度推理层解耦，发布时后台使用 GPT-5.5，未来可接入更新前沿模型。</div>
+                <div class="mini-stats"><div class="mini-stat"><div class="mini-stat-val">Full-duplex</div><div class="mini-stat-label">Interaction</div></div><div class="mini-stat"><div class="mini-stat-val">1.5亿+</div><div class="mini-stat-label">Voice Weekly Users</div></div><div class="mini-stat"><div class="mini-stat-val">GPT-5.5</div><div class="mini-stat-label">Backend</div></div><div class="mini-stat"><div class="mini-stat-val">API</div><div class="mini-stat-label">待开放</div></div></div>
+                <div class="card-body" style="margin-top:12px"><strong>相对 Advanced Voice Mode 变化：</strong>从 turn-based 语音聊天变成实时交互层。真正重要的是“前台低延迟 + 后台 frontier model 委托”的架构，而不只是语音质量。</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="vertical">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">二、纵向对比：相对前代改变了什么</span></div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead><tr><th>模型线</th><th>上一阶段</th><th>本周更新</th><th>性能变化</th><th>价格 / 成本变化</th><th>产品形态变化</th></tr></thead>
+                <tbody>
+                    <tr><td class="model-name">OpenAI GPT</td><td>GPT-5.5：单旗舰 + Codex / ChatGPT 分工</td><td><strong>GPT-5.6 Sol / Terra / Luna</strong></td><td>Sol：ALE 53.6、Coding Index 80、BrowseComp 92.2%、OSWorld 62.6%</td><td>Sol $5/$30；Terra $2.5/$15；Luna $1/$6，形成三档成本曲线</td><td>模型发布同步变成 ChatGPT Work、Copilot、Programmatic Tool Calling、multi-agent beta 发布</td></tr>
+                    <tr><td class="model-name">Meta Muse</td><td>Muse Spark 1.0：AA Index 43，Coding 59，context 262k</td><td><strong>Muse Spark 1.1</strong></td><td>AA Index 51（+8）；Coding 71（+12）；HLE 45%；GDPval-AA v2 1376 Elo</td><td>$1.25/$4.25，cache hit $0.15/M；~$0.26 / AA Index task</td><td>从单模型信号变成 Meta Model API + Meta AI + 1M context + agentic tasks</td></tr>
+                    <tr><td class="model-name">Cognition SWE</td><td>Kimi K2.7 Code 基座：FrontierCode 30.1%、Terminal-Bench 72.7%</td><td><strong>SWE-1.7</strong></td><td>FrontierCode 42.3%；Terminal-Bench 81.5%；SWE-Bench Multilingual 77.8%</td><td>Devin + Cerebras 1000 TPS，成本/速度成为卖点</td><td>从基座模型能力转向 Devin 真实工程环境与长程 rollout</td></tr>
+                    <tr><td class="model-name">LongCat</td><td>国产大模型以参数、榜单为主</td><td><strong>LongCat-2.0</strong></td><td>SWE-bench Pro 59.5；Terminal-Bench 70.8；1M context</td><td>1.6T 总参但 33B–56B/token 动态激活</td><td>国产 5 万卡训练/推理 + 开源权重/推理代码，重点转向可运行闭环</td></tr>
+                    <tr><td class="model-name">Cursor / xAI</td><td>Cursor 主要围绕 IDE coding workflow</td><td><strong>Grok 4.5</strong></td><td>强化软件工程、数据科学、金融、法律等工具任务</td><td>$2/$6；fast $4/$18</td><td>Cursor 交互轨迹成为训练资产，从 coding 走向通用电脑工作</td></tr>
+                    <tr><td class="model-name">OpenAI Voice</td><td>Advanced Voice Mode：turn-based 语音聊天</td><td><strong>GPT-Live</strong></td><td>GPQA、BrowseComp、τ³-Voice Telecom 较 Advanced Voice Mode 提升</td><td>低延迟前台模型 + 后台 GPT-5.5 委托</td><td>语音从交互形式升级为实时 agent 前台层</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="insight-block">
+            <h3>纵向结论</h3>
+            <p>本周的代际变化不是“每个模型多刷几个点”，而是三类升级：OpenAI 从模型迭代升级为工作流系统分层；Meta 从弱社媒信号升级为有 AA 复测的低价 API；Coding Agent 从模型能力升级为环境、轨迹和验证器竞争。</p>
+        </div>
+    </div>
+
+    <div class="section" id="horizontal">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">三、横向对比：模型前沿在哪些维度移动</span></div>
+        <div class="three-pole">
+            <div class="pole"><div class="pole-name">能力上限</div><div class="pole-model">GPT-5.6 / Claude Fable 5</div><div class="pole-stat">59 / 60</div><div class="pole-stat-label">AA Intelligence</div><div class="pole-desc">GPT-5.6 Sol 接近 Fable 5，但不是所有榜单第一；能力上限要按任务类型拆开看。</div></div>
+            <div class="pole"><div class="pole-name">成本 / 路由</div><div class="pole-model">GPT-5.6 Luna / Muse Spark 1.1</div><div class="pole-stat">$0.21 / $0.26</div><div class="pole-stat-label">AA task cost</div><div class="pole-desc">低价高智能模型开始进入 routing 层，改变 agent 应用的单位经济性。</div></div>
+            <div class="pole"><div class="pole-name">真实任务系统</div><div class="pole-model">Codex / Claude Code / Devin / Grok Build</div><div class="pole-stat">80</div><div class="pole-stat-label">Coding Agent Index</div><div class="pole-desc">coding 排名不再只是裸模型能力，而是模型、harness、环境、验证器和交互轨迹的组合。</div></div>
+        </div>
+
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead><tr><th>维度</th><th>本周变化</th><th>代表信号</th><th>怎么理解</th></tr></thead>
+                <tbody>
+                    <tr><td class="model-name">综合智能</td><td>OpenAI 回到顶层附近，但 Anthropic 仍保留部分领先。</td><td>AA Intelligence：Claude Fable 5 约 <strong>60</strong>，GPT-5.6 Sol <strong>59</strong>，Opus 4.8 <strong>56</strong>，Terra <strong>55</strong>，Grok 4.5 <strong>54</strong>，Luna / Muse Spark 1.1 约 <strong>51</strong>。</td><td>不能写成 GPT-5.6 全面第一；更准确的结论是 Sol 接近最高智能层，同时把成本和时间压低。</td></tr>
+                    <tr><td class="model-name">长周期专业工作流</td><td>ALE 成为本期最强的 agent work 信号。</td><td>GPT-5.6 Sol 在 Agents' Last Exam 达 <strong>53.6</strong>；官方称 medium reasoning 仍领先 Fable 5，且估算成本约为后者四分之一；Terra / Luna 以更低成本超过 Fable 5。</td><td>这是 GPT-5.6 最值得写的地方：能力提升和单位成本下降同时发生。</td></tr>
+                    <tr><td class="model-name">Coding agent</td><td>榜单从“代码题”转向真实工程任务与 harness。</td><td>AA Coding Agent Index：GPT-5.6 Sol in Codex <strong>80</strong>；Terra <strong>77</strong>；Luna <strong>75</strong>；Grok 4.5 in Grok Build <strong>76</strong>。DeepSWE：Sol <strong>73%</strong>，Fable 5 <strong>70%</strong>，Terra <strong>70%</strong>。</td><td>要比较的是“模型 + agent harness + 成本 + token + steps”，不是裸模型。</td></tr>
+                    <tr><td class="model-name">Computer-use / Browse</td><td>GPT-5.6 明确刷新浏览和电脑使用任务前沿。</td><td>BrowseComp <strong>92.2%</strong>，OSWorld 2.0 <strong>62.6%</strong>；官方称 OSWorld 超过 Opus 4.8 且输出 token 少 <strong>85%</strong>。</td><td>这类 benchmark 更接近 work agent 的基础能力，但不同 OSWorld 版本和 harness 不能混比。</td></tr>
+                    <tr><td class="model-name">知识工作交付</td><td>漂亮产物和 rubric 质量开始分离。</td><td>AA-Briefcase：GPT-5.6 Sol presentation Elo 最高，但 Fable 5 在 Rubric Score 和 Analytical Quality 上领先；GDPval-AA v2 中 Sol 接近 Fable 5，Muse Spark 1.1 为 <strong>1376 Elo</strong>。</td><td>投研报告、PPT、Excel 这类任务不能只看“观感”，要看是否真正满足标准。</td></tr>
+                    <tr><td class="model-name">低价第二梯队</td><td>Meta 和 OpenAI 低价档都开始影响应用 routing。</td><td>Muse Spark 1.1：AA Index <strong>51</strong>、Coding <strong>71</strong>、1M context、$1.25/$4.25；GPT-5.6 Luna：$1/$6，AA task cost 约 <strong>$0.21</strong>。</td><td>第二梯队的意义不是挑战旗舰榜首，而是让大量 agent 步骤可以不用旗舰模型。</td></tr>
+                    <tr><td class="model-name">推理经济</td><td>成本从价格表扩展到缓存、解码和编排。</td><td>GPT-5.6 引入 cache write 1.25× input、cache read 90% discount、explicit cache breakpoint、30 分钟最小缓存期；Nemotron-Labs-Diffusion 统一 AR / diffusion / self-speculation，8B 在 GB200 + SGLang 上吞吐提升 <strong>4×</strong>。</td><td>模型前沿的一部分正在变成“推理系统前沿”。</td></tr>
+                    <tr><td class="model-name">非聊天型前沿</td><td>世界模型、语音、具身、健康和设计模型继续外溢。</td><td>GPT-Live full-duplex；Robostral Navigate 单 RGB 导航；SensorFM 用 5M 参与者、1T+ 分钟传感器数据；Seedream 5.0 Pro 进入 Arena 图像榜。</td><td>这些不是本期最强模型主线，但决定下一批垂直模型机会。</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead><tr><th>模型 / 档位</th><th>Input $/M</th><th>Output $/M</th><th>缓存 / 上下文</th><th>适合任务</th><th>本周判断</th></tr></thead>
+                <tbody>
+                    <tr><td class="model-name">GPT-5.6 Sol</td><td>$5.00</td><td>$30.00</td><td>cache write 1.25×；read 90% discount</td><td>复杂 agent、coding、browse、知识工作</td><td>能力上限和 agent work 核心锚点，但不是所有榜单第一。</td></tr>
+                    <tr><td class="model-name">GPT-5.6 Terra</td><td>$2.50</td><td>$15.00</td><td>同 GPT-5.6 cache 规则</td><td>中高难度日常工作</td><td>覆盖中间任务，但 AA 指出 Luna / Sol 在部分 cost frontier 上更清晰。</td></tr>
+                    <tr><td class="model-name">GPT-5.6 Luna</td><td>$1.00</td><td>$6.00</td><td>同 GPT-5.6 cache 规则</td><td>高频 agent 步骤、低价 routing</td><td>低价 Pareto 点，约 $0.21 / AA Intelligence task。</td></tr>
+                    <tr><td class="model-name">Muse Spark 1.1</td><td>$1.25</td><td>$4.25</td><td>1M context；cache hit $0.15/M</td><td>低价 agentic / coding / multimodal reasoning</td><td>AA 已测第二梯队，适合作为 routing 候选，不是最强主模型。</td></tr>
+                    <tr><td class="model-name">Grok 4.5</td><td>$2.00</td><td>$6.00</td><td>—</td><td>Cursor / Grok Build coding workflow</td><td>性价比来自 harness 和交互数据，需继续看非代码任务。</td></tr>
+                    <tr><td class="model-name">Grok 4.5 fast</td><td>$4.00</td><td>$18.00</td><td>—</td><td>低延迟交互任务</td><td>速度换成本，适合实时 coding / computer work。</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section" id="benchmark">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">四、Benchmark 排名更新：用分层雷达看，而不是混成一个总榜</span></div>
+        <div class="insight-block">
+            <p>本期 benchmark 的写法要避免偏袒任何模型：Arena 是人类偏好与输出体验；AA Intelligence 是综合智能与成本；Agents' Last Exam 是长周期专业工作流；AA Coding Agent / DeepSWE / Terminal-Bench 是模型 + harness + 环境；SWE-Bench Pro 仍显示 Anthropic 系优势；BrowseComp / OSWorld 看浏览和电脑使用；AA-Briefcase / GDPval-AA 看知识工作交付。只有把这些榜单分层，才能看清模型前沿真正发生了什么。</p>
+        </div>
+
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Benchmark 层级</th><th>最新排名 / 更新</th><th>代表模型</th><th>前沿含义</th></tr></thead>
+                <tbody>
+                    <tr><td class="model-name">Arena / LMArena</td><td>更新重点是 Muse Spark 1.1 进入 Text / Code Arena，GPT-5.6 Sol xhigh codex-harness 进入 Code Arena，Seedream 5.0 Pro 进入 Image Arena。</td><td>Text Arena 顶部仍偏 Claude 系；Muse Spark 1.1 进入前列；GPT-5.6 的公开偏好信号更多发生在 Code harness。</td><td>Arena 反映偏好、风格和用户体验，不等于能力上限。它说明 Meta Muse 开始进入公开偏好体系，但不支持“某一模型通吃”。</td></tr>
+                    <tr><td class="model-name">AA Intelligence Index</td><td>GPT-5.6 Sol 进入顶层但低于 Fable 5 约 1 分；Muse Spark 1.1 从 43 升到 51；Grok 4.5 达 54。</td><td>Fable 5 <strong>60</strong>；GPT-5.6 Sol <strong>59</strong>；Opus 4.8 <strong>56</strong>；Terra <strong>55</strong>；Grok 4.5 <strong>54</strong>；Luna / Muse Spark 1.1 <strong>51</strong>。</td><td>综合智能不是 OpenAI 单边领先；GPT-5.6 的关键是接近最高层同时降低成本、时间和 token。</td></tr>
+                    <tr><td class="model-name">Agents' Last Exam</td><td>GPT-5.6 Sol 达 <strong>53.6</strong>，成为本期最重要的长周期专业工作流信号。</td><td>OpenAI 称 Sol 领先 Fable 5 adaptive reasoning <strong>13.1</strong> 分；medium reasoning 仍领先 <strong>11.4</strong> 分且成本约为四分之一；Terra / Luna 以约十六分之一成本超过 Fable 5。</td><td>ALE 最能解释 GPT-5.6 为什么重要：不是问答分数，而是长程 agent work 的能力 / 成本曲线改变。</td></tr>
+                    <tr><td class="model-name">AA Coding Agent Index</td><td>GPT-5.6 Sol in Codex 达 <strong>80</strong>；Terra <strong>77</strong>；Luna <strong>75</strong>；Grok 4.5 in Grok Build <strong>76</strong>。</td><td>Sol 登顶，但 index 本身是模型 + Codex / Claude Code / Grok Build 等 harness 的组合。</td><td>Coding agent 排名已经不能当作裸模型排名；平台环境、工具链、验证器和交互数据正在进入模型竞争。</td></tr>
+                    <tr><td class="model-name">DeepSWE</td><td>DeepSWE v1.1 113 tasks，更新于 2026-07-09。</td><td>GPT-5.6 Sol <strong>73%±3%</strong>，avg cost <strong>$8.39</strong>；Claude Fable 5 <strong>70%±4%</strong>，<strong>$21.63</strong>；GPT-5.6 Terra <strong>70%±3%</strong>，<strong>$4.95</strong>；Luna <strong>67%±4%</strong>，<strong>$3.03</strong>。</td><td>DeepSWE 支撑“成本—性能前沿变化”：Terra 与 Fable 5 分数接近但成本更低，Sol 分数更高且 token / steps 更少。</td></tr>
+                    <tr><td class="model-name">Terminal-Bench 2.1</td><td>OpenAI 官方口径下 GPT-5.6 Sol Ultra / Sol 很强；AA 独立页面和 Cognition / LongCat 口径需要分开列。</td><td>OpenAI 官方：Sol Ultra <strong>91.9%</strong>，Sol <strong>88.8%</strong>，Terra <strong>87.4%</strong>；Cognition 口径中 SWE-1.7 <strong>81.5%</strong>；LongCat 官方口径 <strong>70.8</strong>。</td><td>Terminal 类任务很关键，但 harness、timeout、工具环境差异极大，不能把不同来源数字硬混成一个总榜。</td></tr>
+                    <tr><td class="model-name">SWE-Bench Pro / Multilingual</td><td>SWE-Bench Pro 仍显示 Anthropic / Mythos / Fable 强势；SWE-1.7 在 Multilingual 上超过 GPT-5.5 但低于 Opus 4.8 / 4.7。</td><td>OpenAI 官方 SWE-Bench Pro：Claude Mythos 5 <strong>80.3%</strong>，Fable 5 <strong>80%</strong>，GPT-5.6 Sol <strong>64.6%</strong>。Cognition 口径 Multilingual：Opus 4.8 <strong>84.4%</strong>，SWE-1.7 <strong>77.8%</strong>。</td><td>这部分防止报告偏袒 GPT-5.6：它不是所有 coding benchmark 第一，优势更集中在 agent index、DeepSWE、Terminal 和成本效率。</td></tr>
+                    <tr><td class="model-name">BrowseComp / OSWorld</td><td>GPT-5.6 Sol 在浏览和电脑使用任务上刷新前沿。</td><td>BrowseComp <strong>92.2%</strong>；OSWorld 2.0 <strong>62.6%</strong>；官方称 OSWorld 超过 Opus 4.8 且输出 token 减少 <strong>85%</strong>。</td><td>computer-use 已成为前沿模型核心能力，不只是附属功能；但仍要标注版本和 harness。</td></tr>
+                    <tr><td class="model-name">AA-Briefcase / GDPval-AA v2</td><td>GPT-5.6 Sol 产物呈现很强，但 Fable 5 在 rubric 和 analytical quality 上仍领先；Muse Spark 1.1 有明显进步但不在最前沿。</td><td>AA-Briefcase：Sol presentation Elo 最高；Fable 5 Rubric Score <strong>56%</strong> vs Sol <strong>42%</strong>，Analytical Quality Elo <strong>1764</strong> vs <strong>1592</strong>。Muse Spark 1.1 GDPval-AA v2 <strong>1376 Elo</strong>。</td><td>知识工作 benchmark 对投研最重要：它提醒我们区分“格式漂亮”和“真正符合任务标准”。</td></tr>
+                    <tr><td class="model-name">HLE / SciCode / AA-Omniscience</td><td>Muse Spark 1.1 在科学推理、代码和幻觉控制上补短板。</td><td>HLE <strong>45%</strong>；SciCode <strong>58%</strong>；AA-Omniscience 从 <strong>4</strong> 到 <strong>18</strong>，主要来自 hallucination rate 从 73% 降到 38%。</td><td>Meta 的提升不是单纯营销；但它仍是低价第二梯队，而不是最强 work agent。</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="insight-block">
+            <h3>Benchmark 结论</h3>
+            <ul class="insight-bullets">
+                <li><strong>不要合成一个“总冠军”。</strong>不同 benchmark 衡量不同前沿：Arena 看偏好，AA 看综合智能与成本，ALE 看长周期工作流，DeepSWE / Terminal 看真实工程，GDPval / Briefcase 看知识工作交付。</li>
+                <li><strong>GPT-5.6 的真正变化是 Pareto frontier。</strong>Sol 接近最高智能层并在 agent / browse / coding 上强势，Luna 把可用智能压到低价区间，缓存规则让长上下文 agent 成本更可预测。</li>
+                <li><strong>Anthropic 仍有关键强项。</strong>Fable 5 在 AA Intelligence、Arena 顶部、SWE-Bench Pro 和知识工作 rubric / analytical quality 上仍是重要参照。</li>
+                <li><strong>Meta Muse Spark 1.1 是低价第二梯队变量。</strong>它在 AA Index、SciCode、HLE、Omniscience 和 Arena 进入可比较区间，但不应被写成 frontier leader。</li>
+                <li><strong>coding agent 的排名正在平台化。</strong>Codex、Claude Code、Devin、Grok Build、Cursor 轨迹和验证器会越来越影响 benchmark，而不只是底座模型。</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section" id="signals">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">五、围绕模型前沿的关键动态</span></div>
+        <div class="matrix-wrap">
+            <table class="matrix-table">
+                <thead><tr><th>主线</th><th>本周信号</th><th>强度</th></tr></thead>
+                <tbody>
+                    <tr><td class="model-name">主线 A：模型发布变成任务系统发布</td><td>GPT-5.6 同时绑定 ChatGPT Work、Codex、Microsoft 365 Copilot、Programmatic Tool Calling、multi-agent beta 和缓存规则。模型发布不再只是 API 发布，而是任务执行栈发布。</td><td>★★★</td></tr>
+                    <tr><td class="model-name">主线 B：benchmark 进入多维雷达时代</td><td>Arena、AA Intelligence、ALE、DeepSWE、Terminal-Bench、SWE-Bench Pro、BrowseComp / OSWorld、GDPval / Briefcase 给出不同答案。前沿判断必须分层。</td><td>★★★</td></tr>
+                    <tr><td class="model-name">主线 C：低价智能进入 routing 层</td><td>GPT-5.6 Luna、Muse Spark 1.1、Grok 4.5 都不是简单“最强模型”，但它们让 agent workflow 的中间步骤可以更便宜、更快地运行。</td><td>★★★</td></tr>
+                    <tr><td class="model-name">主线 D：Coding Agent 平台化</td><td>Codex、Claude Code、Devin、Grok Build、Cursor 轨迹、Terminal 环境和 DeepSWE 任务集共同说明，coding agent 的前沿正在从模型能力迁移到环境、验证器和交互数据。</td><td>★★★</td></tr>
+                    <tr><td class="model-name">主线 E：推理经济进入架构与编排层</td><td>GPT-5.6 cache write/read、multi-agent、Programmatic Tool Calling、LongCat MoE 动态激活、Nemotron diffusion/self-speculation 都说明成本不再只是价格表。</td><td>★★★</td></tr>
+                    <tr><td class="model-name">主线 F：AI 研发流程被 agent 化</td><td>OpenAI 披露 GPT-5.6 已用于内部研究循环，覆盖 debugging、kernel / training recipe 优化、实验运行和结果分析；内部 coding inference compute share 半年增长 100×，agent token usage 增长约 22×。</td><td>★★★</td></tr>
+                    <tr><td class="model-name">主线 G：非聊天型前沿外溢</td><td>GPT-Live、Robostral Navigate、SensorFM、Seedream 5.0 Pro、Muse Image / Video 说明前沿模型正在向实时语音、具身、健康、设计、媒体生成和世界模型方向扩散。</td><td>★★</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="insight-block">
+            <h3>本期竞争格局判断</h3>
+            <ul class="insight-bullets">
+                <li><strong>不要把周报写成模型粉丝榜。</strong>本期核心不是 GPT-5.6、Claude、Muse 或 Grok 谁“赢了”，而是前沿评价体系从单榜单变成多维任务雷达。</li>
+                <li><strong>重大模型发布的判断标准变了。</strong>必须同时回答：相对前代提升在哪、价格和缓存怎么变、是否改变 routing、是否改变工作流入口、是否改变 benchmark 的解释力。</li>
+                <li><strong>应用层机会正在从“接最强模型”转向“编排模型”。</strong>Sol / Terra / Luna、Muse Spark、Grok Build、LongCat MoE、Programmatic Tool Calling 都指向同一件事：模型选择、缓存、工具、agent 数量和验证器会成为核心基础设施。</li>
+                <li><strong>世界模型和非聊天型模型要放进前沿视野。</strong>Robostral、SensorFM、Seedream、Muse Image / Video 不是本期主战场，但它们代表前沿模型向真实世界状态、连续交互、垂直数据和生产工具迁移。</li>
+            </ul>
+        </div>
+    <div class="section">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">六、厂商演进</span></div>
+        <div class="data-table-wrap">
+            <table class="data-table">
+                <thead><tr><th>厂商</th><th>本周动作</th><th>相对历史路线的变化</th><th>下一步关注</th></tr></thead>
+                <tbody>
+                    <tr><td class="model-name">OpenAI</td><td>GPT-5.6 + ChatGPT Work + GPT-Live + Copilot preferred model</td><td>从模型迭代转向 work OS 化；三档模型分层替代单旗舰叙事</td><td>ChatGPT Work 留存、GPT-Live API、企业权限和合规控制</td></tr>
+                    <tr><td class="model-name">Meta</td><td>Muse Spark 1.1 + Muse Image / Video + Model API</td><td>从 Llama 开源叙事之外建立闭源低价 API 与社交分发路线</td><td>AA 后续 agent harness、开发者采用、Instagram / WhatsApp 反馈闭环</td></tr>
+                    <tr><td class="model-name">Cognition</td><td>SWE-1.7</td><td>证明后训练 + Devin 环境可把 Kimi 基座推近闭源前沿</td><td>真实任务成本、误改范围、长程稳定性</td></tr>
+                    <tr><td class="model-name">Meituan LongCat</td><td>LongCat-2.0 开源 agentic coding MoE</td><td>国产模型从榜单竞争转向算力、推理、开源代码闭环</td><td>第三方复测、国产推理栈、长上下文真实任务</td></tr>
+                    <tr><td class="model-name">Cursor / xAI</td><td>Grok 4.5</td><td>IDE 用户交互轨迹成为模型训练资产，任务从 coding 扩展到通用电脑工作</td><td>数据污染控制、非代码工作流 benchmark、fast 版经济性</td></tr>
+                    <tr><td class="model-name">NVIDIA / Mistral / Google</td><td>Nemotron-Labs-Diffusion、Robostral、SensorFM</td><td>模型前沿向推理框架、具身、可穿戴健康扩散</td><td>框架适配、真实机器人测试、Fitbit / Pixel Watch 产品化</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section" id="outlook">
+        <div class="section-head"><span class="sec-dot"></span><span class="sec-title">七、前瞻与下周关注</span></div>
+        <div class="cards">
+            <div class="card"><span class="card-tag card-tag-new">Muse</span><div class="card-title">Muse Spark 1.1 后续复测</div><div class="card-body">AA 已发布 1.1 独立测评，下一步看 Coding Agent Index、Terminal-Bench v2.1、第三方 agent harness 和开发者真实成本反馈。</div></div>
+            <div class="card"><span class="card-tag card-tag-high">OpenAI</span><div class="card-title">ChatGPT Work 的真实留存</div><div class="card-body">重点不是发布周 demo，而是销售、财务、运营、咨询等场景是否形成持续使用和企业预算。</div></div>
+            <div class="card"><span class="card-tag card-tag-mid">Coding Agent</span><div class="card-title">SWE-1.7 / Grok 4.5 成本曲线</div><div class="card-body">需要看复杂任务总 token、验证轮数、失败恢复成本、误改范围和非代码工作流复测。</div></div>
+            <div class="card"><span class="card-tag card-tag-mid">China Models</span><div class="card-title">LongCat-2.0 第三方复测</div><div class="card-body">重点看 SWE-bench Pro、Terminal-Bench、1M context、国产推理栈和开源推理代码是否可复现。</div></div>
+            <div class="card"><span class="card-tag card-tag-new">Voice</span><div class="card-title">GPT-Live API 开放</div><div class="card-body">full-duplex 语音若进入 API，会影响客服、教育、车载、陪伴和销售训练产品。</div></div>
+            <div class="card"><span class="card-tag card-tag-mid">Design</span><div class="card-title">Seedream 5.0 Pro 补证</div><div class="card-body">需补齐完整官方发布稿、技术路线、样例、benchmark 与产品范围后再决定正式权重。</div></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="insight-block">
+            <h3>本周一句话</h3>
+            <p>本周最重要的模型前沿变化是：<strong>OpenAI 把旗舰模型升级为任务执行系统，Meta 用 AA 复测和低价 API 进入前沿第二梯队，Coding Agent 的竞争从模型分数迁移到环境、轨迹、验证器和成本曲线。</strong>因此，第6期的核心不是“谁又发布了模型”，而是前沿模型的比较方式正在从单模型能力，转向纵向代际变化、横向能力/价格位置和真实任务系统价值。</p>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="footer-copy">
+        数据来源：OpenAI / Meta / Artificial Analysis / Cognition / Cursor / LongCat AI / NVIDIA / Mistral AI / Google Research<br>
+        生成时间：2026-07-11 · <a href="topic-frontier-models.html">← 专题集合</a>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.topbar-nav').forEach(a => {
+    a.addEventListener('click', e => {
+        e.preventDefault();
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+const sections = ['models','vertical','horizontal','signals','outlook'];
+const navLinks = document.querySelectorAll('.topbar-nav');
+window.addEventListener('scroll', () => {
+    let current = 'models';
+    sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top < 120) current = id;
+    });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+});
+</script>
+
+</body>
+</html>

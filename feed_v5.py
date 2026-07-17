@@ -859,6 +859,8 @@ SUBFIELD_ORDER = {
 
 MAX_PER_CATEGORY = 8
 MIN_ARTICLES = 30
+LLM_MAX_INPUT = 100          # 送入 LLM 选稿的最大候选数（原为 60）
+SAFETY_NET_PRIORITY = 45     # priority≥此值且非转推/回复的条目，被 LLM/截断/每源上限误杀时强制保留
 
 def clean_text(t): return re.sub(r'<[^>]+>', '', t or "").strip() if t else ""
 def normalize(t): return re.sub(r'\s+', '', (t or "").lower())
@@ -1319,6 +1321,10 @@ def process_with_llm(articles, recent_articles=None):
   }
 ]
 
+## 保留/丢弃规则
+- 必须保留所有头部AI公司、知名研究者、主流媒体的实质性动态（融资/IPO、产品或模型发布、政策监管、重大合作、重要研究），即使标题不含显式AI关键词
+- 只丢弃：明确非AI、招聘/活动/招募、纯转发无增量、自我营销或订阅引导
+
 ## body分类侧重点
 - 模型前沿：能力突破点、关键数据（成本、benchmark）、适用场景
 - 算力追踪：规模（芯片型号、数量）、产能、成本变化、供应链影响
@@ -1343,7 +1349,7 @@ def process_with_llm(articles, recent_articles=None):
 
     # ========== 分批调用 LLM（每批 10 条，避免 prompt 过长导致空返回） ==========
     BATCH_SIZE = 10
-    to_process = diversified[:60]
+    to_process = diversified[:LLM_MAX_INPUT]
     all_llm_results = []
     total_batches = (len(to_process) + BATCH_SIZE - 1) // BATCH_SIZE
 
@@ -1473,8 +1479,78 @@ def process_with_llm(articles, recent_articles=None):
 
         filtered_articles.append(article)
 
+    # ========== priority 安全网：救回被误杀的高价值原创条目 ==========
+    _safety_ids = set()
+    try:
+        _kept_ids0 = {id(a) for a in filtered_articles}
+        for a in sorted_articles:
+            if id(a) in _kept_ids0:
+                continue
+            if (a.get("priority", 0) or 0) < SAFETY_NET_PRIORITY:
+                continue
+            _t = (a.get("title", "") or "")
+            if _t.startswith(("RT ", "R to @", "RT by @")) or " RT @" in _t:
+                continue  # 转推/回复是低信号回声，不救
+            if not a.get("body"):
+                a["body"] = (a.get("summary", "") or a.get("content", "") or _t)[:200]
+            if not a.get("categories"):
+                a["categories"] = get_cat(_t, a.get("summary", ""), a.get("source", ""))
+            a["_safety_net"] = True
+            _safety_ids.add(id(a))
+            filtered_articles.append(a)
+        if _safety_ids:
+            print(f"🛟 priority 安全网救回 {len(_safety_ids)} 条 (pri≥{SAFETY_NET_PRIORITY}, 非转推/回复)")
+    except Exception as _e:
+        print(f"⚠️ safety-net 失败: {_e}")
+
     articles = filtered_articles
     print(f"✅ LLM处理了 {len(all_llm_results)} 条新闻，过滤后 {len(articles)} 条（共 {total_batches} 批）")
+
+    # ========== 选稿「被丢榜」日志（可观测性：只读，不改选稿）==========
+    # 区分每条候选死在哪一环：非AI标题预筛 / arxiv未匹配关注方向 / arxiv超额(>10) / 每源上限 / top60截断 / LLM未保留
+    try:
+        import os as _dlos, json as _dloj, re as _dlor
+        from collections import Counter as _dloc
+        _ai_ids = {id(a) for a in ai_filtered}
+        _ax_ids = {id(a) for a in arxiv_papers}
+        _axsel_ids = {id(a) for a in arxiv_selected}
+        _div_ids = {id(a) for a in diversified}
+        _top_ids = {id(a) for a in to_process}
+        _kept_ids = {id(a) for a in filtered_articles}
+        def _fate(a):
+            aid = id(a)
+            if aid in _safety_ids: return "rescued(安全网)"
+            if aid in _kept_ids: return "kept"
+            if aid not in _ai_ids: return "cut:非AI标题预筛"
+            if (a.get("source") or "") in ARXIV_SOURCES:
+                if aid in _ax_ids and aid not in _axsel_ids: return "cut:arxiv超额(>10)"
+                if aid not in _ax_ids: return "cut:arxiv未匹配关注方向"
+            if aid not in _div_ids: return "cut:每源上限"
+            if aid not in _top_ids: return f"cut:top{LLM_MAX_INPUT}截断"
+            return "cut:LLM未保留"
+        _rows = [{"fate": _fate(a), "source": a.get("source", ""),
+                  "title": (a.get("title", "") or "")[:120], "priority": a.get("priority", 0)}
+                 for a in sorted_articles]
+        _fates = _dloc(r["fate"] for r in _rows)
+        _m = _dlor.search(r'daily-ai-news-(\d{4}-\d{2}-\d{2})', OUTPUT_FILE)
+        _ds = _m.group(1) if _m else START_BJ.strftime("%Y-%m-%d")
+        _dlos.makedirs(ARCHIVE_DIR, exist_ok=True)
+        _drop_file = _dlos.path.join(ARCHIVE_DIR, f"dropped_{_ds}.json")
+        with open(_drop_file, "w", encoding="utf-8") as f:
+            _dloj.dump({"date": _ds, "input": len(sorted_articles), "kept": len(filtered_articles),
+                        "fate_summary": dict(_fates),
+                        "dropped": [r for r in _rows if r["fate"].startswith("cut")]}, f, ensure_ascii=False, indent=2)
+        print(f"📋 选稿丢榜 input {len(sorted_articles)}→kept {len(filtered_articles)}: " +
+              ", ".join(f"{k}={v}" for k, v in _fates.items()))
+        _sig = sorted([r for r in _rows if r["fate"].startswith("cut") and (r["priority"] or 0) >= 40],
+                      key=lambda x: -x["priority"])
+        if _sig:
+            print("   ⚠️ 高优先被丢(≥40):")
+            for r in _sig[:15]:
+                print(f"     [{r['fate'][4:]}] [{r['source']}] {r['title'][:66]} (pri {r['priority']})")
+        print(f"   💾 {_drop_file}")
+    except Exception as _e:
+        print(f"⚠️ drop-log 失败: {_e}")
     return articles
 
 # ========== 论文自动溯源 + Body 校验 ==========
