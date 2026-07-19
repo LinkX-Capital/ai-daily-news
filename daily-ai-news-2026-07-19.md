@@ -8,7 +8,7 @@
 
 - 产业动态：LangChain开源内部端到端软件工程Agent全栈组件
 - 算力追踪：Oracle数据中心遭遇数十亿美元成本超支，AI超级园区建设风险暴露
-- 研究关注：Severance Problem揭示个人AI记忆悖论; RENEW修复离线RL世界模型利用偏差; Sakana无需反向传播的生物可塑性学习突破MNIST
+- 研究关注：Severance Problem个人AI记越多越爱幻觉; RENEW用偏好学习修复离线RL世界模型利用偏差; Sakana AI无需反向传播的生物可塑性学习走出MNIST
 
 ---
 
