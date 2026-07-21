@@ -9,7 +9,7 @@
 - 模型前沿：阿里巴巴发布Qwen3.8-Max预览版，2.4万亿参数开源权重，官方称性能仅次于Fable 5
 - 产业动态：OpenAI担忧开源权重模型，美国是否应禁用中国开源大模型引争议; Adobe实验性相机app Project Indigo新增AI点评照片功能; SIGGRAPH 2026：NVIDIA发布Cosmos 3 Edge世界模型、Synthetic Video Detector与本地Agent工具栈
 - 算力追踪：The Information报道Google研发Frozen定制芯片，推理效率提升6-10倍，Alphabet股价上涨3%
-- 初创&融资：月之暗面寻求投资者批准启动IPO进程; 3D生成式AI公司Meshy完成近4亿美元B轮融资，投后估值超100亿元人民币; 推理基础设施公司Infinity完成1500万美元融资，构建CUDA替代内核
+- 初创&融资：月之暗面寻求投资者批准启动IPO进程; 3D生成式AI公司Meshy完成近4亿美元B轮融资，投后估值超100亿元人民币; Natural完成3000万美元A轮融资，构建AI Agent自主支付基础设施; 推理基础设施公司Infinity完成1500万美元融资，构建CUDA替代内核
 - 研究关注：小米Xiaomi-Robotics-1基础VLA模型，10万小时真实轨迹训练刷新多个仿真SOTA; 论文提出循环Transformer Loopie，无工具斩获2025 IMO与IPhO金牌; 论文提出Recursive Harness Self-Improvement（RHI），推理成本降60%; RESOURCE2SKILL将多模态资源蒸馏为Agent可执行技能; BrainPilot多智能体系统加速脑科学研究; ECCV 2026论文MoKus实现跨模态知识迁移; 开源GraphRAG引擎RAGU搭配7B小模型Meno-Lite
 - X讨论：OpenAI发文总结长时程模型部署的安全教训与改进措施; Google Research提出扩散模型"创造力"的数学解释; LangChain发布IssueBench评测基准，用于持续学习Agent Engine的自我修复评估
 
@@ -55,6 +55,11 @@
 - Meshy宣布完成近4亿美元B轮融资，投后估值超100亿元人民币，公司称这是**AI 3D领域迄今规模最大的单轮融资**。本轮由IDG资本、经纬中国、Monolith砺思资本等机构与战略投资方共同投资，Granite Asia、红杉中国、BAI资本、源码资本等现有股东超额跟投，资金将用于AI多模态模型研发与全球市场拓展。Meshy于2023年上线全球首个可公开访问的3D生成式AI产品，支持文生3D与图生3D，用户输入一行文字或一张图片即可在约一分钟、一美元成本内生成可用3D模型（对比传统需专业美术团队、昂贵软件与两周周期）。商业化数据上，过去一年严格口径的**年度经常性收入（ARR）增长12倍**，**注册用户突破1200万**，累计生成模型超1亿个，过去两年保持20%-30%月环比增长。客户覆盖全球市值/估值前十科技公司中的一半，以及网易游戏、三七互娱、Nexon等游戏厂商和拓竹、创想三维等3D打印头部企业。公司同步推出Meshy Game Studio，在GDC发布AI游戏demo《黑箱：无限构筑》，向"实时互动多模态内容引擎"延伸。
   > 💡 Meshy以ARR增长12倍、1200万用户、1亿生成量的真实营收数据，在多数AI公司仍难算清商业化账的背景下证明了3D生成的商业兑现能力；近4亿美元B轮刷新赛道纪录，反映资本对"3D作为多模态最难方向+数据飞轮"的认可，其从工具向实时互动内容平台（AI游戏）的延伸是下一增长叙事。
    - 来源: [IT桔子](https://www.itjuzi.com/investevent/14700715) | [Meshy官方](https://mp.weixin.qq.com/s?__biz=MzkyMjY1MzIwMA==&mid=2247484585&idx=1&sn=b9133e7d1b63a8003b730943914d7f07)
+
+**Natural完成3000万美元A轮融资，构建AI Agent自主支付基础设施对标Stripe**
+- 初创公司Natural宣布完成**3000万美元A轮融资**（累计融资达4000万美元），由Forerunner创始合伙人Kirsten Green领投。公司2025年由CEO Kahlil Lalji（此前创办的情侣金融产品Ivella于2023年被Earnin收购）、Eric Wang与Walt Leung（前Nextdoor工程经理）联合创立，定位为**Agent编排层（agent orchestration layer）**，让AI agent能自主移动与存储资金——自主向供应商付款、收款，并与人类及其他agent交易。Natural切中的痛点是：现有信用卡、ACH等金融rails为**人类授权**设计，拖慢了为自主运行而生的agent；其架构同时支持**稳定币与传统银行支付**，并重构争议交易处理等环节。Natural将**Stripe视为主要竞争对手**（Stripe也在为AI agent重建支付rails），其他竞争者包括DCVC投资的Skyfire Systems（以美元稳定币切入）；团队已吸引来自Stripe、Ramp、Square的高级人才，目前处于beta阶段。
+  > 💡 Agent支付是"Agent经济"的关键缺口——当agent能自主完成选品、议价、下单却卡在支付环节需人类介入，商业化闭环就断在最后一步；Natural与Stripe、稳定币玩家同场竞逐，本质是争夺"机器速度交易"的新金融rails，CEO预言全球支付笔数可能因此放大2-4个数量级，赛道空间与卡位价值都很大，但能否在Stripe等巨头的先发优势下跑出仍待验证。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/07/20/natural-raises-30m-to-reinvent-payments-for-ai-agents-and-take-on-stripe/)
 
 **推理基础设施公司Infinity完成1500万美元融资，估值1亿美元，构建CUDA替代内核**
 - AI推理基础设施公司Infinity宣布完成**1500万美元融资，投后估值1亿美元**，投资方包括Touring Capital、Principal VC以及来自OpenAI和Anthropic的研究员。公司由前Google Brain研究员、AGI House社区创始人Jeremy Nixon创立，致力于构建**CUDA替代内核软件**，让任意AI芯片（SRAM、GPU、手机芯片、Systolic Arrays）都能高效运行AI模型，意在瓦解NVIDIA靠CUDA软件生态建立的护城河。其核心产品为AI研究Agent **Ignition**，可自动为非NVIDIA芯片编写、测试、调试推理底层代码（kernel）并持续自优化，号称达到CUDA级软件栈；商业模式上不收授权费，而是按性能提升与成本节省（以tokens per second衡量）分成。客户包括AI芯片厂商D-Matrix，团队26人。
