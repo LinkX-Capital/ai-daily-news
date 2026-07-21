@@ -1,6 +1,6 @@
 ## 07月21日 AI 前沿动态
 
-> 自动汇总 | 时间窗口: 24h | 每类 Top 5（研究关注为周末 arXiv 补稿，今日增至 6 条）
+> 自动汇总 | 时间窗口: 24h | 每类 Top 5（研究关注为周末 arXiv 补稿，今日增至 7 条）
 
 ---
 
@@ -10,7 +10,7 @@
 - 产业动态：OpenAI担忧开源权重模型，美国是否应禁用中国开源大模型引争议; Adobe实验性相机app Project Indigo新增AI点评照片功能; SIGGRAPH 2026：NVIDIA发布Cosmos 3 Edge世界模型、Synthetic Video Detector与本地Agent工具栈
 - 算力追踪：The Information报道Google研发Frozen定制芯片，推理效率提升6-10倍，Alphabet股价上涨3%
 - 初创&融资：月之暗面寻求投资者批准启动IPO进程; 3D生成式AI公司Meshy完成近4亿美元B轮融资，投后估值超100亿元人民币; 推理基础设施公司Infinity完成1500万美元融资，构建CUDA替代内核
-- 研究关注：小米Xiaomi-Robotics-1基础VLA模型，10万小时真实轨迹训练刷新多个仿真SOTA; 论文提出循环Transformer Loopie，无工具斩获2025 IMO与IPhO金牌; RESOURCE2SKILL将多模态资源蒸馏为Agent可执行技能; BrainPilot多智能体系统加速脑科学研究; ECCV 2026论文MoKus实现跨模态知识迁移; 开源GraphRAG引擎RAGU搭配7B小模型Meno-Lite
+- 研究关注：小米Xiaomi-Robotics-1基础VLA模型，10万小时真实轨迹训练刷新多个仿真SOTA; 论文提出循环Transformer Loopie，无工具斩获2025 IMO与IPhO金牌; 论文提出Recursive Harness Self-Improvement（RHI），推理成本降60%; RESOURCE2SKILL将多模态资源蒸馏为Agent可执行技能; BrainPilot多智能体系统加速脑科学研究; ECCV 2026论文MoKus实现跨模态知识迁移; 开源GraphRAG引擎RAGU搭配7B小模型Meno-Lite
 - X讨论：OpenAI发文总结长时程模型部署的安全教训与改进措施; Google Research提出扩散模型"创造力"的数学解释; LangChain发布IssueBench评测基准，用于持续学习Agent Engine的自我修复评估
 
 ---
@@ -71,6 +71,11 @@
 - 论文《Loop the Loopies!》提出迄今最强循环Transformer系列**Loopie**，包含两个MoE模型：**20B参数/2B激活**与**6B参数/0.6B激活**。循环Transformer长期受困于一个难题：在预训练算力增加N倍时，把参数量放大N倍通常优于把模型循环N次。Loopie破解了这一瓶颈——大量消融实验（含与vanilla 30B-A3B模型对比）显示，在**同等算力预算下Loopie显著超越vanilla Transformer基线**。配合新颖的后训练流水线赋予强推理能力，Loopie在**2025年IMO（国际数学奥林匹克）与IPhO（国际物理奥林匹克）均达金牌水平**（无工具辅助）。
   > 💡 循环Transformer若能在同等算力下反超增参基线，意味着"用推理时计算换参数规模"路线可行性得到验证，对小团队与边缘部署有吸引力；IMO与IPhO双金牌显示其推理能力已达竞赛顶尖梯队。
    - 来源: [arXiv](https://arxiv.org/abs/2607.16051)
+
+**论文提出Recursive Harness Self-Improvement（RHI），推理成本降60%、低推理成本agent反超高成本设置**
+- 论文《Recursive Harness Self-Improvement》（第一作者Hyunin Lee，含Matei Zaharia、Yujin Tang等）针对model-harness协同演化中持续更新厂商scaffold成本高的问题，研究能否对用户构建的harness做任务特定优化以提升执行轨迹质量且保持轻量。提出**RHI**：将harness表示为agent loop的**prompt级规格**，利用自身修订历史的**成对反馈**迭代精炼。在横跨量化金融、机器人、药学的**30个合成ML研究任务**上，少量RHI迭代即显著抬高低推理成本（low-reasoning-effort）agent的性能上限，**反超对应的最大推理成本设置，同时推理成本降低最高60%**。研究指出增益主要来自更有效的agent间信息流与任务特定上下文管理，而非更长的推理轨迹，并形式化为一个信息论假设作为RHI的隐式优化目标。
+  > 💡 RHI切中"推理算力"与"harness质量"的置换——与其堆推理成本，不如优化prompt级harness让低成本agent触顶，60%降本对Agent大规模部署的经济性意义重大；它把harness从"脚手架"提升为"可优化、可生成训练轨迹的组件"，与今天RESOURCE2SKILL、IssueBench代表的Agent自优化基础设施同属一脉。
+   - 来源: [arXiv](https://arxiv.org/abs/2607.15524)
 
 **RESOURCE2SKILL将多模态资源蒸馏为Agent可执行技能，7领域平均提升11.9个百分点**
 - 论文（第一作者Yijia Fan等）提出**RESOURCE2SKILL**框架，将教程视频、代码库、文章与参考制品等多模态人类资源蒸馏为软件Agent可执行技能，弥补现有技能库多为手写、纯文本或仅来自agent轨迹、对教程视频等多模态资源利用不足的缺陷。框架将技能组织为层次化多模态**Skill Wiki**，每条目结合结构化文本、代码、视觉示例、元数据与来源信息，保留不同资源的互补信号（视频捕捉时序操作与视觉效果、代码捕捉可执行工具模式、文章提供概念与风格基础）。推理时Agent从wiki检索并组合技能，覆盖不足时同一构建算子可在线获取新技能。在7个实际创作领域，RESOURCE2SKILL相对无技能Agent**平均总评提升+11.9个百分点**，并在28个主聚合模型-领域单元中26个超越强harness基线。
