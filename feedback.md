@@ -85,6 +85,9 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 | **body — 格式** | #62 | [深抓补充]/[搜索补充] 自动清理是硬性规则，打开文件第一步执行 |
 | **body — 多源合并** | #63 | 同一事件多维度报道合并为一条，来源链接用\|分隔 |
 | **body — 研究结构** | #64 | ⭐ 研究 body 三段结构：问题→方法+核心创新→数据；标题用量化/创新点不用会议归属 |
+| **body — 结构完整性** | #70 | title/body/insight/source 必须同一事件；insight 跨条目错贴/字段错位缝合即判定损坏 |
+| **filter — 汇总一致性** | #71 | 要点汇总 ↔ 详细参考 双向核对，汇总引用已删条目=留空头 |
+| **filter — 金额/公司名核实** | #72 | 融资金额回溯一手、与传统行业矛盾即过滤；公司名（.ai 后缀臆造）回溯官网 |
 
 **图例：** 🔗 = 已合并至更新条目
 
@@ -571,3 +574,26 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 「长时程Agent容易让任务事实、既有诊断和未完成子目标在不断增长的轨迹中失效，论文将这一问题称为behavioral state decay。Proactive Memory Agent把记忆作为主动干预机制……」
 - **reason**: Meta是公司/机构，不是“研究者”。即使作者机构归属已核实，也不能把机构写成研究者主体；此外“在arXiv发布”是低信息量模板句，不如直接写问题、方法和数据。
 - **rule_hint**: **【研究归属表述规则】论文/研究类条目中，公司、大学、实验室等机构不是“研究者”。需要归属时写“Meta等机构的研究人员/作者团队”或“某机构团队”，更推荐以论文方法/项目名为主体开头。禁止“Meta等研究者”“Google等研究者”这类机构人格化表达；“在arXiv发布/论文提出”模板句也应尽量替换为问题→方法→数据结构。**
+
+### [2026-07-22] #70
+- **file**: daily-ai-news-2026-07-22.md
+- **field**: body/structural
+- **before**: 「具身智能模型实现27000台真实机器人跨50国部署」条目是三段不相关内容拼接——标题讲睿尔曼+机器人部署，正文残缺到「工业和信息化部、国务院国资委」就截断，insight 讲 OpenAI 中小企业项目，来源却是 OpenAI SMB 链接。同期「阿里平头哥 SAIL」条目的 insight 写的是「a16z 和 Bessemer 押注 Agent 安全赛道」（实为 Neo 融资的 insight，错贴到 SAIL）。
+- **after**: 删除 27000 机器人拼接条目；SAIL insight 重写为「平头哥开源软件栈切入推理部署层、对标 CUDA 生态」。Neo 融资作为独立条目在初创&融资补全。
+- **reason**: 同一条目的 title/body/insight/source 来自不同事件，是 pipeline 在合并/截断/落库环节把多条记录的字段错位缝合；insight 跨条目错贴说明 key_points 与 body 的绑定关系在处理中丢失
+- **rule_hint**: **【结构完整性自检】QA 必须对每条新闻做字段一致性校验：(1) title 主体 == body 主体 == source 链接指向的主体（三者必须同一事件/公司）；(2) insight 讨论的对象必须与 body 一致，禁止 insight 谈 A 公司而 body 谈 B 公司；(3) body 以单字/未闭合引号/部门名截断时标记为损坏并重生成（#37 的延伸）。任一不一致即判定为拼接/错位损坏，删除或整条重写，不做局部修补**
+
+### [2026-07-22] #71
+- **file**: daily-ai-news-2026-07-22.md
+- **field**: filter/summary
+- **before**: 要点汇总列着「产业动态」（Mercor、OpenAI 中小企业、LangChain 语音 Agent）和「初创&融资」（Sila、Neo.ai、Stenon）两类的条目，但详细参考里这两节整个缺失——汇总与正文脱节
+- **after**: 抓一手来源把缺失条目补成完整详细条目（OpenAI blog、WSJ、LangChain Docs 等），重建两个章节；汇总与正文逐项对齐
+- **reason**: 用户手动删低质量条目时只删正文、漏改汇总，或 pipeline 生成汇总与正文不在同一环节，导致汇总引用了已不存在的详细条目
+- **rule_hint**: **【汇总↔正文一致性校验】发布前 QA 必须双向核对 要点汇总 与 详细参考：(1) 汇总里每个分类下的每个条目，在详细参考中必须有对应章节+条目（汇总→正文）；(2) 正文里每个条目，在汇总对应分类里至少有一条呼应（正文→汇总）；(3) 若某汇总条目无正文、且无法抓到一手来源补全，则从汇总删除而非留空头。校验顺序：先确保 6 个分类标题在汇总和正文都存在，再逐条比对**
+
+### [2026-07-22] #72
+- **field**: filter/source
+- **before**: 「Sila raises $300M」融资条目——汇总金额 $300M，但可查证记录仅有 $375M Series G（2024年6月）+$1亿 DOE，无 2026 新轮；且电池材料属传统行业、非 AI。「Neo.ai」公司名实际为「Neo」（前 SentinelOne 团队），.ai 后缀为臆造
+- **after**: 删除 Sila（金额不可核实 + 非 AI）；Neo 名称由「Neo.ai」更正为「Neo」，并补全前 SentinelOne 团队/a16z+Bessemer 领投/Agentic Software Control 等可核实事实
+- **reason**: 融资金额/公司名是高事实密度字段，错误会直接误导；不可核实的金额即使加「据报」也有风险，且 Sila 非跨边界前沿科技，按非 AI 过滤
+- **rule_hint**: **【融资金额与公司名核实】(1) 融资/投资类金额必须能回溯到一手（公司 press release/Crunchbase/权威财经媒体）；若搜到的记录与汇总金额矛盾（如汇总 $300M 但记录是 $375M 且无更新轮），不写不可核实金额，标注或删除该条；(2) 非 AI 的纯传统行业（电池材料/地产/食品/纯汽车）即使曾进 pipeline 也应过滤，前沿科技白名单仅量子/脑机/核聚变/半导体；(3) 公司名以后缀（.ai/.com）臆造时，回溯官网/新闻稿确认正式名称（Neo 而非 Neo.ai）。属于 #29 事实密度与 #32 绝对性判断的事实核实延伸**
