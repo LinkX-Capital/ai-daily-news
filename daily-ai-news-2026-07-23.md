@@ -9,8 +9,8 @@
 - 模型前沿：阿里通义千问发布Qwen-Image-3.0基础图像生成模型
 - 产业动态：OpenAI与美国能源部及国家实验室合作，用前沿AI加速科研; Google向DOE Genesis Mission承诺4000万美元AI额度，开放AlphaEvolve/AlphaFold等给国家实验室; Alphabet Q2营收同比增长24%达1198亿美元，Google Cloud为增长主引擎; Substack上线AI写作占比检测，由Pangram提供技术支持; Science Corp视觉修复芯片PRIMA获欧盟批准，脑机接口走向商业化; NVIDIA开源首个GPU加速医学物理仿真框架; Stripe 2025年现金增至32亿美元，因AI支付爆发启动收购hunt
 - 算力追踪：OpenAI基础设施投入加码至7500亿美元，首期200亿建Project Camellia; xAI正评估在德州扩建至少一个超大规模数据中心; AMD承诺向Anthropic投资最高50亿美元并达成芯片供应协议
-- 初创&融资：卡兰尼克机器人公司Atoms融17亿美元，a16z领投、Uber参投; Glow以12亿美元估值出隐身：做AI时代的端点安全，A轮融资1.8亿美元; Dimension Capital第三期基金募8亿美元，押注science×compute
-- 研究关注：ABot-World-0：单张RTX 5090即可实时交互式世界rollout; Sakana AI提出UnMaskFork：让多个掩码扩散语言模型协作完成单一答案; AlayaRenderer-Flash：把生成式世界渲染器从0.56 FPS加速到31.54 FPS; Subliminal Clocks：扩散语言模型在残差流中隐式编码去噪进度; DataFlow-Harness：让code agent构建可编辑LLM数据管线，成本较Vanilla Claude Code降72.5%
+- 初创&融资：卡兰尼克机器人公司Atoms融17亿美元，a16z领投、Uber参投; Glow以12亿美元估值出隐身：做AI时代的端点安全，A轮融资1.8亿美元; Dimension Capital第三期基金募8亿美元，押注science×compute; SkyPilot出隐身融2000万美元，把跨云碎片化GPU统一为一个算力控制面
+- 研究关注：ABot-World-0：单张RTX 5090即可实时交互式世界rollout; Masked Visual Actions：用像素空间动作统一机器人正向/逆向世界建模; Sakana AI UnMaskFork：让多个掩码扩散语言模型协作完成单一答案; AlayaRenderer-Flash：把生成式世界渲染器从0.56 FPS加速到31.54 FPS; DataFlow-Harness：让code agent构建可编辑LLM数据管线，成本较Vanilla Claude Code降72.5%
 - X讨论：LangChain发布Eval Engineering Skill，帮coding agent构建评测; Boston Dynamics用Spot机器人做矿场数据采集; OpenAI把Codex与ChatGPT Work付费用户用量上限提至10M
 
 ---
@@ -91,13 +91,23 @@
   > 💡 在多数新VC仍难募资的背景下Dimension逆势放大到8亿，说明"science×compute"（AI制药/抗衰/推理）资本配置在加速；其因被投被Anthropic收购而持有Anthropic股权，也折射头部AI lab对bio/compute资产的整合。
    - 来源: [TechCrunch](https://techcrunch.com/2026/07/21/dimension-capitals-800m-third-fund-shows-the-intersection-of-science-and-compute-is-booming/)
 
+**SkyPilot出隐身融2000万美元：把跨云碎片化GPU统一为一个算力控制面**
+- 伯克利Sky Computing实验室出身的AI算力编排开源项目**SkyPilot**正式商业化出隐身，完成超**2000万美元**融资，由**Lux Capital**领投，Amplify、Coatue、Foundation、Race、The House Fund参投，Ali Ghodsi（Databricks CEO）、Jeff Dean（Google首席科学家）、Guillermo Rauch（Vercel CEO）、Amjad Masad（Replit CEO）、Clem Delangue（HuggingFace CEO）等天使参投，创始人Zongheng Yang（伯克利PhD）。SkyPilot定位**BYOC算力控制面**——把跨neocloud与超大规模云的碎片化GPU抽象为统一资源池集中调度。开源侧**1400万+下载**、**280+贡献者**，头部部署超**1000节点/10000+ GPU**、6个月GPU时长增长**6倍**；客户含Abridge、Applied Compute、H Company（2000+ GPU跑RL）、Nubank，部分用户实现10倍time-to-intelligence加速与双位数GPU利用率提升。同步发布商业版SkyPilot Platform（HA、团队/配额管理、SSO/RBAC、SOC 2，较开源版性能提升**20倍**），支持20+云（Nebius、CoreWeave、Lambda、AWS等）。
+  > 💡 SkyPilot从伯克利学术开源走向商业化，切中"GPU供给碎片化"这一AI算力扩张核心痛点——企业被迫从多cloud/neocloud拼凑GPU，统一控制面成刚需；Lux+顶配天使阵容说明"算力编排/调度"正被当独立基础设施级赛道投资。
+   - 来源: [SkyPilot Blog](https://skypilot.ai/blog/skypilot-the-company?utm_source=x&utm_campaign=oos-founder) | [@zongheng_yang](https://x.com/zongheng_yang/status/2079590031669580169)
+
 ### 研究关注
 **ABot-World-0：单张RTX 5090即可实时交互式世界rollout**
 - 针对世界模型难以实时、长时程闭环交互的问题，论文提出动作条件视频世界模型**ABot-World-0**，数据来自AAA游戏、仿真引擎与互联网视频的多源管线（WorldExplorer agent驱动采集+14项确定性质检+VLM评估+动作/文本同步标注）。方法上把双向动作条件教师模型经teacher forcing与ODE蒸馏逐步蒸馏为因果学生模型，并提出LongForcing对齐长程自rollout以缓解分布漂移；部署层用轻量VAE解码器+高效attention+低位DiT推理。在单张**NVIDIA RTX 5090**桌面GPU上实现720P、最高**16 FPS**流式生成，动作到首帧延迟**1.2s**、峰值显存约**19GiB**。
   > 💡 把"可交互世界模型"压到单张桌面GPU实时运行（16FPS），是世界模型从离线生成走向实时可玩/可部署的关键工程突破，对游戏、具身仿真、Agent训练环境有直接价值。
    - 来源: [arXiv](https://arxiv.org/abs/2607.19191) | [HuggingFace Daily Papers](https://huggingface.co/papers/2607.19191)
 
-**Sakana AI提出UnMaskFork：让多个掩码扩散语言模型协作完成单一答案**
+**Masked Visual Actions：用像素空间动作统一机器人正向/逆向世界建模**
+- 论文提出**Masked Visual Actions (MVA)**，把动作表示成视频中任意实体的**部分可见像素轨迹**：显式给出机器人运动时，视频模型作为正向动力学模型预测场景响应；显式给出目标物体运动时，同一模型则反推出能达成该结果的机器人行为。模型只用来自真实视频和仿真的**15小时**掩码样例微调一个checkpoint，就能跨多种场景和多种机器人形态保持较好的视觉保真度与可控性；下游 manipulation 中，想象rollout结果与真实执行相关，可用于policy evaluation、基于候选未来排序的model-based planning，以及从目标物体运动合成机器人动作的inverse modeling。
+  > 💡 MVA的关键是把"动作"从关节/末端执行器坐标转成视频模型天然理解的像素轨迹接口，使通用视频先验能同时服务正向预测与逆向控制；对具身智能来说，这是把视频生成模型改造成机器人世界模型的低数据、高迁移路径。
+   - 来源: [arXiv](https://arxiv.org/abs/2607.19343)
+
+**Sakana AI UnMaskFork：让多个掩码扩散语言模型协作完成单一答案**
 - 掩码扩散语言模型（MDLM，如Dream-Coder）难以像自回归LLM那样靠"升温+Best-of-N"做测试时缩放（TTS）——升温或随机化解掩顺序会严重损害答案质量。Sakana AI在ICML 2026论文提出**UnMaskFork (UMF)**：不靠随机性，而是让**多个MDLM共享同一答案的生成过程**，通过"模型切换"产生多样性——用蒙特卡洛树搜索（MCTS）搜索有前景的切换序列，每个模型接手时填它最有信心的部分；近确定性解码使中间状态可缓存复用、跳过冗余计算。在LiveCodeBench/HumanEval+/MBPP+编程基准上UMF持续优于其他TTS方法（2模型时LiveCodeBench **28.0**、HumanEval+ **88.0**；加第3个模型DiffuCoder-cpGRPO后LiveCodeBench升至**32.0**、MBPP+ **76.0**），数学任务上也有效扩展；无需额外训练或改动模型，仅推理时组合预训练MDLM。
   > 💡 UMF把"集体智能"思路从自回归LLM（AB-MCTS/Sakana Fugu）延伸到掩码扩散语言模型这一新范式，证明"让模型各自做最擅长的部分"比简单集成或升温采样更高效；对MDLM这条非自回归路线的测试时缩放是奠基性方法。
    - 来源: [Sakana AI Blog](https://pub.sakana.ai/umf/) | [arXiv](https://arxiv.org/abs/2602.04344) | [@SakanaAILabs](https://x.com/SakanaAILabs/status/2079567069096693872)
@@ -106,11 +116,6 @@
 - 生成式世界渲染器AlayaRenderer接收物理引擎导出的结构化世界状态合成RGB帧（不改变世界动力学），但原版算力开销过大无法实时。本报告提出实时版**AlayaRenderer-Flash**，将其重构为少步自回归流式模型，并引入轻量蒸馏编解码器，在保留教师模型G-buffer与文本提示接口的同时支持无界长度输入流连续渲染。评估覆盖内容保持、时序一致、跨窗口稳定、提示可控与运行效率，显示其大幅降低推理成本同时保留核心渲染能力；与物理引擎集成后构建出**30 FPS**可玩的生成式世界。
   > 💡 "物理引擎出状态+生成器出画面"的解耦+少步蒸馏加速到30FPS，是生成式可玩世界落地的基础设施级进展，为"生成式游戏/仿真"提供实时路径。
    - 来源: [arXiv](https://arxiv.org/abs/2607.18703) | [HuggingFace Daily Papers](https://huggingface.co/papers/2607.18703)
-
-**Subliminal Clocks：扩散语言模型在残差流中隐式编码去噪进度**
-- 扩散语言模型（DLM）不像标准扩散那样显式以时间步为条件，那它内部是否表征去噪进度？论文发现DLM确实在**残差流**中编码了与扩散时间步相关的**潜表示**，该信号可跨层用探针可靠提取，说明去噪进度可从内部激活解码。沿该时间步对应的低维子空间对模型进行steering，能系统性地调制其"去噪进度感"，带来模型置信度与熵的可预测变化；论文并分析了该表示在激活空间中结构化、可解释的几何性质。
-  > 💡 揭示扩散语言模型内部存在可读、可操控的"时间步/去噪进度"潜变量，为理解和调控DLM生成过程提供机制级工具，对扩散LM可控性研究有方向意义。
-   - 来源: [arXiv](https://arxiv.org/abs/2607.01774) | 
 
 **DataFlow-Harness：让code agent构建可编辑LLM数据管线，成本较Vanilla Claude Code降72.5%**
 - 针对coding agent生成的脚本通常不会持久化为可编辑平台工件这一"NL2Pipeline gap"，论文提出**DataFlow-Harness**平台，引导LLM agent通过类型化增量变更（而非自由脚本）构建平台原生有向无环图（DAG）。平台组合DataFlow-Skills（过程指引）、暴露实时算子注册表与管线状态的MCP层、以及会话编写与可视化DAG编辑器同步的DataFlow-WebUI。在12任务数据工程基准上达**93.3%**端到端通过率；较Vanilla Claude Code**成本降72.5%、延迟降49.9%**，通过率与Context-Aware Claude Code基线差不到0.9个百分点但成本低42.8%。
