@@ -8,7 +8,7 @@
 
 - 产业动态：Generalist AI扩展GEN-1至多类机器人末端执行器; OpenAI上线Health in ChatGPT，支持美国用户连接病历与Apple Health; OpenAI把ChatGPT Voice扩展到桌面端，支持语音控制多Agent工作流; Claude语音模式接入更强模型与外部工具，Managed Agents同步补齐编排能力; Runway推出Media Router，把生成式媒体也做成智能路由; Cursor推出Router，面向团队和企业自动分配代码请求; Arcee与DOE推进Genesis-Science-1，面向科研工作流的开源权重模型与受治理执行系统
 - 算力追踪：Lunar Outpost与NVIDIA合作，把边缘AI带上月球任务; AMD与Cerebras合作探索异构推理机架
-- 初创&融资：Cognition收购Poke团队，补齐个人主动式Agent能力; Sierra收购长程Agent初创Takeoff; Etched完成3亿美元C轮融资，估值达103亿美元; AegisAI融资3600万美元，专攻AI驱动的鱼叉式钓鱼防护; ServiceNow向BusinessNext投资4000万美元，强化金融服务AI布局
+- 初创&融资：Cognition收购Poke团队，补齐个人主动式Agent能力; Sierra收购长程Agent初创Takeoff; Etched完成3亿美元C轮融资，估值达103亿美元; AegisAI融资3600万美元，专攻AI驱动的鱼叉式钓鱼防护; ServiceNow向BusinessNext投资4000万美元，强化金融服务AI布局; Stripe据报洽购OpenRouter，模型聚合入口可能迎来大额收购; Corgi据报8周内第三次融资，估值或达40亿美元
 - 研究关注：MultiMDM以多掩码改善扩散语言模型少步生成; 超网络知识注入呈现可预测的幂律缩放; 共享知识库让Agent改进跨任务、跨模型迁移; Gemma材料机理表征可被读取和因果操控
 - X讨论：Sundar Pichai披露Alphabet Q2 AI指标，Google Cloud和Gemini继续加速; Artificial Analysis数据显示OpenAI仍占多数token效率Pareto前沿; Together AI推出面向开源模型的预留token吞吐服务; vLLM发布AFD插件，解耦Attention与FFN服务MoE模型; Ant Ling发布Ling-3.0-flash，124B MoE模型每token激活5.1B参数
 
@@ -89,6 +89,16 @@
   > 💡 这笔投资更像是企业软件巨头对垂直AI工作流的渠道下注：金融服务里的“AI落地”，最后往往还是要回到销售网络和既有客户关系。
    - 来源: [TechCrunch](https://techcrunch.com/2026/07/22/servicenow-bets-40m-on-indian-firm-businessnext-at-700m-valuation-to-deepen-banking-ai-push/)
 
+**Stripe据报洽购OpenRouter，模型聚合入口可能迎来大额收购**
+- Stripe正与**OpenRouter**洽谈收购，价格接近**100亿美元**。OpenRouter帮助应用开发者接入数百个AI模型，交易可能在未来一个月内宣布，但谈判仍可能破裂；报道称OpenRouter此前也与Databricks进行过早期出售讨论。
+  > 💡 这类收购说明模型聚合层本身已经变成高价值入口：真正值钱的不只是模型，而是开发者调用模型的分发与计费通道。
+   - 来源: [The Information](https://www.theinformation.com/briefings/stripe-talks-buy-startup-openrouter)
+
+**Corgi据报8周内第三次融资，估值或达40亿美元**
+- 面向创业公司风险保障的保险科技公司**Corgi**正在以约**40亿美元**估值进行新一轮融资，这将是其约**8周**内第三轮融资。Corgi此前在5月宣布**1.6亿美元**B轮、估值**13亿美元**，随后又宣布**1.06亿美元**B1轮、估值**26亿美元**；公司产品覆盖general liability、cyber liability、tech and AI liability等创业公司风险。新一轮若完成，将显示其估值在两个月内从13亿美元提升至约40亿美元。
+  > 💡 Corgi并非基础模型公司，但其“AI liability”保险把AI创业风险变成可承保品类；连续高频加轮更像AI创业生态的二阶基础设施融资信号，也提示估值升速已经非常激进。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/07/23/insurance-startup-corgi-reportedly-raised-more-money-at-4b-its-third-round-in-eight-weeks/) | [TechCrunch](https://techcrunch.com/2026/05/28/corgi-announces-106m-raise-at-2-6b-valuation-three-weeks-after-160m-series-b/)
+
 ### 研究关注
 **MultiMDM以多掩码改善扩散语言模型少步生成**
 - 论文提出**Multi-Mask Diffusion Model（MultiMDM）**，针对掩码扩散语言模型在少步生成中的一个核心障碍：传统方法的前向过程最终坍缩到唯一的全掩码状态，终点熵为零，不利于一致性蒸馏。MultiMDM为不同token分配指定的mask，并让这些mask随后在mask集合中逐渐混合，使逆向过程可以先预测带信息的mask“草稿”，再细化为干净token。作者推导了闭式ELBO训练目标，支持从已有掩码扩散模型继续训练，并提出采用shared-Gumbel coupling的纯离散一致性蒸馏方法。LM1B、OpenWebText上的预训练和蒸馏实验显示，该方法能改善少步生成；论文还给出了从LLaDA-8B-Base继续适配到代码与数学任务的初步结果。论文已被**COLM 2026**接收。
@@ -137,4 +147,4 @@
    - 来源: [@AntLingAGI](https://x.com/AntLingAGI/status/2080351022028095681)
 
 ---
-*更新时间: 2026-07-24 09:54*
+*更新时间: 2026-07-24 10:21*

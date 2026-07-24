@@ -597,3 +597,11 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 删除 Sila（金额不可核实 + 非 AI）；Neo 名称由「Neo.ai」更正为「Neo」，并补全前 SentinelOne 团队/a16z+Bessemer 领投/Agentic Software Control 等可核实事实
 - **reason**: 融资金额/公司名是高事实密度字段，错误会直接误导；不可核实的金额即使加「据报」也有风险，且 Sila 非跨边界前沿科技，按非 AI 过滤
 - **rule_hint**: **【融资金额与公司名核实】(1) 融资/投资类金额必须能回溯到一手（公司 press release/Crunchbase/权威财经媒体）；若搜到的记录与汇总金额矛盾（如汇总 $300M 但记录是 $375M 且无更新轮），不写不可核实金额，标注或删除该条；(2) 非 AI 的纯传统行业（电池材料/地产/食品/纯汽车）即使曾进 pipeline 也应过滤，前沿科技白名单仅量子/脑机/核聚变/半导体；(3) 公司名以后缀（.ai/.com）臆造时，回溯官网/新闻稿确认正式名称（Neo 而非 Neo.ai）。属于 #29 事实密度与 #32 绝对性判断的事实核实延伸**
+
+### [2026-07-24] #73
+- **file**: daily-ai-news-2026-07-24.md
+- **field**: filter
+- **before**: 精简日报时删除「Stripe据报洽购OpenRouter」和「Corgi据报8周内第三次融资」两条初创&融资动态
+- **after**: 恢复两条，并同步补回要点汇总
+- **reason**: OpenRouter潜在收购体现模型聚合与计费入口的战略价值；Corgi短期连续融资体现AI创业风险保障这一二阶基础设施信号，均有独立信息增量
+- **rule_hint**: **【精简不只看条目数量】融资栏目精简时，应保留能反映AI产业二阶基础设施、分发/计费入口或异常资本节奏的事件；固定条目上限只能作为告警，不能替代编辑价值判断**
