@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>07月25日周六 AI前沿动态</title>
+    <style>
+        html { scroll-behavior: smooth; }
+
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --note-bg: #f4eff5;
+            --pill-bg: #EFEDEA;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --sidebar-w: 220px;
+            --max-w: 740px;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --note-bg: #1a111b;
+                --pill-bg: #161412;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+            }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ========== Particle BG ========== */
+        #particle-bg {
+            position: fixed; top: 0; left: 0;
+            pointer-events: none;
+            z-index: 0;
+            -webkit-mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            -webkit-mask-composite: source-over;
+            mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            mask-composite: add;
+        }
+
+        /* ========== Top Bar ========== */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        .topbar-brand {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--purple);
+            letter-spacing: -0.3px;
+        }
+        .topbar-tagline {
+            font-size: 11px;
+            color: var(--text-3);
+            letter-spacing: 0.2px;
+        }
+        .topbar-right {
+            display: flex;
+            gap: 8px;
+        }
+        .topbar-btn {
+            font-size: 12px;
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        .topbar-btn:hover {
+            color: var(--text);
+            border-color: var(--text-3);
+        }
+        .topbar-search {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 0 8px;
+            height: 28px;
+            margin-right: 4px;
+        }
+        .topbar-search input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 12px;
+            color: var(--text);
+            width: 100px;
+            font-family: inherit;
+        }
+        .topbar-search input::placeholder {
+            color: var(--text-3);
+        }
+        .topbar-search .search-icon {
+            font-size: 11px;
+            color: var(--text-3);
+            margin-right: 4px;
+        }
+
+        /* ========== Search Dropdown ========== */
+        .search-dropdown {
+            position: fixed;
+            top: 52px;
+            right: 32px;
+            width: 440px;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 200;
+        }
+        .search-dropdown.active { display: block; }
+        .search-empty {
+            padding: 20px 16px;
+            font-size: 13px;
+            color: var(--text-3);
+            text-align: center;
+        }
+        .search-result {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .search-result:last-child { border-bottom: none; }
+        .search-result:hover { background: var(--purple-20); }
+        .search-result-date {
+            font-size: 11px;
+            color: var(--text-3);
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .search-result-title {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .search-result-cat {
+            font-size: 11px;
+            color: var(--purple-80);
+            flex-shrink: 0;
+        }
+
+        /* ========== Page wrapper ========== */
+        .page {
+            max-width: calc(var(--max-w) + var(--sidebar-w) + 80px);
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* --- Header (above layout) --- */
+        .header {
+            padding: 28px 0 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .header-date {
+            font-size: 12px;
+            color: var(--text-3);
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 8px;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1.4;
+            color: var(--text);
+        }
+        .header-sub {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-3);
+        }
+
+        /* --- Summary / Briefing (above layout) --- */
+        .summary {
+            padding: 20px 0 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sum-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+        }
+        .sum-cat {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .sum-cat:last-child {
+            margin-bottom: 0;
+        }
+        .sum-cat-name {
+            display: inline-block;
+            background: var(--purple-20);
+            color: var(--purple);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .sum-item {
+            background: var(--pill-bg);
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 13px;
+            color: var(--text-2);
+            line-height: 1.5;
+        }
+
+        /* ========== Layout (sidebar + content) ========== */
+        .layout {
+            display: flex;
+        }
+
+        /* ========== Sidebar ========== */
+        .sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            padding: 20px 16px 20px 0;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+        .sidebar::-webkit-scrollbar { width: 0; }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 16px;
+        }
+
+        .nav-details {
+            margin-bottom: 2px;
+        }
+        .nav-details summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }
+        .nav-details summary::-webkit-details-marker { display: none; }
+        .nav-details summary::before {
+            content: "\25BE";
+            font-size: 9px;
+            color: var(--text-3);
+            margin-right: 5px;
+            display: inline-block;
+            transition: transform 0.15s ease;
+        }
+        .nav-details:not([open]) summary::before {
+            transform: rotate(-90deg);
+        }
+        .nav-count {
+            font-size: 10px;
+            color: var(--text-3);
+            font-variant-numeric: tabular-nums;
+            margin-left: auto;
+            padding-left: 4px;
+        }
+
+        .nav-articles {
+            padding-left: 14px;
+            border-left: 1px solid var(--border);
+            margin: 2px 0 12px;
+        }
+        .nav-item {
+            display: block;
+            padding: 3px 8px;
+            font-size: 12px;
+            color: var(--text-3);
+            text-decoration: none;
+            line-height: 1.45;
+            transition: color 0.15s ease;
+        }
+        .nav-item:hover {
+            color: var(--text-2);
+        }
+        .nav-item.active {
+            color: var(--purple);
+            font-weight: 500;
+        }
+
+        /* ========== Main ========== */
+        .main {
+            flex: 1;
+            max-width: var(--max-w);
+            padding: 20px 0 0 24px;
+            min-width: 0;
+        }
+
+        /* --- Section --- */
+        .sec {
+            margin-bottom: 32px;
+            scroll-margin-top: 64px;
+        }
+        .sec-h {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        /* --- Card --- */
+        .card {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            scroll-margin-top: 64px;
+            cursor: default;
+        }
+        .card:last-child { border-bottom: none; }
+        .card-h {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: var(--text);
+            letter-spacing: -0.2px;
+            margin-bottom: 8px;
+        }
+
+        .ent {
+            font-weight: 500;
+        }
+
+        .card-body {
+            font-size: 14px;
+            line-height: 1.75;
+            color: var(--text-2);
+        }
+        .card-body strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .card-note {
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: var(--note-bg);
+            font-size: 13px;
+            line-height: 1.75;
+            color: var(--text-2);
+            border-radius: 2px;
+        }
+        .note-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--purple-80);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 6px;
+        }
+
+        .card-src {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-3);
+        }
+        .card-src a {
+            color: var(--text-3);
+            text-decoration: none;
+        }
+        .card-src a:hover {
+            color: var(--text);
+        }
+
+        /* ========== Bottom (independent) ========== */
+        .bottom {
+            border-top: 1px solid var(--border);
+            margin-top: 16px;
+            padding: 20px 0 32px;
+        }
+
+        /* --- Issue Navigation --- */
+        .issue-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .issue-nav a {
+            font-size: 13px;
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        .issue-nav a:hover {
+            color: var(--text);
+            border-color: var(--text-3);
+        }
+
+        /* --- Footer --- */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+        .footer-copy {
+            font-size: 12px;
+            color: var(--text-3);
+        }
+        .footer-top {
+            font-size: 12px;
+            color: var(--text-3);
+            text-decoration: none;
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: all 0.15s ease;
+        }
+        .footer-top:hover {
+            color: var(--text);
+            border-color: var(--text-3);
+        }
+
+        /* ========== Mobile TOC ========== */
+        .mob-toc {
+            display: none;
+            overflow-x: auto;
+            gap: 0;
+            padding: 0 16px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 48px; z-index: 50;
+            height: 40px;
+            align-items: center;
+        }
+        .mob-toc::-webkit-scrollbar { display: none; }
+        .mob-toc a {
+            flex-shrink: 0;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-3);
+            white-space: nowrap;
+        }
+        .mob-toc a:hover { color: var(--text); }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .mob-toc { display: flex !important; }
+            .main {
+                max-width: 100%;
+                padding: 24px 20px 48px;
+            }
+            .header { padding: 20px 0 16px; }
+            .header h1 { font-size: 20px; }
+        }
+        @media (max-width: 480px) {
+            .main { padding: 20px 16px 40px; }
+            .header { padding: 16px 0 12px; }
+            .header h1 { font-size: 18px; }
+            .card-h { font-size: 15px; }
+            .topbar-tagline { display: none; }
+            .topbar-search { display: none; }
+            .search-dropdown { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-bg"></canvas>
+    <!-- Top bar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <span class="topbar-brand">AI Daily News</span>
+            <span class="topbar-tagline">Keep Informed with Link-X Capital</span>
+        </div>
+        <div class="topbar-right">
+            <div class="topbar-search">
+                <span class="search-icon">&#128269;</span>
+                <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
+            </div>
+            <a href="index.html" class="topbar-btn">往期动态</a>
+            <a href="topics.html" class="topbar-btn">专题报告</a>
+        </div>
+    </div>
+
+    <div class="search-dropdown" id="search-dropdown"></div>
+
+    <!-- Mobile TOC -->
+    <div class="mob-toc" id="mob-toc">
+        <a href="#s-模型前沿">模型前沿</a><a href="#s-产业动态">产业动态</a><a href="#s-算力追踪">算力追踪</a><a href="#s-初创and融资">初创&融资</a><a href="#s-X讨论">X讨论</a>
+    </div>
+
+    <!-- Page wrapper: header + briefing above, sidebar + content below -->
+    <div class="page">
+        <header class="header">
+            <div class="header-date">2026-07-25</div>
+            <h1>蚂蚁集团发布Ling-3.0-flash：124B MoE架构单token仅激活5.1B参数</h1>
+            <div class="header-sub">24 stories, 24h window</div>
+        </header>
+
+        
+            <div class="summary">
+                <div class="sum-label">Briefing</div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">模型前沿</span>
+                    <span class="sum-item">蚂蚁集团发布Ling-3.0-flash：124B MoE架构单token仅激活5.1B参数</span>
+                    <span class="sum-item">Anthropic发布Opus 5：定价更低且限制更少</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">产业动态</span>
+                    <span class="sum-item">AI编程公司Cognition收购对话式AI助手Poke，交易估值低九位数美元</span>
+                    <span class="sum-item">韩国总统与产业领袖在NVIDIA AI Summit上勾勒韩国AI发展蓝图</span>
+                    <span class="sum-item">Anthropic Claude Opus 5（含Fast变体）上线OpenRouter聚合平台</span>
+                    <span class="sum-item">Meta、Microsoft、Nvidia等签署联名信捍卫开源AI</span>
+                    <span class="sum-item">xAI的Grok STT语音转文本模型上线OpenRouter，支持25种语言</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">算力追踪</span>
+                    <span class="sum-item">vLLM联合华为昇腾、StepFun与蚂蚁集团发布AFD推理插件</span>
+                    <span class="sum-item">SLAI T-Rex在昇腾超节点上完成DeepSeek-V4全参数后训练</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">初创&融资</span>
+                    <span class="sum-item">据报Anduril洽谈以约1000亿美元估值融资，为去年三倍以上</span>
+                    <span class="sum-item">The Summer Fun List: Gear, Gadgets and Toys That Come Highly Recommended</span>
+                    <span class="sum-item">具身大脑创业公司伊辛智脑完成数千万元种子轮融资</span>
+                    <span class="sum-item">AI can save employees time without creating any measurable value for the busines</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">研究关注</span>
+                    <span class="sum-item">清华大学CVPR'26镜像错觉艺术生成器，支持3D打印输出</span>
+                    <span class="sum-item">arXiv论文提出使开源LLM水印抵抗模型合并的方案</span>
+                    <span class="sum-item">AREX论文提出递归自改进深度研究Agent，HF获115票</span>
+                    <span class="sum-item">HF论文提出可实时生成的世界渲染器</span>
+                    <span class="sum-item">arXiv论文提出MoE专家感知对比解码以缓解LLM幻觉</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">X讨论</span>
+                    <span class="sum-item">SemiAnalysis反驳AI需求悬崖论：coding贡献OpenAI与Anthropic超70% ARR</span>
+                </div>
+            </div>
+
+        <div class="layout">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <div class="nav-label">Contents</div>
+                
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>模型前沿</span>
+                <span class="nav-count">2</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-模型前沿-0" class="nav-item">蚂蚁集团发布Ling-3.0-flash：124B MoE架构单toke…</a>
+                <a href="#c-模型前沿-1" class="nav-item">Anthropic发布Opus 5：定价更低且限制更少</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>产业动态</span>
+                <span class="nav-count">8</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-产业动态-0" class="nav-item">AI编程公司Cognition收购对话式AI助手Poke，交易估值低九位…</a>
+                <a href="#c-产业动态-1" class="nav-item">韩国总统与产业领袖在NVIDIA AI Summit上勾勒韩国AI发展蓝…</a>
+                <a href="#c-产业动态-2" class="nav-item">Anthropic Claude Opus 5（含Fast变体）上线Op…</a>
+                <a href="#c-产业动态-3" class="nav-item">Meta、Microsoft、Nvidia等签署联名信捍卫开源AI</a>
+                <a href="#c-产业动态-4" class="nav-item">xAI的Grok STT语音转文本模型上线OpenRouter，支持25…</a>
+                <a href="#c-产业动态-5" class="nav-item">OpenRouter推出Classifiers公测功能，按任务类型自动标…</a>
+                <a href="#c-产业动态-6" class="nav-item">OpenAI总裁Brockman支持Musk提议：头部AI开发者定期举行…</a>
+                <a href="#c-产业动态-7" class="nav-item">Google Q2财报后股价跌7%，华尔街质疑AI投资回报路径</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>算力追踪</span>
+                <span class="nav-count">2</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-算力追踪-0" class="nav-item">vLLM联合华为昇腾、StepFun与蚂蚁集团发布AFD推理插件</a>
+                <a href="#c-算力追踪-1" class="nav-item">SLAI T-Rex在昇腾超节点上完成DeepSeek-V4全参数后训练</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>初创&融资</span>
+                <span class="nav-count">11</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-初创and融资-0" class="nav-item">据报Anduril洽谈以约1000亿美元估值融资，为去年三倍以上</a>
+                <a href="#c-初创and融资-1" class="nav-item">The Summer Fun List: Gear, Gadgets a…</a>
+                <a href="#c-初创and融资-2" class="nav-item">具身大脑创业公司伊辛智脑完成数千万元种子轮融资</a>
+                <a href="#c-初创and融资-3" class="nav-item">AI can save employees time without c…</a>
+                <a href="#c-初创and融资-4" class="nav-item">arXiv论文提出使开源LLM水印抵抗模型合并的方案</a>
+                <a href="#c-初创and融资-5" class="nav-item">AREX论文提出递归自改进深度研究Agent，HF获115票</a>
+                <a href="#c-初创and融资-6" class="nav-item">HF论文提出可实时生成的世界渲染器</a>
+                <a href="#c-初创and融资-7" class="nav-item">arXiv论文提出MoE专家感知对比解码以缓解LLM幻觉</a>
+                <a href="#c-初创and融资-8" class="nav-item">arXiv论文诊断Looped Transformer自适应深度中的停止…</a>
+                <a href="#c-初创and融资-9" class="nav-item">arXiv论文提出Christoffel损失自编码器用于半监督异常检测</a>
+                <a href="#c-初创and融资-10" class="nav-item">arXiv论文分析Muon优化器在grokking中的关键成分</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>X讨论</span>
+                <span class="nav-count">1</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-X讨论-0" class="nav-item">SemiAnalysis反驳AI需求悬崖论：coding贡献OpenAI…</a>
+            </div>
+        </details>
+            </nav>
+
+            <!-- Main content -->
+            <div class="main">
+                
+        <section class="sec" id="s-模型前沿">
+            <h2 class="sec-h">模型前沿</h2>
+        <article class="card" id="c-模型前沿-0">
+            <h3 class="card-h">蚂蚁集团发布Ling-3.0-flash：124B MoE架构单token仅激活5.1B参数</h3>
+            <p class="card-body">蚂蚁集团灵玑团队发布Ling-3.0-flash模型，采用124B总参数MoE架构，每个token仅激活5.1B参数，并结合混合注意力机制。模型已在vLLM推理框架中获得官方支持。该模型属于蚂蚁Ling系列的新一代轻量化版本，定位为高吞吐低成本推理场景。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> Ling-3.0-flash以124B/5.1B的极低激活比和vLLM首发支持切入推理成本竞争，与近期Prism ML的Ternary Bonsai 27B、阿里平头哥SAIL等开源算子栈动作共同构成国产开源模型推理降本趋势的一环。</div>
+            <div class="card-src"><a href="https://x.com/vllm_project/status/2080702006378082384#m" target="_blank">@vllm_project</a></div>
+        </article>
+        <article class="card" id="c-模型前沿-1">
+            <h3 class="card-h"><span class="ent">Anthropic</span>发布Opus 5：定价更低且限制更少</h3>
+            <p class="card-body">TechCrunch报道<span class="ent">Anthropic</span>发布Opus 5。报道指出Opus 5相较Fable在定价上更低、安全限制更少，在大多数使用场景中将成为更优选择。<span class="ent">Anthropic</span>未披露更多模型架构、benchmark或上下文窗口细节。⚠️ <span class="ent">Anthropic</span>官方尚未发布完整公告，详情待核。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> <span class="ent">Anthropic</span>通过降价与放宽限制直接争夺<span class="ent">OpenAI</span>与<span class="ent">xAI</span>的开发者市场，与SemiAnalysis披露的coding占<span class="ent">OpenAI</span>/<span class="ent">Anthropic</span> 70% ARR数据相互印证，编程场景将成为头部厂商新一轮模型战的核心战场。</div>
+            <div class="card-src"><a href="https://techcrunch.com/2026/07/24/anthropic-launches-opus-5/" target="_blank">TechCrunch</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-产业动态">
+            <h2 class="sec-h">产业动态</h2>
+        <article class="card" id="c-产业动态-0">
+            <h3 class="card-h">AI编程公司Cognition收购对话式AI助手Poke，交易估值低九位数美元</h3>
+            <p class="card-body">AI编程初创公司Cognition收购对话式AI助手Poke，对Poke的估值达低九位数美元（low nine figures）。Poke以类朋友的聊天式交互为产品形态，交易反映Cognition向多场景AI助手延伸。 [深抓补充] Image Credits: Poke/The Interaction Company of California AI Why Cognition bought Poke: AI personality is becoming a competitive advantage Sarah Perez 11:07 AM PDT · July 24, 2026 Poke, the AI assistant you text like a friend , is making its next big move. The company behind the assistant, The Interaction Company of California , has been acquired by AI coding startup Cognition in a deal valuing the startup in the &#8220;low nine figures.&#8221; The deal will bring Poke&#8217;s interaction model and personality to Cognition&#8217;s coding assistant Devin. Meanwhile, Poke will take advantage of ...</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 编程类AI公司开始向通用对话助手延伸，'AI人格'被定位为差异化竞争要素，但Cognition与Poke的产品场景整合尚待观察。</div>
+            <div class="card-src"><a href="https://techcrunch.com/2026/07/24/why-cognition-bought-poke-ai-personality-is-becoming-a-competitive-advantage/" target="_blank">TechCrunch</a></div>
+        </article>
+        <article class="card" id="c-产业动态-1">
+            <h3 class="card-h">韩国总统与产业领袖在<span class="ent">NVIDIA</span> AI Summit上勾勒韩国AI发展蓝图</h3>
+            <p class="card-body">在<span class="ent">NVIDIA</span>于旧金山举办的AI Summit上，韩国总统Jae Myung Lee与该国顶级商界领袖及研究者出席，议题涉及韩国AI产业布局。⚠️摘要截断，具体合作内容与签署动作需以原文为准。 [搜索补充] 韩国总统与产业领袖在<span class="ent">NVIDIA</span> AI Summit上共同规划了韩国AI发展蓝图，关键事实和数据如下： 1. 韩国计划在2027年投入运营首座AI工厂，由SK电讯与<span class="ent">NVIDIA</span>合作建设，以加速AI初创企业、机器人及工业物理AI的发展。 2. SK电讯将利用<span class="ent">NVIDIA</span> DSX平台构建吉瓦级AI云，专注于基于GPU的计算服务，为模型训练、推理及智能体工作负载提供算力支持。 3. NAVER将基于<span class="ent">NVIDIA</span> DSX平台打造吉瓦级AI工厂，为智能体与物理AI提供算力支持，初期规模为55兆瓦，逐步扩展。 4. 英伟达CEO黄仁勋强调电信网络成为国家级AI基础设施，SK集团与<span class="ent">NVIDIA</span>合作，具备从芯片到数据中心运营的全栈AI基础设施能力。 5. LG Display利用<span class="ent">NVIDIA</span>基于物理的AI平台PhysicsNeMo开发数字孪生面板工具（DPS），提高面板开发和生产效率。 6. 韩国AI初创公司Upstage计划购买1万块<span class="ent">AMD</span>芯片，以实现芯片供应链多样化。 7. 韩国在半导体制造领域迎头赶上，三星电子和SK海力士合计占据全球内存市场一半以上的份额，政府大力支持芯片产业发展。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 韩国AI战略落地节奏与<span class="ent">NVIDIA</span>算力供给绑定，国家级合作对韩国本土AI基建与模型生态有拉动效应。</div>
+            <div class="card-src"><a href="https://blogs.nvidia.com/blog/ai-summit-korea-partners-and-nvidia/" target="_blank">NVIDIA Blog</a></div>
+        </article>
+        <article class="card" id="c-产业动态-2">
+            <h3 class="card-h"><span class="ent">Anthropic</span> <span class="ent">Claude Opus</span> 5（含Fast变体）上线OpenRouter聚合平台</h3>
+            <p class="card-body">OpenRouter宣布<span class="ent">Anthropic</span> <span class="ent">Claude Opus</span> 5已在平台上线，并提供Fast变体（<span class="ent">Claude Opus</span> 5 Fast）以更高速度服务同一模型。OpenRouter同步发布迁移指南。 [搜索补充] <span class="ent">Anthropic</span> <span class="ent">Claude Opus</span> 5及其Fast变体已上线OpenRouter聚合平台。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> <span class="ent">Anthropic</span>通过OpenRouter拓宽分发渠道，Fast变体切中推理延迟敏感型场景，与近期<span class="ent">Claude</span>系列在第三方平台的密集分发形成延续。</div>
+            <div class="card-src"><a href="https://x.com/OpenRouter/status/2080704150938280408#m" target="_blank">@openrouter</a></div>
+        </article>
+        <article class="card" id="c-产业动态-3">
+            <h3 class="card-h"><span class="ent">Meta</span>、<span class="ent">Microsoft</span>、Nvidia等签署联名信捍卫开源AI</h3>
+            <p class="card-body">周五，多家美国大型科技公司签署联名信，公开捍卫开源AI软件，正值特朗普政府考虑可能限制开源AI模型的监管路径。签署方包括<span class="ent">Meta</span>、<span class="ent">Microsoft</span>、Nvidia等头部厂商。此举被视为开源阵营对潜在出口管制与许可限制的统一回应。 [深抓补充] Many of the largest U.S. tech companies signed a  joint letter  on Friday defending open-source AI software as the Trump administration considers possible restrictions on Chinese labs. The letter—signed by <span class="ent">Meta</span> Platforms, Nvidia, <span class="ent">Microsoft</span> and Andreessen Horowitz, along with AI startups like Reflection and Hugging Face—argued that open-weight AI models strengthen competition and expand access to 关键词: policy, ai 作者: Leo Schwartz</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 开源阵营的联合表态直接对冲美国国内正在酝酿的AI出口管制立法，头部算力与模型厂商把开源定位为对中竞争与生态护城河的双重筹码。</div>
+            <div class="card-src"><a href="https://www.theinformation.com/briefings/meta-microsoft-nvidia-others-sign-letter-defending-open-source-ai" target="_blank">The Information</a></div>
+        </article>
+        <article class="card" id="c-产业动态-4">
+            <h3 class="card-h"><span class="ent">xAI</span>的Grok STT语音转文本模型上线OpenRouter，支持25种语言</h3>
+            <p class="card-body"><span class="ent">xAI</span>的Grok STT模型已在OpenRouter正式上线，提供25种语言的语音转文本能力。该模型由<span class="ent">SpaceX</span>AI团队（即<span class="ent">xAI</span>）发布，此前已通过OpenRouter API向开发者开放。Grok STT的上线进一步丰富了OpenRouter聚合的多模态语音模型选项。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> <span class="ent">xAI</span>通过OpenRouter分发语音模型延续其多模态扩张节奏，OpenRouter作为模型聚合入口的价值进一步强化，与今日其Classifiers功能形成多模态+工作流的产品组合。</div>
+            <div class="card-src"><a href="https://x.com/OpenRouter/status/2080743252215619645#m" target="_blank">@openrouter</a></div>
+        </article>
+        <article class="card" id="c-产业动态-5">
+            <h3 class="card-h">OpenRouter推出Classifiers公测功能，按任务类型自动标注推理调用</h3>
+            <p class="card-body">OpenRouter推出Classifiers公测，可在用户工作流中按任务类型自动标注推理调用。该功能在prompt日志关闭的情况下仍可使用，便于企业在不影响隐私设置的前提下完成内部推理追踪与成本归因。官方博客同步发布产品说明。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> OpenRouter从模型聚合层切入企业级推理治理与成本可观测性，开始直接对标传统LLM Gateway厂商，提升其在企业AI基础设施中的卡位价值。</div>
+            <div class="card-src"><a href="https://x.com/OpenRouter/status/2080671145938821414#m" target="_blank">@openrouter</a></div>
+        </article>
+        <article class="card" id="c-产业动态-6">
+            <h3 class="card-h"><span class="ent">OpenAI</span>总裁Brockman支持Musk提议：头部AI开发者定期举行安全会议</h3>
+            <p class="card-body"><span class="ent">OpenAI</span>总裁Greg Brockman周四表态，支持Elon Musk此前提出的建议——头部AI开发者每隔数月举行一次行业级AI安全会议。Brockman公开背书Musk长期对手提出的合作机制，是<span class="ent">OpenAI</span>在AI治理立场上的一次具体表态。该建议旨在促进AI行业巨头之间的安全信息共享与协调。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> <span class="ent">OpenAI</span>与Musk阵营在安全议题上罕见同框，可能推动行业安全标准从单公司自律走向多方协调机制。</div>
+            <div class="card-src"><a href="https://www.theinformation.com/briefings/openai-president-endorses-musks-proposal-industry-meetings-ai-safety" target="_blank">The Information</a></div>
+        </article>
+        <article class="card" id="c-产业动态-7">
+            <h3 class="card-h"><span class="ent">Google</span> Q2财报后股价跌7%，华尔街质疑AI投资回报路径</h3>
+            <p class="card-body"><span class="ent">Google</span>母公司Alphabet在Q2财报披露后股价下跌约7%。市场担忧<span class="ent">Google</span>在AI领域的资本开支节奏与变现路径不清晰。<span class="ent">Google</span>在财报中提及机器人等客户对AI基础设施需求增长，但未给出具体的AI收入或ROI数据。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> Alphabet下跌反映资本市场对头部云厂AI Capex能否转化为可观收入的怀疑加剧，后续财报中AI ROI披露质量将成为估值关键变量。</div>
+            <div class="card-src"><a href="https://www.theinformation.com/articles/wall-street-sends-google-message" target="_blank">The Information</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-算力追踪">
+            <h2 class="sec-h">算力追踪</h2>
+        <article class="card" id="c-算力追踪-0">
+            <h3 class="card-h">vLLM联合华为昇腾、StepFun与蚂蚁集团发布AFD推理插件</h3>
+            <p class="card-body">vLLM AFD Plugin（FastAFD）将Attention与FFN（专家）路径拆分为独立服务，实现分别扩展；Attention容量取决于请求状态和KV-cache压力，专家容量取决于token路由和负载。早期对照测试中，采用<span class="ent">DeepSeek</span>-V3.2 W8A8模型在Ascend 910C上，<strong>64A/16F布局实现+11.3%每die解码吞吐量提升</strong>。该插件保持原有vLLM服务接口，无需fork，支持<strong><span class="ent">NVIDIA</span> GPU和华为昇腾NPU</strong>。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 国产芯片+开源推理框架的深度耦合标志着vLLM正主动适配昇腾等国产算力，与近期阿里平头哥开源SAIL软件栈（支持260+框架）共同构建起对CUDA生态之外的推理替代路径。</div>
+            <div class="card-src"><a href="https://x.com/vllm_project/status/2080673192939807083#m" target="_blank">@vllm_project</a></div>
+        </article>
+        <article class="card" id="c-算力追踪-1">
+            <h3 class="card-h">SLAI T-Rex在昇腾超节点上完成<span class="ent">DeepSeek</span>-V4全参数后训练</h3>
+            <p class="card-body">HuggingFace每日论文推荐SLAI T-Rex，作者为Dongfang Li、Xiaodong Luo、Ruoyu Sun，获56票。论文展示在华为昇腾SuperPOD上对<span class="ent">DeepSeek</span>-V4系列做全参数后训练的工程实现。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> <span class="ent">DeepSeek</span>-V4 + 昇腾超节点组合若可复现训练性能，将为非<span class="ent">NVIDIA</span>栈提供面向前沿开源模型的可用后训练通路。</div>
+            <div class="card-src"><a href="https://huggingface.co/papers/2607.20145" target="_blank">HuggingFace Daily Papers</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-初创and融资">
+            <h2 class="sec-h">初创&融资</h2>
+        <article class="card" id="c-初创and融资-0">
+            <h3 class="card-h">据报Anduril洽谈以约1000亿美元估值融资，为去年三倍以上</h3>
+            <p class="card-body">据Reuters报道，国防科技公司Anduril正在洽谈新一轮融资，估值可能推高至约<strong>1000亿美元</strong>，为去年估值的三倍以上。Anduril核心业务为AI驱动的国防系统。 [深抓补充] Image Credits: US Army/Lt. Tyler Williams Fundraising Anduril reportedly in talks to raise funding at $100B valuation, more than 3x last year&#8217;s mark Ram Iyer 10:33 AM PDT · July 24, 2026 Defense tech company Anduril is said to be raising a new round of capital that may push its valuation up by a whopping $40 billion to about $100 billion, Reuters reported, citing anonymous sources. The company, which raised $5 billion in May at a $61 billion valuation — itself roughly double the $30.5 billion valuation it landed in its June 2025 Series G round — may be structuring the fundraise as a two-...</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> Anduril的估值跳涨反映AI国防赛道的资本加速聚集，但传闻轮尚无确认落点。</div>
+            <div class="card-src"><a href="https://techcrunch.com/2026/07/24/anduril-reportedly-in-talks-to-raise-funding-at-100b-valuation-more-than-3x-last-years-mark/" target="_blank">TechCrunch</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-1">
+            <h3 class="card-h">The Summer Fun List: Gear, Gadgets and Toys That Come Highly Recommended</h3>
+            <p class="card-body">Utter kitchen chaos unfolded when Brynn Putnam and I got together a week or so ago and she suggested a round of “Chop, Chop,” a collaborative restaura [深抓补充] Utter kitchen chaos unfolded when Brynn Putnam and I got together a week or so ago and she suggested a round of “Chop, Chop,” a collaborative restaurant simulation game created by her startup, Board. Even under her close supervision, I still nearly burned the grilled cheese—then left the tomato ... 关键词: board, brynn putnam, union square ventures, lululemon, LULU, mirror 作者: Abram Brown</p>
+            <div class="card-src"><a href="https://www.theinformation.com/articles/summer-fun-list-gear-gadgets-toys-come-highly-recommended" target="_blank">The Information</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-2">
+            <h3 class="card-h">具身大脑创业公司伊辛智脑完成数千万元种子轮融资</h3>
+            <p class="card-body">伊辛智脑致力于打造具备持续学习、自主决策和跨形态部署能力的机器人通用大脑，推动具身智能从动作模仿走向记忆、认知与自我学习驱动的路径。海愿资本完成对伊辛智脑的数千万元种子轮投资，多家机构跟投。资金将主要用于IS-Brain认知世界模型的核心系统研发、跨学科团队建设。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 资本持续押注认知世界模型路线，与近期WAIC展出的超算+智算融合底座、具身智能跨50国27000台机器人部署共同表明，具身赛道正向可泛化认知架构收敛而非纯动作模仿。</div>
+            <div class="card-src"><a href="https://www.itjuzi.com/investevent/14701221" target="_blank">IT桔子</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-3">
+            <h3 class="card-h">AI can save employees time without creating any measurable value for the busines</h3>
+            <p class="card-body">一项丹麦大型研究发现，使用AI的员工节省了约<strong>2.8%</strong>的总工作时间，但这些收益并未体现在其记录的工时或收入中。该研究仅测量了部分经济效应，未测量业务成果，揭示了企业AI的真正问题：任务变简单了，但相关经济效益保持不变。多数公司只测量AI改进任务这一阶段，假设其余环节会自动实现，实际上节省的时间往往被会议、审查和旧瓶颈消耗。ROI只有在组织明确决定节省时间的用途后才能实现。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 生成式错觉艺术+3D打印的组合具有视觉冲击力，但缺乏方法描述难以评估技术含量，CVPR'26接收本身已是初步信号。</div>
+            <div class="card-src"><a href="https://mp.weixin.qq.com/s?__biz=MzI3MTA0MTk1MA==&mid=2652714734&idx=3&sn=cebd2da28f59a494a9b5178084805572" target="_blank">新智元</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-4">
+            <h3 class="card-h">arXiv论文提出使开源LLM水印抵抗模型合并的方案</h3>
+            <p class="card-body">论文提出Merge-Adversarial Training（合并对抗训练），通过对抗训练将文本水印蒸馏到模型权重中，使其对后续模型合并具有鲁棒性。实验表明，该方法在使用SLERP合并时，TPR@1%FPR最高提升<strong>51个百分点</strong>，平均提升<strong>25个百分点</strong>，显著优于所有基线方法，同时保持下游任务能力。研究还首次针对现实合并场景进行评估，包括结合专家能力与防止灾难性遗忘等常见用例。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 模型合并已成为开源社区构建LLM的主流路径，水印的鲁棒性直接关系到开源模型的可追溯与责任归属。</div>
+            <div class="card-src"><a href="https://arxiv.org/abs/2607.20435" target="_blank">arXiv cs.CL</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-5">
+            <h3 class="card-h">AREX论文提出递归自改进深度研究Agent，HF获115票</h3>
+            <p class="card-body">HuggingFace每日论文推荐AREX，作者为Shuqi Lu、Chaofan Li、Kun Luo，获115票。论文提出面向深度研究任务的递归自改进Agent，使Agent在执行过程中不断优化自身工作流。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 递归自改进机制把Agent从单次工具调用推向在线策略演化，是深度研究类Agent减少人工设计成本的一条可行路径。</div>
+            <div class="card-src"><a href="https://huggingface.co/papers/2607.21461" target="_blank">HuggingFace Daily Papers</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-6">
+            <h3 class="card-h">HF论文提出可实时生成的世界渲染器</h3>
+            <p class="card-body">HuggingFace每日论文推荐《Generative World Renderer at the Speed of Play》，作者为Guixu Lin、Zheng-Hui Huang、Siqi Yang，获72票。论文目标是把生成式渲染推进到实时帧率，适配游戏/仿真等交互场景。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 若生成式渲染真能稳定达到交互帧率，将冲击传统游戏引擎管线，把3D内容创作从预渲染转向按需生成。</div>
+            <div class="card-src"><a href="https://huggingface.co/papers/2607.18703" target="_blank">HuggingFace Daily Papers</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-7">
+            <h3 class="card-h">arXiv论文提出MoE专家感知对比解码以缓解LLM幻觉</h3>
+            <p class="card-body">EAACD方法将MoE高层专家基于置信度和一致性分为高可靠性组和多个低可靠性组，通过对比高可靠性组与各低可靠性组的预测差异来抑制幻觉生成。实验发现，共享专家的MoE中不存在传统意义上的层间差异，但不同MoE架构的高层在事实性与非事实性输出间表现出显著的专家激活模式差异。该方法在QA任务上验证了有效性，相比仅适用于GPT等纯Transformer模型的对比解码，EAACD首次挖掘了MoE架构中专家差异这一独特信号。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 把幻觉治理从prompt/训练层下沉到MoE的路由机制，为专家级解码控制提供了新抓手，但实际效果仍需跨模型验证。</div>
+            <div class="card-src"><a href="https://arxiv.org/abs/2607.20426" target="_blank">arXiv cs.CL</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-8">
+            <h3 class="card-h">arXiv论文诊断Looped Transformer自适应深度中的停止门与轨迹读出</h3>
+            <p class="card-body">Looped Transformer通过反复应用共享循环块来增加测试时计算量。论文对学到的halting gate（停止门）以及trajectory readout（轨迹读出）进行</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 测试时计算正成为推理侧降本增效的另一条路径，对halting gate行为的可解释性研究直接关系其工程稳定性。</div>
+            <div class="card-src"><a href="https://arxiv.org/abs/2607.20519" target="_blank">arXiv cs.LG</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-9">
+            <h3 class="card-h">arXiv论文提出Christoffel损失自编码器用于半监督异常检测</h3>
+            <p class="card-body">论文提出CLOE，将自编码器降维与潜在空间Christoffel Function检测器相结合，通过新型损失函数利用Christoffel Function引导自编码器学习能更好捕获正常数据分布支持的表示，解决了Christoffel方法难以扩展到高维环境的问题，并提出设置检测阈值的原则性程序和调整单个超参数的有效策略。实验在多个基准数据集上验证了方法有效性。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> Christoffel多项式与自编码器结合是一种小众路径，工业异常检测领域更具落地意义，但论文需补充benchmark对照才能评估实际增益。</div>
+            <div class="card-src"><a href="https://arxiv.org/abs/2607.20530" target="_blank">arXiv cs.LG</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-10">
+            <h3 class="card-h">arXiv论文分析Muon优化器在grokking中的关键成分</h3>
+            <p class="card-body">论文通过多种子多学习率扫描进行消融实验，发现加速grokking的关键成分是正交化（Newton-Schulz迭代），仅正交化即可匹配完整Muon效果，而单独谱范数约束并不比AdamW更快；机制分析表明正交化优化器在约<strong>3倍更低</strong>的谱范数下达到泛化，以更低范数解收敛；将迭代次数从五次减少到一次可加速达到阈值，但会使grokking解决方案</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> grokking机制的揭示对优化器选择和训练策略有借鉴价值，但目前结论局限于小规模算术任务，泛化性待验证。</div>
+            <div class="card-src"><a href="https://arxiv.org/abs/2607.20512" target="_blank">arXiv cs.LG</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-X讨论">
+            <h2 class="sec-h">X讨论</h2>
+        <article class="card" id="c-X讨论-0">
+            <h3 class="card-h">SemiAnalysis反驳AI需求悬崖论：coding贡献<span class="ent">OpenAI</span>与<span class="ent">Anthropic</span>超70% ARR</h3>
+            <p class="card-body">SemiAnalysis回应外界关于AI token需求见顶的判断，认为预算是真实的，需求悬崖并不存在。报告估算第90百分位以上用户贡献了不成比例的token消耗，并将这一现象称为Tokenmaxxing，同时披露<span class="ent">Meta</span>在30天内burned超过60T tokens。SemiAnalysis模型显示，coding驱动了<span class="ent">OpenAI</span>与<span class="ent">Anthropic</span>超过70%的ARR。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 编程场景成为头部模型公司收入核心，反映出AI价值兑现仍集中于开发者生产力赛道；Tokenmaxxing集中在头部重度用户，说明企业级批量推理是真正的增长引擎，to-C聊天机器人增长叙事被进一步证伪。</div>
+            <div class="card-src"><a href="https://x.com/SemiAnalysis_/status/2080726530708091382#m" target="_blank">@semianalysis_</a></div>
+        </article>
+        </section>
+            </div>
+        </div>
+
+        <!-- Bottom: independent of layout -->
+        <div class="bottom">
+            <div class="issue-nav">
+                <a href="daily-ai-news-2026-07-24.html" class="issue-prev">&larr; 上一期</a><span></span>
+            </div>
+            <div class="footer">
+                <span class="footer-copy">&copy; 2026 &middot; AI Daily News by Link-X Capital</span>
+                <a href="#" class="footer-top">Back to top &uarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll spy -->
+    <script>
+    (function() {
+        const cards = document.querySelectorAll('.card[id]');
+        const navs = document.querySelectorAll('.nav-item[href^="#c-"]');
+        if (!cards.length || !navs.length) return;
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    navs.forEach(n => n.classList.remove('active'));
+                    const hit = document.querySelector('.nav-item[href="#' + e.target.id + '"]');
+                    if (hit) hit.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-80px 0px -65% 0px' });
+        cards.forEach(c => obs.observe(c));
+    })();
+
+    // Search — real-time, fetches HTML pages in browser
+    (function() {
+        const input = document.getElementById('search');
+        const dropdown = document.getElementById('search-dropdown');
+        if (!input || !dropdown) return;
+
+        const cards = document.querySelectorAll('.card');
+        const sections = document.querySelectorAll('.sec[id]');
+        const details = document.querySelectorAll('.nav-details');
+
+        let searchData = [];
+        let totalFiles = 0, loadedCount = 0, started = false;
+
+        function stripTag(s) { return s.replace(/<[^>]+>/g, ''); }
+
+        function parseHtml(html, url) {
+            const dm = url.match(/(\d{4})-(\d{2})-(\d{2})/);
+            const date = dm ? dm[2] + '-' + dm[3] : '';
+            let articles = [], currentCat = '';
+            const parts = html.split(/<h2 class="sec-h"[^>]*>(.*?)<\/h2>/);
+            for (let i = 0; i < parts.length; i++) {
+                if (i % 2 === 1) currentCat = stripTag(parts[i]).trim();
+                else if (i > 0 && currentCat) {
+                    const tRe = /<h3 class="card-h"[^>]*>(.*?)<\/h3>/g, bRe = /<p class="card-body">(.*?)<\/p>/g;
+                    const ts = [], bs = [];
+                    let m;
+                    while ((m = tRe.exec(parts[i])) !== null) ts.push(m[1]);
+                    while ((m = bRe.exec(parts[i])) !== null) bs.push(m[1]);
+                    for (let j = 0; j < ts.length; j++) {
+                        const t = stripTag(ts[j]).trim();
+                        const b = j < bs.length ? stripTag(bs[j]).trim().slice(0, 120) : '';
+                        if (t) articles.push({ d: date, t, b, c: currentCat, f: url });
+                    }
+                }
+            }
+            return articles;
+        }
+
+        function startLoad() {
+            if (started) return;
+            started = true;
+            // Fetch index.html to get the file list
+            fetch('index.html').then(r => r.text()).then(html => {
+                const re = /href="(daily-ai-news-20\d{2}-[^"]+\.html)"/g;
+                const files = []; let m;
+                while ((m = re.exec(html)) !== null) files.push(m[1]);
+                totalFiles = files.length;
+                files.forEach(url => {
+                    fetch(url).then(r => r.text()).then(h => {
+                        searchData = searchData.concat(parseHtml(h, url));
+                        loadedCount++;
+                    }).catch(() => { loadedCount++; });
+                });
+            }).catch(() => {});
+        }
+
+        input.addEventListener('focus', startLoad);
+
+        input.addEventListener('input', function() {
+            const q = this.value.toLowerCase().trim();
+
+            if (!q) {
+                cards.forEach(c => c.style.display = '');
+                sections.forEach(s => s.style.display = '');
+                details.forEach(d => d.style.display = '');
+                dropdown.classList.remove('active');
+                return;
+            }
+
+            // In-page filter
+            cards.forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+            sections.forEach(sec => {
+                const vis = sec.querySelectorAll('.card:not([style*="none"])');
+                sec.style.display = vis.length ? '' : 'none';
+            });
+            details.forEach(det => {
+                const link = det.querySelector('.nav-item');
+                if (!link) return;
+                const sec = document.querySelector(link.getAttribute('href'));
+                det.style.display = (sec && sec.style.display !== 'none') ? '' : 'none';
+            });
+
+            // Cross-archive dropdown
+            if (!searchData.length) {
+                if (started) {
+                    dropdown.innerHTML = '<div class="search-empty">正在加载 (' + loadedCount + '/' + totalFiles + ')...</div>';
+                    dropdown.classList.add('active');
+                }
+                return;
+            }
+            const results = searchData.filter(item =>
+                item.t.toLowerCase().includes(q) || item.b.toLowerCase().includes(q)
+            ).slice(0, 15);
+
+            if (!results.length) {
+                dropdown.innerHTML = '<div class="search-empty">无匹配结果</div>';
+            } else {
+                dropdown.innerHTML = results.map(r =>
+                    '<a href="' + r.f + '" class="search-result">' +
+                    '<span class="search-result-date">' + r.d + '</span>' +
+                    '<span class="search-result-title">' + r.t + '</span>' +
+                    '<span class="search-result-cat">' + r.c + '</span>' +
+                    '</a>'
+                ).join('');
+            }
+            dropdown.classList.add('active');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.topbar-search') && !e.target.closest('.search-dropdown')) {
+                dropdown.classList.remove('active');
+            }
+        });
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { dropdown.classList.remove('active'); input.blur(); }
+        });
+    })();
+
+    // Diamond-frame particle network with ripple energy
+    (function() {
+        const canvas = document.getElementById('particle-bg');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const rgb = isDark ? '184,124,196' : '102,8,116';
+
+        let W, H;
+        const MAX_D = 160, RIPPLE_SPEED = 80, RIPPLE_LIFE = 3.5;
+        let nodes = [], ripples = [];
+
+        function resize() {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+            // Diamond frame distribution
+            const cx = W / 2, cy = H / 2;
+            const dw = W * 0.42, dh = H * 0.42;
+            const dEdges = [
+                [cx, cy - dh, cx + dw, cy],
+                [cx + dw, cy, cx, cy + dh],
+                [cx, cy + dh, cx - dw, cy],
+                [cx - dw, cy, cx, cy - dh]
+            ];
+            const count = Math.max(20, Math.round(50 * (W * H) / (1600 * 900)));
+            nodes = [];
+            for (let i = 0; i < count; i++) {
+                let x, y;
+                if (Math.random() < 0.80) {
+                    const ei = Math.random() * 4 | 0;
+                    const t = Math.random();
+                    const e = dEdges[ei];
+                    x = e[0] + (e[2] - e[0]) * t + (Math.random() - 0.5) * 20;
+                    y = e[1] + (e[3] - e[1]) * t + (Math.random() - 0.5) * 20;
+                } else {
+                    x = Math.random() * W;
+                    y = Math.random() * H;
+                }
+                nodes.push({
+                    x, y,
+                    vx: (Math.random() - 0.5) * 0.25,
+                    vy: (Math.random() - 0.5) * 0.20,
+                    r: 1.2 + Math.random() * 1.8,
+                    energy: 0
+                });
+            }
+            ripples = [];
+        }
+
+        let t0 = performance.now(), lastF = 0, fc = 0;
+
+        function loop(now) {
+            requestAnimationFrame(loop);
+            if (now - lastF < 16.67) return;
+            lastF = now;
+            const t = (now - t0) / 1000;
+            fc++;
+
+            // Spawn ripple every ~2s
+            if (fc % 120 === 0 && nodes.length) {
+                const s = nodes[Math.random() * nodes.length | 0];
+                ripples.push({ x: s.x, y: s.y, born: t });
+            }
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                if (t - ripples[i].born > RIPPLE_LIFE) ripples.splice(i, 1);
+            }
+
+            // Move & energy
+            for (const n of nodes) {
+                n.x += n.vx; n.y += n.vy;
+                if (n.x < 0 || n.x > W) n.vx *= -1;
+                if (n.y < 0 || n.y > H) n.vy *= -1;
+                n.energy *= 0.94;
+                for (const r of ripples) {
+                    const dx = n.x - r.x, dy = n.y - r.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const ringR = RIPPLE_SPEED * (t - r.born);
+                    if (Math.abs(dist - ringR) < 18) n.energy = Math.min(1, n.energy + 0.5);
+                }
+            }
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Ripple rings
+            for (const r of ripples) {
+                const age = t - r.born;
+                const radius = RIPPLE_SPEED * age;
+                const alpha = 0.12 * Math.max(0, 1 - age / RIPPLE_LIFE);
+                ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Connections
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const a = nodes[i], b = nodes[j];
+                    const dx = a.x - b.x, dy = a.y - b.y;
+                    const d = Math.sqrt(dx*dx + dy*dy);
+                    if (d > MAX_D) continue;
+                    const distA = 1 - d / MAX_D;
+                    const maxE = Math.max(a.energy, b.energy);
+                    const alpha = distA * (0.08 + 0.22 * maxE);
+                    ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                    ctx.lineWidth = 0.6;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            }
+
+            // Nodes (dots)
+            for (const n of nodes) {
+                const alpha = 0.22 + 0.40 * n.energy;
+                const r = n.r + n.energy * 1.5;
+                ctx.fillStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+        requestAnimationFrame(loop);
+    })();
+    </script>
+</body>
+</html>
