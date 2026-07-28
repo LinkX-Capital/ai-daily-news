@@ -860,7 +860,9 @@ SUBFIELD_ORDER = {
 MAX_PER_CATEGORY = 8
 MIN_ARTICLES = 30
 LLM_MAX_INPUT = 100          # 送入 LLM 选稿的最大候选数（原为 60）
-SAFETY_NET_PRIORITY = 45     # priority≥此值且非转推/回复的条目，被 LLM/截断/每源上限误杀时强制保留
+SAFETY_NET_PRIORITY = 35     # priority≥此值且非转推/回复的条目，被 LLM/截断/每源上限误杀时强制保留
+RANK_TARGET_COUNT = 15       # 阶段1全局排序选出的目标条目数
+RANK_MAX_CANDIDATES = 80     # 阶段1送入排序的最大候选数
 
 def clean_text(t): return re.sub(r'<[^>]+>', '', t or "").strip() if t else ""
 def normalize(t): return re.sub(r'\s+', '', (t or "").lower())
@@ -908,6 +910,33 @@ def is_podcast_source(name):
 def is_in_window(entry):
     d = parse_date(entry)
     return False if d is None else START_UTC <= d <= END_UTC
+
+
+def _cjk_count(text):
+    return sum('一' <= c <= '鿿' for c in (text or ""))
+
+
+def _ascii_letter_count(text):
+    return sum(c.isascii() and c.isalpha() for c in (text or ""))
+
+
+def _english_heavy(text):
+    text = text or ""
+    letters = _ascii_letter_count(text)
+    cjk = _cjk_count(text)
+    return letters >= 24 and letters > max(20, cjk * 2)
+
+
+def _chinese_output_ok(title, body):
+    return _cjk_count(title) >= 2 and _cjk_count(body) >= 8 and not _english_heavy(title) and not _english_heavy(body)
+
+
+def _safe_chinese_text(text, limit=None):
+    text = (text or "").strip()
+    if not text or _english_heavy(text) or _cjk_count(text) < 8:
+        return ""
+    return text[:limit] if limit else text
+
 
 def is_ai_related(title, summary, source=""):
     """判断是否与AI相关（包含前沿科技 + 来源判断）"""
@@ -1298,32 +1327,113 @@ def process_with_llm(articles, recent_articles=None):
     # 合并：arXiv 独立通道 + 其他源 diversification
     diversified = arxiv_selected + diversified
 
-    # 构建清晰的新闻列表，每条独立
-    news_list = []
-    for i, a in enumerate(diversified[:60]):  # 取前60条AI相关新闻
-        summary = a.get('summary', '') or a.get('content', '')
-        news_list.append(f"""【新闻{i+1}】
-标题：{a['title']}
-来源：{a['source']}
-摘要：{summary[:300]}""")
-    
-    prompt = """请严格按照下方新闻进行处理。
+    # ========== 阶段 1：全局排序 — 一次 LLM 调用选出 Top N ==========
+    to_process = diversified[:LLM_MAX_INPUT]
+    rank_candidates = to_process[:RANK_MAX_CANDIDATES]
+
+    # 构建排序用 prompt
+    rank_news_list = []
+    for i, a in enumerate(rank_candidates):
+        summary = (a.get('summary', '') or a.get('content', ''))[:100]
+        pri = a.get('priority', 0)
+        rank_news_list.append(f"【{i+1}】标题：{a['title']}\n来源：{a['source']}  priority：{pri}\n摘要：{summary}")
+
+    rank_prompt = f"""你是一个AI行研日报主编。下面是今日全部候选新闻，请选出最值得收录的 Top {RANK_TARGET_COUNT} 条。
+
+选稿标准（按重要性排序）：
+1. 对AI从业者有增量判断价值：新模型/产品发布、重要研究突破、产业格局变化、算力/芯片关键动态
+2. 头部AI公司（OpenAI/Anthropic/Google/Meta/NVIDIA/AMD等）的实质性动态优先
+3. 知名研究机构/分析师（SemiAnalysis/a16z/红杉等）的深度分析优先
+4. 不选：纯传统行业无AI关联、招聘/活动/报名、消费电子产品、SpaceX/火箭/电动车等非AI科技
+
+每条候选附有 priority 分数（越高越重要），作为参考但不是唯一依据——你可以选出 priority 不高但对 AI 行研读者有独特价值的条目，也可以跳过 priority 高但无增量判断价值的条目。
+
+输出格式：JSON数组，每项只含 original_title 和 rank（1=最重要），按 rank 升序排列，最多选 {RANK_TARGET_COUNT} 条：
+[{{"original_title": "原始标题（必须和输入完全一致）", "rank": 1}}, ...]
+
+## 今日候选新闻
+
+""" + "\n\n".join(rank_news_list)
+
+    print(f"   🔍 阶段1：全局排序 {len(rank_candidates)} 条候选 → 选 Top {RANK_TARGET_COUNT} ...")
+
+    # 阶段 1 LLM 调用（单次，最多重试 3 次）
+    rank_results = None
+    for retry in range(3):
+        result = call_llm(rank_prompt)
+        if not result:
+            print(f"   ⚠️ 阶段1 LLM 返回空{'（重试 '+str(retry+1)+'/3）' if retry < 2 else ''}")
+            if retry < 2:
+                import time; time.sleep(3)
+            continue
+        import json as _rj, re as _rr
+        _r_match = _rr.search(r'\[[\s\S]*\]', result)
+        if not _r_match:
+            print(f"   ⚠️ 阶段1 返回无 JSON 数组{'（重试 '+str(retry+1)+'/3）' if retry < 2 else ''}")
+            if retry < 2:
+                import time; time.sleep(3)
+            continue
+        try:
+            rank_results = _rj.loads(_r_match.group())
+            if isinstance(rank_results, list) and len(rank_results) > 0:
+                break
+            rank_results = None
+        except Exception:
+            try:
+                rank_results = _rj.loads(_rr.sub(r',(\s*\])', r'\1', _r_match.group()))
+                if isinstance(rank_results, list) and len(rank_results) > 0:
+                    break
+                rank_results = None
+            except Exception:
+                pass
+        if retry < 2:
+            import time; time.sleep(3)
+
+    # 解析阶段 1 结果，选出 Top N 条目
+    selected_articles = []
+    _rank_fallback = False
+    if rank_results:
+        _title_to_article = {}
+        for a in rank_candidates:
+            _t = a.get('title', '')
+            if _t:
+                _title_to_article[_t] = a
+        for rr in rank_results:
+            _ot = rr.get('original_title', '')
+            _a = _title_to_article.get(_ot)
+            if not _a:
+                for _t2, _a2 in _title_to_article.items():
+                    if _ot[:30] in _t2 or _t2[:30] in _ot:
+                        _a = _a2
+                        break
+            if _a and _a not in selected_articles:
+                selected_articles.append(_a)
+        print(f"   ✅ 阶段1：LLM 选出 {len(selected_articles)} 条")
+    else:
+        print(f"   ⚠️ 阶段1 失败，回退到旧逻辑（逐条留/丢）")
+        _rank_fallback = True
+        selected_articles = to_process
+
+    # ========== 阶段 2：只对选出的条目写 body/insight/category ==========
+    write_prompt = """请严格按照下方新闻进行处理。
+
+## 语言硬性要求
+- title、body、insight 必须用中文撰写；英文公司名、产品名、论文名、模型名可保留英文原名。
+- 禁止把英文原文句子、英文摘要、英文标题直接复制到 title/body/insight。
+- 输入里的英文事实必须翻译并整合成中文表达；无法确认的内容宁可少写，不要保留英文块。
+- body 中不得出现 `[深抓补充]`、`[搜索补充]`、`Image Credits`、`Abstract:`、`关键词:`、`作者:` 等抓取残留。
 
 ## 输出格式要求
-只返回is_ai_related=true的新闻，JSON数组格式：
+JSON数组格式（所有新闻都保留，只写好body/insight/category）：
 [
   {
     "original_title": "原始标题（必须和输入完全一致）",
-    "title": "中文标题，事件主体+做什么+为什么重要，禁止感叹号/问号结尾",
-    "body": "建议3-6句话，只写关键事实：是什么、关键数据、突破/创新、关联事件、事实性影响（市场反应/行业变化/专家评价）。信息不足时宁可2句也不编造。禁止AI自己的判断和引申（判断放insight）",
-    "insight": "一句话务实判断：具体趋势、竞争动态或实际影响。禁止空洞宏大叙事",
+    "title": "中文标题，事件主体+做什么+为什么重要，禁止感叹号/问号结尾；英文专名保留英文，整句标题必须中文化",
+    "body": "中文正文，建议3-6句话，只写关键事实：是什么、关键数据、突破/创新、关联事件、事实性影响。信息不足时宁可2句也不编造。禁止AI自己的判断和引申（判断放insight）",
+    "insight": "中文一句话务实判断：具体趋势、竞争动态或实际影响。禁止空洞宏大叙事",
     "category": "分类"
   }
 ]
-
-## 保留/丢弃规则
-- 必须保留所有头部AI公司、知名研究者、主流媒体的实质性动态（融资/IPO、产品或模型发布、政策监管、重大合作、重要研究），即使标题不含显式AI关键词
-- 只丢弃：明确非AI、招聘/活动/招募、纯转发无增量、自我营销或订阅引导
 
 ## body分类侧重点
 - 模型前沿：能力突破点、关键数据（成本、benchmark）、适用场景
@@ -1342,19 +1452,18 @@ def process_with_llm(articles, recent_articles=None):
 - X讨论：观点质量、值得关注程度
 
 ## 串联要求
-- 如果多条新闻属于同一故事的不同面（如：同一公司的多个动作、同一赛道的多个玩家），在body中简要关联
+- 如果多条新闻属于同一故事的不同面，在body中简要关联
 - 参考下方"近期动态"，如果今天的事件是某条近期的延续/升级，简要说明变化
 - insight不要重复body已说的事实，而是给出独立的判断
 """ + ("\n\n" + recent_summary if recent_summary else "")
 
-    # ========== 分批调用 LLM（每批 10 条，避免 prompt 过长导致空返回） ==========
+    # 分批调用 LLM 写 body/insight（只写不选）
     BATCH_SIZE = 10
-    to_process = diversified[:LLM_MAX_INPUT]
     all_llm_results = []
-    total_batches = (len(to_process) + BATCH_SIZE - 1) // BATCH_SIZE
+    total_batches = (len(selected_articles) + BATCH_SIZE - 1) // BATCH_SIZE
 
     for batch_idx in range(total_batches):
-        batch = to_process[batch_idx * BATCH_SIZE : (batch_idx + 1) * BATCH_SIZE]
+        batch = selected_articles[batch_idx * BATCH_SIZE : (batch_idx + 1) * BATCH_SIZE]
         batch_news = []
         for i, a in enumerate(batch):
             summary = a.get('summary', '') or a.get('content', '')
@@ -1363,10 +1472,9 @@ def process_with_llm(articles, recent_articles=None):
 来源：{a['source']}
 摘要：{summary[:300]}""")
 
-        batch_prompt = prompt + "\n\n## 今日新闻\n\n" + "\n\n".join(batch_news)
-        print(f"   📦 批次 {batch_idx+1}/{total_batches}（{len(batch)} 条）...")
+        batch_prompt = write_prompt + "\n\n## 今日新闻\n\n" + "\n\n".join(batch_news)
+        print(f"   📝 阶段2 批次 {batch_idx+1}/{total_batches}（{len(batch)} 条）...")
 
-        # 每批最多重试 3 次
         batch_results = None
         for retry in range(3):
             result = call_llm(batch_prompt)
@@ -1376,7 +1484,6 @@ def process_with_llm(articles, recent_articles=None):
                     import time; time.sleep(3)
                 continue
 
-            # 解析 JSON
             import json as json_module
             import re as re_module
 
@@ -1425,59 +1532,52 @@ def process_with_llm(articles, recent_articles=None):
         else:
             print(f"   ⚠️ 批次 {batch_idx+1}: 3 次重试后仍失败，跳过")
 
-    # ========== 合并所有批次的 LLM 结果 ==========
+    # ========== 合并阶段 2 LLM 结果 ==========
     if not all_llm_results:
-        print(f"   ⚠️ 所有批次均未返回有效结果，保留原始 articles")
-        return articles
+        print(f"   ⚠️ 阶段2 所有批次均未返回有效结果，不再保留原始英文摘要")
+        filtered_articles = []
+    else:
+        title_to_article = {}
+        for a in articles:
+            orig_title = a.get('title', '')
+            if orig_title:
+                title_to_article[orig_title] = a
 
-    # 建立原始标题到文章的映射
-    title_to_article = {}
-    for a in articles:
-        orig_title = a.get('title', '')
-        if orig_title:
-            title_to_article[orig_title] = a
+        filtered_articles = []
+        for lr in all_llm_results:
+            original_title = lr.get('original_title', '')
+            article = title_to_article.get(original_title)
 
-    filtered_articles = []
-    for lr in all_llm_results:
-        # 通过原始标题匹配文章
-        original_title = lr.get('original_title', '')
-        article = title_to_article.get(original_title)
+            if not article:
+                for t, a in title_to_article.items():
+                    if original_title[:30] in t or t[:30] in original_title:
+                        article = a
+                        break
 
-        if not article:
-            # 尝试模糊匹配
-            for t, a in title_to_article.items():
-                if original_title[:30] in t or t[:30] in original_title:
-                    article = a
-                    break
+            if not article:
+                continue
 
-        if not article:
-            continue
+            orig_summary = article.get('summary', '')
 
-        orig_summary = article.get('summary', '')
+            llm_title = (lr.get('title', '') or '').strip()
+            llm_body = (lr.get('body', '') or '').strip()
+            if not _chinese_output_ok(llm_title, llm_body):
+                print(f"   ⚠️ 跳过英文/未中文化输出: {original_title[:60]}")
+                continue
 
-        # 使用 LLM 生成的标题
-        llm_title = lr.get('title', '')
-        if llm_title and len(llm_title) > 5:
             article['title'] = llm_title[:80]
 
-        # 使用 LLM 判断的分类
-        llm_cat = lr.get('category', '')
-        if llm_cat:
-            article['categories'] = [llm_cat]
+            llm_cat = lr.get('category', '')
+            if llm_cat:
+                article['categories'] = [llm_cat]
 
-        # 使用 LLM 生成的 body
-        llm_body = lr.get('body', '')
-        if llm_body and len(llm_body) > 10:
             article['body'] = llm_body[:400]
-        else:
-            article['body'] = orig_summary[:150] if orig_summary else article['title']
 
-        # 使用 LLM 生成的 insight（一句话点评）
-        llm_insight = lr.get('insight', '')
-        if llm_insight:
-            article['insight'] = llm_insight[:150]
+            llm_insight = (lr.get('insight', '') or '').strip()
+            if llm_insight and not _english_heavy(llm_insight):
+                article['insight'] = llm_insight[:150]
 
-        filtered_articles.append(article)
+            filtered_articles.append(article)
 
     # ========== priority 安全网：救回被误杀的高价值原创条目 ==========
     _safety_ids = set()
@@ -1490,9 +1590,9 @@ def process_with_llm(articles, recent_articles=None):
                 continue
             _t = (a.get("title", "") or "")
             if _t.startswith(("RT ", "R to @", "RT by @")) or " RT @" in _t:
-                continue  # 转推/回复是低信号回声，不救
-            if not a.get("body"):
-                a["body"] = (a.get("summary", "") or a.get("content", "") or _t)[:200]
+                continue
+            if not _chinese_output_ok(a.get("title", ""), a.get("body", "")):
+                continue
             if not a.get("categories"):
                 a["categories"] = get_cat(_t, a.get("summary", ""), a.get("source", ""))
             a["_safety_net"] = True
@@ -1504,10 +1604,10 @@ def process_with_llm(articles, recent_articles=None):
         print(f"⚠️ safety-net 失败: {_e}")
 
     articles = filtered_articles
-    print(f"✅ LLM处理了 {len(all_llm_results)} 条新闻，过滤后 {len(articles)} 条（共 {total_batches} 批）")
+    print(f"✅ 阶段1选{len(selected_articles)}条 → 阶段2写入{len(filtered_articles)}条")
 
     # ========== 选稿「被丢榜」日志（可观测性：只读，不改选稿）==========
-    # 区分每条候选死在哪一环：非AI标题预筛 / arxiv未匹配关注方向 / arxiv超额(>10) / 每源上限 / top60截断 / LLM未保留
+    # 区分每条候选死在哪一环：非AI标题预筛 / arxiv未匹配 / 每源上限 / 全局排序未入选 / 阶段2未匹配
     try:
         import os as _dlos, json as _dloj, re as _dlor
         from collections import Counter as _dloc
@@ -1516,6 +1616,7 @@ def process_with_llm(articles, recent_articles=None):
         _axsel_ids = {id(a) for a in arxiv_selected}
         _div_ids = {id(a) for a in diversified}
         _top_ids = {id(a) for a in to_process}
+        _sel_ids = {id(a) for a in selected_articles}
         _kept_ids = {id(a) for a in filtered_articles}
         def _fate(a):
             aid = id(a)
@@ -1527,7 +1628,8 @@ def process_with_llm(articles, recent_articles=None):
                 if aid not in _ax_ids: return "cut:arxiv未匹配关注方向"
             if aid not in _div_ids: return "cut:每源上限"
             if aid not in _top_ids: return f"cut:top{LLM_MAX_INPUT}截断"
-            return "cut:LLM未保留"
+            if aid not in _sel_ids: return "cut:全局排序未入选"
+            return "cut:阶段2未匹配"
         _rows = [{"fate": _fate(a), "source": a.get("source", ""),
                   "title": (a.get("title", "") or "")[:120], "priority": a.get("priority", 0)}
                  for a in sorted_articles]
@@ -1643,11 +1745,9 @@ def post_validate_and_enrich(articles):
                 used_url = u
                 break
 
+        extra = _safe_chinese_text(extra, 600)
         if extra:
-            # 截断到 600 字以控制 token 成本
-            if len(extra) > 600:
-                extra = extra[:600] + "..."
-            sep = "\n\n[深抓补充]\n" if a.get("body") else ""
+            sep = " " if a.get("body") else ""
             a["body"] = (a.get("body", "") + sep + extra).strip()
             enriched += 1
             print(f"   🔍 深抓补充: [{title_short}] ← {used_url[:60]}")
@@ -1655,11 +1755,9 @@ def post_validate_and_enrich(articles):
             # Fallback: 智谱 web_search 补充
             search_q = a.get("title", "")
             if search_q and len(search_q) > 10:
-                zhipu_extra = _zhipu_web_search(search_q)
+                zhipu_extra = _safe_chinese_text(_zhipu_web_search(search_q), 600)
                 if zhipu_extra:
-                    if len(zhipu_extra) > 600:
-                        zhipu_extra = zhipu_extra[:600] + "..."
-                    sep = "\n\n[搜索补充]\n" if a.get("body") else ""
+                    sep = " " if a.get("body") else ""
                     a["body"] = (a.get("body", "") + sep + zhipu_extra).strip()
                     enriched += 1
                     print(f"   🔎 搜索补充: [{title_short}] ← 智谱web_search")
