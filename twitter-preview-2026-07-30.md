@@ -13,22 +13,18 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **Apache DataFusion Meetup with Hotdata on August 13th**
-   @langchain
-2. **How Similarweb Evaluates Deep Research Agents with Deterministic Checks and Rubric-Scored LLM Judges**
-   @langchain
-3. **OpenWiki Integrates with LangSmith Tracing for Coding Agent Insights**
-   @langchain
-4. **Deepagents v0.7 Released with Leaner, More Configurable Harness and Built-in Middleware Overrides**
-   @langchain
-5. **Interrupt Conference Returns This Fall – NYC Sept 24 & London Oct 13**
-   @langchain
-6. **Factory AI CTO on Model Bias and Frontier Model Evaluations**
-   @langchain
-7. **New LangChain Academy Course: Autonomous Agent Improvement with LangSmith Engine**
-   @langchain
-8. **Apollo to Speak at Interrupt NYC on Production Multi-Agent Systems with LangGraph**
-   @langchain
+1. **GLM Coding Plan 在 Pi 中的集成指南**
+   @zai_org
+2. **GPT-5.6 Sol 解决数学开放问题却在 ARC-AGI-3 基准测试中表现不佳**
+   @openai
+3. **基准测试分数反映的不仅是模型，还包括测试框架与设置**
+   @openai
+4. **部署后利用 GPT-5.6 Sol 提升运行效率，服务成本降低 20%**
+   @openai
+5. **为科学家、数学家和工程师免费提供前沿模型访问权限**
+   @openai
+6. **开源 Codex Security CLI 发布，可用于代码安全扫描**
+   @openai
 
 ---
 
