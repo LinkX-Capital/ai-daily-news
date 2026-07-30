@@ -1,109 +1,97 @@
-# AI 前沿动态 - 自动化管线
+# AI 前沿动态日报管线
 
-每日自动追踪 AI 领域前沿进展，生成结构化日报，推送给 LP。
+每天汇集 RSS、研究论文与研究者动态，经过全量选稿、中文编辑和发布硬门禁后生成日报。
 
-## 管线流程
+## 现在的发布链路
 
+```text
+抓取与日期过滤
+  → 保守去重（只提前删除确定重复）
+  → 全量排序与编辑组合
+  → 证据补充
+  → 逐条中文写作
+  → canonical / Markdown 双重硬门禁
+  → 原子写入 MD、JSON、HTML
+  → 截图、Git 推送、可选飞书通知
 ```
-RSS + Twitter → LLM处理 → MD → QA质检 → 人工修正 → HTML/截图/飞书 → Git
+
+管线不再使用 safety net，也不会用英文原文或抓取摘要补足条数。任何入选条目写作失败、中文不足、含抓取残留、低价值推广信号或来源链路不明，都会阻断发布。
+
+## 运行
+
+```bash
+# 最近一个已经闭窗的日报日期
+./run.sh
+
+# 指定日期或历史补跑
+./run.sh 2026-07-28
+
+# launchd/断点兜底
+./catchup.sh 2026-07-28
 ```
 
-**自动（cron 每天 6:00）：**
-1. `twitter_push.py` — 抓取 Twitter 账号推文，缓存到 `tweet_fetcher/cache.json`
-2. `feed_v5.py --cache` — RSS 抓取 → LLM(MiniMax-M2.5) 分类/摘要 → 生成 `daily-ai-news.md`
-3. `html_generator.py` — MD → HTML（含日期归档 + index.html）
-4. `gen_screenshot.py` — Playwright 生成手机端长图
-5. `notify.py` — 飞书 webhook 推送
-6. git push 到 GitHub Pages
+日报窗口固定为北京时间 `[前一日 06:40, 当日 06:40)`。指定日期后，抓取、缓存、近三日去重、文件名和 manifest 都使用同一个日期。
 
-**手动（Claude Code 辅助）：**
-1. `python qa.py` — 10 项质量检查
-2. `python qa.py --factcheck` — +LLM 事实校验（抓原文比对）
-3. 修正 md → 重新生成 HTML/截图/飞书/git push
+## 人工编辑后的安全发布
+
+```bash
+# 检查人工编辑稿，准备产物并继续发布
+python3 publish.py --date 2026-07-28
+
+# 只生成通过门禁的 ready 产物，不截图、推送或通知
+python3 publish.py --date 2026-07-28 --prepare-only
+```
+
+`publish.py` 也必须通过同一套硬门禁。QA 不通过时不会生成归档、发送通知或推送网页。
+
+## 状态与恢复
+
+每个日期都有 `archive/manifests/YYYY-MM-DD.json`：
+
+- `running`：正在生成；
+- `qa_failed`：质量门禁或生成步骤失败，禁止发布；
+- `ready`：MD、JSON、HTML 已通过门禁，可从发布阶段续跑；
+- `published`：截图、Git 推送和已配置的通知均成功。
+
+续跑和推进 `published` 前都会重算内容哈希；门禁后任一产物被改动，就会拒绝直接发布并重新生成。只有日期匹配的 `published` 才代表完成，仅有归档文件不再被视为成功。
 
 ## 关键文件
 
 | 文件 | 职责 |
-|------|------|
-| `feed_v5.py` | 主管线：RSS抓取 + LLM处理 + 生成MD |
-| `config_loader.py` | 配置加载（RSS源、Twitter账号、分类规则） |
-| `improve_news.py` | 新闻质量优化（过滤/分类修正/去重） |
-| `html_generator.py` | MD → HTML（含 parse_md 解析器） |
-| `gen_screenshot.py` | Playwright 生成手机端长图 |
-| `notify.py` | 飞书 webhook 推送 |
-| `qa.py` | 质检层：10项检查 + LLM事实校验 |
-| `run.sh` | cron 定时脚本 |
+|---|---|
+| `feed_v5.py` | 抓取、全量选稿、证据准备、中文写作与 canonical 产物 |
+| `improve_news.py` | 非新闻过滤与高置信事件去重 |
+| `pipeline_core.py` | 稳定 ID、严格 LLM 协议、日期窗口与原子写入 |
+| `release_gate.py` | 离线、确定性的发布硬门禁 |
+| `qa.py` | Markdown 诊断与可选事实核查 |
+| `run.sh` | 唯一自动发布入口及状态机 |
+| `publish.py` | 人工编辑稿的安全发布入口 |
+| `pipeline_manifest.py` | manifest 校验、状态推进和默认日期解析 |
 
-## 数据源
+选稿过程保存在 `archive/dropped_YYYY-MM-DD.json`，包含候选短编号、初排位置、最终排序、组合保护原因、事件重复关系和最终去向，便于复盘漏选。
 
-- **RSS Feeds**：新智元、量子位、机器之心、36氪、IT桔子等（通过 config.json 配置）
-- **Twitter**：SemiAnalysis、Luma、vLLM、x.ai、Yann LeCun 等（`tweet_fetcher/`）
-- **手动补充**：用户提供 URL，Claude Code 抓取原文后写入 MD
+## 环境变量
 
-## LLM 处理规范
-
-- **Title**：事件主体 + 做什么 + 为什么重要（不用媒体口吻/感叹号）
-- **Body**：3-6 句话完整摘要，必须有 so what（为什么重要），关键判断加粗
-- **Insight**：基于原文事实，禁止过度推断和空洞宏大叙事
-- **分类**：模型前沿 / 产业动态 / 算力追踪 / 初创&融资 / 研究关注 / X讨论
-- **海外公司/人名不翻译**：保持英文（OpenAI、Google、Anthropic 等）
-
-详细规范见 `CLAUDE.md`。
-
-## 环境配置
+复制 `.env.example` 为 `.env`，至少配置：
 
 ```bash
-# 必需环境变量
-MINIMAX_API_KEY=sk-cp-xxx        # MiniMax LLM API（feed_v5.py + qa.py）
-
-# 飞书推送
-FEISHU_WEBHOOK=https://open.feishu.cn/open-apis/bot/v2/hook/xxx
-
-# 可选：邮件推送
-SMTP_SERVER=smtp.qiye.aliyun.com
-SMTP_USER=xxx@xxx.com
-SMTP_PASSWORD=xxx
-EMAIL_RECIPIENTS=lp1@xxx.com,lp2@xxx.com
+MINIMAX_API_KEY=your_key
 ```
 
-## Cron 配置
+`FEISHU_WEBHOOK` 是可选项；未配置时明确跳过通知，配置后发送失败会阻断 `published`。也可通过 `PIPELINE_ENV_FILE` 指定环境文件。
+
+## 验证
 
 ```bash
-# 每天 6:00 运行主管线
-0 6 * * * source /Users/shenyalan/ai-daily-news/run.sh >> /Users/shenyalan/ai-daily-news/logs/cron.log 2>&1
+python3 -m unittest \
+  tests.test_pipeline_core \
+  tests.test_release_gate \
+  tests.test_manual_publish \
+  tests.test_qa_autofix \
+  tests.test_qa_history
 
-# 工作日 7:15 运行 Twitter 摘要
-15 7 * * 1-5 /Users/shenyalan/ai-daily-news/twitter_digest.sh >> /Users/shenyalan/ai-daily-news/logs/cron_twitter.log 2>&1
+python3 test_selection_recall.py
+bash tests/test_pipeline_scripts.sh
 ```
 
-## QA 质检层
-
-```bash
-python qa.py              # 快速 10 项检查（秒级）
-python qa.py --factcheck  # + LLM 事实校验（逐条抓原文比对，约 5 分钟）
-```
-
-10 项检查：
-1. 低价值条目检测（活动/招聘/品牌宣传）
-2. 分类校验
-3. 同公司去重（>2 条告警）
-4. 过度推断检测
-5. Body 质量（句数 + so-what）
-6. 来源链接完整性
-7. 要点速览同步
-8. Insight 重复标题检测
-9. 启发式事实校验（模糊称呼/英文名翻译/无依据声称）
-10. LLM 事实校验（MCP web-reader 抓原文 → MiniMax 比对）
-
-事实校验抓取链路：MCP web-reader（绕付费墙）→ httpx → web-search 搜索替代来源
-
-## 输出
-
-| 文件 | 说明 |
-|------|------|
-| `daily-ai-news.md` | 当天日报（Markdown，源文件） |
-| `daily-ai-news.html` | 当天 HTML |
-| `daily-ai-news-YYYY-MM-DD.html` | 历史归档 |
-| `daily-ai-news-mobile.png` | 手机端长图 |
-| `index.html` | 总索引页 |
-| `archive/` | JSON 格式历史存档 |
+测试覆盖历史漏选、稳定 ID、写作缺项恢复、英文/低价值门禁、人工发布旁路、日期边界、失败传播、并发锁和断点续发。

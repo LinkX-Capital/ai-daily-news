@@ -14,6 +14,8 @@ import os
 import re
 import sys
 import json
+import csv
+import hashlib
 from collections import defaultdict
 from datetime import datetime
 import httpx
@@ -21,15 +23,18 @@ import httpx
 # 从 html_generator 复用 parse_md
 sys.path.insert(0, os.path.dirname(__file__))
 from html_generator import parse_md
+from release_gate import (
+    LOW_VALUE_MARKERS,
+    MAX_ARTICLES,
+    GateResult,
+    evaluate_release_gate,
+    find_low_value_marker,
+)
 
 VALID_CATEGORIES = {"模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"}
 
 # 低价值关键词（应被过滤的内容）
-LOW_VALUE_KEYWORDS = [
-    "招募", "征集中", "倒计时", "沙龙", "报名", "活动预告",
-    "招聘", "求职", "Hiring",
-    "讲座预告", "直播预告",
-]
+LOW_VALUE_KEYWORDS = list(LOW_VALUE_MARKERS)
 
 # 过度推断/空洞表达关键词（用于 insight 检查）
 OVER_INFER_KEYWORDS = [
@@ -81,10 +86,9 @@ def check_low_value(articles):
         title = a.get('title', '')
         body = a.get('body', '')
         text = title + ' ' + body
-        for kw in LOW_VALUE_KEYWORDS:
-            if kw in text:
-                issues.append(('low_value', a['title'], f"含低价值关键词: {kw}"))
-                break
+        marker = find_low_value_marker(text)
+        if marker:
+            issues.append(('low_value', a['title'], f"含低价值关键词: {marker}"))
     return issues
 
 
@@ -244,105 +248,47 @@ VAGUE_REFERENCES = [
 ]
 
 
-MAX_ARTICLES = 15  # 每日动态上限，超出则标记低价值条目建议删除
+def run_release_gate(
+    articles,
+    *,
+    max_articles=MAX_ARTICLES,
+    strict=True,
+) -> GateResult:
+    """Run the deterministic publication gate on canonical article dicts.
+
+    Production callers should keep ``strict=True``.  It requires a stable
+    ``candidate_id`` and explicit writing ``provenance`` for every article.
+    Markdown-only callers use ``strict=False`` because that metadata is not
+    represented in the rendered document.
+    """
+    return evaluate_release_gate(
+        articles,
+        max_articles=max_articles,
+        require_candidate_id=strict,
+        require_provenance=strict,
+        valid_categories=VALID_CATEGORIES,
+    )
+
+
+def run_release_gate_on_md(date_str=None) -> GateResult:
+    """Parse a rendered report and rerun all checks that Markdown can preserve."""
+    md_content, _ = load_md(date_str)
+    articles, _ = parse_md(md_content)
+    return run_release_gate(articles, strict=False)
 
 
 def check_article_overflow(articles):
-    """检查条目总数是否超出上限，用 LLM 以行业分析师视角判断哪些条目信息价值最低"""
+    """Legacy tuple API for the deterministic hard article-count limit."""
     if len(articles) <= MAX_ARTICLES:
         return []
-
-    overflow = len(articles) - MAX_ARTICLES
-    api_key = os.environ.get("MINIMAX_API_KEY", "")
-    if not api_key:
-        # 无 API key 时回退到简单规则：标记最后几条
-        issues = []
-        for a in articles[-overflow:]:
-            issues.append(('overflow', a.get('title', ''),
-                          f"建议删除（总数{len(articles)}超上限{MAX_ARTICLES}，无API key无法智能排序）"))
-        return issues
-
-    # 构建条目摘要供 LLM 判断
-    items_text = ""
-    for i, a in enumerate(articles):
-        title = a.get('title', '')
-        body = a.get('body', '').strip()
-        cat = a.get('categories', [''])[0] if a.get('categories') else ''
-        # 截断 body 避免 prompt 过长
-        body_short = body[:150] + "..." if len(body) > 150 else body
-        items_text += f"{i+1}. [{cat}] {title}\n   {body_short}\n\n"
-
-    prompt = f"""你是AI行业顶尖分析师。以下是今日{len(articles)}条AI新闻，需要精选到{MAX_ARTICLES}条。
-
-请选出{overflow}条信息价值最低、最应该删除的条目。
-
-判断标准（按重要性排序）：
-1. 行业影响力：对AI从业者/投资者/研究者是否有实质信息增量
-2. 事件独特性：是否是独家事件，还是常规动态/泛泛讨论
-3. 信息完整度：内容是否提供了足够的事实支撑，还是空洞描述
-4. 时效价值：是否是今天必须知道的，还是可以错过的
-
-高价值保护（不应删除）：重要模型发布/更新（新能力、新API）、深度研究洞察（可解释性、安全、对齐）、有具体benchmark数据的技术突破、头部公司（OpenAI/Anthropic/Google/Meta）的重大动作
-
-低价值信号：纯观点讨论无新事实、常规产品更新无突破、信息模糊无具体数据、与其他条目高度重叠、人事任命、课程/活动推广、与AI前沿技术/模型/基础设施无直接关联的融资收购（即使金额大）、非当日首发的旧报告/旧数据
-
-## 今日条目
-
-{items_text}
-
-## 输出格式
-返回JSON数组，包含应删除条目的序号和理由：
-[{{"index": 序号, "title": "标题前15字...", "reason": "一句话理由"}}]
-
-只返回JSON，不要其他文字。"""
-
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-        "anthropic-version": "2023-06-01",
-    }
-    data = {
-        "model": "MiniMax-M2.5",
-        "max_tokens": 1500,
-        "temperature": 0.1,
-        "messages": [{"role": "user", "content": prompt}],
-    }
-
-    issues = []
-    try:
-        r = httpx.post(
-            "https://api.minimaxi.com/anthropic/v1/messages",
-            headers=headers, json=data, timeout=30, verify=False)
-        if r.status_code == 200:
-            resp = r.json()
-            text = ""
-            if "content" in resp:
-                for block in resp["content"]:
-                    if block.get("type") == "text":
-                        text = block.get("text", "")
-                        break
-            # 提取 JSON（去除 markdown code fence）
-            text = re.sub(r'```(?:json)?\s*', '', text).strip()
-            match = re.search(r'\[.*\]', text, re.DOTALL)
-            if match:
-                results = json.loads(match.group())
-                for item in results:
-                    idx = item.get("index", 0) - 1
-                    reason = item.get("reason", "")
-                    if 0 <= idx < len(articles):
-                        title = articles[idx].get('title', '')
-                        issues.append(('overflow', title,
-                                      f"建议删除（总数{len(articles)}超上限{MAX_ARTICLES}）：{reason}"))
-                return issues
-    except Exception as e:
-        print(f"    ⚠️ LLM排序失败: {e}")
-
-    # LLM 失败时回退：标记最后几条
-    if not issues:
-        for a in articles[-overflow:]:
-            issues.append(('overflow', a.get('title', ''),
-                          f"建议删除（总数{len(articles)}超上限{MAX_ARTICLES}，LLM排序失败）"))
-    return issues
+    return [
+        (
+            "overflow",
+            article.get("title", ""),
+            f"必须删除（总数 {len(articles)} 超过硬上限 {MAX_ARTICLES}）",
+        )
+        for article in articles[MAX_ARTICLES:]
+    ]
 
 
 def check_fact_heuristic(articles):
@@ -431,8 +377,9 @@ def search_alternative_sources(title):
 
     async def _search():
         mcp_url = "https://open.bigmodel.cn/api/mcp/web_search_prime/mcp"
-        token = os.environ.get("ZHIPU_WEBREADER_TOKEN",
-                                "5f650035e5a845549e4765184d8179b1.GdehlMpHT0dKq3m3")
+        token = os.environ.get("ZHIPU_WEBREADER_TOKEN", "").strip()
+        if not token:
+            return []
         headers = {"Authorization": f"Bearer {token}"}
         async with streamablehttp_client(url=mcp_url, headers=headers) as (read, write, _):
             async with ClientSession(read, write) as session:
@@ -512,8 +459,9 @@ class MCPWebReader:
 
         async def _fetch():
             mcp_url = "https://open.bigmodel.cn/api/mcp/web_reader/mcp"
-            token = os.environ.get("ZHIPU_WEBREADER_TOKEN",
-                                    "5f650035e5a845549e4765184d8179b1.GdehlMpHT0dKq3m3")
+            token = os.environ.get("ZHIPU_WEBREADER_TOKEN", "").strip()
+            if not token:
+                return None
             headers = {"Authorization": f"Bearer {token}"}
             async with streamablehttp_client(url=mcp_url, headers=headers) as (read, write, _):
                 async with ClientSession(read, write) as session:
@@ -740,6 +688,7 @@ def check_title_similarity(articles):
 def run_checks(date_str=None, factcheck=False):
     md_content, path = load_md(date_str)
     articles, summary_items = parse_md(md_content)
+    gate_result = run_release_gate(articles, strict=False)
 
     print(f"=== 日报质量检查 ===")
     print(f"文件: {path}")
@@ -751,10 +700,29 @@ def run_checks(date_str=None, factcheck=False):
 
     all_issues = []
 
+    # 0. 发布硬门禁（分类、空正文、来源和超量由下方旧检查输出，
+    # 这里补充旧 QA 没有的中文、英文原文、抓取残留和 provenance 检查）。
+    legacy_codes = {
+        "empty_body", "no_category", "invalid_category",
+        "no_source", "article_overflow", "low_value",
+    }
+    gate_only = [
+        issue for issue in gate_result.issues
+        if issue.code not in legacy_codes
+    ]
+    all_issues.extend(issue.as_legacy_tuple() for issue in gate_only)
+    print(
+        f"[0] 发布硬门禁: {len(gate_result.blockers)} 个 blocker，"
+        f"{len(gate_result.warnings)} 个 warning"
+    )
+    for issue in gate_only:
+        marker = "!!" if issue.severity == "blocker" else "?"
+        print(f"    {marker} {issue.title}: {issue.detail}")
+
     # 1. 低价值检测
     issues = check_low_value(articles)
     all_issues.extend(issues)
-    print(f"[1] 低价值条目: {len(issues)} 个问题")
+    print(f"\n[1] 低价值条目: {len(issues)} 个问题")
     for _, title, detail in issues:
         print(f"    - {title}")
         print(f"      {detail}")
@@ -856,10 +824,29 @@ def run_checks(date_str=None, factcheck=False):
         for type_name, items in by_type.items():
             print(f"  - {type_name}: {len(items)} 个")
 
-        # 严重程度
-        critical = [i for i in all_issues if i[0] in ('low_value', 'over_infer', 'company_dup', 'fact_error', 'unsupported_claim')]
-        warnings = [i for i in all_issues if i[0] in ('empty_body', 'body_has_judgment', 'insight_repeat', 'vague_ref', 'translated_name', 'fact_warning')]
-        minor = [i for i in all_issues if i[0] in ('short_body', 'no_source', 'summary_orphan', 'fetch_fail', 'llm_fail', 'title_similar', 'long_body')]
+        # 严重程度。发布门禁项必须明确显示为 blocker，不能埋在总数里。
+        blocker_types = {
+            'low_value', 'over_infer', 'company_dup', 'fact_error',
+            'unsupported_claim', 'empty_body', 'no_category',
+            'invalid_category', 'overflow', 'short_body', 'unsafe_insight',
+            'empty_title', 'empty_report',
+            'invalid_article', 'raw_fallback', 'scrape_residue',
+            'candidate_id_duplicate', 'candidate_id_missing',
+            'provenance_missing',
+            'insufficient_chinese_title', 'insufficient_chinese_body',
+            'english_heavy_title', 'english_heavy_body',
+            'continuous_english_title', 'continuous_english_body',
+        }
+        warning_types = {
+            'body_has_judgment', 'insight_repeat', 'vague_ref',
+            'translated_name', 'fact_warning', 'provenance_unverified',
+        }
+        critical = [i for i in all_issues if i[0] in blocker_types]
+        warnings = [i for i in all_issues if i[0] in warning_types]
+        minor = [
+            i for i in all_issues
+            if i[0] not in blocker_types and i[0] not in warning_types
+        ]
 
         if critical:
             print(f"\n需要处理 ({len(critical)}):")
@@ -880,23 +867,41 @@ def run_checks(date_str=None, factcheck=False):
     return len(all_issues)
 
 
-def _log_score(date_str, articles, all_issues):
-    """追加 QA 得分到 qa_history.csv，用于追踪质量趋势"""
-    log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qa_history.csv")
+def _prompt_version(prompt_path=None):
+    base = os.path.dirname(os.path.abspath(__file__))
+    path = prompt_path or os.path.join(base, "prompts", "news_processor.md")
+    try:
+        with open(path, encoding="utf-8") as prompt_file:
+            return hashlib.md5(prompt_file.read().encode()).hexdigest()[:8]
+    except FileNotFoundError:
+        return "unknown"
 
-    # 去重：如果当天+当前 prompt 版本已有记录，跳过
-    if os.path.exists(log_path):
-        _prompt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts", "news_processor.md")
+
+def _log_score(date_str, articles, all_issues, *, log_path=None, prompt_path=None):
+    """追加 QA 得分到历史记录，同一日期和 prompt 版本只保留一次。
+
+    历史实现用 ``line.startswith(f"{date},{prompt_version}")`` 去重，但 CSV
+    第二列实际是 ``total_articles``，因此该条件永远无法命中。
+    """
+    base = os.path.dirname(os.path.abspath(__file__))
+    log_path = log_path or os.path.join(base, "qa_history.csv")
+    prompt_ver = _prompt_version(prompt_path)
+    needs_header = not os.path.exists(log_path) or os.path.getsize(log_path) == 0
+
+    # 按 CSV 列名读取，避免列顺序变化再次破坏去重。
+    if not needs_header:
         try:
-            import hashlib
-            _ver = hashlib.md5(open(_prompt_path, encoding="utf-8").read().encode()).hexdigest()[:8]
-        except FileNotFoundError:
-            _ver = "unknown"
-        _key = f"{date_str},{_ver}"
-        with open(log_path, "r", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith(_key):
-                    return  # 已有记录，跳过
+            with open(log_path, "r", encoding="utf-8", newline="") as history_file:
+                for row in csv.DictReader(history_file):
+                    if (
+                        row.get("date") == date_str
+                        and row.get("prompt_version", "") == prompt_ver
+                    ):
+                        return
+        except (OSError, csv.Error):
+            # 保持 QA 主流程可用；损坏的历史文件不应绕过质量检查。
+            pass
+
     total = len(articles)
     issue_count = len(all_issues)
     by_type = defaultdict(int)
@@ -912,18 +917,9 @@ def _log_score(date_str, articles, all_issues):
            f"{by_type['summary_orphan']},{by_type['vague_ref']},"
            f"{by_type['translated_name']},{by_type['title_similar']},")
 
-    # 读取 prompt hash 作为版本标识
-    _prompt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts", "news_processor.md")
-    prompt_ver = ""
-    try:
-        import hashlib
-        prompt_ver = hashlib.md5(open(_prompt_path, encoding="utf-8").read().encode()).hexdigest()[:8]
-    except FileNotFoundError:
-        pass
-
     row += f"{prompt_ver}\n"
 
-    if not os.path.exists(log_path):
+    if needs_header:
         with open(log_path, "w", encoding="utf-8") as f:
             f.write(header)
     with open(log_path, "a", encoding="utf-8") as f:

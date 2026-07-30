@@ -13,6 +13,8 @@ from datetime import datetime, timezone, timedelta
 from collections import defaultdict
 import re
 import urllib3
+import hashlib
+import subprocess
 
 # 导入规范化模块
 import sys
@@ -25,13 +27,38 @@ from config_loader import (
     base_dir, archive_dir, output_md, output_html, output_html_path, cache_file, tweet_cache, opml_file
 )
 from html_generator import md_to_html
+from release_gate import chinese_text_ok
+from pipeline_core import (
+    atomic_write_json,
+    atomic_write_text,
+    canonicalize_url,
+    ensure_candidate_ids,
+    parse_llm_array,
+    reconcile_written_results,
+    report_window,
+    validate_rank_results,
+)
+
+
+class PipelineBlocked(RuntimeError):
+    """Raised when a draft is unsafe or incomplete and must not be published."""
+
+
+_CURRENT_REPORT_DATE = None
+_CURRENT_RUN_ID = None
+
+
+VALID_OUTPUT_CATEGORIES = {
+    "模型前沿", "产业动态", "算力追踪", "初创&融资", "研究关注", "X讨论"
+}
 
 # 导入研究者推文抓取
-def fetch_researcher_tweets():
+def fetch_researcher_tweets(start_time=None, end_time=None):
     """抓取前沿研究者推文：缓存超过30分钟则触发新抓取，否则用缓存"""
     import json
     import os
-    from datetime import datetime, timezone
+    from datetime import datetime
+    from email.utils import parsedate_to_datetime
 
     cache_path = tweet_cache()
     CACHE_MAX_AGE_MINUTES = 30
@@ -45,6 +72,18 @@ def fetch_researcher_tweets():
         cached_at = data.get("cached_at", "") if isinstance(data, dict) else ""
         return tweets, cached_at
 
+    def _in_requested_window(tweet):
+        if not start_time or not end_time:
+            return True
+        try:
+            published = parsedate_to_datetime(tweet.get("published", ""))
+            return start_time <= published < end_time
+        except Exception:
+            return False
+
+    def _windowed(tweets):
+        return [tweet for tweet in (tweets or []) if _in_requested_window(tweet)]
+
     # 检查缓存新鲜度
     try:
         cached = _load_cache()
@@ -54,7 +93,8 @@ def fetch_researcher_tweets():
                 cache_time = datetime.fromisoformat(cached_at).replace(tzinfo=None)
                 age_minutes = (datetime.now() - cache_time).total_seconds() / 60
                 if age_minutes <= CACHE_MAX_AGE_MINUTES:
-                    print(f"   📦 使用缓存: {len(tweets)} 条推文（{age_minutes:.0f} 分钟前抓取）")
+                    tweets = _windowed(tweets)
+                    print(f"   📦 使用缓存: {len(tweets)} 条窗口内推文（{age_minutes:.0f} 分钟前抓取）")
                     return tweets
                 else:
                     print(f"   ⚠️ 缓存已过期（{age_minutes:.0f} 分钟前），尝试重新抓取...")
@@ -64,7 +104,7 @@ def fetch_researcher_tweets():
     # 缓存过期或不存在，尝试实时抓取
     try:
         from tweet_fetcher import fetch_all_tweets
-        fresh_tweets = fetch_all_tweets()
+        fresh_tweets = fetch_all_tweets(start_time=start_time, end_time=end_time)
         if fresh_tweets:
             print(f"   ✅ 实时抓取: {len(fresh_tweets)} 条推文")
             return fresh_tweets
@@ -75,8 +115,9 @@ def fetch_researcher_tweets():
     try:
         cached = _load_cache()
         if cached and cached[0]:
-            print(f"   📦 回退到过期缓存: {len(cached[0])} 条推文")
-            return cached[0]
+            tweets = _windowed(cached[0])
+            print(f"   📦 回退到过期缓存: {len(tweets)} 条窗口内推文")
+            return tweets
     except Exception:
         pass
 
@@ -88,7 +129,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ========== 配置 ==========
 API_KEY = os.environ.get("MINIMAX_API_KEY", "")  # 独立变量，不影响 GLM
 API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
-ZHIPU_API_KEY = os.environ.get("ZHIPU_API_KEY", "")  # 智谱搜索资源包
 OPML_FILE = opml_file()
 ARCHIVE_DIR = archive_dir()
 OUTPUT_FILE = output_md()
@@ -857,28 +897,35 @@ SUBFIELD_ORDER = {
     "其他研究": 10,
 }
 
-MAX_PER_CATEGORY = 8
-MIN_ARTICLES = 30
-LLM_MAX_INPUT = 100          # 送入 LLM 选稿的最大候选数（原为 60）
-SAFETY_NET_PRIORITY = 35     # priority≥此值且非转推/回复的条目，被 LLM/截断/每源上限误杀时强制保留
 RANK_TARGET_COUNT = 15       # 阶段1全局排序选出的目标条目数
-RANK_MAX_CANDIDATES = 80     # 阶段1送入排序的最大候选数
+RANK_RESERVE_COUNT = 10      # 额外保留候补顺序，仅用于审计/人工复核
+RANK_POOL_COUNT = 35         # 初排扩大候选池，再做事件级复核
+RANK_MAX_CANDIDATES = 200    # 正常单日全量送入排序，避免低分重要事件未被模型看见
+WRITE_BATCH_SIZE = 5         # 缩小批次故障半径
+REPORT_CUTOFF_HOUR = int(os.environ.get("REPORT_CUTOFF_HOUR", "6"))
+REPORT_CUTOFF_MINUTE = int(os.environ.get("REPORT_CUTOFF_MINUTE", "40"))
 
 def clean_text(t): return re.sub(r'<[^>]+>', '', t or "").strip() if t else ""
 def normalize(t): return re.sub(r'\s+', '', (t or "").lower())
 
 def parse_date(entry):
-    if hasattr(entry, "published_parsed") and entry.published_parsed:
+    parsed_value = (
+        entry.get("published_parsed")
+        if isinstance(entry, dict)
+        else getattr(entry, "published_parsed", None)
+    )
+    if parsed_value:
         try:
-            return datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
+            return datetime(*parsed_value[:6], tzinfo=timezone.utc)
         except Exception: pass
     import email.utils, calendar
     for f in ["published", "updated", "created"]:
-        if hasattr(entry, f):
+        value = entry.get(f) if isinstance(entry, dict) else getattr(entry, f, None)
+        if value:
             try:
-                p = email.utils.parsedate_tz(getattr(entry, f))
+                p = email.utils.parsedate_tz(value)
                 if p:
-                    timestamp = calendar.timegm(p[:9])
+                    timestamp = email.utils.mktime_tz(p)
                     return datetime.fromtimestamp(timestamp, tz=timezone.utc)
             except Exception: continue
     return None
@@ -909,33 +956,14 @@ def is_podcast_source(name):
 
 def is_in_window(entry):
     d = parse_date(entry)
-    return False if d is None else START_UTC <= d <= END_UTC
+    return False if d is None else START_UTC <= d < END_UTC
 
 
-def _cjk_count(text):
-    return sum('一' <= c <= '鿿' for c in (text or ""))
-
-
-def _ascii_letter_count(text):
-    return sum(c.isascii() and c.isalpha() for c in (text or ""))
-
-
-def _english_heavy(text):
-    text = text or ""
-    letters = _ascii_letter_count(text)
-    cjk = _cjk_count(text)
-    return letters >= 24 and letters > max(20, cjk * 2)
-
-
-def _chinese_output_ok(title, body):
-    return _cjk_count(title) >= 2 and _cjk_count(body) >= 8 and not _english_heavy(title) and not _english_heavy(body)
-
-
-def _safe_chinese_text(text, limit=None):
-    text = (text or "").strip()
-    if not text or _english_heavy(text) or _cjk_count(text) < 8:
-        return ""
-    return text[:limit] if limit else text
+def _chinese_output_ok(title, body, insight=None):
+    fields = [(title, 2), (body, 8)]
+    if insight is not None:
+        fields.append((insight, 4))
+    return all(chinese_text_ok(text, min_cjk=min_cjk) for text, min_cjk in fields)
 
 
 def is_ai_related(title, summary, source=""):
@@ -1084,12 +1112,13 @@ def _extract_product_entities(title):
     return result
 
 
-def _load_recent_tweet_links(days=3):
+def _load_recent_tweet_links(days=3, report_date=None):
     """从近几天的 twitter preview 文件中提取 tweet URL，用于推文级去重"""
     seen = set()
     base = os.path.dirname(ARCHIVE_DIR)  # archive 的父目录
+    anchor = datetime.strptime(report_date, "%Y-%m-%d") if report_date else datetime.now()
     for i in range(1, days + 1):
-        date = (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
+        date = (anchor - timedelta(days=i)).strftime("%Y-%m-%d")
         tp_file = os.path.join(base, f"twitter-preview-{date}.md")
         if os.path.exists(tp_file):
             try:
@@ -1103,18 +1132,25 @@ def _load_recent_tweet_links(days=3):
     return seen
 
 
-def dedup_articles(articles):
-    """跨天去重：URL 精确匹配 + 推文去重 + 实体匹配 + 标题语义去重"""
+def dedup_articles(articles, report_date=None):
+    """跨天去重只做高置信 URL 匹配；语义相似项交给 rank 审核。
+
+    旧实现会因为融资标题模板或跨语言标题相似而直接删除不同事件。召回
+    优先阶段只允许 canonical URL 这种可解释、可复现的硬去重。
+    """
+    ensure_candidate_ids(articles)
     try:
-        recent = load_recent_archives(days=3)
-        seen_links = {a.get("link", "").rstrip("/").split("#")[0] for a in recent if a.get("link")}
+        recent = load_recent_archives(days=3, report_date=report_date)
+        seen_links = {
+            canonicalize_url(a.get("link", "")) for a in recent if a.get("link")
+        }
         recent_titles = [a.get("title", "") for a in recent if a.get("title")]
     except Exception:
         seen_links = set()
         recent_titles = []
 
     # 补充推文去重：从 twitter preview 文件中提取已抓取的 tweet URL
-    seen_links.update(_load_recent_tweet_links(days=3))
+    seen_links.update(_load_recent_tweet_links(days=3, report_date=report_date))
 
     # 预计算近3天标题的实体对
     recent_entities = set()
@@ -1124,7 +1160,7 @@ def dedup_articles(articles):
 
     filtered = []
     for a in articles:
-        link = a.get("link", "").rstrip("/").split("#")[0]
+        link = canonicalize_url(a.get("link", ""))
         title = a.get("title", "")
 
         # 1. URL 精确匹配
@@ -1132,32 +1168,26 @@ def dedup_articles(articles):
             print(f"   [跨天去重-URL] '{title[:40]}...' 已在前几天发布，跳过")
             continue
 
-        # 2. 实体匹配：同公司+同产品 → 重复
+        # 2. 实体/标题相似只标记，不能在 rank 前销毁候选。
         entities = _extract_product_entities(title)
-        entity_dup = False
+        possible_duplicate_reasons = []
         for company, product in entities:
             if product and (company, product) in recent_entities:
-                print(f"   [跨天去重-实体] '{title[:40]}...' ({company}+{product}) 已报过，跳过")
-                entity_dup = True
+                possible_duplicate_reasons.append(f"entity:{company}+{product}")
                 break
-        if entity_dup:
-            continue
-
-        # 3. 标题语义去重
-        is_dup = False
         for rt in recent_titles:
             if title_similarity(title, rt) >= 0.45:
-                print(f"   [跨天去重-语义] '{title[:40]}...' ~ '{rt[:40]}...', 跳过")
-                is_dup = True
+                possible_duplicate_reasons.append(f"title:{rt[:80]}")
                 break
-        if is_dup:
-            continue
+        if possible_duplicate_reasons:
+            a["_possible_recent_duplicate"] = possible_duplicate_reasons
+            print(f"   [跨天待审] '{title[:40]}...' 可能与近期事件相关，不提前删除")
 
         filtered.append(a)
     return filtered
 
 # ========== LLM ==========
-def call_llm(prompt):
+def call_llm(prompt, system_prompt_file="news_processor.md", include_feedback=True):
     if not API_KEY:
         return None
     headers = {
@@ -1165,7 +1195,7 @@ def call_llm(prompt):
         "Content-Type": "application/json",
         "anthropic-version": "2023-06-01"
     }
-    # 从 feedback.md 加载最近的修正作为 few-shot 示例
+    # 写作/选稿可选择加载近期人工修正；不同任务使用独立 system prompt。
     _fb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "feedback.md")
     _feedback_examples = ""
     try:
@@ -1187,9 +1217,12 @@ def call_llm(prompt):
                 _entry["reason"] = _line.replace("- **reason**:", "").strip()
         if _entry.get("before") and _entry.get("after"):
             _examples.append(_entry)
-        # 只取最近5条有效示例
-        _examples = [e for e in _examples if len(e.get("before", "")) > 5 and len(e.get("after", "")) > 5][-5:]
-        if _examples:
+        # 只取最近 5 条有效示例，避免挤压严格 JSON 任务的上下文。
+        _examples = [
+            e for e in _examples
+            if len(e.get("before", "")) > 5 and len(e.get("after", "")) > 5
+        ][-5:]
+        if include_feedback and _examples:
             _lines = ["\n## 过往修正示例（不要犯同样的错）"]
             for _i, _e in enumerate(_examples, 1):
                 _lines.append(f"\n### 示例{_i}（{_e.get('field', 'unknown')}）")
@@ -1202,7 +1235,9 @@ def call_llm(prompt):
         pass
 
     # 从外部文件加载 system prompt（自进化：修改 prompts/news_processor.md 即可）
-    _prompt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts", "news_processor.md")
+    _prompt_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "prompts", system_prompt_file
+    )
     try:
         with open(_prompt_path, "r", encoding="utf-8") as f:
             system_prompt = f.read().strip() + _feedback_examples
@@ -1235,425 +1270,799 @@ def call_llm(prompt):
                 return None
 
 import re
-def process_with_llm(articles, recent_articles=None):
-    import re
-    if recent_articles is None:
-        recent_articles = []
-    if not API_KEY or len(articles) < 5:
-        return articles
+def _report_date_from_output():
+    match = re.search(r"daily-ai-news-(\d{4}-\d{2}-\d{2})", OUTPUT_FILE)
+    return match.group(1) if match else END_BJ.strftime("%Y-%m-%d")
 
-    # 构建历史动态摘要
-    recent_summary = ""
-    if recent_articles:
-        recent_titles = [a["title"][:40] for a in recent_articles[-15:]]
-        recent_summary = f"\
-\
-## 近期动态(供参考关联)\
-" + "\
-".join([f"- {t}" for t in recent_titles])
 
-    # 按优先级排序，确保重要新闻优先处理
-    sorted_articles = sorted(articles, key=lambda x: x.get('priority', 0), reverse=True)
+def _build_recent_context(recent_articles):
+    if not recent_articles:
+        return ""
+    titles = [a.get("title", "")[:100] for a in recent_articles if a.get("title")]
+    return "\n".join(f"- {title}" for title in titles[:50])
 
-    # 预过滤：排除明显非AI内容（Tesla财报、NASA、Rivian等）
-    NON_AI_TITLE_KEYWORDS = [
-        "tesla q", "rivian", "nasa ", "apple watch", "iphone case",
-        "linkedin's ceo", "threads is adding", "startup battlefield",
-        "cosmetics giant", "data breach", "rituals confirms",
-        "养虾", "招聘", "内推",
+
+def _rank_candidate_text(article):
+    evidence = article.get("content") or article.get("summary") or ""
+    duplicate_hint = "; ".join(article.get("_possible_recent_duplicate", []))
+    return (
+        f"candidate_id: {article.get('_rank_ref') or article['candidate_id']}\n"
+        f"标题: {article.get('raw_title') or article.get('title', '')}\n"
+        f"来源: {article.get('source', '')}\n"
+        f"启发式priority: {article.get('priority', 0)}\n"
+        f"候选事实: {clean_text(evidence)[:450]}\n"
+        f"近期重复提示: {duplicate_hint or '无'}"
+    )
+
+
+def _interleave_rank_candidates(articles):
+    """Interleave categories and sources without dropping any candidate.
+
+    The old priority-sorted prompt placed long runs from one outlet/category
+    together, which created position bias in large daily pools. This ordering
+    keeps priority inside each source while ensuring every editorial desk and
+    source appears throughout the prompt.
+    """
+    category_order = [
+        "模型前沿", "产业动态", "算力追踪",
+        "初创&融资", "研究关注", "X讨论",
     ]
-    def is_likely_non_ai(a):
-        title_lower = a.get('title', '').lower()
-        return any(kw in title_lower for kw in NON_AI_TITLE_KEYWORDS)
+    by_category = defaultdict(lambda: defaultdict(list))
+    for article in articles:
+        categories = article.get("categories") or ["其他"]
+        category = categories[0] if categories else "其他"
+        source = article.get("source") or "<unknown>"
+        by_category[category][source].append(article)
 
-    ai_filtered = [a for a in sorted_articles if not is_likely_non_ai(a)]
+    ordered_by_category = {}
+    for category, source_groups in by_category.items():
+        for source_articles in source_groups.values():
+            source_articles.sort(
+                key=lambda item: item.get("priority", 0), reverse=True
+            )
+        source_order = sorted(
+            source_groups,
+            key=lambda source: source_groups[source][0].get("priority", 0),
+            reverse=True,
+        )
+        category_items = []
+        while any(source_groups[source] for source in source_order):
+            for source in source_order:
+                if source_groups[source]:
+                    category_items.append(source_groups[source].pop(0))
+        ordered_by_category[category] = category_items
 
-    # ========== arXiv 论文预筛：用 _HF_RESEARCH_KEYWORDS 过滤，优中选优 ==========
-    ARXIV_SOURCES = {"arXiv cs.CL", "arXiv cs.LG"}
-    ARXIV_MAX = 10  # arXiv 论文独立通道上限
+    active_categories = [
+        category for category in category_order if ordered_by_category.get(category)
+    ]
+    active_categories.extend(
+        sorted(
+            category for category in ordered_by_category
+            if category not in category_order and ordered_by_category[category]
+        )
+    )
+    result = []
+    while any(ordered_by_category[category] for category in active_categories):
+        for category in active_categories:
+            if ordered_by_category[category]:
+                result.append(ordered_by_category[category].pop(0))
 
-    def _score_arxiv_relevance(article):
-        """按 _HF_RESEARCH_KEYWORDS 匹配打分，返回 (score, matched_field)"""
-        title = (article.get('title', '') or '').lower()
-        summary = (article.get('summary', '') or article.get('content', '') or '').lower()[:600]
-        text = title + " " + summary
-        best_score, best_field = 0, None
-        for field, keywords in _HF_RESEARCH_KEYWORDS.items():
-            hits = sum(1 for kw in keywords if kw in text)
-            if hits > best_score:
-                best_score = hits
-                best_field = field
-        # 标题命中权重更高
-        all_kw = [kw for kws in _HF_RESEARCH_KEYWORDS.values() for kw in kws]
-        title_hits = sum(1 for kw in all_kw if kw in title)
-        return best_score + title_hits, best_field
+    if len(result) != len(articles):
+        raise PipelineBlocked("候选交错排序发生数量不一致")
+    for index, article in enumerate(result, 1):
+        article["_rank_input_position"] = index
+    return result
 
-    arxiv_papers = []
-    other_articles = []
-    for a in ai_filtered:
-        if a.get('source', '') in ARXIV_SOURCES:
-            score, field = _score_arxiv_relevance(a)
-            if score >= 1:  # 至少匹配 1 个关注方向
-                a['_research_score'] = score
-                a['_research_field'] = field
-                arxiv_papers.append(a)
-        else:
-            other_articles.append(a)
 
-    # arXiv 按分数排序，取 top N
-    arxiv_papers.sort(key=lambda x: -x.get('_research_score', 0))
-    arxiv_selected = arxiv_papers[:ARXIV_MAX]
-    if arxiv_selected:
-        top_fields = [a.get('_research_field', '?') for a in arxiv_selected[:3]]
-        print(f"   📚 arXiv 预筛: {len(arxiv_papers)} 篇匹配关注方向，选 {len(arxiv_selected)} 篇 (top领域: {', '.join(top_fields)})")
-
-    # ========== 非arXiv源：每源上限 ==========
-    from collections import Counter
-    src_count = Counter()
-    diversified = []
-    CN_SOURCES = {"机器之心", "量子位", "新智元", "DeepTech深科技", "PaperWeekly", "IT桔子", "HuggingFace Daily Papers"}
-    for a in other_articles:
-        src = a.get('source', '')
-        if src == "TechCrunch":
-            limit = 8
-        elif src in CN_SOURCES:
-            limit = 3
-        else:
-            limit = 5
-        if src_count[src] < limit:
-            diversified.append(a)
-            src_count[src] += 1
-
-    # 合并：arXiv 独立通道 + 其他源 diversification
-    diversified = arxiv_selected + diversified
-
-    # ========== 阶段 1：全局排序 — 一次 LLM 调用选出 Top N ==========
-    to_process = diversified[:LLM_MAX_INPUT]
-    rank_candidates = to_process[:RANK_MAX_CANDIDATES]
-
-    # 构建排序用 prompt
-    rank_news_list = []
-    for i, a in enumerate(rank_candidates):
-        summary = (a.get('summary', '') or a.get('content', ''))[:100]
-        pri = a.get('priority', 0)
-        rank_news_list.append(f"【{i+1}】标题：{a['title']}\n来源：{a['source']}  priority：{pri}\n摘要：{summary}")
-
-    rank_prompt = f"""你是一个AI行研日报主编。下面是今日全部候选新闻，请选出最值得收录的 Top {RANK_TARGET_COUNT} 条。
-
-选稿标准（按重要性排序）：
-1. 对AI从业者有增量判断价值：新模型/产品发布、重要研究突破、产业格局变化、算力/芯片关键动态
-2. 头部AI公司（OpenAI/Anthropic/Google/Meta/NVIDIA/AMD等）的实质性动态优先
-3. 知名研究机构/分析师（SemiAnalysis/a16z/红杉等）的深度分析优先
-4. 不选：纯传统行业无AI关联、招聘/活动/报名、消费电子产品、SpaceX/火箭/电动车等非AI科技
-
-每条候选附有 priority 分数（越高越重要），作为参考但不是唯一依据——你可以选出 priority 不高但对 AI 行研读者有独特价值的条目，也可以跳过 priority 高但无增量判断价值的条目。
-
-输出格式：JSON数组，每项只含 original_title 和 rank（1=最重要），按 rank 升序排列，最多选 {RANK_TARGET_COUNT} 条：
-[{{"original_title": "原始标题（必须和输入完全一致）", "rank": 1}}, ...]
-
-## 今日候选新闻
-
-""" + "\n\n".join(rank_news_list)
-
-    print(f"   🔍 阶段1：全局排序 {len(rank_candidates)} 条候选 → 选 Top {RANK_TARGET_COUNT} ...")
-
-    # 阶段 1 LLM 调用（单次，最多重试 3 次）
-    rank_results = None
-    for retry in range(3):
-        result = call_llm(rank_prompt)
-        if not result:
-            print(f"   ⚠️ 阶段1 LLM 返回空{'（重试 '+str(retry+1)+'/3）' if retry < 2 else ''}")
-            if retry < 2:
-                import time; time.sleep(3)
-            continue
-        import json as _rj, re as _rr
-        _r_match = _rr.search(r'\[[\s\S]*\]', result)
-        if not _r_match:
-            print(f"   ⚠️ 阶段1 返回无 JSON 数组{'（重试 '+str(retry+1)+'/3）' if retry < 2 else ''}")
-            if retry < 2:
-                import time; time.sleep(3)
-            continue
+def _call_ranker(prompt, valid_ids, expected_count, stage_label):
+    last_error = "unknown"
+    for attempt in range(3):
+        raw = call_llm(
+            prompt,
+            system_prompt_file="news_ranker.md",
+            include_feedback=False,
+        )
         try:
-            rank_results = _rj.loads(_r_match.group())
-            if isinstance(rank_results, list) and len(rank_results) > 0:
-                break
-            rank_results = None
-        except Exception:
-            try:
-                rank_results = _rj.loads(_rr.sub(r',(\s*\])', r'\1', _r_match.group()))
-                if isinstance(rank_results, list) and len(rank_results) > 0:
-                    break
-                rank_results = None
-            except Exception:
-                pass
-        if retry < 2:
-            import time; time.sleep(3)
+            rows = parse_llm_array(raw or "")
+            ranked_ids = validate_rank_results(rows, valid_ids, expected_count)
+            return ranked_ids, rows
+        except Exception as exc:
+            last_error = str(exc)
+            print(
+                f"   ⚠️ {stage_label}响应无效（{attempt + 1}/3）: "
+                f"{last_error[:120]}"
+            )
+            if attempt < 2:
+                import time
+                time.sleep(2)
+    raise PipelineBlocked(f"{stage_label}连续失败: {last_error}")
 
-    # 解析阶段 1 结果，选出 Top N 条目
-    selected_articles = []
-    _rank_fallback = False
-    if rank_results:
-        _title_to_article = {}
-        for a in rank_candidates:
-            _t = a.get('title', '')
-            if _t:
-                _title_to_article[_t] = a
-        for rr in rank_results:
-            _ot = rr.get('original_title', '')
-            _a = _title_to_article.get(_ot)
-            if not _a:
-                for _t2, _a2 in _title_to_article.items():
-                    if _ot[:30] in _t2 or _t2[:30] in _ot:
-                        _a = _a2
-                        break
-            if _a and _a not in selected_articles:
-                selected_articles.append(_a)
-        print(f"   ✅ 阶段1：LLM 选出 {len(selected_articles)} 条")
-    else:
-        print(f"   ⚠️ 阶段1 失败，回退到旧逻辑（逐条留/丢）")
-        _rank_fallback = True
-        selected_articles = to_process
 
-    # ========== 阶段 2：只对选出的条目写 body/insight/category ==========
-    write_prompt = """请严格按照下方新闻进行处理。
+_EVENT_ANCHOR_STOPWORDS = {
+    "after", "announces", "announced", "begins", "build", "company",
+    "first", "from", "here", "homegrown", "into", "launch", "launches",
+    "makes", "model", "new", "next", "report", "reports", "says",
+    "shares", "support", "system", "tool", "tools", "with",
+}
 
-## 语言硬性要求
-- title、body、insight 必须用中文撰写；英文公司名、产品名、论文名、模型名可保留英文原名。
-- 禁止把英文原文句子、英文摘要、英文标题直接复制到 title/body/insight。
-- 输入里的英文事实必须翻译并整合成中文表达；无法确认的内容宁可少写，不要保留英文块。
-- body 中不得出现 `[深抓补充]`、`[搜索补充]`、`Image Credits`、`Abstract:`、`关键词:`、`作者:` 等抓取残留。
 
-## 输出格式要求
-JSON数组格式（所有新闻都保留，只写好body/insight/category）：
+def _event_title_anchors(title):
+    return {
+        token
+        for token in re.findall(r"[a-z][a-z0-9-]{2,}", (title or "").lower())
+        if token not in _EVENT_ANCHOR_STOPWORDS
+    }
+
+
+def _event_product_keys(article):
+    title = article.get("raw_title") or article.get("title", "")
+    return {
+        f"{company.lower()}::{product.lower()}"
+        for company, product in _extract_product_entities(title)
+        if product
+    }
+
+
+def _same_ranked_event(left, right):
+    """Conservative post-rank event identity check.
+
+    This never removes a candidate before the model has seen it. It only
+    prevents multiple reports or release-day integrations for the same named
+    product from occupying several final slots.
+    """
+    if canonicalize_url(left.get("link", "")) == canonicalize_url(right.get("link", "")):
+        return bool(left.get("link"))
+
+    left_products = _event_product_keys(left)
+    right_products = _event_product_keys(right)
+    if left_products and left_products & right_products:
+        return True
+
+    left_title = left.get("raw_title") or left.get("title", "")
+    right_title = right.get("raw_title") or right.get("title", "")
+    shared = _event_title_anchors(left_title) & _event_title_anchors(right_title)
+    left_acronyms = {
+        token.lower() for token in re.findall(r"\b[A-Z][A-Z0-9-]{2,}\b", left_title)
+        if token not in {"THE", "AND", "FOR", "WITH"}
+    }
+    right_acronyms = {
+        token.lower() for token in re.findall(r"\b[A-Z][A-Z0-9-]{2,}\b", right_title)
+        if token not in {"THE", "AND", "FOR", "WITH"}
+    }
+    shared_acronyms = left_acronyms & right_acronyms
+    left_proper = {
+        token.lower()
+        for token in re.findall(r"\b[A-Z][A-Za-z0-9-]{2,}\b", left_title)
+        if token.lower() not in _EVENT_ANCHOR_STOPWORDS
+    }
+    right_proper = {
+        token.lower()
+        for token in re.findall(r"\b[A-Z][A-Za-z0-9-]{2,}\b", right_title)
+        if token.lower() not in _EVENT_ANCHOR_STOPWORDS
+    }
+    shared_named = shared_acronyms | (left_proper & right_proper)
+    return bool(shared_named and len(shared) >= 2)
+
+
+def _event_representative_score(article):
+    """Prefer the underlying action over derivative market/reaction coverage."""
+    title = (article.get("raw_title") or article.get("title", "")).lower()
+    score = 0
+    derivative_markers = (
+        "shares slide", "stock falls", "stock drops", "market reacts",
+        "after report", "回应", "股价下跌",
+    )
+    direct_action_markers = (
+        "mass production", "begins production", "launches", "releases",
+        "invests", "raises", "partners", "open-sourced", "量产", "发布",
+        "融资", "投资",
+    )
+    score -= 50 * sum(marker in title for marker in derivative_markers)
+    score += 15 * sum(marker in title for marker in direct_action_markers)
+    evidence = article.get("content") or article.get("summary") or ""
+    score += min(len(str(evidence)), 1200) / 200
+    return score
+
+
+def _collapse_ranked_events(ordered_ids, article_by_id, expected_count):
+    kept = []
+    for candidate_id in ordered_ids:
+        article = article_by_id[candidate_id]
+        duplicate_of = next((
+            kept_id for kept_id in kept
+            if _same_ranked_event(article, article_by_id[kept_id])
+        ), None)
+        if duplicate_of:
+            existing = article_by_id[duplicate_of]
+            if _event_representative_score(article) > _event_representative_score(existing):
+                kept[kept.index(duplicate_of)] = candidate_id
+                existing["_event_duplicate_of"] = candidate_id
+                article.pop("_event_duplicate_of", None)
+            else:
+                article["_event_duplicate_of"] = duplicate_of
+            continue
+        kept.append(candidate_id)
+        if len(kept) == expected_count:
+            break
+    minimum_publishable = min(RANK_TARGET_COUNT, expected_count)
+    if len(kept) < minimum_publishable:
+        raise PipelineBlocked(
+            f"事件去重后仅剩 {len(kept)} 条，无法满足 "
+            f"{minimum_publishable} 条成稿需求"
+        )
+    return kept
+
+
+def _selection_desks(article):
+    title = article.get("raw_title") or article.get("title", "")
+    source = article.get("source", "")
+    categories = article.get("categories") or []
+    text = f"{title} {source}".lower()
+    desks = set()
+
+    if (
+        source.lower().startswith("arxiv")
+        or "huggingface daily papers" in source.lower()
+        or "研究关注" in categories
+    ):
+        desks.add("research")
+    if any(
+        keyword in text
+        for keyword in (
+            "nuclear", "reactor", "fusion", "stellarator",
+            "核能", "核反应堆", "聚变",
+        )
+    ):
+        desks.add("frontier_energy")
+    if any(
+        keyword in text
+        for keyword in (
+            "robot", "robotics", "humanoid", "embodied", "physical ai",
+            "具身", "机器人", "机械臂", "数据手套",
+        )
+    ):
+        desks.add("robotics")
+    capital_action = re.search(
+        r"\b(?:invest(?:s|ed|ment)?|raises?|funding|financing|acquir(?:e|es|ed|ing))\b"
+        r"|投资|融资|募资|收购",
+        text,
+    )
+    material_scale = re.search(
+        r"\$\s*\d|(?:multi)?billion|(?:hundred\s+)?million|"
+        r"\d+(?:\.\d+)?\s*[亿万]元?|数十亿|数百亿",
+        text,
+    )
+    if capital_action and material_scale:
+        desks.add("strategic_capital")
+    return desks
+
+
+def _selection_entity(article):
+    text = " ".join(
+        str(article.get(field, ""))
+        for field in ("raw_title", "title", "source")
+    ).lower()
+    patterns = (
+        ("Moonshot", ("moonshot", "kimi", "moon_ep", "moonep", "agentenv", "perceptionbench")),
+        ("NVIDIA", ("nvidia",)),
+        ("Microsoft", ("microsoft",)),
+        ("OpenAI", ("openai", "chatgpt")),
+        ("Anthropic", ("anthropic", "claude")),
+        ("Google", ("google", "deepmind", "gemini")),
+        ("Meta", ("meta", "llama")),
+    )
+    for entity, aliases in patterns:
+        if any(alias in text for alias in aliases):
+            return entity
+    return None
+
+
+def _rank_research_shortlist(articles):
+    research_articles = [
+        article for article in articles
+        if "research" in _selection_desks(article)
+    ]
+    expected_count = min(6, len(research_articles))
+    if expected_count == 0:
+        return []
+
+    prompt = f"""请从以下研究候选中选出 {expected_count} 项最值得进入综合日报复核池的独立研究，并按重要性排序。
+
+优先标准：
+- 明确的新方法、训练/推理框架、重要实证结果或可复用的开源研究基础设施；
+- 对 Agent、模型能力、MLSys、具身智能或 AI4S 有广泛影响，而不是只靠热门关键词；
+- 有具体贡献、实验或系统设计信息。排除普通增量论文、活动、综述和缺乏新增事实的宣传。
+
+只能原样返回输入里的短 candidate_id；输出恰好 {expected_count} 项，rank 为连续整数。
+只输出 JSON 数组：
+[{{"candidate_id":"R017","rank":1}}, ...]
+
+研究候选：
+
+""" + "\n\n---\n\n".join(
+        _rank_candidate_text(article) for article in research_articles
+    )
+
+    valid_refs = [article["_rank_ref"] for article in research_articles]
+    ranked_refs, _ = _call_ranker(
+        prompt, valid_refs, expected_count, "研究桌复核"
+    )
+    ref_to_id = {
+        article["_rank_ref"]: article["candidate_id"]
+        for article in research_articles
+    }
+    ranked_ids = [ref_to_id[ranked_ref] for ranked_ref in ranked_refs]
+    for rank, candidate_id in enumerate(ranked_ids, 1):
+        next(
+            article for article in research_articles
+            if article["candidate_id"] == candidate_id
+        )["_research_rank"] = rank
+    return ranked_ids
+
+
+def _build_editorial_portfolio(
+    global_ids,
+    preliminary_ids,
+    all_candidate_ids,
+    research_ids,
+    article_by_id,
+    selected_count,
+    final_count,
+):
+    """Protect desk coverage while retaining global importance ordering."""
+    required = []
+
+    def require_from_order(desk, ordered_ids, floor):
+        chosen = [
+            candidate_id for candidate_id in ordered_ids
+            if desk in _selection_desks(article_by_id[candidate_id])
+        ][:floor]
+        for candidate_id in chosen:
+            article = article_by_id[candidate_id]
+            reasons = article.setdefault("_portfolio_required", [])
+            if desk not in reasons:
+                reasons.append(desk)
+            if candidate_id not in required:
+                required.append(candidate_id)
+
+    require_from_order("research", research_ids, 3)
+    require_from_order("frontier_energy", all_candidate_ids, 2)
+    require_from_order("robotics", all_candidate_ids, 2)
+    # Capital events are ordered by the global editor first. This protects
+    # material investments in frontier labs and compute infrastructure without
+    # turning every funding announcement into a quota item.
+    capital_order = list(dict.fromkeys(preliminary_ids + all_candidate_ids))
+    require_from_order("strategic_capital", capital_order, 2)
+
+    selected = list(global_ids[:selected_count])
+    for candidate_id in required:
+        if candidate_id not in selected:
+            selected.append(candidate_id)
+
+    global_position = {
+        candidate_id: rank for rank, candidate_id in enumerate(preliminary_ids, 1)
+    }
+    # Keep the strongest global judgement, while allowing a run of small
+    # updates from the same company below the top three to yield to independent
+    # strategic events.
+    protected = set(required) | set(global_ids[:3])
+    while len(selected) > selected_count:
+        entity_counts = defaultdict(int)
+        for candidate_id in selected:
+            entity = _selection_entity(article_by_id[candidate_id])
+            if entity:
+                entity_counts[entity] += 1
+
+        removable = [
+            candidate_id for candidate_id in selected
+            if candidate_id not in protected
+        ]
+        if not removable:
+            removable = [
+                candidate_id for candidate_id in selected
+                if candidate_id not in set(required)
+            ]
+        if not removable:
+            raise PipelineBlocked("编辑组合约束冲突，无法形成 Top 15")
+
+        def removal_score(candidate_id):
+            entity = _selection_entity(article_by_id[candidate_id])
+            concentration = entity_counts.get(entity, 1) if entity else 1
+            return (
+                concentration,
+                global_position.get(candidate_id, 10**6),
+            )
+
+        selected.remove(max(removable, key=removal_score))
+
+    selected_set = set(selected)
+    selected_order = [
+        candidate_id for candidate_id in global_ids
+        if candidate_id in selected_set
+    ]
+    selected_order.extend(
+        candidate_id for candidate_id in required
+        if candidate_id in selected_set and candidate_id not in selected_order
+    )
+    if len(selected_order) != selected_count:
+        raise PipelineBlocked("编辑组合后的入选数量不一致")
+
+    reserve_sources = global_ids + preliminary_ids + research_ids
+    final_ids = list(selected_order)
+    for candidate_id in reserve_sources:
+        if len(final_ids) >= final_count:
+            break
+        if candidate_id in final_ids:
+            continue
+        if any(
+            _same_ranked_event(
+                article_by_id[candidate_id],
+                article_by_id[kept_id],
+            )
+            for kept_id in final_ids
+        ):
+            continue
+        final_ids.append(candidate_id)
+
+    if len(final_ids) != final_count:
+        raise PipelineBlocked(
+            f"编辑组合仅形成 {len(final_ids)} 个唯一事件，预期 {final_count}"
+        )
+    return final_ids
+
+
+def _rank_candidates(rank_candidates, recent_articles):
+    final_count = min(
+        len(rank_candidates), RANK_TARGET_COUNT + RANK_RESERVE_COUNT
+    )
+    if final_count == 0:
+        raise PipelineBlocked("没有可供排序的候选")
+    pool_count = min(len(rank_candidates), max(final_count, RANK_POOL_COUNT))
+    prompt_candidates = _interleave_rank_candidates(rank_candidates)
+    for index, article in enumerate(prompt_candidates, 1):
+        article["_rank_ref"] = f"R{index:03d}"
+
+    prompt = f"""请从今日候选中严格选出 {pool_count} 个事件进入复核池并排序。
+
+硬性要求：
+1. 输出必须恰好 {pool_count} 项，rank 必须是 1 到 {pool_count} 的连续整数。
+2. 只能原样返回输入里的短 candidate_id（例如 R017）；禁止返回标题或自行编造长 ID。
+3. 排的是“事件”而不是媒体文章：同一事件多来源只选信息最完整的一条。
+4. priority 仅供参考，不能替代编辑判断。低分但重大的芯片、供应链、头部公司动作、关键研究不可因来源靠后而漏掉。
+5. 排除招聘、普通 CFO 等例行人事任命、活动宣传、纯祝贺、生活感想、无新增事实的转发以及与本刊范围无关的消费/娱乐内容。
+6. 若候选被标为“近期可能重复”，只有确属同一主体、同一动作时才排除；模板相似不等于重复。
+7. 必须先扫描全部候选再排序；机器人、先进制造、光刻、数据中心、核能/聚变等前沿基础设施属于范围，不能仅因标题不含 AI 而忽略。
+8. 不设机械分类配额，但同质论文或同一公司的小更新不能淹没独立的资本、产能、供应链、合作和技术里程碑。
+9. 有明确系统贡献的训练/推理框架和重要开源研究工具属于高价值研究；具体融资、产能落地、物理基础设施与机器人进展，通常高于泛泛评论、立场声明或未落地的政策猜测。
+
+只输出 JSON 数组：
+[{{"candidate_id":"R017","rank":1}}, ...]
+
+近期已发布事件：
+{_build_recent_context(recent_articles) or "无"}
+
+今日候选：
+
+""" + "\n\n---\n\n".join(_rank_candidate_text(a) for a in prompt_candidates)
+
+    valid_refs = [article["_rank_ref"] for article in prompt_candidates]
+    preliminary_refs, _ = _call_ranker(
+        prompt, valid_refs, pool_count, "初排"
+    )
+    ref_to_candidate_id = {
+        article["_rank_ref"]: article["candidate_id"]
+        for article in prompt_candidates
+    }
+    preliminary_ids = [
+        ref_to_candidate_id[candidate_ref]
+        for candidate_ref in preliminary_refs
+    ]
+    article_by_id = {
+        article["candidate_id"]: article for article in rank_candidates
+    }
+    for rank, candidate_id in enumerate(preliminary_ids, 1):
+        article_by_id[candidate_id]["_preliminary_rank"] = rank
+
+    collapsed = _collapse_ranked_events(
+        preliminary_ids,
+        article_by_id,
+        final_count,
+    )
+    duplicate_count = sum(
+        bool(article_by_id[candidate_id].get("_event_duplicate_of"))
+        for candidate_id in preliminary_ids
+    )
+    if duplicate_count:
+        print(
+            f"   🧹 事件级复核: 初排 {len(preliminary_ids)} 条，"
+            f"跳过 {duplicate_count} 个重复报道或发布日伴生项，"
+            f"保留 {len(collapsed)} 个唯一事件"
+        )
+    research_ids = _rank_research_shortlist(prompt_candidates)
+    portfolio_ids = _build_editorial_portfolio(
+        collapsed,
+        preliminary_ids,
+        [article["candidate_id"] for article in rank_candidates],
+        research_ids,
+        article_by_id,
+        min(RANK_TARGET_COUNT, final_count),
+        final_count,
+    )
+    protected_count = sum(
+        bool(article_by_id[candidate_id].get("_portfolio_required"))
+        for candidate_id in portfolio_ids[:RANK_TARGET_COUNT]
+    )
+    print(
+        f"   🗂️ 编辑组合: Top {min(RANK_TARGET_COUNT, final_count)} "
+        f"中 {protected_count} 条承担研究/机器人/前沿能源/战略资本覆盖"
+    )
+    return portfolio_ids
+
+
+def _prepare_writer_evidence(article):
+    """Collect source evidence before writing; never append it to final body."""
+    base = clean_text(article.get("content") or article.get("summary") or "")
+    parts = [base] if base else []
+    fetched = ""
+    link = article.get("link", "")
+    if link and len(base) < 900:
+        fetched = _deep_fetch(link) or ""
+        fetched = clean_text(fetched)
+        if fetched and fetched not in base:
+            parts.append(fetched)
+    evidence = "\n\n".join(part for part in parts if part).strip()
+    article["_evidence_length"] = len(evidence)
+    article["_deep_fetch_used"] = bool(fetched)
+    return evidence[:2400]
+
+
+def _writer_item_text(article):
+    evidence = article.get("_writer_evidence") or _prepare_writer_evidence(article)
+    article["_writer_evidence"] = evidence
+    retry_feedback = article.get("_writer_retry_feedback", "")
+    return (
+        f"candidate_id: {article.get('_writer_ref') or article['candidate_id']}\n"
+        f"原始标题: {article.get('raw_title') or article.get('title', '')}\n"
+        f"来源: {article.get('source', '')}\n"
+        f"原文链接: {article.get('link', '')}\n"
+        f"重试纠错: {retry_feedback or '无'}\n"
+        f"可用事实证据:\n{evidence or '来源仅提供标题；不得扩写未经证实的事实。'}"
+    )
+
+
+def _writer_prompt(batch, recent_articles):
+    return f"""请为输入中的每一个 candidate_id 撰写日报条目，不得选稿或省略。
+
+输出必须是 JSON 数组，每个输入 ID 恰好对应一项：
 [
-  {
-    "original_title": "原始标题（必须和输入完全一致）",
-    "title": "中文标题，事件主体+做什么+为什么重要，禁止感叹号/问号结尾；英文专名保留英文，整句标题必须中文化",
-    "body": "中文正文，建议3-6句话，只写关键事实：是什么、关键数据、突破/创新、关联事件、事实性影响。信息不足时宁可2句也不编造。禁止AI自己的判断和引申（判断放insight）",
-    "insight": "中文一句话务实判断：具体趋势、竞争动态或实际影响。禁止空洞宏大叙事",
-    "category": "分类"
-  }
+  {{
+    "candidate_id": "cand_xxx",
+    "title": "中文标题",
+    "body": "中文事实正文",
+    "insight": "中文务实判断",
+    "category": "模型前沿|产业动态|算力追踪|初创&融资|研究关注|X讨论"
+  }}
 ]
 
-## body分类侧重点
-- 模型前沿：能力突破点、关键数据（成本、benchmark）、适用场景
-- 算力追踪：规模（芯片型号、数量）、产能、成本变化、供应链影响
-- 研究关注：方法创新点、实验结果、局限性
-- 产业动态：具体发生了什么、涉及哪些人/产品、影响范围
-- 初创&融资：领域、商业逻辑、金额，投资方背书
-- X讨论：观点核心、论据
+硬性要求：
+- title、body、insight 使用中文完整表达；公司、产品、模型、论文与 benchmark 专名可保留英文。
+- 不得复制英文原句，不得出现抓取标记、Image Credits、Abstract、关键词或作者元数据。
+- 只使用“可用事实证据”里的信息。body 必须至少两个以中文标点结束的完整句子；证据不足时也要把已知动作和适用范围拆成两句，但不得猜测或用常识补齐。
+- body 只写事实；判断放 insight。category 必须严格取六个合法值之一。
+- 不得改变、遗漏、重复或臆造 candidate_id。
 
-## insight分类侧重点
-- 模型前沿：技术代差、具体商业影响
-- 算力追踪：供需关系、格局变化
-- 研究关注：创新性、对后续研究/应用的实际影响
-- 产业动态：市场影响、竞争定位
-- 初创&融资：商业逻辑、团队或项目亮点
-- X讨论：观点质量、值得关注程度
+近期已发布事件（只用于说明延续关系，不可作为新增事实来源）：
+{_build_recent_context(recent_articles) or "无"}
 
-## 串联要求
-- 如果多条新闻属于同一故事的不同面，在body中简要关联
-- 参考下方"近期动态"，如果今天的事件是某条近期的延续/升级，简要说明变化
-- insight不要重复body已说的事实，而是给出独立的判断
-""" + ("\n\n" + recent_summary if recent_summary else "")
+待写条目：
 
-    # 分批调用 LLM 写 body/insight（只写不选）
-    BATCH_SIZE = 10
-    all_llm_results = []
-    total_batches = (len(selected_articles) + BATCH_SIZE - 1) // BATCH_SIZE
+""" + "\n\n---\n\n".join(_writer_item_text(a) for a in batch)
 
-    for batch_idx in range(total_batches):
-        batch = selected_articles[batch_idx * BATCH_SIZE : (batch_idx + 1) * BATCH_SIZE]
-        batch_news = []
-        for i, a in enumerate(batch):
-            summary = a.get('summary', '') or a.get('content', '')
-            batch_news.append(f"""【新闻{i+1}】
-标题：{a['title']}
-来源：{a['source']}
-摘要：{summary[:300]}""")
 
-        batch_prompt = write_prompt + "\n\n## 今日新闻\n\n" + "\n\n".join(batch_news)
-        print(f"   📝 阶段2 批次 {batch_idx+1}/{total_batches}（{len(batch)} 条）...")
+def _valid_writer_row(row):
+    title = (row.get("title") or "").strip()
+    body = (row.get("body") or "").strip()
+    insight = (row.get("insight") or "").strip()
+    category = (row.get("category") or "").strip()
+    if category not in VALID_OUTPUT_CATEGORIES:
+        return False, f"无效分类: {category or '<missing>'}"
+    if not _chinese_output_ok(title, body, insight):
+        return False, "中文/残留门禁失败"
+    if _count_sentences(body) < 2:
+        return False, "body 少于 2 句"
+    return True, ""
 
-        batch_results = None
-        for retry in range(3):
-            result = call_llm(batch_prompt)
-            if not result:
-                print(f"   ⚠️ 批次 {batch_idx+1} LLM 返回空{'（重试 '+str(retry+1)+'/3）' if retry < 2 else ''}")
-                if retry < 2:
-                    import time; time.sleep(3)
-                continue
 
-            import json as json_module
-            import re as re_module
+def _call_writer(batch, recent_articles, attempts=2):
+    article_by_ref = {
+        article["_writer_ref"]: article for article in batch
+    }
+    pending_refs = list(article_by_ref)
+    accepted = {}
 
-            def clean_json_string(s):
-                s = re_module.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', '', s)
-                s = s.replace('\\', '\\\\').replace('\\\\\\\\', '\\\\')
-                s = re_module.sub(r'^```json\s*', '', s)
-                s = re_module.sub(r'^```\s*', '', s)
-                s = re_module.sub(r'\s*```$', '', s)
-                return s.strip()
+    for attempt in range(attempts):
+        pending_batch = [article_by_ref[writer_ref] for writer_ref in pending_refs]
+        prompt = _writer_prompt(pending_batch, recent_articles)
+        raw = call_llm(prompt, system_prompt_file="news_writer.md", include_feedback=True)
+        try:
+            rows = parse_llm_array(raw or "")
+            by_ref, missing_refs = reconcile_written_results(rows, pending_refs)
+            for writer_ref, row in list(by_ref.items()):
+                ok, reason = _valid_writer_row(row)
+                if not ok:
+                    article_by_ref[writer_ref]["_writer_retry_feedback"] = (
+                        f"上一版未通过：{reason}。必须修正后重新输出。"
+                    )
+                    missing_refs.append(writer_ref)
+                    del by_ref[writer_ref]
+                    print(f"   ⚠️ 写作门禁拒绝 {writer_ref}: {reason}")
+            for writer_ref, row in by_ref.items():
+                actual_id = article_by_ref[writer_ref]["candidate_id"]
+                normalized_row = dict(row)
+                normalized_row["candidate_id"] = actual_id
+                accepted[actual_id] = normalized_row
+            pending_refs = list(dict.fromkeys(missing_refs))
+            if not pending_refs:
+                return accepted, []
+            print(
+                f"   ⚠️ 写作响应不完整（{attempt + 1}/{attempts}），"
+                f"剩余 {len(pending_refs)} 条"
+            )
+        except Exception as exc:
+            print(
+                f"   ⚠️ 写作响应无效（{attempt + 1}/{attempts}）: "
+                f"{str(exc)[:120]}"
+            )
 
-            json_match = re_module.search(r'\[[\s\S]*\]', result)
-            if not json_match:
-                print(f"   ⚠️ 批次 {batch_idx+1} 返回内容无 JSON 数组{'（重试 '+str(retry+1)+'/3）' if retry < 2 else ''}")
-                if retry < 2:
-                    import time; time.sleep(3)
-                continue
+        if attempt + 1 < attempts:
+            import time
+            time.sleep(2)
 
-            raw = clean_json_string(json_match.group())
-            try:
-                batch_results = json_module.loads(raw)
-            except Exception:
-                try:
-                    raw_fixed = re_module.sub(r',(\s*[\]\}])', r'\1', raw)
-                    batch_results = json_module.loads(raw_fixed)
-                except Exception:
-                    try:
-                        objects = re_module.findall(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', raw)
-                        batch_results = [json_module.loads(obj) for obj in objects if obj]
-                    except Exception:
-                        pass
+    missing_ids = [
+        article_by_ref[writer_ref]["candidate_id"]
+        for writer_ref in pending_refs
+    ]
+    return accepted, missing_ids
 
-            if batch_results:
-                break
-            else:
-                print(f"   ⚠️ 批次 {batch_idx+1} JSON 解析失败{'（重试 '+str(retry+1)+'/3）' if retry < 2 else ''}")
-                if retry < 2:
-                    import time; time.sleep(3)
 
-        if batch_results:
-            if isinstance(batch_results, list) and len(batch_results) > 0:
-                all_llm_results.extend(batch_results)
-                print(f"   ✅ 批次 {batch_idx+1}: 返回 {len(batch_results)} 条")
-            else:
-                print(f"   ⚠️ 批次 {batch_idx+1}: LLM 返回空数组 []，跳过")
+def _write_selected_articles(selected_articles, recent_articles):
+    for index, article in enumerate(selected_articles, 1):
+        article["_writer_ref"] = f"W{index:02d}"
+    written = {}
+    missing_ids = []
+    total_batches = (len(selected_articles) + WRITE_BATCH_SIZE - 1) // WRITE_BATCH_SIZE
+    for batch_index in range(total_batches):
+        batch = selected_articles[
+            batch_index * WRITE_BATCH_SIZE:(batch_index + 1) * WRITE_BATCH_SIZE
+        ]
+        print(f"   📝 写作批次 {batch_index + 1}/{total_batches}（{len(batch)} 条）")
+        batch_written, batch_missing = _call_writer(batch, recent_articles, attempts=2)
+        written.update(batch_written)
+        missing_ids.extend(batch_missing)
+
+    # Retry every missing/invalid item independently so one malformed item
+    # cannot erase a whole batch.
+    by_id = {a["candidate_id"]: a for a in selected_articles}
+    still_missing = []
+    for candidate_id in dict.fromkeys(missing_ids):
+        article = by_id[candidate_id]
+        print(f"   🔁 单条恢复: {article.get('raw_title', '')[:60]}")
+        single_written, single_missing = _call_writer([article], recent_articles, attempts=2)
+        written.update(single_written)
+        if single_missing:
+            still_missing.append(candidate_id)
+
+    if still_missing:
+        titles = [by_id[cid].get("raw_title", "")[:80] for cid in still_missing]
+        raise PipelineBlocked(
+            "选中条目写作失败，已隔离且禁止原文回填: " + "; ".join(titles)
+        )
+    return written
+
+
+def _write_selection_audit(all_articles, ranked_ids, selected_ids, ready_ids):
+    ranked_position = {candidate_id: index + 1 for index, candidate_id in enumerate(ranked_ids)}
+    rows = []
+    for article in all_articles:
+        candidate_id = article["candidate_id"]
+        if candidate_id in ready_ids:
+            fate = "ready_candidate"
+        elif candidate_id in selected_ids:
+            fate = "selected_write_failed"
+        elif candidate_id in ranked_position:
+            fate = "reserve"
         else:
-            print(f"   ⚠️ 批次 {batch_idx+1}: 3 次重试后仍失败，跳过")
+            fate = "rank_not_selected"
+        rows.append({
+            "candidate_id": candidate_id,
+            "fate": fate,
+            "rank": ranked_position.get(candidate_id),
+            "rank_ref": article.get("_rank_ref"),
+            "rank_input_position": article.get("_rank_input_position"),
+            "preliminary_rank": article.get("_preliminary_rank"),
+            "research_rank": article.get("_research_rank"),
+            "portfolio_required": article.get("_portfolio_required"),
+            "event_duplicate_of": article.get("_event_duplicate_of"),
+            "source": article.get("source", ""),
+            "title": article.get("raw_title") or article.get("title", ""),
+            "priority": article.get("priority", 0),
+            "link": article.get("link", ""),
+        })
+    date_str = _report_date_from_output()
+    audit_path = os.path.join(ARCHIVE_DIR, f"dropped_{date_str}.json")
+    atomic_write_json(audit_path, {
+        "date": date_str,
+        "input": len(all_articles),
+        "ranked": len(ranked_ids),
+        "selected": len(selected_ids),
+        "ready": len(ready_ids),
+        "candidates": rows,
+    })
+    print(f"   💾 选稿审计: {audit_path}")
 
-    # ========== 合并阶段 2 LLM 结果 ==========
-    if not all_llm_results:
-        print(f"   ⚠️ 阶段2 所有批次均未返回有效结果，不再保留原始英文摘要")
-        filtered_articles = []
-    else:
-        title_to_article = {}
-        for a in articles:
-            orig_title = a.get('title', '')
-            if orig_title:
-                title_to_article[orig_title] = a
 
-        filtered_articles = []
-        for lr in all_llm_results:
-            original_title = lr.get('original_title', '')
-            article = title_to_article.get(original_title)
+def process_with_llm(articles, recent_articles=None):
+    """Rank all eligible candidates, then write and validate exactly Top N."""
+    recent_articles = recent_articles or []
+    if not API_KEY:
+        raise PipelineBlocked("MINIMAX_API_KEY 缺失，禁止发布原始候选")
+    if not articles:
+        raise PipelineBlocked("候选为空，禁止生成空日报")
 
-            if not article:
-                for t, a in title_to_article.items():
-                    if original_title[:30] in t or t[:30] in original_title:
-                        article = a
-                        break
+    ensure_candidate_ids(articles)
+    sorted_articles = sorted(
+        articles, key=lambda item: item.get("priority", 0), reverse=True
+    )
+    if len(sorted_articles) > RANK_MAX_CANDIDATES:
+        raise PipelineBlocked(
+            f"候选数 {len(sorted_articles)} 超过可审计上限 {RANK_MAX_CANDIDATES}，禁止静默截断"
+        )
 
-            if not article:
-                continue
+    print(f"   🔍 全量排序 {len(sorted_articles)} 条候选（无公司/来源硬删除）")
+    ranked_ids = _rank_candidates(sorted_articles, recent_articles)
+    article_by_id = {article["candidate_id"]: article for article in sorted_articles}
+    for index, candidate_id in enumerate(ranked_ids, 1):
+        article_by_id[candidate_id]["_editorial_rank"] = index
 
-            orig_summary = article.get('summary', '')
+    selected_ids = ranked_ids[: min(RANK_TARGET_COUNT, len(ranked_ids))]
+    selected_articles = [article_by_id[candidate_id] for candidate_id in selected_ids]
+    # Persist the editorial decision before writing starts. If a later model
+    # call fails, the selected/reserve/not-selected split remains inspectable.
+    _write_selection_audit(
+        sorted_articles, ranked_ids, selected_ids, set()
+    )
+    written = _write_selected_articles(selected_articles, recent_articles)
 
-            llm_title = (lr.get('title', '') or '').strip()
-            llm_body = (lr.get('body', '') or '').strip()
-            if not _chinese_output_ok(llm_title, llm_body):
-                print(f"   ⚠️ 跳过英文/未中文化输出: {original_title[:60]}")
-                continue
+    ready = []
+    for candidate_id in selected_ids:
+        article = article_by_id[candidate_id]
+        row = written[candidate_id]
+        article["title"] = row["title"].strip()
+        article["body"] = row["body"].strip()
+        article["insight"] = row["insight"].strip()
+        article["categories"] = [row["category"].strip()]
+        article["provenance"] = {
+            "selection": "llm_ranked",
+            "writing": "llm_writer",
+            "status": "validated",
+        }
+        article["_provenance"] = "llm_written_validated"
+        article["_selection_status"] = "selected"
+        # Evidence is an internal transient and must not enter the archive.
+        article.pop("_writer_evidence", None)
+        article.pop("_writer_retry_feedback", None)
+        article.pop("_writer_ref", None)
+        ready.append(article)
 
-            article['title'] = llm_title[:80]
+    expected_ready = min(RANK_TARGET_COUNT, len(sorted_articles))
+    if len(ready) != expected_ready:
+        raise PipelineBlocked(f"成稿数量 {len(ready)} != 预期 {expected_ready}")
 
-            llm_cat = lr.get('category', '')
-            if llm_cat:
-                article['categories'] = [llm_cat]
-
-            article['body'] = llm_body[:400]
-
-            llm_insight = (lr.get('insight', '') or '').strip()
-            if llm_insight and not _english_heavy(llm_insight):
-                article['insight'] = llm_insight[:150]
-
-            filtered_articles.append(article)
-
-    # ========== priority 安全网：救回被误杀的高价值原创条目 ==========
-    _safety_ids = set()
-    try:
-        _kept_ids0 = {id(a) for a in filtered_articles}
-        for a in sorted_articles:
-            if id(a) in _kept_ids0:
-                continue
-            if (a.get("priority", 0) or 0) < SAFETY_NET_PRIORITY:
-                continue
-            _t = (a.get("title", "") or "")
-            if _t.startswith(("RT ", "R to @", "RT by @")) or " RT @" in _t:
-                continue
-            if not _chinese_output_ok(a.get("title", ""), a.get("body", "")):
-                continue
-            if not a.get("categories"):
-                a["categories"] = get_cat(_t, a.get("summary", ""), a.get("source", ""))
-            a["_safety_net"] = True
-            _safety_ids.add(id(a))
-            filtered_articles.append(a)
-        if _safety_ids:
-            print(f"🛟 priority 安全网救回 {len(_safety_ids)} 条 (pri≥{SAFETY_NET_PRIORITY}, 非转推/回复)")
-    except Exception as _e:
-        print(f"⚠️ safety-net 失败: {_e}")
-
-    articles = filtered_articles
-    print(f"✅ 阶段1选{len(selected_articles)}条 → 阶段2写入{len(filtered_articles)}条")
-
-    # ========== 选稿「被丢榜」日志（可观测性：只读，不改选稿）==========
-    # 区分每条候选死在哪一环：非AI标题预筛 / arxiv未匹配 / 每源上限 / 全局排序未入选 / 阶段2未匹配
-    try:
-        import os as _dlos, json as _dloj, re as _dlor
-        from collections import Counter as _dloc
-        _ai_ids = {id(a) for a in ai_filtered}
-        _ax_ids = {id(a) for a in arxiv_papers}
-        _axsel_ids = {id(a) for a in arxiv_selected}
-        _div_ids = {id(a) for a in diversified}
-        _top_ids = {id(a) for a in to_process}
-        _sel_ids = {id(a) for a in selected_articles}
-        _kept_ids = {id(a) for a in filtered_articles}
-        def _fate(a):
-            aid = id(a)
-            if aid in _safety_ids: return "rescued(安全网)"
-            if aid in _kept_ids: return "kept"
-            if aid not in _ai_ids: return "cut:非AI标题预筛"
-            if (a.get("source") or "") in ARXIV_SOURCES:
-                if aid in _ax_ids and aid not in _axsel_ids: return "cut:arxiv超额(>10)"
-                if aid not in _ax_ids: return "cut:arxiv未匹配关注方向"
-            if aid not in _div_ids: return "cut:每源上限"
-            if aid not in _top_ids: return f"cut:top{LLM_MAX_INPUT}截断"
-            if aid not in _sel_ids: return "cut:全局排序未入选"
-            return "cut:阶段2未匹配"
-        _rows = [{"fate": _fate(a), "source": a.get("source", ""),
-                  "title": (a.get("title", "") or "")[:120], "priority": a.get("priority", 0)}
-                 for a in sorted_articles]
-        _fates = _dloc(r["fate"] for r in _rows)
-        _m = _dlor.search(r'daily-ai-news-(\d{4}-\d{2}-\d{2})', OUTPUT_FILE)
-        _ds = _m.group(1) if _m else START_BJ.strftime("%Y-%m-%d")
-        _dlos.makedirs(ARCHIVE_DIR, exist_ok=True)
-        _drop_file = _dlos.path.join(ARCHIVE_DIR, f"dropped_{_ds}.json")
-        with open(_drop_file, "w", encoding="utf-8") as f:
-            _dloj.dump({"date": _ds, "input": len(sorted_articles), "kept": len(filtered_articles),
-                        "fate_summary": dict(_fates),
-                        "dropped": [r for r in _rows if r["fate"].startswith("cut")]}, f, ensure_ascii=False, indent=2)
-        print(f"📋 选稿丢榜 input {len(sorted_articles)}→kept {len(filtered_articles)}: " +
-              ", ".join(f"{k}={v}" for k, v in _fates.items()))
-        _sig = sorted([r for r in _rows if r["fate"].startswith("cut") and (r["priority"] or 0) >= 40],
-                      key=lambda x: -x["priority"])
-        if _sig:
-            print("   ⚠️ 高优先被丢(≥40):")
-            for r in _sig[:15]:
-                print(f"     [{r['fate'][4:]}] [{r['source']}] {r['title'][:66]} (pri {r['priority']})")
-        print(f"   💾 {_drop_file}")
-    except Exception as _e:
-        print(f"⚠️ drop-log 失败: {_e}")
-    return articles
+    _write_selection_audit(
+        sorted_articles, ranked_ids, selected_ids, {a["candidate_id"] for a in ready}
+    )
+    print(f"✅ 全量候选{len(sorted_articles)} → 排序{len(ranked_ids)} → 成稿{len(ready)}")
+    return ready
 
 # ========== 论文自动溯源 + Body 校验 ==========
 _ARXIV_CACHE = {}
@@ -1680,14 +2089,6 @@ def _fetch_arxiv(arxiv_id):
     except Exception:
         return None
 
-def _find_arxiv_id(article):
-    """从文章 link/body/title 中提取 arXiv 编号"""
-    for field in [article.get("link", ""), article.get("body", ""), article.get("title", "")]:
-        m = re.search(r'(\d{4}\.\d{4,5})', field)
-        if m and "arxiv" in field.lower():
-            return m.group(1)
-    return None
-
 def _count_sentences(text):
     """计算中英文句数"""
     if not text:
@@ -1695,113 +2096,29 @@ def _count_sentences(text):
     sentences = re.split(r'[。.!?！？]', text)
     return len([s for s in sentences if s.strip()])
 
-def _has_quantifiable_data(text):
-    """检查是否有可量化数据"""
-    if not text:
-        return False
-    return bool(re.search(r'\d+\.?\d*%|\$\d+|\d+x|\d+倍|\d+亿|\d+万|\d{2,}B|\d{2,}M', text))
-
 def post_validate_and_enrich(articles):
-    """后处理：当 body 信息密度不足时，按域名规则深抓官方页面正文补充。
+    """Final read-only validation.
 
-    Token 优化：
-    - 只对优先级 Top N 的文章触发深抓（避免 18 条全跑）
-    - 单条深抓内容截断到 ~600 字（够 body 重写但不浪费上下文）
+    Source enrichment now happens before the writer.  Post-writing raw append
+    was the second major English/residue leak, so this stage must never mutate
+    body text or call a generative web-search fallback.
     """
     warnings = []
-    enriched = 0
-
-    # 取候选 = body 不合格的文章
-    candidates = []
     for a in articles:
         body = a.get("body", "")
-        if _count_sentences(body) >= 3 and _has_quantifiable_data(body):
-            continue
-        candidates.append(a)
-
-    # 按优先级排序，只对 Top N 深抓
-    DEEP_FETCH_TOP_N = 10
-    try:
-        candidates.sort(key=lambda x: -float(x.get("priority", 0) or 0))
-    except Exception:
-        pass
-    candidates = candidates[:DEEP_FETCH_TOP_N]
-
-    for a in candidates:
-        title_short = a.get("title", "")[:40]
-        body = a.get("body", "")
         sent_count = _count_sentences(body)
-
-        link = a.get("link", "") or ""
-        candidate_urls = [link]
-        for m in re.finditer(r'https?://[^\s\)\]]+', body):
-            candidate_urls.append(m.group(0).rstrip('.,;'))
-
-        extra = None
-        used_url = None
-        for u in candidate_urls:
-            extra = _deep_fetch(u)
-            if extra:
-                used_url = u
-                break
-
-        extra = _safe_chinese_text(extra, 600)
-        if extra:
-            sep = " " if a.get("body") else ""
-            a["body"] = (a.get("body", "") + sep + extra).strip()
-            enriched += 1
-            print(f"   🔍 深抓补充: [{title_short}] ← {used_url[:60]}")
-        elif sent_count < 3:
-            # Fallback: 智谱 web_search 补充
-            search_q = a.get("title", "")
-            if search_q and len(search_q) > 10:
-                zhipu_extra = _safe_chinese_text(_zhipu_web_search(search_q), 600)
-                if zhipu_extra:
-                    sep = " " if a.get("body") else ""
-                    a["body"] = (a.get("body", "") + sep + zhipu_extra).strip()
-                    enriched += 1
-                    print(f"   🔎 搜索补充: [{title_short}] ← 智谱web_search")
-                    continue
-            warnings.append(f"[{title_short}] body仅{sent_count}句")
+        title = a.get("title", "")
+        insight = a.get("insight", "")
+        if not _chinese_output_ok(title, body, insight):
+            warnings.append(f"[{title[:40]}] 中文/残留门禁失败")
+        elif sent_count < 2:
+            warnings.append(f"[{title[:40]}] body仅{sent_count}句")
 
     if warnings:
         for w in warnings:
             print(f"   ⚠️ {w}")
-        print(f"   📋 后处理校验: {len(warnings)} 个待补充（将由QA autofix处理）")
-    if enriched:
-        print(f"   ✅ 深抓补充: {enriched} 条 (Top {DEEP_FETCH_TOP_N})")
+        raise PipelineBlocked(f"最终正文校验失败 {len(warnings)} 条")
     return articles
-
-
-def _zhipu_web_search(query):
-    """调用智谱原生 API + web_search tool 搜索，返回搜索结果摘要或 None。消耗搜索资源包额度。"""
-    if not ZHIPU_API_KEY:
-        return None
-    try:
-        r = httpx.post(
-            "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-            headers={"Authorization": f"Bearer {ZHIPU_API_KEY}"},
-            json={
-                "model": "glm-4-flash",
-                "messages": [{"role": "user", "content": f"请用中文简洁总结以下主题的最新关键事实和数据，不要猜测：{query}"}],
-                "tools": [{"type": "web_search", "web_search": {"enable": True, "search_result": True}}],
-                "max_tokens": 800,
-            },
-            timeout=30,
-        )
-        r.raise_for_status()
-        data = r.json()
-        choices = data.get("choices", [])
-        if choices:
-            msg = choices[0].get("message", {})
-            content = msg.get("content", "")
-            if content:
-                return content[:600]
-        return None
-    except Exception as e:
-        print(f"   ⚠️ 智谱搜索失败: {str(e)[:60]}")
-        return None
-
 
 # ========== 研究关注关键词 ==========
 _HF_RESEARCH_KEYWORDS = {
@@ -1873,6 +2190,7 @@ def _fetch_hf_daily_papers(max_papers=10):
             "summary": f"{title}. Authors: {author_str}. Upvotes: {upvotes}",
             "content": summary or title,
             "link": f"https://huggingface.co/papers/{pid}",
+            "source_item_id": pid,
             "categories": ["研究关注"],
             "source": "HuggingFace Daily Papers",
             "is_tweet": False,
@@ -2065,6 +2383,7 @@ def fetch_source(name, url, limit=15, max_retries=5):
                     "summary": summary[:150] if summary else "",
                     "content": summary,
                     "link": link,
+                    "source_item_id": e.get("id") or e.get("guid") or link,
                     "categories": cats,
                     "source": name,
                     "published_parsed": list(e.get("published_parsed"))[:6] if e.get("published_parsed") else None,
@@ -2097,8 +2416,10 @@ def generate_report(articles):
 
     # 分类内排序
     for cat in by_cat:
-        # 全部按优先级排序
-        by_cat[cat] = sorted(by_cat[cat], key=lambda x: x.get("priority", 0), reverse=True)[:MAX_PER_CATEGORY]
+        # 全量成稿已经通过 Top-N 门禁；渲染层不得再次静默截断。
+        by_cat[cat] = sorted(
+            by_cat[cat], key=lambda x: x.get("_editorial_rank", 10**9)
+        )
 
     merged_count = sum(1 for a in articles if a.get("is_merged"))
 
@@ -2108,7 +2429,7 @@ def generate_report(articles):
 
     # 简洁头部
     lines = [f"## {month_day} AI 前沿动态", "",
-             f"> 自动汇总 | 时间窗口: {hours}h | 每类 Top 5", "",
+             f"> 自动汇总 | 时间窗口: {hours}h | 全局精选 {len(articles)} 条", "",
              "---", "",
              "## 要点汇总", ""]
 
@@ -2199,7 +2520,7 @@ def generate_report(articles):
     return "\n".join(lines)
 
 
-def _log_quality(articles):
+def _log_quality(articles, report_date, gate_result=None):
     """每次运行后记录质量元数据到 quality_log.jsonl（自进化数据源）"""
     from collections import Counter
     log_path = os.path.join(ARCHIVE_DIR, "..", "quality_log.jsonl")
@@ -2219,13 +2540,15 @@ def _log_quality(articles):
             insight_count += 1
 
     entry = {
-        "date": START_BJ.strftime("%Y-%m-%d"),
+        "date": report_date,
+        "run_id": _CURRENT_RUN_ID,
         "total": len(articles),
         "categories": dict(cat_counts),
         "body_avg_len": round(sum(body_lens) / len(body_lens), 1) if body_lens else 0,
         "insight_count": insight_count,
         "insight_ratio": round(insight_count / len(articles), 2) if articles else 0,
         "prompt_hash": _prompt_hash(),
+        "release_gate": gate_result.as_dict() if gate_result else None,
     }
 
     with open(log_path, "a", encoding="utf-8") as f:
@@ -2233,14 +2556,51 @@ def _log_quality(articles):
 
 
 def _prompt_hash():
-    """记录当前 prompt 文件的哈希，用于追踪哪版 prompt 产出了什么质量"""
-    import hashlib
-    prompt_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts", "news_processor.md")
-    try:
-        content = open(prompt_path, "r", encoding="utf-8").read()
-        return hashlib.md5(content.encode()).hexdigest()[:8]
-    except FileNotFoundError:
-        return "missing"
+    """Hash every prompt that can affect selection or publication writing."""
+    root = os.path.dirname(os.path.abspath(__file__))
+    digest = hashlib.sha256()
+    prompt_paths = [
+        os.path.join(root, "prompts", "news_ranker.md"),
+        os.path.join(root, "prompts", "news_writer.md"),
+        os.path.join(root, "feedback.md"),
+    ]
+    found = False
+    for path in prompt_paths:
+        try:
+            with open(path, "rb") as prompt_file:
+                digest.update(os.path.basename(path).encode("utf-8"))
+                digest.update(b"\0")
+                digest.update(prompt_file.read())
+                found = True
+        except FileNotFoundError:
+            digest.update(f"missing:{path}".encode("utf-8"))
+    return digest.hexdigest()[:12] if found else "missing"
+
+
+def _pipeline_version_hash():
+    """Hash code, prompts and editorial config for reproducible manifests."""
+    root = os.path.dirname(os.path.abspath(__file__))
+    digest = hashlib.sha256()
+    relative_paths = [
+        "feed_v5.py",
+        "improve_news.py",
+        "pipeline_core.py",
+        "release_gate.py",
+        "config.json",
+        "accounts.yaml",
+        "prompts/news_ranker.md",
+        "prompts/news_writer.md",
+    ]
+    for relative_path in relative_paths:
+        path = os.path.join(root, relative_path)
+        digest.update(relative_path.encode("utf-8"))
+        digest.update(b"\0")
+        try:
+            with open(path, "rb") as source_file:
+                digest.update(source_file.read())
+        except FileNotFoundError:
+            digest.update(b"<missing>")
+    return digest.hexdigest()[:16]
 
 
 def _check_feedback():
@@ -2301,47 +2661,146 @@ def _mark_feedback_seen():
         return
     count = sum(1 for line in open(feedback_path, "r", encoding="utf-8")
                 if re.match(r'^### \[', line))
-    with open(state_path, "w") as f:
-        json.dump({"last_seen_count": count}, f)
+    atomic_write_json(state_path, {"last_seen_count": count})
 
 
-def save_archive(articles):
-    # 从 OUTPUT_FILE 文件名提取日期，与日报文件名一致
-    import re as _re
-    _m = _re.search(r'daily-ai-news-(\d{4}-\d{2}-\d{2})', OUTPUT_FILE)
-    date_str = _m.group(1) if _m else START_BJ.strftime("%Y-%m-%d")
-    archive_file = os.path.join(ARCHIVE_DIR, f"news_{date_str}.json")
-    data = {"date": date_str, "count": len(articles), "articles": articles}
-    with open(archive_file, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+def _canonical_archive_article(article):
+    """Keep publication fields only; raw source prose stays in audit/cache."""
+    allowed = (
+        "candidate_id",
+        "title",
+        "body",
+        "insight",
+        "categories",
+        "source",
+        "link",
+        "priority",
+        "provenance",
+        "_editorial_rank",
+        "_selection_status",
+        "_evidence_length",
+        "_deep_fetch_used",
+    )
+    return {key: article[key] for key in allowed if key in article}
+
+
+def build_archive_data(articles, report_date):
+    return {
+        "date": report_date,
+        "count": len(articles),
+        "articles": [_canonical_archive_article(article) for article in articles],
+    }
+
+
+def save_archive(articles, report_date):
+    archive_file = os.path.join(ARCHIVE_DIR, f"news_{report_date}.json")
+    data = build_archive_data(articles, report_date)
+    atomic_write_json(archive_file, data)
     print(f"✅ 已存档: {archive_file}")
+    return archive_file, data
+
+
+def _manifest_path(report_date):
+    return os.path.join(ARCHIVE_DIR, "manifests", f"{report_date}.json")
+
+
+def _read_manifest(report_date):
+    path = _manifest_path(report_date)
+    try:
+        with open(path, "r", encoding="utf-8") as manifest_file:
+            data = json.load(manifest_file)
+        if isinstance(data, dict) and data.get("date") == report_date:
+            return data
+    except (FileNotFoundError, OSError, json.JSONDecodeError):
+        pass
+    return {}
+
+
+def _write_manifest(report_date, status, **fields):
+    data = _read_manifest(report_date)
+    data.update({
+        "date": report_date,
+        "status": status,
+        "run_id": _CURRENT_RUN_ID,
+        "pipeline_version": _pipeline_version_hash(),
+        "prompt_hash": _prompt_hash(),
+    })
+    data.update(fields)
+    atomic_write_json(_manifest_path(report_date), data)
+    return data
+
+
+def _mark_pipeline_failed(report_date, exc):
+    if not report_date:
+        return
+    try:
+        _write_manifest(
+            report_date,
+            "qa_failed",
+            failed_at=datetime.now(timezone.utc).isoformat(),
+            failure={
+                "type": type(exc).__name__,
+                "detail": str(exc)[:1000],
+            },
+        )
+    except Exception as manifest_exc:
+        print(f"⚠️ 无法写入失败 manifest: {manifest_exc}", file=sys.stderr)
+
+
+def _new_run_id(report_date):
+    seed = (
+        f"{report_date}|{datetime.now(timezone.utc).isoformat()}|"
+        f"{os.getpid()}|{_pipeline_version_hash()}"
+    )
+    return hashlib.sha256(seed.encode("utf-8")).hexdigest()[:20]
+
+
+def _content_hash(report, archive_data, html_path):
+    digest = hashlib.sha256()
+    digest.update(report.encode("utf-8"))
+    digest.update(
+        json.dumps(
+            archive_data, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+    )
+    with open(html_path, "rb") as html_file:
+        digest.update(html_file.read())
+    return digest.hexdigest()
+
+
+def _print_gate_result(label, gate):
+    print(
+        f"   {label}: blocker={len(gate.blockers)}, "
+        f"warning={len(gate.warnings)}"
+    )
+    for issue in gate.issues:
+        marker = "❌" if issue.severity == "blocker" else "⚠️"
+        print(f"   {marker} [{issue.code}] {issue.title}: {issue.detail}")
 
 def get_time_window(target_date=None):
-    """获取时间窗口：固定 24 小时（昨天8点 → 今天8点）
+    """Return one explicit 24-hour report window.
 
-    Args:
-        target_date: 指定日期，格式 YYYY-MM-DD。默认为今天。
+    The default cutoff matches the actual 06:40 cron.  Unlike the old
+    implementation, running after the cutoff never advances the end boundary
+    into tomorrow.  Backfills and catch-up runs therefore remain deterministic.
     """
-    beijing_offset = 8
-
-    if target_date:
-        # 使用指定日期（带时区）
-        end_beijing = datetime.strptime(target_date, "%Y-%m-%d").replace(
-            hour=8, minute=0, second=0, microsecond=0, tzinfo=timezone(timedelta(hours=beijing_offset))
+    if target_date is None:
+        local_tz = timezone(timedelta(hours=8))
+        now_local = datetime.now(timezone.utc).astimezone(local_tz)
+        cutoff = now_local.replace(
+            hour=REPORT_CUTOFF_HOUR,
+            minute=REPORT_CUTOFF_MINUTE,
+            second=0,
+            microsecond=0,
         )
-    else:
-        # 使用当前时间
-        now_utc = datetime.now(timezone.utc)
-        now_beijing = now_utc + timedelta(hours=beijing_offset)
-        # end_beijing = 今天8点（如果还没到8点）或明天8点（如果已过8点）
-        end_beijing = now_beijing.replace(hour=8, minute=0, second=0, microsecond=0)
-        if now_beijing.hour >= 8:
-            end_beijing = end_beijing + timedelta(days=1)
-
-    # 固定：24小时窗口
-    start_beijing = end_beijing - timedelta(days=1)
-
-    return start_beijing - timedelta(hours=8), end_beijing - timedelta(hours=8), start_beijing, end_beijing
+        report_day = now_local.date() if now_local >= cutoff else (now_local - timedelta(days=1)).date()
+        target_date = report_day.strftime("%Y-%m-%d")
+    return report_window(
+        target_date,
+        cutoff_hour=REPORT_CUTOFF_HOUR,
+        cutoff_minute=REPORT_CUTOFF_MINUTE,
+        utc_offset_hours=8,
+    )
 
 # 默认时间窗口（今天）
 START_UTC, END_UTC, START_BJ, END_BJ = get_time_window()
@@ -2363,11 +2822,12 @@ def md_to_html_from_file(md_file=None, output_html=None):
     md_to_html(md_file, output_html, dated_html=dated_html)
 
 # ========== 主函数 ==========
-def load_recent_archives(days=3):
+def load_recent_archives(days=3, report_date=None):
     """读取近期存档用于关联分析和跨天去重"""
     recent_news = []
+    anchor = datetime.strptime(report_date, "%Y-%m-%d") if report_date else datetime.now()
     for i in range(1, days+1):
-        date = (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
+        date = (anchor - timedelta(days=i)).strftime("%Y-%m-%d")
         archive_file = os.path.join(ARCHIVE_DIR, f"news_{date}.json")
         if os.path.exists(archive_file):
             try:
@@ -2400,13 +2860,28 @@ def main():
         md_to_html_from_file()
         return
 
-    # 使用指定日期重新计算时间窗口
+    # 使用显式日报日期计算固定窗口；默认日期也由 cutoff 决定。
     global START_UTC, END_UTC, START_BJ, END_BJ, OUTPUT_FILE
+    global _CURRENT_REPORT_DATE, _CURRENT_RUN_ID
     if args.date:
+        try:
+            parsed_report_date = datetime.strptime(args.date, "%Y-%m-%d")
+        except ValueError as exc:
+            raise PipelineBlocked("--date 必须使用 YYYY-MM-DD") from exc
+        if parsed_report_date.strftime("%Y-%m-%d") != args.date:
+            raise PipelineBlocked("--date 必须使用 YYYY-MM-DD")
         START_UTC, END_UTC, START_BJ, END_BJ = get_time_window(args.date)
-        OUTPUT_FILE = output_md(args.date)
+    report_date = args.date or END_BJ.strftime("%Y-%m-%d")
+    _CURRENT_REPORT_DATE = report_date
+    _CURRENT_RUN_ID = _new_run_id(report_date)
+    OUTPUT_FILE = output_md(report_date)
+    run_cache_file = os.path.join(
+        os.path.dirname(CACHE_FILE), "cache", f"raw_news_{report_date}.json"
+    )
 
     print(f"🤖 AI前沿动态 v5.1")
+    print(f"   Run ID: {_CURRENT_RUN_ID}")
+    print(f"   日报日期: {report_date}")
     print(f"   时间窗口: {START_BJ.strftime('%Y-%m-%d %H:%M')} - {END_BJ.strftime('%Y-%m-%d %H:%M')} 北京时间")
 
     # 检查是否有未处理的 feedback 修正
@@ -2417,6 +2892,11 @@ def main():
     elif args.cache:
         print(f"   模式: 抓取并缓存")
 
+    if args.no_overwrite and os.path.exists(OUTPUT_FILE):
+        raise PipelineBlocked(
+            f"{OUTPUT_FILE} 已存在；--no-overwrite 模式禁止生成不一致的归档或 HTML"
+        )
+
     # 从配置加载账号列表
     COMPANY_ACCOUNTS = twitter_company_accounts()
     RESEARCHER_ACCOUNTS = twitter_researcher_accounts()
@@ -2425,20 +2905,25 @@ def main():
 
     # 从缓存读取 或 重新抓取
     if args.from_cache:
-        if os.path.exists(CACHE_FILE):
-            with open(CACHE_FILE, 'r', encoding='utf-8') as f:
+        selected_cache = run_cache_file if os.path.exists(run_cache_file) else CACHE_FILE
+        if os.path.exists(selected_cache):
+            with open(selected_cache, 'r', encoding='utf-8') as f:
                 cached = json.load(f)
-                all_arts = cached.get('articles', [])
-                errors = cached.get('errors', [])
-            print(f"📦 从缓存读取: {len(all_arts)} 条")
+            cached_report_date = cached.get("report_date")
+            if cached_report_date and cached_report_date != report_date:
+                raise PipelineBlocked(
+                    f"缓存日期 {cached_report_date} 与日报日期 {report_date} 不一致"
+                )
+            all_arts = cached.get('articles', [])
+            errors = cached.get('errors', [])
+            print(f"📦 从缓存读取: {len(all_arts)} 条 ({selected_cache})")
             # 过滤超出时间窗口的文章
             before_count = len(all_arts)
             all_arts = [a for a in all_arts if is_in_window(a)]
             if len(all_arts) < before_count:
                 print(f"   ⏰ 时间窗口过滤: {before_count} → {len(all_arts)} 条（移除 {before_count - len(all_arts)} 条过期）")
         else:
-            print(f"❌ 缓存文件不存在: {CACHE_FILE}")
-            return
+            raise PipelineBlocked(f"缓存文件不存在: {run_cache_file}")
     else:
         # 抓取 RSS
         for name, (url, tz) in SOURCES.items():
@@ -2455,7 +2940,7 @@ def main():
 
         # 抓取研究者推文
         print("📡 抓取研究者动态...")
-        researcher_tweets = fetch_researcher_tweets()
+        researcher_tweets = fetch_researcher_tweets(START_UTC, END_UTC)
         if researcher_tweets:
             print(f"   获取 {len(researcher_tweets)} 条推文")
 
@@ -2511,6 +2996,11 @@ def main():
                     "summary": title,
                     "content": title,
                     "link": t.get("link", ""),
+                    "tweet_id": (
+                        re.search(r"/status/(\d+)", t.get("link", "") or "").group(1)
+                        if re.search(r"/status/(\d+)", t.get("link", "") or "")
+                        else ""
+                    ),
                     "categories": [cat],
                     "is_tweet": True,
                     "source": t.get("source", ""),
@@ -2529,14 +3019,24 @@ def main():
         else:
             print("   无匹配论文")
 
-        # 保存缓存
+        ensure_candidate_ids(all_arts)
+
+        # 保存按日报日期分区的可回放缓存
         if args.cache:
-            with open(CACHE_FILE, 'w', encoding='utf-8') as f:
-                json.dump({'articles': all_arts, 'errors': errors, 'time': datetime.now().isoformat()}, f, ensure_ascii=False, indent=2)
-            print(f"💾 已缓存到: {CACHE_FILE}")
+            cache_payload = {
+                'report_date': report_date,
+                'window_start_utc': START_UTC.isoformat(),
+                'window_end_utc': END_UTC.isoformat(),
+                'articles': all_arts,
+                'errors': errors,
+                'time': datetime.now(timezone.utc).isoformat(),
+            }
+            atomic_write_json(run_cache_file, cache_payload)
+            print(f"💾 已缓存到: {run_cache_file}")
 
     # 去重和合并
-    unique = dedup_articles(all_arts)
+    ensure_candidate_ids(all_arts)
+    unique = dedup_articles(all_arts, report_date=report_date)
     print(f"📊 去重后: {len(unique)} 条")
 
     merged = merge_events(unique)
@@ -2554,47 +3054,20 @@ def main():
     merged = improve_news(merged, do_filter=True)
 
     # LLM 处理
-    if not args.skip_llm and API_KEY and len(merged) > 5:
+    if not args.skip_llm:
         print("📚 读取近期存档...")
-        recent_articles = load_recent_archives(days=3)
+        recent_articles = load_recent_archives(days=3, report_date=report_date)
         print(f"🤖 调用LLM处理...")
         merged = process_with_llm(merged, recent_articles)
     elif args.skip_llm:
-        print("⏭️ 跳过 LLM 处理")
+        raise PipelineBlocked("--skip-llm 仅供诊断，禁止生成可发布日报")
 
-    # 后规范化
-    print("🔧 后规范化...")
-    merged = improve_news(merged, do_filter=False)
+    # 一手源已在写作前注入；此处只做不变更内容的最终校验。
+    print("🔍 最终正文校验...")
+    merged = post_validate_and_enrich(merged)
 
-    # 论文溯源 + Body 校验
-    if not args.skip_llm:
-        print("🔍 论文溯源 + Body 校验...")
-        merged = post_validate_and_enrich(merged)
-
-    # 如果跳过了 LLM，用新分类逻辑重新分类
-    if args.skip_llm:
-        for a in merged:
-            new_cat = get_cat(a.get('title', ''), a.get('summary', ''), a.get('source', ''))
-            a['categories'] = new_cat
-            # 同时重新计算优先级
-            a['priority'] = calculate_priority_v2(a)
-
-    # 重新排序
-    merged = sorted(merged, key=lambda x: x.get("priority", 0), reverse=True)
-
-    for a in merged:
-        if a.get("is_tweet"):
-            source = a.get("source", "").lower().replace("@", "")
-            title = a.get("title", "").lower()
-            if any(r in source for r in RESEARCHER_ACCOUNTS):
-                if any(k in title for k in ['paper', 'arxiv', 'research', 'study', 'experiment', 'method', 'model', 'agi', 'agent', 'oracles', 'activation', 'red team', '对齐', '研究', '论文', '模型']):
-                    a['categories'] = ['研究关注']
-                else:
-                    a['categories'] = ['X讨论']
-            elif any(c in source for c in COMPANY_ACCOUNTS):
-                pass
-            else:
-                a['categories'] = ['X讨论']
+    # 保留编辑排序，不再被旧 priority 覆盖。
+    merged = sorted(merged, key=lambda x: x.get("_editorial_rank", 10**9))
 
     # 统计
     by_cat = defaultdict(int)
@@ -2608,63 +3081,101 @@ def main():
     if errors:
         print(f"⚠️ 失败: {errors[:3]}")
 
-    # Overflow 标记：超过上限时用 LLM 标记低价值条目（不自动删除）
-    from qa import MAX_ARTICLES, check_article_overflow
-    if len(merged) > MAX_ARTICLES and not args.skip_llm:
-        print(f"\n⚠️ 条目过多（{len(merged)}>{MAX_ARTICLES}），LLM 建议删除：")
-        overflow_issues = check_article_overflow(merged)
-        if overflow_issues:
-            for _, title, msg in overflow_issues:
-                reason = msg.split('：')[-1] if '：' in msg else msg
-                print(f"   ⚠️ {title[:45]} — {reason}")
+    # Canonical gate is the publication decision. There is no raw/safety-net
+    # fallback and no post-gate autofix that can mutate approved content.
+    from qa import run_release_gate
+    print("\n📋 发布硬门禁...")
+    canonical_gate = run_release_gate(merged, strict=True)
+    _print_gate_result("canonical", canonical_gate)
+    if not canonical_gate.passed:
+        _write_manifest(
+            report_date,
+            "qa_failed",
+            failed_at=datetime.now(timezone.utc).isoformat(),
+            qa={"canonical": canonical_gate.as_dict()},
+        )
+        raise PipelineBlocked(
+            f"发布硬门禁未通过：{len(canonical_gate.blockers)} 个 blocker"
+        )
 
-    # 生成报告
-    if args.no_overwrite and os.path.exists(OUTPUT_FILE):
-        print(f"⚠️ {OUTPUT_FILE} 已存在且 --no-overwrite，跳过覆盖")
-    else:
-        report = generate_report(merged)
-        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-            f.write(report)
+    report = generate_report(merged)
 
+    # Verify the rendered representation before it can become canonical.
+    from html_generator import parse_md
+    rendered_articles, _ = parse_md(report)
+    rendered_gate = run_release_gate(rendered_articles, strict=False)
+    _print_gate_result("rendered-md", rendered_gate)
+    if len(rendered_articles) != len(merged):
+        raise PipelineBlocked(
+            f"渲染条目数 {len(rendered_articles)} != canonical 条目数 {len(merged)}"
+        )
+    if not rendered_gate.passed:
+        raise PipelineBlocked(
+            f"Markdown 渲染门禁未通过：{len(rendered_gate.blockers)} 个 blocker"
+        )
 
-    # 保存归档
-    save_archive(merged)
+    atomic_write_text(OUTPUT_FILE, report)
+    archive_file, archive_data = save_archive(merged, report_date)
     print(f"✅ 已输出: {OUTPUT_FILE}")
 
-    # 质量日志（自进化数据源）
-    _log_quality(merged)
+    env = os.environ.copy()
+    env["NEWS_DATE"] = report_date
+    html_process = subprocess.run(
+        [sys.executable, "html_generator.py"],
+        check=True,
+        capture_output=True,
+        text=True,
+        env=env,
+        cwd=os.path.dirname(os.path.abspath(__file__)),
+    )
+    if html_process.stdout.strip():
+        print(html_process.stdout.strip())
+    html_file = os.path.join(base_dir(), f"daily-ai-news-{report_date}.html")
+    if not os.path.exists(html_file) or os.path.getsize(html_file) == 0:
+        raise PipelineBlocked(f"HTML 产物缺失或为空: {html_file}")
 
-    # 自动 QA 检查 + autofix
+    content_hash = _content_hash(report, archive_data, html_file)
+    _write_manifest(
+        report_date,
+        "ready",
+        ready_at=datetime.now(timezone.utc).isoformat(),
+        content_hash=content_hash,
+        article_count=len(merged),
+        window={
+            "start_utc": START_UTC.isoformat(),
+            "end_utc": END_UTC.isoformat(),
+            "start_bj": START_BJ.isoformat(),
+            "end_bj": END_BJ.isoformat(),
+        },
+        artifacts={
+            "markdown": OUTPUT_FILE,
+            "archive": archive_file,
+            "html": html_file,
+        },
+        qa={
+            "canonical": canonical_gate.as_dict(),
+            "rendered_md": rendered_gate.as_dict(),
+        },
+        fetch_errors=errors,
+    )
+
+    # Diagnostics and feedback state only advance after ready was written.
     try:
-        from qa import run_checks
-        print("\n📋 自动 QA 检查...")
-        date_str = args.date if args.date else datetime.now().strftime("%Y-%m-%d")
-        issue_count = run_checks(date_str)
+        _log_quality(merged, report_date, canonical_gate)
+        _mark_feedback_seen()
+    except Exception as diagnostic_exc:
+        print(f"⚠️ 质量日志写入失败（不改变 ready 状态）: {diagnostic_exc}")
 
-        # QA 发现 short_body 问题 → 自动补充
-        if issue_count > 0 and not args.skip_llm:
-            from qa_autofix import autofix_short_body
-            print("\n🔧 自动补充 body...")
-            fixed = autofix_short_body(date_str)
-            if fixed > 0:
-                print(f"   ✅ 已补充 {fixed} 条")
-    except ImportError as e:
-        print(f"   ⚠️ QA/autofix模块缺失: {e}")
-    except Exception as e:
-        print(f"   ⚠️ QA检查失败: {e}")
-
-    # 标记 feedback 已处理（本轮已看过这些提醒）
-    _mark_feedback_seen()
-
-    # 生成HTML
-    try:
-        import subprocess
-        env = os.environ.copy()
-        news_date = args.date if args.date else datetime.now().strftime("%Y-%m-%d")
-        env["NEWS_DATE"] = news_date
-        subprocess.run(['python', 'html_generator.py'], check=True, capture_output=True, env=env)
-    except Exception as e:
-        print(f"   ⚠️ HTML生成失败: {e}")
+    print(f"✅ {report_date} 已通过发布门禁，manifest=ready")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except PipelineBlocked as exc:
+        _mark_pipeline_failed(_CURRENT_REPORT_DATE, exc)
+        print(f"❌ 管线已阻断: {exc}", file=sys.stderr)
+        raise SystemExit(2)
+    except Exception as exc:
+        _mark_pipeline_failed(_CURRENT_REPORT_DATE, exc)
+        print(f"❌ 管线失败: {type(exc).__name__}: {exc}", file=sys.stderr)
+        raise

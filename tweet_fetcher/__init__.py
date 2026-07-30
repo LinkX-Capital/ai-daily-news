@@ -83,7 +83,7 @@ def is_recent(published: str, start_time: datetime = None, end_time: datetime = 
 
         # 自定义时间窗口
         if start_time and end_time:
-            return start_time <= pub_date <= end_time
+            return start_time <= pub_date < end_time
 
         # 默认：现在往前 MAX_HOURS 小时
         now = datetime.now(timezone.utc)

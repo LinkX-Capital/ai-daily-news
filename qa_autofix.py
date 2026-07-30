@@ -11,14 +11,44 @@ import os
 import re
 import sys
 import json
+from dataclasses import dataclass
+from typing import Any, Dict
 import httpx
 
 sys.path.insert(0, os.path.dirname(__file__))
 from html_generator import parse_md
-from qa import fetch_source_content, search_alternative_sources, MCPWebReader
+from qa import (
+    MCPWebReader,
+    fetch_source_content,
+    run_checks,
+    run_release_gate_on_md,
+    search_alternative_sources,
+)
+from release_gate import GateResult, chinese_text_ok
 
 API_KEY = os.environ.get("MINIMAX_API_KEY", "")
 API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
+
+
+@dataclass
+class AutofixQAResult:
+    """Result for callers that need to autofix and then make a QA decision."""
+
+    fixed_count: int
+    issue_count: int
+    gate: GateResult
+
+    @property
+    def passed(self) -> bool:
+        return self.issue_count == 0 and self.gate.passed
+
+    def as_dict(self) -> Dict[str, Any]:
+        return {
+            "fixed_count": self.fixed_count,
+            "issue_count": self.issue_count,
+            "passed": self.passed,
+            "gate": self.gate.as_dict(),
+        }
 
 
 def _count_sentences(text):
@@ -182,8 +212,15 @@ def _enrich_body_with_llm(title, current_body, source_text, category):
                 for item in result["content"]:
                     if item.get("type") == "text":
                         text = item.get("text", "").strip()
-                        if len(text) > 50 and not text.startswith("抱歉"):
-                            return text[:400]
+                        output = text[:400].strip()
+                        if (
+                            len(output) > 50
+                            and not output.startswith("抱歉")
+                            and chinese_text_ok(output, min_cjk=8)
+                        ):
+                            return output
+                        if output and not chinese_text_ok(output, min_cjk=8):
+                            print("      ⚠️ LLM 输出未通过中文/原文残留门禁")
     except Exception as e:
         print(f"      ⚠️ LLM调用失败: {e}")
     return None
@@ -232,6 +269,9 @@ def autofix_short_body(date_str):
         if not new_body:
             print(f"      ❌ LLM补充失败")
             continue
+        if not chinese_text_ok(new_body, min_cjk=8):
+            print(f"      ❌ 补充结果未通过中文/原文残留门禁")
+            continue
 
         # 回写 md：替换原 body
         # md 格式: "- {body}" 在 "**{title}**" 之后
@@ -269,11 +309,35 @@ def autofix_short_body(date_str):
     return fixed_count
 
 
+def autofix_and_recheck(date_str, *, factcheck=False) -> AutofixQAResult:
+    """Run autofix, then rerun both the full QA suite and release gate.
+
+    ``autofix_short_body`` keeps returning an integer for existing callers.
+    New pipeline code can use this function to avoid treating a successful
+    rewrite as an implicit QA pass.
+    """
+    fixed_count = autofix_short_body(date_str)
+    issue_count = run_checks(date_str, factcheck=factcheck)
+    gate = run_release_gate_on_md(date_str)
+    return AutofixQAResult(fixed_count, issue_count, gate)
+
+
 if __name__ == "__main__":
-    date_str = sys.argv[1] if len(sys.argv) > 1 else None
+    args = sys.argv[1:]
+    recheck = "--recheck" in args
+    args = [arg for arg in args if arg != "--recheck"]
+    date_str = args[0] if args else None
     if not date_str:
         from datetime import datetime
         date_str = datetime.now().strftime("%Y-%m-%d")
     print(f"=== QA Autofix: {date_str} ===\n")
+    if recheck:
+        result = autofix_and_recheck(date_str)
+        print(
+            f"\n完成: 补充了 {result.fixed_count} 条；"
+            f"QA 问题 {result.issue_count} 个；"
+            f"发布门禁 {'通过' if result.gate.passed else '未通过'}"
+        )
+        sys.exit(0 if result.passed else 1)
     fixed = autofix_short_body(date_str)
     print(f"\n完成: 补充了 {fixed} 条")

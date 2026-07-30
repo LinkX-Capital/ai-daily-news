@@ -1,288 +1,272 @@
 #!/usr/bin/env python3
-"""
-发布脚本：从 md 文档生成 JSON、HTML、飞书通知
+"""Safely publish a human-edited daily report.
 
-工作流：
-1. feed_v5.py --cache  (抓取内容到 md)
-2. 手动编辑 daily-ai-news.md
-3. python publish.py  (发布：md → JSON → HTML → 飞书 → GitHub)
+This compatibility entry point preserves the manual editing workflow, but it
+can no longer bypass the deterministic release gate.  It prepares canonical
+JSON and HTML, writes a ``ready`` manifest, and delegates all external publish
+side effects to ``run.sh``.
 """
 
+from __future__ import annotations
+
+import argparse
+from datetime import datetime, timezone
+import hashlib
 import json
-import re
 import os
-from datetime import datetime
+from pathlib import Path
+import subprocess
+import sys
+from typing import Any
 
-# 配置
-MD_FILE = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{datetime.now().strftime('%Y-%m-%d')}.md"
-ARCHIVE_DIR = "/Users/shenyalan/ai-daily-news/archive"
-ARCHIVE_FILE = None  # 自动从日期提取
+from html_generator import parse_md
+from pipeline_core import atomic_write_json, ensure_candidate_ids
+from pipeline_manifest import resolve_date
+from qa import run_release_gate
 
 
-def parse_md_to_articles(md_content):
-    """从 md 文档解析文章"""
+BASE_DIR = Path(__file__).resolve().parent
+ARCHIVE_DIR = BASE_DIR / "archive"
+MANIFEST_DIR = ARCHIVE_DIR / "manifests"
+
+
+def _canonical_manual_articles(md_content: str) -> tuple[list[dict], Any]:
+    parsed, summary_items = parse_md(md_content)
     articles = []
-
-    # 提取日期
-    date_match = re.search(r'(\d{2})月(\d{2})日', md_content)
-    if date_match:
-        month, day = date_match.groups()
-        date_str = f"2026-{month.zfill(2)}-{day.zfill(2)}"
-    else:
-        date_str = datetime.now().strftime("%Y-%m-%d")
-
-    # 直接查找所有 **标题** 块
-    pattern = r'\*\*([^\*]+?)\*\*\s*\n(.*?)(?=\n\*\*|\n###|$)'
-    matches = list(re.finditer(pattern, md_content, re.DOTALL))
-
-    # 确定每个文章所属分类
-    cat_positions = []
-    for cat in ["产业动态", "初创&融资", "研究关注", "X讨论", "模型前沿", "算力追踪"]:
-        pos = md_content.find(f"### {cat}")
-        if pos >= 0:
-            cat_positions.append((pos, cat))
-    cat_positions.sort()
-
-    for match in matches:
-        title = match.group(1).strip()
-        body_content = match.group(2).strip()
-
-        # 确定分类
-        article_pos = match.start()
-        current_cat = "其他"
-        for pos, cat in cat_positions:
-            if article_pos >= pos:
-                current_cat = cat
-
-        # 解析正文、insight、来源
-        body_lines = []
-        insight = ""
-        source = ""
-        link = ""
-
-        lines = body_content.split('\n')
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-            if line.startswith('> 💡'):
-                insight = line.replace('> 💡', '').strip()
-            elif line.startswith('- 来源:'):
-                source_line = line.replace('- 来源:', '').strip()
-                link_match = re.search(r'\[([^\]]+)\]\(([^)]+)\)', source_line)
-                if link_match:
-                    source = link_match.group(1)
-                    link = link_match.group(2)
-                else:
-                    source = source_line
-            elif line.startswith('- ') and not line.startswith('- 来源'):
-                body_text = line[2:].strip()
-                if body_text:
-                    body_lines.append(body_text)
-
-        body = ' '.join(body_lines) if body_lines else ""
-        insight = insight.replace('💡', '').strip()
-
-        # 优先级
-        if current_cat == "X讨论":
-            priority = 90
-        elif current_cat == "研究关注":
-            priority = 140
-        elif current_cat == "初创&融资":
-            priority = 110
-        else:
-            priority = 120
-
+    for rank, parsed_article in enumerate(parsed, 1):
+        key_points = parsed_article.get("key_points") or []
+        insight = " ".join(str(item) for item in key_points if item).strip()
         articles.append({
-            'title': title,
-            'body': body,
-            'insight': insight,
-            'categories': [current_cat],
-            'source': f"- {source}" if source else "",
-            'link': link,
-            'priority': priority
+            "title": str(parsed_article.get("title", "") or "").strip(),
+            "body": str(parsed_article.get("body", "") or "").strip(),
+            "insight": insight,
+            "categories": list(parsed_article.get("categories") or []),
+            "source": str(parsed_article.get("source", "") or "").strip(),
+            "link": str(parsed_article.get("link", "") or "").strip(),
+            "priority": int(parsed_article.get("priority", 100) or 100),
+            "provenance": {
+                "selection": "human_manual",
+                "writing": "human_edited",
+                "status": "validated",
+            },
+            "_selection_status": "manual",
+            "_editorial_rank": rank,
         })
+    ensure_candidate_ids(articles)
+    return articles, summary_items
 
-    return articles, date_str
 
-
-def save_archive(articles, date_str):
-    """保存到 JSON 存档"""
-    os.makedirs(ARCHIVE_DIR, exist_ok=True)
-
-    archive_file = os.path.join(ARCHIVE_DIR, f"news_{date_str}.json")
-
-    output = {
-        "date": date_str,
+def _archive_payload(articles: list[dict], report_date: str) -> dict:
+    allowed = (
+        "candidate_id",
+        "title",
+        "body",
+        "insight",
+        "categories",
+        "source",
+        "link",
+        "priority",
+        "provenance",
+        "_selection_status",
+        "_editorial_rank",
+    )
+    return {
+        "date": report_date,
         "count": len(articles),
-        "articles": articles,
-        "archived_at": datetime.now().isoformat()
+        "articles": [
+            {key: article[key] for key in allowed if key in article}
+            for article in articles
+        ],
     }
 
-    with open(archive_file, 'w', encoding='utf-8') as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
 
-    print(f"✅ 已保存存档: {archive_file}")
-    return archive_file
-
-
-def generate_html(date_str):
-    """调用 html_generator.py"""
-    import subprocess
-    result = subprocess.run(
-        ['python', '/Users/shenyalan/ai-daily-news/html_generator.py'],
-        capture_output=True,
-        text=True
+def _content_hash(
+    md_content: str,
+    archive_payload: dict,
+    html_path: Path,
+) -> str:
+    digest = hashlib.sha256()
+    digest.update(md_content.encode("utf-8"))
+    digest.update(
+        json.dumps(
+            archive_payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
     )
-    print(result.stdout)
-    if result.returncode != 0:
-        print(f"⚠️ HTML生成警告: {result.stderr}")
+    digest.update(html_path.read_bytes())
+    return digest.hexdigest()
 
 
-def send_feishu():
-    """调用 notify.py"""
-    import subprocess
-    result = subprocess.run(
-        ['python', '/Users/shenyalan/ai-daily-news/notify.py'],
-        capture_output=True,
-        text=True
+def _print_gate(label: str, gate) -> None:
+    print(
+        f"{label}: blocker={len(gate.blockers)}, "
+        f"warning={len(gate.warnings)}"
     )
-    print(result.stdout)
-    if result.returncode != 0:
-        print(f"⚠️ 飞书通知警告: {result.stderr}")
+    for issue in gate.issues:
+        marker = "❌" if issue.severity == "blocker" else "⚠️"
+        print(f"  {marker} [{issue.code}] {issue.title}: {issue.detail}")
 
 
-def git_push(date_str):
-    """只推送 3 个 HTML 文件到 GitHub"""
-    import subprocess
+def prepare_manual_release(report_date: str) -> Path:
+    md_path = BASE_DIR / f"daily-ai-news-{report_date}.md"
+    html_path = BASE_DIR / f"daily-ai-news-{report_date}.html"
+    archive_path = ARCHIVE_DIR / f"news_{report_date}.json"
+    manifest_path = MANIFEST_DIR / f"{report_date}.json"
 
-    html_files = [
-        f"daily-ai-news-{date_str}.html",
-        "index.html"
-    ]
+    if not md_path.is_file():
+        raise FileNotFoundError(f"日报不存在: {md_path}")
+
+    md_content = md_path.read_text(encoding="utf-8")
+    articles, _ = _canonical_manual_articles(md_content)
+    canonical_gate = run_release_gate(articles, strict=True)
+
+    rendered_articles, _ = parse_md(md_content)
+    rendered_gate = run_release_gate(rendered_articles, strict=False)
+    _print_gate("canonical", canonical_gate)
+    _print_gate("rendered-md", rendered_gate)
+    qa_payload = {
+        "canonical": canonical_gate.as_dict(),
+        "rendered_md": rendered_gate.as_dict(),
+    }
+
+    if not canonical_gate.passed or not rendered_gate.passed:
+        atomic_write_json(str(manifest_path), {
+            "date": report_date,
+            "status": "qa_failed",
+            "manual_release": True,
+            "failed_at": datetime.now(timezone.utc).isoformat(),
+            "qa": qa_payload,
+        })
+        raise RuntimeError("人工编辑稿未通过发布硬门禁")
+
+    run_id = (
+        "manual-"
+        + hashlib.sha256(
+            (
+                f"{report_date}|{datetime.now(timezone.utc).isoformat()}|"
+                f"{os.getpid()}"
+            ).encode("utf-8")
+        ).hexdigest()[:16]
+    )
+    base_manifest = {
+        "date": report_date,
+        "run_id": run_id,
+        "pipeline_version": "manual-release-v2",
+        "prompt_hash": "human-edited",
+        "manual_release": True,
+        "qa": qa_payload,
+    }
+    atomic_write_json(str(manifest_path), {
+        **base_manifest,
+        "status": "running",
+        "started_at": datetime.now(timezone.utc).isoformat(),
+    })
 
     try:
-        # 切换到项目目录
-        os.chdir('/Users/shenyalan/ai-daily-news')
+        env = os.environ.copy()
+        env["NEWS_DATE"] = report_date
+        subprocess.run(
+            [sys.executable, str(BASE_DIR / "html_generator.py")],
+            cwd=BASE_DIR,
+            env=env,
+            check=True,
+        )
+        if not html_path.is_file() or html_path.stat().st_size == 0:
+            raise RuntimeError(f"HTML 产物缺失或为空: {html_path}")
 
-        # 添加文件
-        for f in html_files:
-            subprocess.run(['git', 'add', f], check=True, capture_output=True)
-            print(f"   git add {f}")
+        archive_data = _archive_payload(articles, report_date)
+        atomic_write_json(str(archive_path), archive_data)
+        atomic_write_json(str(manifest_path), {
+            **base_manifest,
+            "status": "ready",
+            "ready_at": datetime.now(timezone.utc).isoformat(),
+            "content_hash": _content_hash(
+                md_content, archive_data, html_path
+            ),
+            "article_count": len(articles),
+            "artifacts": {
+                "markdown": str(md_path),
+                "archive": str(archive_path),
+                "html": str(html_path),
+            },
+        })
+    except Exception as exc:
+        atomic_write_json(str(manifest_path), {
+            **base_manifest,
+            "status": "qa_failed",
+            "failed_at": datetime.now(timezone.utc).isoformat(),
+            "failure": {
+                "type": type(exc).__name__,
+                "detail": str(exc)[:1000],
+            },
+        })
+        raise
 
-        # 提交
-        commit_msg = f"Update: {date_str}"
-        subprocess.run(['git', 'commit', '-m', commit_msg], check=True, capture_output=True)
-        print(f"   git commit -m '{commit_msg}'")
-
-        # 推送 (首次设置 upstream)
-        result = subprocess.run(['git', 'push', '--set-upstream', 'origin', 'main'], capture_output=True)
-        if result.returncode != 0:
-            # 可能已经设置过，重试普通 push
-            result = subprocess.run(['git', 'push'], capture_output=True)
-        if result.returncode == 0:
-            print(f"   git push")
-        else:
-            print(f"   git push stderr: {result.stderr.decode()}")
-            raise subprocess.CalledProcessError(result.returncode, 'git push')
-
-        print("✅ Git push 成功")
-    except subprocess.CalledProcessError as e:
-        print(f"⚠️ Git 失败: {e}")
-    except Exception as e:
-        print(f"⚠️ Git 错误: {e}")
+    print(f"✅ 人工编辑稿已通过门禁，manifest=ready: {manifest_path}")
+    return manifest_path
 
 
-def main():
-    print("📝 从 md 发布")
-    print("=" * 50)
+def _build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("report_date", nargs="?", help="YYYY-MM-DD")
+    parser.add_argument("--date", dest="date_option", help="兼容旧用法")
+    parser.add_argument(
+        "--prepare-only",
+        action="store_true",
+        help="只生成 ready 产物，不截图、推送或通知",
+    )
+    return parser
 
-    # 检查 md 文件是否有未提交的更改
-    import subprocess
+
+def main() -> int:
+    args = _build_parser().parse_args()
+    if (
+        args.report_date
+        and args.date_option
+        and args.report_date != args.date_option
+    ):
+        print("❌ 位置日期与 --date 不一致", file=sys.stderr)
+        return 64
+
+    report_date = args.date_option or args.report_date
+    if not report_date:
+        report_date = resolve_date(
+            os.environ.get("REPORT_TIMEZONE", "Asia/Shanghai"),
+            int(os.environ.get("REPORT_CUTOFF_HOUR", "6")),
+            int(os.environ.get("REPORT_CUTOFF_MINUTE", "40")),
+        )
+    try:
+        parsed = datetime.strptime(report_date, "%Y-%m-%d")
+        if parsed.strftime("%Y-%m-%d") != report_date:
+            raise ValueError
+    except ValueError:
+        print("❌ 日期必须使用 YYYY-MM-DD", file=sys.stderr)
+        return 64
+
+    try:
+        prepare_manual_release(report_date)
+    except Exception as exc:
+        print(f"❌ 人工发布准备失败: {exc}", file=sys.stderr)
+        return 2
+
+    if args.prepare_only:
+        return 0
+
     result = subprocess.run(
-        ['git', 'diff', '--name-only', MD_FILE],
-        capture_output=True, text=True,
-        cwd='/Users/shenyalan/ai-daily-news'
+        [str(BASE_DIR / "run.sh"), report_date],
+        cwd=BASE_DIR,
+        check=False,
     )
-    if result.stdout.strip():
-        print(f"⚠️ 警告: {MD_FILE} 有未提交的更改:")
-        print(result.stdout.strip())
-        response = input("继续发布将覆盖这些更改，是否继续？(y/N): ")
-        if response.lower() != 'y':
-            print("已取消发布")
-            return
-
-    # 读取 md 文件
-    if not os.path.exists(MD_FILE):
-        print(f"❌ 文件不存在: {MD_FILE}")
-        return
-
-    with open(MD_FILE, 'r', encoding='utf-8') as f:
-        md_content = f.read()
-
-    # 解析文章
-    articles, date_str = parse_md_to_articles(md_content)
-
-    if not articles:
-        print("❌ 未找到文章")
-        return
-
-    print(f"📄 解析到 {len(articles)} 篇文章")
-    by_cat = {}
-    for a in articles:
-        cat = a['categories'][0]
-        by_cat[cat] = by_cat.get(cat, 0) + 1
-
-    print(f"   分类: {', '.join(f'{k}:{v}' for k, v in sorted(by_cat.items()))}")
-
-    # 信息补充
-    print("\n🔍 运行信息补充...")
-    enrich_result = subprocess.run(
-        ['python3', os.path.join(os.path.dirname(__file__), 'enrich.py'), date_str],
-        capture_output=True, text=True,
-        cwd='/Users/shenyalan/ai-daily-news'
-    )
-    print(enrich_result.stdout)
-
-    # QA 检查
-    print("\n🔍 运行 QA 检查...")
-    qa_result = subprocess.run(
-        ['python3', os.path.join(os.path.dirname(__file__), 'qa.py'), date_str],
-        capture_output=True, text=True,
-        cwd='/Users/shenyalan/ai-daily-news'
-    )
-    print(qa_result.stdout)
-    if qa_result.returncode != 0:
-        print(f"⚠️ QA 发现问题（详见上方），但仍继续发布。如需修复请 Ctrl+C 中断。")
-
-    # 保存存档
-    save_archive(articles, date_str)
-
-    # 生成 HTML
-    print("\n🌐 生成 HTML...")
-    generate_html(date_str)
-
-    # 发送飞书
-    print("\n📤 发送飞书通知...")
-    send_feishu()
-
-    # Git push
-    print("\n🔄 Git push...")
-    git_push(date_str)
-
-    # 生成手机端截图
-    print("\n📸 生成手机端截图...")
-    import subprocess
-    result = subprocess.run(
-        ['python3', '/Users/shenyalan/ai-daily-news/gen_screenshot.py'],
-        capture_output=True, text=True
-    )
-    print(result.stdout)
     if result.returncode != 0:
-        print(f"⚠️ 截图生成警告: {result.stderr}")
-
-    print("\n✅ 发布完成!")
+        print(
+            f"❌ 发布阶段失败（退出码 {result.returncode}），"
+            "ready 状态已保留，可安全重试",
+            file=sys.stderr,
+        )
+    return result.returncode
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

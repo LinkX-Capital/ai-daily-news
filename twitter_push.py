@@ -80,7 +80,7 @@ def extract_highlights_llm(tweets: list) -> list:
     # 2. 备用 GLM-4.7
     glm_key = os.environ.get("ZHIPU_API_KEY", "")
     if not glm_key:
-        glm_key = "5f650035e5a845549e4765184d8179b1.GdehlMpHT0dKq3m3"
+        return None
     try:
         response = httpx.post(
             "https://open.bigmodel.cn/api/paas/v4/chat/completions",
@@ -367,7 +367,12 @@ def push_to_feishu(cache, webhook_url, highlights=None, date_str=None):
 
 def main():
     import sys
-    webhook = 'https://open.feishu.cn/open-apis/bot/v2/hook/362a7cc7-5bce-4184-9ae3-7d6b6c0c429a'
+    import os
+    webhook = (
+        os.environ.get("FEISHU_TWITTER_WEBHOOK")
+        or os.environ.get("FEISHU_WEBHOOK")
+        or ""
+    ).strip()
     # 支持命令行指定日期：python twitter_push.py 2026-06-19
     date_str = sys.argv[1] if len(sys.argv) > 1 else datetime.now().strftime("%Y-%m-%d")
     preview_path = Path(__file__).parent / f'twitter-preview-{date_str}.md'
@@ -388,11 +393,14 @@ def main():
 
     # 4. 推送飞书
     print('📨 推送飞书...')
-    result = push_to_feishu(tweets, webhook, highlights, date_str=date_str)
-    if result.get('msg') == 'success':
-        print('   ✅ 飞书推送成功')
+    if not webhook:
+        print('   ℹ️ 未配置 FEISHU_TWITTER_WEBHOOK/FEISHU_WEBHOOK，跳过')
     else:
-        print(f'   ❌ 飞书推送失败: {result}')
+        result = push_to_feishu(tweets, webhook, highlights, date_str=date_str)
+        if result.get('msg') == 'success':
+            print('   ✅ 飞书推送成功')
+        else:
+            print(f'   ❌ 飞书推送失败: {result}')
 
     # 5. 推送到 GitHub
     print('🔄 推送到 GitHub...')

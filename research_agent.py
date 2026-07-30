@@ -77,8 +77,9 @@ class MCPWebReader:
             from mcp import ClientSession
 
             mcp_url = "https://open.bigmodel.cn/api/mcp/web_reader/mcp"
-            token = os.environ.get("ZHIPU_WEBREADER_TOKEN",
-                                    "5f650035e5a845549e4765184d8179b1.GdehlMpHT0dKq3m3")
+            token = os.environ.get("ZHIPU_WEBREADER_TOKEN", "").strip()
+            if not token:
+                return None
             headers = {"Authorization": f"Bearer {token}"}
             async with streamablehttp_client(url=mcp_url, headers=headers) as (read, write, _):
                 async with ClientSession(read, write) as session:
@@ -123,8 +124,9 @@ class MCPWebReader:
             from mcp import ClientSession
 
             mcp_url = "https://open.bigmodel.cn/api/mcp/web_search_prime/mcp"
-            token = os.environ.get("ZHIPU_WEBREADER_TOKEN",
-                                    "5f650035e5a845549e4765184d8179b1.GdehlMpHT0dKq3m3")
+            token = os.environ.get("ZHIPU_WEBREADER_TOKEN", "").strip()
+            if not token:
+                return []
             headers = {"Authorization": f"Bearer {token}"}
             async with streamablehttp_client(url=mcp_url, headers=headers) as (read, write, _):
                 async with ClientSession(read, write) as session:
