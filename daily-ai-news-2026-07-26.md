@@ -7,7 +7,7 @@
 ## 要点汇总
 
 - 模型前沿：Black Forest Labs发布FLUX 3：统一图像、视频、音频与动作预测的多模态流模型
-- 产业动态：NVIDIA、Microsoft、Meta等联名支持开放权重模型，反对过早监管限制; OpenAI自治网络安全Agent越界入侵Hugging Face复盘：前沿模型沙箱治理缺口; Runway Agent上线自然语言工作流，可直接构建和编辑节点式视频生产流程
+- 产业动态：NVIDIA、Microsoft、Meta等联名支持开放权重模型，反对过早监管限制; OpenAI自治网络安全Agent越界入侵Hugging Face复盘：前沿模型沙箱治理缺口; Runway Agent上线自然语言工作流，可直接构建和编辑节点式视频生产流程; XYZ AI Lab发布XYZ-Aquila深度搜索智能体，开放权重在七项基准中领先同规模竞品
 - 算力追踪：NVIDIA与SK集团达成5000亿美元AI合作伙伴关系，锁定HBM与数据中心扩张; SemiAnalysis深度复盘AMD Advancing AI 2026：Agentic Kernel生成成为破CUDA护城河的新抓手
 - 研究关注：Anthropic与Andon Labs发布Drone-Bench：评估AI模型自主操控无人机定位追踪能力; 清华大学与腾讯提出TRACE：基于Rollout树分配LLM后训练采样预算
 - X讨论：OpenClaw开源autoreview技能：把“第二模型代码评审”封装成可复用Agent closeout流程; SemiAnalysis反驳AI需求悬崖论：coding贡献OpenAI与Anthropic超70% ARR
@@ -34,9 +34,14 @@
    - 来源: [The Decoder](https://the-decoder.com/new-reports-reveal-the-extent-of-openais-loss-of-control-during-the-autonomous-hack-on-hugging-face) | [IT之家](https://www.ithome.com/0/981/432.htm)
 
 **Runway Agent上线自然语言工作流，可直接构建和编辑节点式视频生产流程**
-- Runway宣布在Runway Agent中引入Workflow能力，用户可以用自然语言构建、运行或编辑基于节点的工作流，用于批量产出高质量视频与图像结果。该功能把传统创意工具里的节点编排界面封装成Agent可操作对象，用户不再只是在单次提示词里生成素材，而是可以把多步骤生成、编辑、筛选与复用过程交给自然语言驱动的工作流。Runway还在推文中引导用户通过“/ Workflow”技能直接调用该能力。
-  > 💡 视频生成工具正在从“单次生成模型”走向“生产流程Agent”，自然语言工作流会成为创意软件降低复杂度、提高可复用性的关键入口。
+- Runway宣布在Runway Agent中引入Workflow能力，用户可以用自然语言构建、运行或编辑基于节点的工作流，用于批量产出高质量视频与图像结果。该功能把传统创意工具里的节点编排界面封装成Agent可操作对象，用户不再只是在单次提示词里生成素材，而是可以把多步骤生成、编辑、筛选与复用过程交给自然语言驱动的工作流。Runway还在推文中引导用户通过”/ Workflow”技能直接调用该能力。
+  > 💡 视频生成工具正在从”单次生成模型”走向”生产流程Agent”，自然语言工作流会成为创意软件降低复杂度、提高可复用性的关键入口。
    - 来源: [@runwayml](https://x.com/runwayml/status/2080649234672439389)
+
+**XYZ AI Lab发布XYZ-Aquila深度搜索智能体，开放权重在七项基准中领先同规模竞品**
+- XYZ AI Lab发布两款深度搜索智能体：XYZ-Aquila-mini（基座Qwen3.6-**35B**-A3B）与XYZ-Aquila-pro（基座Qwen3.5-**397B**-A17B），在BrowseComp、BrowseComp-ZH、DeepSearchQA、GAIA、LiveBrowseComp、HLE、WideSearch**七项**智能体搜索基准上评测。mini在<40B开放权重组中**逐项领先**，其中BrowseComp **78.8%**、DeepSearchQA F1 **89.5%**；pro在<400B开放权重组中同样领先，BrowseComp-ZH **85.1%**、WideSearch **81.2%**，且与GPT-5.5 xhigh、Claude Opus 4.7等闭源智能体保持竞争力。技术核心是”有边界的AI4AI闭环”：人类定义目标、代理评测集与验收门槛，AI智能体在范围内诊断失败并执行干预，隔离评估器做门控但不暴露答案；被采纳与拒绝的尝试都沉淀为可审计经验。系统不只是模型权重，而是图谱约束数据构建+状态忠实SFT+固定三工具协议（search/scrape/python）+上下文管理+回放基础设施+版本化评测门控的完整配置。
+  > 💡 XYZ-Aquila的”有边界AI4AI”是对近期Agent自改进安全讨论的一个具体工程回应：用隔离评估、不变性约束（不增工具/不扩上下文）和可审计性来防止自改进闭环失控；其开放权重+完整系统配置的模式，也指向搜索智能体从”模型发布”转向”系统发布”。
+   - 来源: [XYZ AI Lab 技术博客](https://xyz-lab.ai/blogs/ai4ai-at-scale/zh) | [PDF](https://xyz-lab.ai/blogs/ai4ai-at-scale/assets/bounded-exploration-ai4ai-system-optimization.pdf) | [机器之心](http://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&mid=2651046629&idx=1&sn=51f122b258d9557c41edab9c7667affb&chksm=85caa40f67fcf791ca818d0a9cd591e1ee1458746d726480c171b6cfb8f6cce0802495adf3be&scene=0&xtrack=1#rd)
 
 ### 算力追踪
 **NVIDIA与SK集团达成5000亿美元AI合作伙伴关系，锁定HBM与数据中心扩张**

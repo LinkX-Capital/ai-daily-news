@@ -8,8 +8,8 @@
 
 - 模型前沿：阿里通义千问发布Qwen-Image-3.0基础图像生成模型
 - 产业动态：OpenAI与美国能源部及国家实验室合作，用前沿AI加速科研; Google向DOE Genesis Mission承诺4000万美元AI额度，开放AlphaEvolve/AlphaFold等给国家实验室; Alphabet Q2营收同比增长24%达1198亿美元，Google Cloud为增长主引擎; Substack上线AI写作占比检测，由Pangram提供技术支持; Science Corp视觉修复芯片PRIMA获欧盟批准，脑机接口走向商业化; NVIDIA开源首个GPU加速医学物理仿真框架; Stripe 2025年现金增至32亿美元，因AI支付爆发启动收购hunt
-- 算力追踪：OpenAI基础设施投入加码至7500亿美元，首期200亿建Project Camellia; xAI正评估在德州扩建至少一个超大规模数据中心; AMD承诺向Anthropic投资最高50亿美元并达成芯片供应协议
-- 初创&融资：卡兰尼克机器人公司Atoms融17亿美元，a16z领投、Uber参投; Glow以12亿美元估值出隐身：做AI时代的端点安全，A轮融资1.8亿美元; Dimension Capital第三期基金募8亿美元，押注science×compute; SkyPilot出隐身融2000万美元，把跨云碎片化GPU统一为一个算力控制面
+- 算力追踪：OpenAI基础设施投入加码至7500亿美元，Project Camellia锁定3.2GW电力; xAI正评估在德州扩建至少一个超大规模数据中心; AMD承诺向Anthropic投资最高50亿美元并达成芯片供应协议
+- 初创&融资：卡兰尼克机器人公司Atoms融17亿美元，a16z领投、Uber参投; Glow以12亿美元估值出隐身：做AI时代的端点安全，A轮融资1.8亿美元; Dimension Capital第三期基金募8亿美元，押注science×compute; SkyPilot出隐身融2000万美元，把跨云碎片化GPU统一为一个算力控制面; Yope获1230万美元种子轮，探索AI-native私密社交
 - 研究关注：ABot-World-0：单张RTX 5090即可实时交互式世界rollout; Masked Visual Actions：用像素空间动作统一机器人正向/逆向世界建模; Sakana AI UnMaskFork：让多个掩码扩散语言模型协作完成单一答案; AlayaRenderer-Flash：把生成式世界渲染器从0.56 FPS加速到31.54 FPS; DataFlow-Harness：让code agent构建可编辑LLM数据管线，成本较Vanilla Claude Code降72.5%
 - X讨论：LangChain发布Eval Engineering Skill，帮coding agent构建评测; Boston Dynamics用Spot机器人做矿场数据采集; OpenAI把Codex与ChatGPT Work付费用户用量上限提至10M
 
@@ -60,9 +60,9 @@
    - 来源: [The Information](https://www.theinformation.com/articles/stripe-minted-3-2-billion-cash-2025-setting-acquisition-hunt)
 
 ### 算力追踪
-**OpenAI基础设施投入加码至7500亿美元，首期200亿建Project Camellia**
-- OpenAI宣布到2030年基础设施投入将达**7500亿美元**（较年初估算上调约25%、相当于瑞典GDP），此时其Stargate项目疑似停滞。首期是乔治亚州萨凡纳西北、占地**1400英亩**的**Project Camellia**数据中心园区，投资**200亿美元**、至少**3.2GW**用电（Georgia Power供电，2028-2032年间可用），OpenAI全额承担基建与电费，并在电网高负荷期可削减最多**1GW**用电。Georgia Power新增产能约三分之一供OpenAI，主要为天然气扩容。
-  > 💡 7500亿美元（上调25%）把算力基建赌注推到国家级体量；但用电来自天然气扩容+Stargate停滞，凸显能源仍是AI扩张的硬约束。
+**OpenAI基础设施投入加码至7500亿美元，Project Camellia锁定3.2GW电力**
+- OpenAI宣布其乔治亚州Effingham County的长期数据中心项目**Project Camellia**，将向**Georgia Power**签约**3.2GW**电力，分阶段在**2028-2032年**交付；项目位于Savannah Gateway Industrial Hub既有工业分区内，OpenAI称将全额承担所需基础设施和电力服务成本，居民电价不会因该项目上涨。OpenAI还承诺项目生命周期内提供**8000万美元**社区收益，并向符合条件的Georgia高校、社区学院和技术学校学生提供最高**7100万美元**Codex credits；项目预计带来数亿美元州和地方税收，并创造数千个建设及长期现场岗位。项目仍处开发早期，基础设施、分期、设计、融资和运营模式仍需推进。
+  > 💡 Project Camellia把AI数据中心扩张从"算力投资"进一步推到"地方电力、税收、就业和社区契约"层面；3.2GW长期锁电与社区补偿机制，说明头部AI公司正在用准公共工程方式争取地方承载能力与社会许可。
    - 来源: [TechCrunch](https://techcrunch.com/2026/07/22/openais-ai-spending-spree-has-ballooned-to-750b/) | [OpenAI](https://openai.com/index/building-ai-infrastructure-with-the-effingham-county-community/)
 
 **xAI正评估在德州扩建至少一个超大规模数据中心**
@@ -95,6 +95,11 @@
 - 伯克利Sky Computing实验室出身的AI算力编排开源项目**SkyPilot**正式商业化出隐身，完成超**2000万美元**融资，由**Lux Capital**领投，Amplify、Coatue、Foundation、Race、The House Fund参投，Ali Ghodsi（Databricks CEO）、Jeff Dean（Google首席科学家）、Guillermo Rauch（Vercel CEO）、Amjad Masad（Replit CEO）、Clem Delangue（HuggingFace CEO）等天使参投，创始人Zongheng Yang（伯克利PhD）。SkyPilot定位**BYOC算力控制面**——把跨neocloud与超大规模云的碎片化GPU抽象为统一资源池集中调度。开源侧**1400万+下载**、**280+贡献者**，头部部署超**1000节点/10000+ GPU**、6个月GPU时长增长**6倍**；客户含Abridge、Applied Compute、H Company（2000+ GPU跑RL）、Nubank，部分用户实现10倍time-to-intelligence加速与双位数GPU利用率提升。同步发布商业版SkyPilot Platform（HA、团队/配额管理、SSO/RBAC、SOC 2，较开源版性能提升**20倍**），支持20+云（Nebius、CoreWeave、Lambda、AWS等）。
   > 💡 SkyPilot从伯克利学术开源走向商业化，切中"GPU供给碎片化"这一AI算力扩张核心痛点——企业被迫从多cloud/neocloud拼凑GPU，统一控制面成刚需；Lux+顶配天使阵容说明"算力编排/调度"正被当独立基础设施级赛道投资。
    - 来源: [SkyPilot Blog](https://skypilot.ai/blog/skypilot-the-company?utm_source=x&utm_campaign=oos-founder) | [@zongheng_yang](https://x.com/zongheng_yang/status/2079590031669580169)
+
+**Yope获1230万美元种子轮，探索AI-native私密社交**
+- 主打亲友私密群组的社交应用**Yope**完成**1230万美元**种子轮融资。产品定位为"无算法、无广告、无公开内容"的私密社交网络，核心仍是消费社交，但公司自称为**AI-native social platform**，计划将AI用于用户关系连接、AI mini-games、线下见面推荐和自动生成回顾等功能。创始人强调不相信用AI来生成内容，而是把AI当作帮助建立连接的工具。
+  > 💡 Yope不是典型AI公司，而是把AI作为社交产品的功能层与体验增强工具；其融资更值得观察的是"反算法分发+AI辅助连接"能否成为下一代社交产品的新叙事。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/07/22/yope-raises-12-3m-to-build-a-private-social-network-without-algorithms-or-ads/)
 
 ### 研究关注
 **ABot-World-0：单张RTX 5090即可实时交互式世界rollout**
