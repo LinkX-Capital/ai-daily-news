@@ -202,10 +202,38 @@ def find_scrape_residue(text: Any) -> Optional[str]:
     return None
 
 
+EXECUTIVE_HIRE_SIGNALS = (
+    "任命", "出任", "担任", "加盟", "入职", "履新", "获任", "升任", "接任",
+)
+
+EXECUTIVE_TITLE_MARKERS = (
+    "CFO", "CTO", "CEO", "CMO", "COO", "CIO", "CPO",
+    "首席", "总裁", "副总裁", "总经理", "董事长",
+    "VP", "SVP", "EVP",
+)
+
+
+def _is_executive_appointment(text: str) -> bool:
+    """Return True when text describes a corporate executive appointment.
+
+    "招募" 是低价值关键词，但 "公司招募某人为 CFO" 是合法新闻。
+    当文本同时含任命信号（任命/出任/担任/…）和高管职位（CFO/CTO/首席/总裁/…）
+    时，豁免 "招募" 关键词。
+    """
+    has_signal = any(s in text for s in EXECUTIVE_HIRE_SIGNALS)
+    has_title = any(t in text for t in EXECUTIVE_TITLE_MARKERS)
+    return has_signal and has_title
+
+
 def find_low_value_marker(text: Any) -> Optional[str]:
     value = str(text or "")
     lower = value.lower()
+    is_exec_hire = _is_executive_appointment(value)
     for marker in LOW_VALUE_MARKERS:
+        # 高管任命语境下豁免"招募"，避免把"招募前 Uber 财务负责人为 CFO"
+        # 这类合法人事新闻误判为招聘帖。
+        if marker == "招募" and is_exec_hire:
+            continue
         if marker.lower() in lower:
             return marker
     return None
