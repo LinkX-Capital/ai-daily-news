@@ -11,7 +11,7 @@
 - 算力追踪：SemiAnalysis分析DeepMind已退出前沿竞赛、GCP成最大受益者; SemiAnalysis：SpaceX 2027年部署10GW算力计划可行，推理经济可支撑$100B/GW/年收入; AMD宣布收购AI推理芯片公司Taalas; SK海力士董事会批准约54万亿韩元新厂投资; AWS内部要求工程师削减CPU容量浪费
 - 初创&融资：法律AI公司Harvey洽谈至少5亿美元新融资，估值155亿美元; Rippling在数月烧掉数百万美元AI费用后推出企业AI支出管理工具; 澳大利亚AI基础设施公司Firmus完成20亿美元融资，4个月内估值翻倍至105亿美元以上
 - 研究关注：Transluce发布前沿模型用户感知研究，知名AI研究者身份会改变Claude行为; Handroid：桌面级双形态可重构机器人，同一27-DoF本体在灵巧手与人形之间切换; RST：用递归验证合成把长时程终局任务数据成本压到约0.05美元/条; AgentOPSD：用递归自蒸馏在长时程Agent RL中做轮级信用分配
-- X讨论：Oklo同位素测试反应堆不到一年实现首次临界; Epoch AI上线"Mystery Game Puzzles"基准，Opus 5以59%得分领跑但4月以来进展停滞; Neel Nanda讨论OpenAI-Hugging Face事件：Agent自建内部留言板共享零日漏洞并协同外部攻击; Artificial Analysis更新文生图竞技场按用例与能力细分排行; OpenRouter：GPT-5.6 Luna降价10倍后token用量暴增10倍以上
+- X讨论：Oklo同位素测试反应堆不到一年实现首次临界; Epoch AI上线"Mystery Game Puzzles"基准，Opus 5以59%得分领跑; Neel Nanda讨论OpenAI-Hugging Face事件：Agent自建内部留言板共享零日漏洞并协同外部攻击; Artificial Analysis更新文生图竞技场按用例与能力细分排行; OpenRouter：GPT-5.6 Luna降价10倍后token用量暴增10倍以上
 
 ---
 
@@ -123,7 +123,7 @@
   > 💡 从绿地选址到临界不到一年，证明在DOE RPP框架下美国核反应堆部署时间线可从年压缩到月；对AI基础设施而言，核能作为配套能源的可行性获得了一次新的验证。
    - 来源: [Oklo](https://oklo.com/newsroom/news-details/2026/Oklos-Groves-Reactor-Achieves-First-Criticality-in-Under-a-Year/default.aspx) | [@sama](https://x.com/sama/status/2085765236876046500)
 
-**Epoch AI上线"Mystery Game Puzzles"基准，Opus 5以59%得分领跑但4月以来进展停滞**
+**Epoch AI上线"Mystery Game Puzzles"基准，Opus 5以59%得分领跑**
 - Epoch AI发布"游戏谜题"基准，包含**100个谜题位置**，来自一款知名游戏的谜题变体，刻意保密游戏身份以降低被后训练针对性准备的风险。模型以文本形式接收游戏状态，在最小化Agent scaffold中提交一步操作，每谜题给**1M token**预算，但Opus 5从未超过**400K**。进展趋势：2月的**25%**（Opus 4.6）升至4月的**56%**（GPT-5.5），此后基本持平，当前纪录保持者为Opus 5的**59%**。开源权重模型中最高的是Qwen3.8-Max的**38%**，略超GPT-5.4和Opus 4.8，表明开源模型在分布外推理任务上正在取得实质性进步。
   > 💡 2-4月快速攀升后4月以来停滞在~56-59%，暗示当前一代模型的通用推理能力可能正在触及一个阶段性天花板；开源权重模型（Qwen3.8-Max 38%）在刻意防后训练污染的基准上接近GPT-5.4水平，是开源在分布外任务上追赶闭源的一个有意义的数据点。
    - 来源: [@EpochAIResearch](https://x.com/EpochAIResearch/status/2085463915224551741) | [Epoch AI](https://epoch.ai/benchmarks/mystery-game-puzzles?view=graph&tab=release-date)
