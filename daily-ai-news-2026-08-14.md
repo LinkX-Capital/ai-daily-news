@@ -7,10 +7,10 @@
 ## 要点汇总
 
 - 模型前沿：OpenAI 预览 GPT-5.6 Sol 极速模式，速度最高 14 倍、每秒 750 tokens; Google 推出 Gemini 3.7 Flash，编程与文档任务全面超越 3.6 Flash
-- 产业动态：DeepSeek Harness v0.1 进入开发者预览并开源; OpenAI 上线 Computer History，把本机交互事件流变成记忆与时间线; Artificial Analysis 推出 Optima，让企业用自有任务自建 benchmark 对比模型; Luma 与 Dumbstruck 联合推出 Creative Intelligence 广告闭环; OpenAI、Anthropic 的数据需求把初创公司 Slack 旧帖变成高需求资产; Microsoft 合并消费与商业 Copilot App，砍掉 AI Podcasts、Group Chats 等多项功能; Writer 推出 Palmyra X6，基于 GLM-5.2 后训练变体，结合 harness 优化把客户基础任务成本降 50%
+- 产业动态：DeepSeek 开源 Harness v0.1，以"一切皆插件"理念构建 agent 框架; OpenAI 上线 Computer History，把本机交互事件流变成记忆与时间线; Artificial Analysis 推出 Optima，让企业用自有任务自建可复用 benchmark; Luma 与 Dumbstruck 联合推出 Creative Intelligence 广告闭环; OpenAI、Anthropic 数据需求让初创公司 Slack 旧帖变成抢手资产; Microsoft 合并消费与商业 Copilot App，砍掉 AI Podcasts、Group Chats 等多项功能; Writer 推出 Palmyra X6，基于 GLM-5.2 后训练，客户任务成本降 50%
 - 初创&融资：Databricks 原计划仅融 10 亿美元，最终以 1900 亿美元估值落地 50 亿美元
-- 研究关注：OpenART 用 1 万+ stateful 场景做 Agent 红队，EMHA 攻击 ASR 85.0%; Spark-to-Paper 把论文生成做成 13 个可组合 skill，引用有效率 99.5%; AI4AI at Test-Time 用 harness 把弱模型 ToM 性能从 0.49 提到 0.91; SHAPER 让具身 Agent 不训练只进化 skill+harness
-- X讨论：OpenAI 企业调研：前沿企业人均 token 8.3× 典型企业，Codex 占企业 token 64%; Perplexity 优化 Search as Code，可靠性 81.9%→92.6%、每任务成本降近 10%
+- 研究关注：OpenART：用 1 万+ stateful 场景做 Agent 红队，EMHA 攻击成功率 85.0%; Spark-to-Paper：把论文生成做成 13 个可组合 skill，引用有效率 99.5%; AI4AI at Test-Time：强模型建 harness，弱模型 ToM 性能从 0.49 提到 0.91; SHAPER：让具身 Agent 不训练参数、只进化 skill 与 harness
+- X讨论：OpenAI 企业调研：前沿企业人均 token 8.3× 典型企业，Codex 占企业 token 64%; Perplexity 优化 Search as Code，执行可靠性 81.9%->92.6%、每任务成本降近 10%
 
 ---
 
@@ -49,7 +49,7 @@
    - 来源: [@LumaLabsAI](https://x.com/LumaLabsAI/status/2087916837736497459) | [Luma News](https://lumalabs.ai/news/luma-and-dumbstruck-launch-creative-intelligence-for-advertising)
 
 **OpenAI、Anthropic 数据需求让初创公司 Slack 旧帖变成抢手资产**
-- The Information 报道，AI agent 创业公司 Warmly 在 6 月底同意被 HubSpot 收购八天后，CEO Maximus Greenwald 收到一封不寻常邮件：**Mercor（为 OpenAI/Anthropic/Google 等实验室训练 AI 而付钱给外包标注员）主动询价购买 Warmly 存量的 Slack 历史帖和工单**。Mercor 的逻辑是把这些企业内部 Slack 历史、helpdesk tickets 当作真实工作流语料来训练模型。
+- 据报道，AI agent 创业公司 Warmly 在 6 月底同意被 HubSpot 收购八天后，CEO Maximus Greenwald 收到一封不寻常邮件：**Mercor（为 OpenAI/Anthropic/Google 等实验室训练 AI 而付钱给外包标注员）主动询价购买 Warmly 存量的 Slack 历史帖和工单**。Mercor 的逻辑是把这些企业内部 Slack 历史、helpdesk tickets 当作真实工作流语料来训练模型。
   > 💡 当公开网爬接近上限，模型训练数据的下一个高地转向企业内部工单与协作历史——被收购前的 startup 恰好是含金量最高的语料；价格信号出现了，但归并、版权与隐私边界尚未定形。
    - 来源: [The Information](https://www.theinformation.com/articles/startups-find-old-slack-threads-tickets-suddenly-high-demand)
 
@@ -65,7 +65,7 @@
 
 ### 初创&融资
 **Databricks 原计划仅融 10 亿美元，最终以 1900 亿美元估值落地 50 亿美元**
-- TechCrunch 报道，Databricks 联合创始人兼 CEO Ali Ghodsi 透露本轮最初只打算筹集 10 亿美元。**The Information 6 月在 Databricks 大会期间爆出融资消息后，"select group of investors"表达的总认购意向达到 150 亿美元**；为避免冷落长期股东，公司增发股票。**7 月官宣在 1880 亿美元估值完成，8 月 13 日披露实际融资额 50 亿、估值上修为 1900 亿美元**。本轮由 Coatue 领投，约 24 家 VC 参与。Databricks 当前 **年化 run rate 收入 70 亿美元，增长 80%，现金流为正**；云数据仓库核心产品 15 亿美元 run rate、同比 100% 增长；**面向 agent 数据库的 Lakebase（2025 年 6 月上线）已达 1 亿美元 run rate**。Ghodsi 表示公司过去 20 个月累计融资 200 亿美元，与三大 hyperscaler 都有数十亿美元云承诺。
+- 据报道，Databricks 联合创始人兼 CEO Ali Ghodsi 透露本轮最初只打算筹集 10 亿美元。**The Information 6 月在 Databricks 大会期间爆出融资消息后，"select group of investors"表达的总认购意向达到 150 亿美元**；为避免冷落长期股东，公司增发股票。**7 月官宣在 1880 亿美元估值完成，8 月 13 日披露实际融资额 50 亿、估值上修为 1900 亿美元**。本轮由 Coatue 领投，约 24 家 VC 参与。Databricks 当前 **年化 run rate 收入 70 亿美元，增长 80%，现金流为正**；云数据仓库核心产品 15 亿美元 run rate、同比 100% 增长；**面向 agent 数据库的 Lakebase（2025 年 6 月上线）已达 1 亿美元 run rate**。Ghodsi 表示公司过去 20 个月累计融资 200 亿美元，与三大 hyperscaler 都有数十亿美元云承诺。
   > 💡 融资规模 5 倍于计划、估值较上一轮显著抬升，说明数据/AI 基础设施需求拉动下二级基金仍在抢配头部；Lakebase 已达 1 亿美元 run rate，是 Databricks 第一次把"agent 即时数据库"做成可计价的轮廓，估值锚从数据仓库切向 agent 基础设施。
    - 来源: [TechCrunch](https://techcrunch.com/2026/08/13/databricks-wanted-to-raise-1b-investors-wanted-15b-it-settled-on-5b-at-a-190b-valuation/)
 
