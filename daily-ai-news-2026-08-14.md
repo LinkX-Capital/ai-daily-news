@@ -7,7 +7,7 @@
 ## 要点汇总
 
 - 模型前沿：OpenAI 预览 GPT-5.6 Sol 极速模式，速度最高 14 倍、每秒 750 tokens; Google 推出 Gemini 3.7 Flash，编程与文档任务全面超越 3.6 Flash
-- 产业动态：DeepSeek Harness v0.1 进入开发者预览并开源; OpenAI 上线 Computer History，把本机交互事件流变成记忆与时间线; Artificial Analysis 推出 Optima，让企业用自有任务自建 benchmark 对比模型; Luma 与 Dumbstruck 联合推出 Creative Intelligence 广告闭环; OpenAI、Anthropic 的数据需求把初创公司 Slack 旧帖变成高需求资产; Microsoft 合并消费与商业 Copilot App，砍掉 AI Podcasts、Group Chats、Deep Research 与 Mico 角色; Writer 推出 Palmyra X6，基于 GLM-5.2 后训练变体，结合 harness 优化把客户基础任务成本降 50%
+- 产业动态：DeepSeek Harness v0.1 进入开发者预览并开源; OpenAI 上线 Computer History，把本机交互事件流变成记忆与时间线; Artificial Analysis 推出 Optima，让企业用自有任务自建 benchmark 对比模型; Luma 与 Dumbstruck 联合推出 Creative Intelligence 广告闭环; OpenAI、Anthropic 的数据需求把初创公司 Slack 旧帖变成高需求资产; Microsoft 合并消费与商业 Copilot App，砍掉 AI Podcasts、Group Chats 等多项功能; Writer 推出 Palmyra X6，基于 GLM-5.2 后训练变体，结合 harness 优化把客户基础任务成本降 50%
 - 初创&融资：Databricks 原计划仅融 10 亿美元，最终以 1900 亿美元估值落地 50 亿美元
 - 研究关注：OpenART 用 1 万+ stateful 场景做 Agent 红队，EMHA 攻击 ASR 85.0%; Spark-to-Paper 把论文生成做成 13 个可组合 skill，引用有效率 99.5%; AI4AI at Test-Time 用 harness 把弱模型 ToM 性能从 0.49 提到 0.91; SHAPER 让具身 Agent 不训练只进化 skill+harness
 - X讨论：OpenAI 企业调研：前沿企业人均 token 8.3× 典型企业，Codex 占企业 token 64%; Perplexity 优化 Search as Code，可靠性 81.9%→92.6%、每任务成本降近 10%
@@ -28,7 +28,7 @@
    - 来源: [@GoogleAI](https://x.com/GoogleAI/status/2087949045407035766) | [Google Blog](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/)
 
 ### 产业动态
-**DeepSeek Harness v0.1 进入开发者预览并开源，Cordis meta-framework + "一切皆插件"**
+**DeepSeek 开源 Harness v0.1，以"一切皆插件"理念构建 agent 框架**
 - DeepSeek 上线 Harness v0.1 开发者预览版，**以 MIT 协议开源核心代码**，面向全球构建 agent harness 的开发者开放。Harness 基于 **Cordis meta-framework**，核心设计理念是"Everything is a plugin"：模型、工具、技能、会话、沙盒、文件系统、循环、编排、UI 全部以插件实现，可混合、替换、扩展。该版本定位 agent harness 框架的早期形态，供外部在其基础上做二次适配。
   > 💡 把 agent harness 作为可被开发者二次定制的框架开源，并在架构层声明"一切皆插件"，意在把 agent 运行时骨架开放成生态入口，呼应 DeepSeek 在 Agent 方向的产品化与社区化动作。
    - 来源: [@deepseek_ai](https://x.com/deepseek_ai/status/2087887408440164663)
@@ -48,17 +48,17 @@
   > 💡 创意生产成本塌缩后，品牌侧战场正在从"会不会拍"转移到"哪条值得被投"——情绪 analytics + 逐帧 AI 重做组合的闭环，等于把 post-production 做成可双向循环的优化系统；行情性是 Luma 继统一多模态模型之后又一个产品锚定。
    - 来源: [@LumaLabsAI](https://x.com/LumaLabsAI/status/2087916837736497459) | [Luma News](https://lumalabs.ai/news/luma-and-dumbstruck-launch-creative-intelligence-for-advertising)
 
-**OpenAI、Anthropic 数据需求让初创公司的 Slack 旧帖与 internal tickets 变成高需求资产**
+**OpenAI、Anthropic 数据需求让初创公司 Slack 旧帖变成抢手资产**
 - The Information 报道，AI agent 创业公司 Warmly 在 6 月底同意被 HubSpot 收购八天后，CEO Maximus Greenwald 收到一封不寻常邮件：**Mercor（为 OpenAI/Anthropic/Google 等实验室训练 AI 而付钱给外包标注员）主动询价购买 Warmly 存量的 Slack 历史帖和工单**。Mercor 的逻辑是把这些企业内部 Slack 历史、helpdesk tickets 当作真实工作流语料来训练模型。
   > 💡 当公开网爬接近上限，模型训练数据的下一个高地转向企业内部工单与协作历史——被收购前的 startup 恰好是含金量最高的语料；价格信号出现了，但归并、版权与隐私边界尚未定形。
    - 来源: [The Information](https://www.theinformation.com/articles/startups-find-old-slack-threads-tickets-suddenly-high-demand)
 
-**Microsoft 合并消费与商业 Copilot App，砍掉 AI Podcasts、Group Chats、Deep Research 与 Mico 角色**
+**Microsoft 合并消费与商业 Copilot App，砍掉 AI Podcasts、Group Chats 等多项功能**
 - Microsoft 把消费向 Copilot App 与 Microsoft 365 Copilot App 合并成一个统一 App，用户可用个人账户、工作/学校账户或两者同时登录，账户数据隔离保留。**消费用户将在 2026 年 8 月 18 日失去 Group Chats、AI 生成 Podcasts、Copilot Labs 实验性功能与 Deep Research**，付费专业用户可改用 Researcher 替代 Deep Research；趣味浮动角色 Mico 下线。Microsoft 自身确认 Copilot 已"lost its way"：The Information 7 月曾报道负责 Copilot 的 EVP Jacob Andreou 内部备忘录称该 App 需要"赢得 exist 的权利"。
   > 💡 "敢于砍掉"是 AI App 经过一年无序扩张后回到产品收敛的信号；对 Microsoft 是承认 Copilot 没有靠捆绑取得入口，对行业则意味着 AI 助手竞争从"功能多少"转向"重复使用深度"。
    - 来源: [TechCrunch](https://techcrunch.com/2026/08/13/microsoft-kills-off-unsuccessful-ai-features-while-merging-its-separate-copilot-apps/) | [Microsoft Support](https://support.microsoft.com/en-us/microsoft-365-copilot/learning/changes-microsoft-copilot-app)
 
-**Writer 推出 Palmyra X6，基于 GLM-5.2 后训练并配合 harness 把客户任务成本降 50%**
+**Writer 推出 Palmyra X6，基于 GLM-5.2 后训练，客户任务成本降 50%**
 - 面向营销的企业 AI 平台 Writer 发布新旗舰模型 **Palmyra X6**，作为 **Z.ai 开源模型 GLM-5.2 的后训练变体**，定位部署就绪、单价更低。配合新升级的 agentic harness，Writer 估计对客户基础任务成本最多降 50%。公司近期一份论文显示："harness 改造跨模型平均可降成本 40%"，并称"harness 是唯一能跨当前和未来所有模型复利增效的组件"。CEO May Habib 称"企业绝对厌倦了追逐下一个 benchmark"。
   > 💡 "harness 复利 + 后训练开源底座"是中立路线 —— 对 Writer 自身是把推理成本做成可控杠杆；对大模型实验室则是一种契约化的成本约束，等于把"用谁的底座"的决定权从厂商迁移到企业。
    - 来源: [TechCrunch](https://techcrunch.com/2026/08/13/writer-introduces-new-ai-model-and-upgraded-harness-to-contain-token-costs/)
@@ -80,7 +80,7 @@
   > 💡 这种把研究做工程化的方式：不换底座模型、不堆 agent 编排框架，靠把"做事的步骤"和"判断的步骤"分隔开、再用 deterministic check 兜底——把"全自动化研究论文"的质量瓶颈推进到可控的工程成本范畴。
    - 来源: [arXiv](https://arxiv.org/abs/2608.11924) | [HuggingFace](https://huggingface.co/papers/2608.11924)
 
-**AI4AI at Test-Time：strong-to-weak harness 迁移把弱模型 ToM 性能从 0.49 提到 0.91**
+**AI4AI at Test-Time：强模型建 harness，弱模型 ToM 性能从 0.49 提到 0.91**
 - 论文研究 strong-to-weak scaffolding：**强 builder 模型构建 inference-time harness，帮弱 target 模型在不更新参数的情况下更可靠地完成任务**，以 4 个 Theory-of-Mind benchmark 为载体。builder 用 5% 数据作 validation 多轮 refine harness，然后在完整测试集上评估。**平均 target 模型性能从 0.49 提到 0.91，接近翻倍**。分析表明增益主要来自把不稳定的模型推理 offload 到确定性 code、benchmark-specific routing 与严格 answer-format 强制——而非鼓励弱模型多推理或多采样。进一步发现：越弱的 target 模型收益越大。作者 Cheng Qian、Shelby Heinecke（Salesforce AI Research）、Silvio Savarese、Huan Wang。
   > 💡 "强模型教弱模型"传统做训练时蒸馏，这里把它搬到测试时——结论是强模型可直接用 harness transfer 认知结构给弱模型；与近期 DeepSeek Harness v0.1 的开源共享同一组假设，即 harness 正在成为与模型权重并列的能力载体。
    - 来源: [arXiv](https://arxiv.org/abs/2608.12307) | [HuggingFace](https://huggingface.co/papers/2608.12307)
