@@ -17,23 +17,23 @@
 
 ### 模型前沿
 **Z.ai 发布 GLM-5.3：同一基座靠后训练规模化，编程与网络安全能力跃升**
-- Z.ai（智谱）发布 GLM-5.3，与 GLM-5.2 使用**同一基座模型**，全部增益来自后训练：在 GLM-5.2 引入的 IndexShare、SAO 与 slime 异步训练栈上持续扩展任务环境与训练算力。编程方面，GLM-5.3 在自建 Z.ai Code Bench 上较 GLM-5.2 提升 **50%**，Terminal Bench 3.0 从 4.6 升至 **28.3**，DeepSWE v1.1 从 46.2 升至 **66.9**，Agents' Last Exam 从 23.8 升至 **28.5**；Z.ai Code Bench Max 档以约 **75K 输出 token** 达到 34.5%（GLM-5.2 为 96K token 的 23.4%），High 档以约 50K token 达 31.4%，超过 Claude Opus 4.8（29.5%、120K）。网络安全能力随规模涌现：CyberGym 得分 **84.5%**，超过 Mythos 5（83.8%）与 GPT-5.6 Sol（83.6%）；与国内多家安全团队合作，模型在 **269 个项目**中识别 **2,436 个漏洞**（含 1,097 个中高危），平均漏洞潜伏 26.6 年。权重将在**两周后**完成安全评估与加固后开源。
-  > 💡 基座不变、纯靠后训练堆环境与算力换来编程与安全能力跃升，印证"环境工程"正成为前沿模型竞争的核心变量；以更少输出 token 达到更高完成率，意味着 Agent 编程的边际成本在下降。但 ExploitGym 上（2h/6h 完成 105/130 个任务）与 Mythos 5（181/247）仍有明显差距--能力增长最快的环节恰是落后最多的环节。
+- Z.ai（智谱）发布 GLM-5.3，与 GLM-5.2 使用**同一基座模型**，全部增益来自后训练阶段对任务环境与算力的持续加码。编程能力上，**Terminal Bench 3.0 从 4.6 升至 28.3**，DeepSWE v1.1 从 46.2 升至 **66.9**，官方并称在自建编程基准上提升 **50%**，且以更少输出 token 达到更高任务完成率。网络安全能力随规模涌现：**CyberGym 84.5%**，超过 Mythos 5（83.8%）与 GPT-5.6 Sol（83.6%）；模型与国内多家安全团队合作，在 **269 个项目**中识别 **2,436 个漏洞**（含 1,097 个中高危），平均漏洞潜伏 26.6 年。权重将在**两周后**完成安全评估后开源。
+  > 💡 基座不变、纯靠后训练堆环境与算力换来编程与安全能力跃升，印证"环境工程"正成为前沿模型竞争的核心变量；以更少输出 token 达到更高完成率，意味着 Agent 编程的边际成本在下降。但 ExploitGym 上（2h/6h 完成 105/130 个任务）与 Mythos 5（181/247）仍有明显差距。
    - 来源: [Z.ai Blog](https://z.ai/blog/glm-5.3) / [@zai_org](https://x.com/Zai_org/status/2088280509474320693) / [The Information](https://www.theinformation.com/briefings/chinas-z-ai-touts-new-glm-5-3-model-cyber-defense-tool)
 
 ### 产业动态
 **Google 开放移除 AI 生成内容可见水印，SynthID 不可见水印保留**
 - Google 宣布允许用户移除 AI 生成内容（图像、视频、音乐）上的**可见水印**，覆盖 Nano Banana、Omni 与 Lyria 模型；用户可在 Gemini 与视频编辑器 Flow 的 Settings > Media Watermark 中开关，Search 支持即将推出。Gemini 副总裁 Josh Woodward 表示，不可见的 **SynthID 水印与 C2PA 元数据不受影响**，仍可用于识别 AI 生成内容。Google 同时开源了新库 **Credentio**，供开发者在应用中嵌入本地验证机制。此前 Anthropic 为符合欧盟法规在 Claude 生成的文本和文件中加入水印，曾引发广泛争议。
-  > 💡 把内容标识的负担从可见水印转移到不可见水印+元数据，是对专业创作可用性与内容溯源之间的再平衡；在 Anthropic 加水印遇争议的节点上选择弱化可见标记，可能加剧各家 AI 内容标注标准的分化，也把"验证内容是否 AI 生成"的入口进一步收拢到 Google 自己的工具链。
+  > 💡 把内容标识的负担从可见水印转移到不可见水印+元数据，是对专业创作可用性与内容溯源之间的再平衡；在 Anthropic 加水印遇争议的节点上选择弱化可见标记，可能加剧各家 AI 内容标注标准的分化。
    - 来源: [TechCrunch](https://techcrunch.com/2026/08/14/google-will-now-allow-users-to-remove-visible-watermark-from-its-ai-generations/)
 
 **Nous Research 推出 Hermes Bot Mode，桌面 Agent 支持定时任务与 bot 间通信**
-- Nous Research 联合创始人 Teknium 发布 Hermes Agent 的 **Bot Mode**，作为 sessions 模式的替代：每个 agent profile 变成一个具名 bot，拥有独立聊天、头像、职责描述与例程（基于 Hermes cron 的定时任务），bot 之间可以互发消息。实现上 bot 即 Hermes profile（隔离的配置、记忆、技能与聊天历史），bot 间消息通过 CLI 交接完成并带来源标注，支持在任意聊天中用 **@mentions** 把任务转交给其他 bot 并等待回复。该功能以桌面插件形式开源（**MIT 协议**），不改核心代码，现开启公开 beta 测试。
+- Nous Research 联合创始人 Teknium 发布 Hermes Agent 的 **Bot Mode**，作为 sessions 模式的替代：每个 agent profile 变成一个具名 bot，拥有独立聊天、头像、职责描述与基于 cron 的定时任务，bot 之间可以互发消息，也可在任意聊天中用 **@mentions** 把任务转交给其他 bot 并等待回复；每个 bot 即一个隔离的 Hermes profile，配置、记忆与聊天历史互不干扰。该功能以桌面插件形式开源（**MIT 协议**），现开启公开 beta 测试。
   > 💡 把"多 Agent 协作"从框架层 API 下沉到桌面聊天 UI，用 profile 原语实现 bot 编排，是开源社区对托管式 Agent 团队产品的本地化替代路线；当前 bot 间消息为非实时投递（接收方下次运行时才看到），实时中断被列为后续工作，协作深度仍待验证。
    - 来源: [@Teknium](https://x.com/Teknium/status/2088003994904113614) / [GitHub](https://github.com/NousResearch/Hermes-Bot-Mode)
 
 **OpenRouter 上线 Ori Grok Build，用自己的密钥运行 xAI 编程 harness**
-- OpenRouter 宣布推出 **Ori Grok Build**，用户可直接在 OpenRouter 上运行 xAI 新的 Grok Build 编程 harness：一条 `ori grok` 命令即可启动，无需 Grok 登录——Ori 以自定义端点模式启动 Grok Build，仅为该次运行注入 OpenRouter 密钥，不改动用户本地的 Grok 配置；未安装时会自动安装。模型列表即用户的 OpenRouter 目录（含私有端点），Grok 原生 flag（-m/--model、--reasoning-effort）透传，**xAI 遥测与错误上报在该运行中被关闭**。Ori 此前已支持 claude/codex/opencode/hermes/pi/prime 等多个 harness 的引导。
+- OpenRouter 宣布推出 **Ori Grok Build**，用户可直接在 OpenRouter 上运行 xAI 新的 Grok Build 编程 harness：一条 `ori grok` 命令即可启动，无需 Grok 登录——Ori 以自定义端点模式启动 Grok Build，仅为该次运行注入 OpenRouter 密钥，不改动用户本地的 Grok 配置；未安装时会自动安装。模型列表即用户的 OpenRouter 目录（含私有端点），**xAI 遥测与错误上报在该运行中被关闭**。Ori 此前已支持 claude/codex/opencode/hermes 等多个 harness 的引导。
   > 💡 模型路由层正把各家编程 harness 的启动入口变成自己的分发渠道：用户换模型不动工具、换 harness 不换账单，OpenRouter 借此把"harness 无关的模型层"坐实为 AI 编程栈的默认中间层。
    - 来源: [@OpenRouter](https://x.com/OpenRouter/status/2088326491167956997) / [OpenRouter](https://openrouter.ai/ori/harness)
 

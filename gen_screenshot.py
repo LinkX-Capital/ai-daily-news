@@ -21,7 +21,7 @@ def parse_md_screenshot(md_content):
         insight_parts = []
         body_parts = []
 
-        for segment in re.split(r'(?=\s+>\s)', body):
+        for segment in re.split(r'(?=\n\s*>\s)', body):
             stripped = segment.strip()
             if stripped.startswith('> ') and not stripped.startswith('> 💡'):
                 insight_text = stripped[2:].strip()
