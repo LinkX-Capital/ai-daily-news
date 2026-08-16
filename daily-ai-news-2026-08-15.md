@@ -39,13 +39,13 @@
 
 **PayPal 出售谈判升温：Stripe 与 Advent 或数周内达成交易**
 - 据报道，PayPal 与 Stripe 及私募巨头 Advent 的出售谈判仍在继续，交易可能在未来数周内达成。今年 7 月，Stripe 与 Advent 曾提出以**每股 60.50 美元**收购 PayPal，估值约 **530 亿美元**，当时遭 PayPal 拒绝。PayPal 拒绝置评，Stripe 发言人称不对传闻与猜测发表评论。新任 CEO Enrique Lores 于 3 月加入后推动重组：将业务拆分为 checkout 与 PayPal、消费者金融服务（含 Venmo）、支付服务与加密货币三大板块，并计划未来两到三年**裁员 20%**。
-  > 💡 本条为金融科技产业动态（非 AI 核心条目），保留供生态参考：支付赛道进入整合期，Stripe 借 PE 资本收购最大品牌对手，若达成将显著改变全球数字支付格局，AI Agent 支付编排层的上游基础设施也可能随之集中。
+  > 💡 支付赛道进入整合期，Stripe 借 PE 资本收购最大品牌对手，若达成将显著改变全球数字支付格局，AI Agent 支付编排层的上游基础设施也可能随之集中。
    - 来源: [TechCrunch](https://techcrunch.com/2026/08/14/talks-to-sell-paypal-to-stripe-and-advent-are-heating-up/)
 
 **SpaceX 以 600 亿美元完成对 Cursor 的收购**
-- SpaceX 周五宣布完成对 AI 编程初创公司 Cursor 的 60 亿美元收购，交易形式为全股票。两家公司今年 4 月达成合作协议时，SpaceX 同时获得了以 600 亿美元收购 Cursor 的期权。该协议允许 Cursor 使用 SpaceX 旗下 AI 部门的算力来训练其编程模型 Composer，作为对价，SpaceX 获得 Cursor 工具的使用权。
-  > 💡 在 OpenAI、Anthropic 等模型厂商与 Cursor、Devin 等编程智能体深度绑定的背景下，SpaceX 直接收购 Cursor 显示出算力供应商正在向应用层延伸，试图把训练算力与上层开发工具整合成一体化的 AI 编程栈。
-   - 来源: [The Information](https://www.theinformation.com/briefings/spacex-completes-60-billion-cursor-acquisition)
+- SpaceX 周五宣布完成对 AI 编程公司 Cursor 的 **600 亿美元全股票**收购；两家公司今年 4 月达成合作时，SpaceX 同时获得了以同价收购的期权，合作允许 Cursor 使用 SpaceX 旗下 AI 部门的算力训练编程模型 Composer。Cursor 官方博客确认收购完成，称将可使用**全球最大的 GPU 集群**，获得构建"更强大且运行成本更低"的模型所需算力，并以更低成本向客户提供能力更强的模型；**周三发布的 Grok 4.6** 被称为双方合作的首个成果，Cursor 将成为"让 SpaceX 的智能发挥实用价值的场所"。
+  > 💡 至此 Musk 系分工闭环成型：SpaceX 在底层供算力与能源，xAI 做模型，Cursor 补上开发者入口与编程智能体这一环--从电力、芯片、模型到开发工具的完整垂直栈。编程赛道的竞争单位由此从"工具+第三方 API"升级为生态级对抗，没有自有模型与算力背书的独立编程工具商将加速出局。
+   - 来源: [Cursor Blog](https://cursor.com/cn/blog/joining-spacex) / [The Information](https://www.theinformation.com/briefings/spacex-completes-60-billion-cursor-acquisition)
 
 ### 研究关注
 **用世界模型替代环境执行，把 AutoResearch 训练提速 3–4 倍**
@@ -71,7 +71,7 @@
 **MARCH 用内容路由状态锚点扩展循环记忆容量**
 - MARCH（Memory-Anchor Routing across Context History）周期性把循环状态快照缓存为 state anchor，并为每个 anchor 学习一个紧凑、按内容条件化的 anchor key，构成可随上下文增长的记忆库；每个 token 生成 anchor query 对所有因果可见的 anchor 做注意力聚合。论文报告在标准预训练后，MARCH 在常识推理、LongBench 与 in-context retrieval 上稳定优于多种 linear attention 变体。
   > 💡 该工作把 Transformer 的 KV cache 与循环模型固定维度状态各自的优势切开重组——状态可压缩、anchor 按内容路由可寻址——为长上下文与可控记忆预算提供了一条相对独立的循环架构路径，与近期 Mamba/RetNet 等线性注意力路线形成可对比的基线。
-   - 来源: [arXiv cs.LG](https://arxiv.org/abs/2608.12435)
+   - 来源: [arXiv](https://arxiv.org/abs/2608.12435)
 
 ### X讨论
 **阿里 Qwen3.8-27B 稠密模型正式开源，单卡可部署**
