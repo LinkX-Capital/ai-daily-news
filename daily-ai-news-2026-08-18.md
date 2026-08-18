@@ -1,22 +1,27 @@
 ## 08月18日 AI 前沿动态
 
-> 自动汇总 | 时间窗口: 24h | 全局精选 15 条
+> 自动汇总 | 时间窗口: 24h | 全局精选 17 条
 
 ---
 
 ## 要点汇总
 
-- 产业动态：Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产，击败 Mercor; AI 工作流自动化公司 Relay 关停，创始人率团队加入 Google Chrome; OpenAI 发布《防御者窗口》：AI 攻击能力逼近，安全防御须全面自动化
+- 产业动态：Cursor 上线代码托管平台 Origin，代码仓库与 PR 深度集成智能体; Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产，击败 Mercor; AI 工作流自动化公司 Relay 关停，创始人率团队加入 Google Chrome; OpenAI 发布《防御者窗口》：AI 攻击能力逼近，安全防御须全面自动化
 - 算力追踪：NVIDIA 联手 SB Energy 锁定 PORTS-Pike 场地与电力，OpenAI 将部署 4.25GW AI 工厂; AI 芯片或现过剩担忧，数据中心开发商扎堆德州; Arm CFO 暗示将继续通过并购扩张，应对自研芯片带来的新挑战
 - 初创&融资：AI 视频生成平台 Higgsfield 完成 4 亿美元 B 轮，估值 8 个月翻四倍至 54 亿美元; Groq 完成 3.5 亿美元融资，从 AI 芯片转向 Neocloud; Wispr 完成 2.8 亿美元 B 轮，估值 20 亿美元，从语音听写扩展会议场景
 - 研究关注：Marionette：用显式三维世界状态解耦几何与外观的交互式游戏世界模型; Intern-S2-Mobius：知识与推理解耦的基础模型架构，同分推理加速近 4 倍; BenchDrift：保义改写让基准分数双向翻转，越强的模型越依赖措辞; S²VOPD：给学生做信息减法的自监督在线蒸馏，4B 超越 235B 开源模型; RPM：预测哪个候选值得执行的 AI 研究偏好模型，2/3 预算提前达标
-- X讨论：OpenRouter 年内周 token 量增 1139%，平均单价降 55%
+- X讨论：OpenRouter 年内周 token 量增 1139%，平均单价降 55%; 阿里 Qwen 开源模型半年下载量破 30 亿次，超越 Meta 与 Google 成全球第一
 
 ---
 
 ## 📖 详细参考
 
 ### 产业动态
+**Cursor 上线代码托管平台 Origin，代码仓库与 PR 深度集成智能体**
+- AI 编程工具 Cursor 正式上线代码托管平台 Origin，早期 Beta 自当日起向所有付费方案逐步推出（企业组织可由管理员选择退出）。首发功能包括代码仓库、PR、代码浏览与 GitHub 同步——GitHub 代码库可实时同步进 Origin、PR 评论双向互通，但同步仓库仍以 GitHub 为权威源；平台已接入 Vercel、Depot、Buildkite 集成，每个代码仓库内置智能体，可直接回答代码问题、修改代码、更新 PR 或推送分支。
+  > 💡 从编辑器到托管平台，Cursor 正把"代码存放地"也收进智能体原生工作流；现阶段 GitHub 对同步仓库保留权威源地位，是"寄生迁移"而非硬切割，但开发工具的入口之争已从编辑器烧到代码托管层。
+   - 来源: [Cursor Changelog](https://cursor.com/cn/changelog/origin-code-hosting) | [@cursor_ai](https://x.com/cursor_ai/status/2089399057659596847)
+
 **Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产，击败 Mercor**
 - Google 在 Spirit Airlines 破产拍卖中以 1000 万美元竞得其内部业务数据和软件代码，击败 Mercor 提出的 750 万美元报价。该拍卖结果已在美国纽约南区破产法院的备案文件中披露。Mercor 是一家为 AI 实验室按需雇佣承包商进行模型训练数据的公司。
   > 💡 一家云厂愿意花千万美元买下一家已倒闭航司的全量业务数据和代码，看中的显然不是航空业本身，而是其中沉淀的客服、调度、运营和合规文本——这是训练企业级 Agent 和垂直行业模型时最稀缺的“真实业务流程语料”。Google 与 AI 数据公司同台竞标，说明大模型公司正在把破产企业的数字化资产当作高价值训练数据来源。
@@ -96,5 +101,10 @@
   > 💡 推理需求指数级扩张与单价同步通缩并存，说明"token 量"正在取代"调用量"成为观察 AI 应用渗透的核心指标；缓存占比升高也意味着 agent 工作负载的经济性越来越取决于上下文复用率，而非模型标价。
    - 来源: [@PeterJ_Walker](https://x.com/PeterJ_Walker/status/2089462996561186990)
 
+**阿里 Qwen 开源模型半年下载量破 30 亿次，超越 Meta 与 Google 成全球第一**
+- 据报道，阿里巴巴开源模型系列 Qwen 过去六个月全球累计下载量突破 **30 亿次**，超越 Meta 与 Google 成为全球下载量第一的 AI 模型家族；阿里披露 Qwen 已开源逾 **460 个**模型，生态衍生模型超过 **30 万**个。据 Hugging Face 8 月 14 日发布的开源模型报告，Google 2026 年下载量为 **4.18 亿次**、Meta 为 **2.27 亿次**。
+  > 💡 下载量口径（Qwen 为模型家族六个月累计、Google/Meta 为年度数据）虽不完全对称，但数量级差距已说明开源模型主导权向中国厂商倾斜；"开源换生态"的打法正把 Qwen 推成全球开发者的默认底座选项。
+   - 来源: [Bloomberg](https://www.bloomberg.com/news/articles/2026-08-15/alibaba-ai-models-hit-3-billion-downloads-passing-meta-google) | [@business](https://x.com/business/status/2088578995830882498)
+   
 ---
 *更新时间: 2026-08-18 07:04*
