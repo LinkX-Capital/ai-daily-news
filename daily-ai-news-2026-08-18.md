@@ -18,7 +18,7 @@
 
 ### 产业动态
 **Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产，击败 Mercor**
-- Google 在 Spirit Airlines 破产拍卖中以 1000 万美元竞得其内部业务数据和软件代码，击败 Mercor 提出的 750 万美元报价。该拍卖结果已在美国纽约南区破产法院 8 月 1 日的备案文件中披露。Mercor 是一家为 AI 实验室按需雇佣承包商进行模型训练数据的公司。
+- Google 在 Spirit Airlines 破产拍卖中以 1000 万美元竞得其内部业务数据和软件代码，击败 Mercor 提出的 750 万美元报价。该拍卖结果已在美国纽约南区破产法院的备案文件中披露。Mercor 是一家为 AI 实验室按需雇佣承包商进行模型训练数据的公司。
   > 💡 一家云厂愿意花千万美元买下一家已倒闭航司的全量业务数据和代码，看中的显然不是航空业本身，而是其中沉淀的客服、调度、运营和合规文本——这是训练企业级 Agent 和垂直行业模型时最稀缺的“真实业务流程语料”。Google 与 AI 数据公司同台竞标，说明大模型公司正在把破产企业的数字化资产当作高价值训练数据来源。
    - 来源: [The Information](https://www.theinformation.com/briefings/google-outbids-mercor-spirit-airlines-corporate-data)
 
@@ -38,15 +38,15 @@
   > 💡 NVIDIA 把供应链纪律延伸到"土地-电力-壳体"，用自身信用为增长快于资产负债表的前沿实验室锁场地，本质是把 LPS 变成与芯片同级的战略资源；官方专门辩解"不是循环融资"，也说明市场对 NVIDIA-OpenAI 生态内循环交易的疑虑已大到需要正面回应。
    - 来源: [NVIDIA Blog](https://blogs.nvidia.com/blog/securing-the-infrastructure-of-intelligence/) | [OpenAI News](https://openai.com/index/openai-joins-ports-pike-project)
 
-**Arm CFO 暗示将继续通过并购扩张，应对自研芯片带来的新挑战**
-- Arm 今年股价已翻倍，得益于其设计的 CPU 需求增长以及新 AI 芯片销售，SoftBank 控股的这家英国公司目前市值约 3000 亿美元。Arm CFO Jason Child 在采访中表示，公司过去多以小型收购为主，例如去年以 2.65 亿美元收购网络芯片初创公司 DreamBig，未来仍倾向于这种规模的并购，但并未排除更大规模交易的可能。Child 同时指出，自研芯片意味着要直面新的增长机会和随之而来的挑战，相比单纯授权 IP，“交付硅产品无疑要复杂得多”。
-  > 💡 Arm 从 IP 授权延伸到自研芯片后，单靠设计收入已不足以支撑下一阶段的成长叙事，市值飙升至 3000 亿美元后，并购既是补齐网络与 AI 加速能力短板的最快路径，也是 SoftBank 体系下释放估值压力的方式；但“交付硅更复杂”这句话也承认了角色切换带来的执行风险。
-   - 来源: [The Information](https://www.theinformation.com/articles/arm-cfo-eyes-deals-chip-building-bring-new-challenges)
-
 **AI 芯片或现过剩担忧，数据中心开发商扎堆德州**
 - 据报道，多位与 Google、Microsoft、Oracle 等合作的分析师和数据中心开发商警告，市场上可能很快出现专用 AI 服务器芯片无处可插的过剩局面。受此担忧以及德州相对友好的商业与能源环境推动，AI 巨头正加速在德州布局。开发商提到，新设施正面临意料之外的电力延迟、政治角力以及技术挑战，这些都促使各方把新项目押在德州。
   > 💡 从抢电力到抢可插电的机位，AI 基础设施竞争正从能源端转向电力—机位—芯片三者匹配度；德州的优势在于审批与电力配套速度快，而非单纯电价，这会进一步拉大美国区域算力供给差距。
    - 来源: [The Information](https://www.theinformation.com/articles/fearing-ai-chip-glut-data-center-developers-choosin-texas)
+
+**Arm CFO 暗示将继续通过并购扩张，应对自研芯片带来的新挑战**
+- Arm 今年股价已翻倍，得益于其设计的 CPU 需求增长以及新 AI 芯片销售，SoftBank 控股的这家英国公司目前市值约 3000 亿美元。Arm CFO Jason Child 在采访中表示，公司过去多以小型收购为主，例如去年以 2.65 亿美元收购网络芯片初创公司 DreamBig，未来仍倾向于这种规模的并购，但并未排除更大规模交易的可能。Child 同时指出，自研芯片意味着要直面新的增长机会和随之而来的挑战，相比单纯授权 IP，“交付硅产品无疑要复杂得多”。
+  > 💡 Arm 从 IP 授权延伸到自研芯片后，单靠设计收入已不足以支撑下一阶段的成长叙事，市值飙升至 3000 亿美元后，并购既是补齐网络与 AI 加速能力短板的最快路径，也是 SoftBank 体系下释放估值压力的方式；但“交付硅更复杂”这句话也承认了角色切换带来的执行风险。
+   - 来源: [The Information](https://www.theinformation.com/articles/arm-cfo-eyes-deals-chip-building-bring-new-challenges)
 
 ### 初创&融资
 **AI 视频生成平台 Higgsfield 完成 4 亿美元 B 轮，估值 8 个月翻四倍至 54 亿美元**
