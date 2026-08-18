@@ -8,7 +8,7 @@
 
 - 产业动态：Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产，击败 Mercor; AI 工作流自动化公司 Relay 关停，创始人率团队加入 Google Chrome; OpenAI 发布《防御者窗口》：AI 攻击能力逼近，安全防御须全面自动化
 - 算力追踪：NVIDIA 联手 SB Energy 锁定 PORTS-Pike 场地与电力，OpenAI 将部署 4.25GW AI 工厂; AI 芯片或现过剩担忧，数据中心开发商扎堆德州; Arm CFO 暗示将继续通过并购扩张，应对自研芯片带来的新挑战
-- 初创&融资：Higgsfield 完成 4 亿美元 B 轮，估值 8 个月翻四倍至 54 亿美元; Groq 完成 3.5 亿美元融资，从 AI 芯片转向 Neocloud; Wispr 完成 2.8 亿美元 B 轮，估值 20 亿美元，从语音听写扩展会议场景
+- 初创&融资：AI 视频生成平台 Higgsfield 完成 4 亿美元 B 轮，估值 8 个月翻四倍至 54 亿美元; Groq 完成 3.5 亿美元融资，从 AI 芯片转向 Neocloud; Wispr 完成 2.8 亿美元 B 轮，估值 20 亿美元，从语音听写扩展会议场景
 - 研究关注：Marionette：用显式三维世界状态解耦几何与外观的交互式游戏世界模型; Intern-S2-Mobius：知识与推理解耦的基础模型架构，同分推理加速近 4 倍; BenchDrift：保义改写让基准分数双向翻转，越强的模型越依赖措辞; S²VOPD：给学生做信息减法的自监督在线蒸馏，4B 超越 235B 开源模型; RPM：预测哪个候选值得执行的 AI 研究偏好模型，2/3 预算提前达标
 - X讨论：OpenRouter 年内周 token 量增 1139%，平均单价降 55%
 
@@ -17,6 +17,11 @@
 ## 📖 详细参考
 
 ### 产业动态
+**Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产，击败 Mercor**
+- Google 在 Spirit Airlines 破产拍卖中以 1000 万美元竞得其内部业务数据和软件代码，击败 Mercor 提出的 750 万美元报价。该拍卖结果已在美国纽约南区破产法院 8 月 1 日的备案文件中披露。Mercor 是一家为 AI 实验室按需雇佣承包商进行模型训练数据的公司。
+  > 💡 一家云厂愿意花千万美元买下一家已倒闭航司的全量业务数据和代码，看中的显然不是航空业本身，而是其中沉淀的客服、调度、运营和合规文本——这是训练企业级 Agent 和垂直行业模型时最稀缺的“真实业务流程语料”。Google 与 AI 数据公司同台竞标，说明大模型公司正在把破产企业的数字化资产当作高价值训练数据来源。
+   - 来源: [The Information](https://www.theinformation.com/briefings/google-outbids-mercor-spirit-airlines-corporate-data)
+
 **AI 工作流自动化公司 Relay 关停，创始人率团队加入 Google Chrome**
 - 对标 Zapier 的 AI 工作流自动化公司 Relay 宣布关停，免费用户已于 8 月 15 日失去访问，付费用户 9 月 14 日停止服务。创始人 Jacob Bank 回归 Google 出任 Chrome 产品副总裁，负责产品与开发者关系；他此前曾任 Gmail、Google Calendar 产品负责人，并称 Chrome 是"与 agent 协作的完美场所"，暗示浏览器将成为 AI agent 的主要载体之一。
   > 💡 Relay 的结局是"入口级平台吸收独立工具"的又一例——自动化能力本身难以构成护城河，Chrome 这类承载用户会话的浏览器正成为 agent 分发的默认阵地。
@@ -26,11 +31,6 @@
 - OpenAI 发布 Greg Brockman 署名长文《The Defender's Window》，称 OpenAI-Hugging Face 入侵事件（一个 agentic 集体自主攻破 OpenAI 研究基础设施及另一家公司的生产系统）预演了典型攻击者的能力演进，而开源权重模型的网络攻击能力距前沿仅数月、8 月底或再有关键发布，威胁格局可能加速。文中演示 GPT-5.6 Sol 用约 **15 分钟**找出 gregbrockman.com 的 **13 个**安全问题并在一小时内自动修复；OpenAI 内部几乎所有初始安全告警已先由 AI 分诊，并以 Codex 安全插件在代码上线前拦截漏洞。
   > 💡 OpenAI 把安全叙事从"限制攻击性能力"切换到"武装防御者"：判断是攻击自动化与防御自动化在赛跑，未来数月是组织把 AI 嵌入安全流程的最后窗口——这既是行业倡议，也是 Codex 与网络安全能力产品化的市场铺垫。
    - 来源: [OpenAI](https://openai.com/index/the-defenders-window)
-
-**Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产，击败 Mercor**
-- Google 在 Spirit Airlines 破产拍卖中以 1000 万美元竞得其内部业务数据和软件代码，击败 Mercor 提出的 750 万美元报价。该拍卖结果已在美国纽约南区破产法院 8 月 1 日的备案文件中披露。Mercor 是一家为 AI 实验室按需雇佣承包商进行模型训练数据的公司。
-  > 💡 一家云厂愿意花千万美元买下一家已倒闭航司的全量业务数据和代码，看中的显然不是航空业本身，而是其中沉淀的客服、调度、运营和合规文本——这是训练企业级 Agent 和垂直行业模型时最稀缺的“真实业务流程语料”。Google 与 AI 数据公司同台竞标，说明大模型公司正在把破产企业的数字化资产当作高价值训练数据来源。
-   - 来源: [The Information](https://www.theinformation.com/briefings/google-outbids-mercor-spirit-airlines-corporate-data)
 
 ### 算力追踪
 **NVIDIA 联手 SB Energy 锁定 PORTS-Pike 场地与电力，OpenAI 将部署 4.25GW AI 工厂**
@@ -49,7 +49,7 @@
    - 来源: [The Information](https://www.theinformation.com/articles/fearing-ai-chip-glut-data-center-developers-choosin-texas)
 
 ### 初创&融资
-**Higgsfield 完成 4 亿美元 B 轮，估值 8 个月翻四倍至 54 亿美元**
+**AI 视频生成平台 Higgsfield 完成 4 亿美元 B 轮，估值 8 个月翻四倍至 54 亿美元**
 - AI 图像与视频生成公司 Higgsfield 完成 **4 亿美元** B 轮融资，DST Global、高盛、Liberty Global 及英特尔旗下投资部门参投，估值达 **54 亿美元**，距上一轮 13 亿美元估值仅过去 8 个月。公司由前 Snap 高管 Alex Mashrabov 于 2023 年创办，提供面向电影人的 Cinema Studio 与面向营销团队的 Marketing Studio，披露年化收入 **7 亿美元**，用户覆盖 200 个国家共 3000 万人，其中 390 家为 Fortune 500 企业。
   > 💡 AI 视频的真正成本不在模型而在算力——创始人把“每分钟视频约等于 6 万词处理量”写进融资叙事，意味着赛道比拼的核心指标是算力锁定能力；54 亿美元估值的背后，是“从会生成视频”到“进入 Fortune 500 营销工作流”的叙事升级。
    - 来源: [TechCrunch](https://techcrunch.com/2026/08/17/higgsfield-raises-400m-series-b-quadrupling-its-valuation-in-8-months-to-5-4b) | [IT桔子](https://www.itjuzi.com/investevent/14702500)
