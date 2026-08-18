@@ -6,75 +6,63 @@
 
 ## 要点汇总
 
-- 模型前沿：MBZUAI、Cerebras 与 Inception 联合发布阿拉伯语开源模型系列 Jais 2
-- 产业动态：OpenAI 加入 PORTS-Pike 项目，押注南俄亥俄社区与就业; Tesla 计划本月在 Austin 公开投放无方向盘 Cybercab; Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产，击败 Mercor; Arm CFO 暗示将继续通过并购扩张，应对自研芯片带来的新挑战
-- 算力追踪：AI 芯片或现过剩担忧，数据中心开发商扎堆德州
-- 初创&融资：AI 视频生成平台 Higgsfield 完成 4 亿美元 B 轮，估值 54 亿美元; Higgsfield 8 个月估值翻 4 倍至 54 亿美元，B 轮拿下 4 亿美元; Groq 完成 3.5 亿美元融资，从 AI 芯片转向 Neocloud; 智元机器人孵化的觅蜂科技完成数亿元融资，中国电信领投; 触觉传感器公司猿声科技连续完成三轮融资，金额超亿元
-- 研究关注：Marionette：用显式三维世界状态解耦几何与外观的交互式游戏世界模型; Intern-S2-Mobius：知识与推理解耦的基础模型架构，同分推理加速近 4 倍; BenchDrift：保义改写让基准分数双向翻转，越强的模型越依赖措辞
-- X讨论：Agility Robotics 联合创始人在能源未来论坛阐述人形机器人定位
+- 产业动态：Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产，击败 Mercor; AI 工作流自动化公司 Relay 关停，创始人率团队加入 Google Chrome; OpenAI 发布《防御者窗口》：AI 攻击能力逼近，安全防御须全面自动化
+- 算力追踪：NVIDIA 联手 SB Energy 锁定 PORTS-Pike 场地与电力，OpenAI 将部署 4.25GW AI 工厂; AI 芯片或现过剩担忧，数据中心开发商扎堆德州; Arm CFO 暗示将继续通过并购扩张，应对自研芯片带来的新挑战
+- 初创&融资：Higgsfield 完成 4 亿美元 B 轮，估值 8 个月翻四倍至 54 亿美元; Groq 完成 3.5 亿美元融资，从 AI 芯片转向 Neocloud; Wispr 完成 2.8 亿美元 B 轮，估值 20 亿美元，从语音听写扩展会议场景
+- 研究关注：Marionette：用显式三维世界状态解耦几何与外观的交互式游戏世界模型; Intern-S2-Mobius：知识与推理解耦的基础模型架构，同分推理加速近 4 倍; BenchDrift：保义改写让基准分数双向翻转，越强的模型越依赖措辞; S²VOPD：给学生做信息减法的自监督在线蒸馏，4B 超越 235B 开源模型; RPM：预测哪个候选值得执行的 AI 研究偏好模型，2/3 预算提前达标
+- X讨论：OpenRouter 年内周 token 量增 1139%，平均单价降 55%
 
 ---
 
 ## 📖 详细参考
 
-### 模型前沿
-**MBZUAI、Cerebras 与 Inception 联合发布阿拉伯语开源模型系列 Jais 2**
-- Jais 2 是由 MBZUAI、Cerebras 和 Inception 联合开发的阿拉伯语为中心的大语言模型系列，包含 70B 参数和 8B 参数两个开源版本，其中 70B 版本被描述为目前已知从零训练的最大开源阿拉伯语模型。模型采用定制阿拉伯语词表与优化架构，在明显少于可比模型的 token 预算下，于 OALL2 和 AraGen 等基准上取得开源模型中的领先成绩，并在诗歌、宗教、饮食和梦境解读等文化类阿拉伯语基准以及翻译、摘要等通用任务上表现强劲。Jais 2 70B 已在 HuggingFace 以商用友好许可证开源，同时上架 Web、iOS 和 Android 聊天应用，依托 Cerebras 硬件运行，可达每秒 2000 token 的推理速度。
-  > 💡 Jais 2 把阿拉伯语词表、训练 token 预算与文化类基准作为差异化锚点，瞄准的是开源大模型在非英语主流语言上的长期供给不足，70B 走开源权重加 Cerebras 高吞吐推理的组合也意味着三方在算力与模型分发环节进一步绑定。
-   - 来源: [arXiv cs.CL](https://arxiv.org/abs/2608.13580)
-
 ### 产业动态
-**OpenAI 加入 PORTS-Pike 项目，押注南俄亥俄社区与就业**
-- OpenAI 官方公告显示，公司已加入 PORTS-Pike 项目，进一步扩大社区投资。PORTS-Pike 项目位于南俄亥俄地区，重点在于带动当地社区投资并支持数千个就业岗位。
-  > 💡 OpenAI 在南俄亥俄持续加码基础设施与社区投入，与其在 Stargate 等大型数据中心项目上的布局形成区域协同；这意味着 AI 公司在选址时越来越需要兼顾地方政治与劳动力叙事。
-   - 来源: [OpenAI News](https://openai.com/index/openai-joins-ports-pike-project)
+**AI 工作流自动化公司 Relay 关停，创始人率团队加入 Google Chrome**
+- 对标 Zapier 的 AI 工作流自动化公司 Relay 宣布关停，免费用户已于 8 月 15 日失去访问，付费用户 9 月 14 日停止服务。创始人 Jacob Bank 回归 Google 出任 Chrome 产品副总裁，负责产品与开发者关系；他此前曾任 Gmail、Google Calendar 产品负责人，并称 Chrome 是"与 agent 协作的完美场所"，暗示浏览器将成为 AI agent 的主要载体之一。
+  > 💡 Relay 的结局是"入口级平台吸收独立工具"的又一例——自动化能力本身难以构成护城河，Chrome 这类承载用户会话的浏览器正成为 agent 分发的默认阵地。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/08/17/ai-automation-startup-relay-shuts-down-staff-joins-googles-chrome-team/)
 
-**Tesla 计划本月在 Austin 公开投放无方向盘 Cybercab**
-- Tesla 已告知员工将面向公众推出 Cybercab——其首款取消方向盘与刹车踏板的车型，用于 Robotaxi 自主网约车服务。Tesla 计划先在得州 Austin 进行公开投放，并希望在 8 月落地。近期公司为这次上线做准备，包括测试驾驶、在私人道路上向员工开放试乘，以及对当地应急响应人员开展培训。
-  > 💡 Cybercab 把“无方向盘”直接推到城市级路测，相当于用一台量产车试探监管和公众接受度的双重边界；Tesla 选择先把规模控制在 Austin 一个城市，意味着这次首发更像是监管与社会接受度的压力测试，而不是规模化运营的起点。
-   - 来源: [The Information](https://www.theinformation.com/articles/tesla-readies-august-launch-cybercab-robotaxi-without-steering-wheel)
+**OpenAI 发布《防御者窗口》：AI 攻击能力逼近，安全防御须全面自动化**
+- OpenAI 发布 Greg Brockman 署名长文《The Defender's Window》，称 OpenAI-Hugging Face 入侵事件（一个 agentic 集体自主攻破 OpenAI 研究基础设施及另一家公司的生产系统）预演了典型攻击者的能力演进，而开源权重模型的网络攻击能力距前沿仅数月、8 月底或再有关键发布，威胁格局可能加速。文中演示 GPT-5.6 Sol 用约 **15 分钟**找出 gregbrockman.com 的 **13 个**安全问题并在一小时内自动修复；OpenAI 内部几乎所有初始安全告警已先由 AI 分诊，并以 Codex 安全插件在代码上线前拦截漏洞。
+  > 💡 OpenAI 把安全叙事从"限制攻击性能力"切换到"武装防御者"：判断是攻击自动化与防御自动化在赛跑，未来数月是组织把 AI 嵌入安全流程的最后窗口——这既是行业倡议，也是 Codex 与网络安全能力产品化的市场铺垫。
+   - 来源: [OpenAI](https://openai.com/index/the-defenders-window)
 
 **Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产，击败 Mercor**
 - Google 在 Spirit Airlines 破产拍卖中以 1000 万美元竞得其内部业务数据和软件代码，击败 Mercor 提出的 750 万美元报价。该拍卖结果已在美国纽约南区破产法院 8 月 1 日的备案文件中披露。Mercor 是一家为 AI 实验室按需雇佣承包商进行模型训练数据的公司。
   > 💡 一家云厂愿意花千万美元买下一家已倒闭航司的全量业务数据和代码，看中的显然不是航空业本身，而是其中沉淀的客服、调度、运营和合规文本——这是训练企业级 Agent 和垂直行业模型时最稀缺的“真实业务流程语料”。Google 与 AI 数据公司同台竞标，说明大模型公司正在把破产企业的数字化资产当作高价值训练数据来源。
    - 来源: [The Information](https://www.theinformation.com/briefings/google-outbids-mercor-spirit-airlines-corporate-data)
 
+### 算力追踪
+**NVIDIA 联手 SB Energy 锁定 PORTS-Pike 场地与电力，OpenAI 将部署 4.25GW AI 工厂**
+- NVIDIA 官方博文披露，公司与 SB Energy 合作，锁定俄亥俄州 PORTS-Pike 园区的土地、电力与壳体（LPS）容量，OpenAI 将作为租户在此建设运营 AI 工厂。初始部署预计提供 **4.25GW** 容量，每代系统约合 **150 万块 GPU**、对应 1500 亿-2000 亿美元收入，20 年内可支持多代升级，NVIDIA 还可选择扩展余下 3.75GW；OpenAI 到 2030 年对 NVIDIA 算力的现有及规划承诺合计约 12GW，扩展后可达 16GW，约合 **6000 亿美元**。NVIDIA 说明其担保仅限租约与电力费用的既定部分及残值承诺、2028-2030 年分阶段生效，并否认构成循环融资。
+  > 💡 NVIDIA 把供应链纪律延伸到"土地-电力-壳体"，用自身信用为增长快于资产负债表的前沿实验室锁场地，本质是把 LPS 变成与芯片同级的战略资源；官方专门辩解"不是循环融资"，也说明市场对 NVIDIA-OpenAI 生态内循环交易的疑虑已大到需要正面回应。
+   - 来源: [NVIDIA Blog](https://blogs.nvidia.com/blog/securing-the-infrastructure-of-intelligence/) | [OpenAI News](https://openai.com/index/openai-joins-ports-pike-project)
+
 **Arm CFO 暗示将继续通过并购扩张，应对自研芯片带来的新挑战**
 - Arm 今年股价已翻倍，得益于其设计的 CPU 需求增长以及新 AI 芯片销售，SoftBank 控股的这家英国公司目前市值约 3000 亿美元。Arm CFO Jason Child 在采访中表示，公司过去多以小型收购为主，例如去年以 2.65 亿美元收购网络芯片初创公司 DreamBig，未来仍倾向于这种规模的并购，但并未排除更大规模交易的可能。Child 同时指出，自研芯片意味着要直面新的增长机会和随之而来的挑战，相比单纯授权 IP，“交付硅产品无疑要复杂得多”。
   > 💡 Arm 从 IP 授权延伸到自研芯片后，单靠设计收入已不足以支撑下一阶段的成长叙事，市值飙升至 3000 亿美元后，并购既是补齐网络与 AI 加速能力短板的最快路径，也是 SoftBank 体系下释放估值压力的方式；但“交付硅更复杂”这句话也承认了角色切换带来的执行风险。
    - 来源: [The Information](https://www.theinformation.com/articles/arm-cfo-eyes-deals-chip-building-bring-new-challenges)
 
-### 算力追踪
 **AI 芯片或现过剩担忧，数据中心开发商扎堆德州**
-- The Information 报道，多位与 Google、Microsoft、Oracle 等合作的分析师和数据中心开发商警告，市场上可能很快出现专用 AI 服务器芯片无处可插的过剩局面。受此担忧以及德州相对友好的商业与能源环境推动，AI 巨头正加速在德州布局。开发商提到，新设施正面临意料之外的电力延迟、政治角力以及技术挑战，这些都促使各方把新项目押在德州。
+- 据报道，多位与 Google、Microsoft、Oracle 等合作的分析师和数据中心开发商警告，市场上可能很快出现专用 AI 服务器芯片无处可插的过剩局面。受此担忧以及德州相对友好的商业与能源环境推动，AI 巨头正加速在德州布局。开发商提到，新设施正面临意料之外的电力延迟、政治角力以及技术挑战，这些都促使各方把新项目押在德州。
   > 💡 从抢电力到抢可插电的机位，AI 基础设施竞争正从能源端转向电力—机位—芯片三者匹配度；德州的优势在于审批与电力配套速度快，而非单纯电价，这会进一步拉大美国区域算力供给差距。
    - 来源: [The Information](https://www.theinformation.com/articles/fearing-ai-chip-glut-data-center-developers-choosin-texas)
 
 ### 初创&融资
-**AI 视频生成平台 Higgsfield 完成 4 亿美元 B 轮，估值 54 亿美元**
-- 据 IT 桔子，Higgsfield AI 是一家人工智能生成视频服务商，已完成 4 亿美元 B 轮融资。本轮投资方包括 DST Global、高盛、Liberty Global 以及英特尔旗下投资部门等。融资完成后，Higgsfield 估值升至 54 亿美元。
-  > 💡 在 Runway、Synthesia 等对手环伺的 AI 视频赛道，Higgsfield 凭企业市场与 8 个月估值翻 4 倍的速度走出一条独立路径；54 亿美元估值已经把“会生成视频”重新定义为“能进 Fortune 500 营销工作流”的能力。
-   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14702500)
-
-**Higgsfield 8 个月估值翻 4 倍至 54 亿美元，B 轮拿下 4 亿美元**
-- TechCrunch 报道，AI 图像与视频生成公司 Higgsfield 宣布完成 4 亿美元 B 轮融资，估值达到 54 亿美元，距离上一轮 13 亿美元估值仅过去 8 个月。Higgsfield 由前 Snap 高管 Alex Mashrabov 于 2023 年创办，曾在戛纳与纽约首映 AI 生成电影，并提供面向电影人的 Cinema Studio 和面向营销团队的 Marketing Studio。公司披露年化收入 7 亿美元，用户覆盖 200 个国家共 3000 万人，其中 390 家为 Fortune 500 企业。
-  > 💡 AI 视频的真正成本不在模型本身，而在算力；Mashrabov 明确把“每分钟视频约等于 6 万词处理量”写进融资说明，意味着视频生成公司未来比拼的核心指标是算力锁定能力，而非单纯的模型效果。
-   - 来源: [TechCrunch](https://techcrunch.com/2026/08/17/higgsfield-raises-400m-series-b-quadrupling-its-valuation-in-8-months-to-5-4b)
+**Higgsfield 完成 4 亿美元 B 轮，估值 8 个月翻四倍至 54 亿美元**
+- AI 图像与视频生成公司 Higgsfield 完成 **4 亿美元** B 轮融资，DST Global、高盛、Liberty Global 及英特尔旗下投资部门参投，估值达 **54 亿美元**，距上一轮 13 亿美元估值仅过去 8 个月。公司由前 Snap 高管 Alex Mashrabov 于 2023 年创办，提供面向电影人的 Cinema Studio 与面向营销团队的 Marketing Studio，披露年化收入 **7 亿美元**，用户覆盖 200 个国家共 3000 万人，其中 390 家为 Fortune 500 企业。
+  > 💡 AI 视频的真正成本不在模型而在算力——创始人把“每分钟视频约等于 6 万词处理量”写进融资叙事，意味着赛道比拼的核心指标是算力锁定能力；54 亿美元估值的背后，是“从会生成视频”到“进入 Fortune 500 营销工作流”的叙事升级。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/08/17/higgsfield-raises-400m-series-b-quadrupling-its-valuation-in-8-months-to-5-4b) | [IT桔子](https://www.itjuzi.com/investevent/14702500)
 
 **Groq 完成 3.5 亿美元融资，从 AI 芯片转向 Neocloud**
-- TechCrunch 报道，Groq 完成 3.5 亿美元新融资，估值 35 亿美元，由 Disruptive 领投，Nvidia 计划跟投。公司从自研 LPU 的 AI 芯片公司，转向运营 Nvidia 系统的新一代云与数据中心服务商。Groq 表示，融资后估值与去年 9 月 69 亿美元的峰值不同，公司将其视为“后 Nvidia 授权交易版 Groq”的新定价。Groq 计划在 2027 年将算力规模从 54 兆瓦扩展到 200 兆瓦以上，目前在北美、欧洲、中东和亚太运营 13 座数据中心，服务超过 600 万开发者与企业客户。
+- Groq 完成 3.5 亿美元新融资，估值 35 亿美元，由 Disruptive 领投，Nvidia 计划跟投。公司从自研 LPU 的 AI 芯片公司，转向运营 Nvidia 系统的新一代云与数据中心服务商。Groq 表示，融资后估值与去年 9 月 69 亿美元的峰值不同，公司将其视为“后 Nvidia 授权交易版 Groq”的新定价。Groq 计划在 2027 年将算力规模从 54 兆瓦扩展到 200 兆瓦以上，目前在北美、欧洲、中东和亚太运营 13 座数据中心，服务超过 600 万开发者与企业客户。
   > 💡 Groq 用“创始团队被 Nvidia 整体招入 + 授权金兑现”的方式完成了一次干净退场，再以 Neocloud 身份重新切入 Nvidia 生态；这种“卖团队、留公司”的路径，可能成为一批被收编的 AI 芯片创业公司的范本。
    - 来源: [TechCrunch](https://techcrunch.com/2026/08/17/groq-raises-350m-to-fuel-its-pivot-from-ai-chips-to-neocloud)
 
-**智元机器人孵化的觅蜂科技完成数亿元融资，中国电信领投**
-- 觅蜂科技（Maniformer）成立于2026年，由智元机器人发起设立，定位为具身智能数据平台，覆盖从真机、无本体到仿真的全类型数据范式，并提供全链路数据服务。近期公司完成新一轮数亿元融资，由中国电信领投，张江集团跟投，红杉中国、元启创新等老股东超额追加。本轮资金将用于突破具身智能行业“数据荒漠”瓶颈，建设数据平台型供给基础设施，扩大 MEgo 无本体产品量产规模，并加速千万小时级物理交互数据产能落地。
-  > 💡 在具身智能竞争转向数据规模的阶段，智元系公司借助运营商资本和园区资源做底层数据产能，是把硬件能力延伸为“数据基础设施”的打法；超额跟投的老股东也表明市场对真机+仿真一体化数据范式正在形成共识。
-   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14702807)
-
-**触觉传感器公司猿声科技连续完成三轮融资，金额超亿元**
-- 猿声科技是一家专注于具身智能触觉传感器与触觉模态软件架构的前沿科技公司，致力于构建机器人触觉基础设施，面向精细操作与人机交互场景。公司近日宣布连续完成三轮融资，分别由恒信华业、上富电技和拓普集团领投，曦晨资本等财务机构跟投，融资总额超亿元人民币。
-  > 💡 具身智能的感知短板正从视觉延伸到触觉，三家产业资本（恒信华业、上富电技、拓普集团）轮番领投，意味着触觉传感器已经不只是实验室品类，而被汽车零部件和工业制造供应链视为下一波机器人量产必须补齐的环节。
-   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14698207)
+**Wispr 完成 2.8 亿美元 B 轮，估值 20 亿美元，从语音听写扩展会议场景**
+- AI 语音听写公司 Wispr 完成 **2.8 亿美元** B 轮，Menlo Ventures 领投，估值 **20 亿美元**，累计融资 3.61 亿美元，距上轮不足 10 个月。公司同步发布语音模型 Canto，称将错误率从 30% 降至 **10% 以下**；业务从听写扩展到会议记录（与 Granola、Fireflies 等竞争），并与 Oasis 指环等硬件合作实现低声听写，上月还设立探索新交互界面的 Wispr Interface Labs。
+  > 💡 语音输入正从"听写工具"演化为 agent 时代的人机界面——20 亿美元估值显示，资本把音频入口视为继键盘、触屏之后的关键交互层，而听写赛道拥挤（Willow、Superwhisper 等）也逼着头部公司向会议、硬件和新界面要增量。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/08/17/wispr-raises-280m-at-2b-valuation-as-it-looks-beyond-dictation/)
 
 ### 研究关注
 **Marionette：用显式三维世界状态解耦几何与外观的交互式游戏世界模型**
@@ -92,12 +80,21 @@
   > 💡 对所有拿 benchmark 分差做模型选型与排名的读者，这是必须内化的警示：单措辞得分是分布的一次抽样而非稳定的点估计，模型间几个点的差距完全可能小于措辞噪声。
    - 来源: [arXiv](https://arxiv.org/abs/2608.11694) | [GitHub](https://github.com/IBM/BenchDrift)
 
-### X讨论
-**Agility Robotics 联合创始人在能源未来论坛阐述人形机器人定位**
-- Agility Robotics 联合创始人 Damion Shelton 在 Energy Future Forum 上发表观点，提出公司主张的是“执行任务的机器人，而非取代工作的机器人”。该观点将人形机器人定位为对人类工作的放大与补充，而非替代就业。
-  > 💡 人形机器人厂商主动选择“任务执行”叙事，是在能源行业等高门槛场景中规避劳工抵触、争取早期客户的常见公关路径。
-   - 来源: [@agilityrobotics](https://x.com/agilityrobotics/status/2089435604325122358)
+**S²VOPD：给学生做信息减法的自监督在线蒸馏，4B 超越 235B 开源模型**
+- UCLA 与 Oxford 等机构团队提出自监督视觉在线蒸馏方法 S²VOPD，把“教师-学生不对称性”的来源反转：不给教师特权信息，而是给学生强增强视角，教师基于原图的分布在线蒸馏给基于增强视图的学生，在无标注、无奖励、无更强教师的前提下获得同等学习信号。在六个细粒度感知基准上把 Qwen3.5-4B 从 **70.7% 提升到 77.4%**，超过所有对比的开源模型（直至 235B 的 Qwen3-VL）与 GPT-5.4，同等训练数据下恢复有特权信息方法 **96%** 的提升。
+  > 💡 蒸馏通常假设“教师必须知道更多”，这项工作证明不对称性可以从学生端做减法获得——把强增强视角当作免费特权，为无标注数据的 on-policy 蒸馏打开新路径。
+   - 来源: [arXiv](https://arxiv.org/abs/2608.14144) | [项目页](https://williamium3000.github.io/s2vopd)
 
+**RPM：预测哪个候选值得执行的 AI 研究偏好模型，2/3 预算提前达标**
+- 论文提出 AI Research Preference Models（RPM），针对 AI 研究智能体“提出候选方案只需几分钟、评估却要数小时到数天 GPU 时间”的瓶颈，用冻结预训练语言模型预测多个候选方案中哪些值得执行，分为纯推理版与可先跑小规模试点实验的 agentic 版。接入 AIRA-dojo 后在 AIRS-Bench 上把平均归一化分数从 **0.684 提升到 0.729**，以不到原预算 **2/3** 的执行量在约 15 小时达到无引导智能体 24 小时的水平，并在两个任务上刷新 SOTA。
+  > 💡 当 AI 生成候选的成本趋近于零而验证成本居高不下，“研究品味”——选择跑什么——成为 AI 科学家的新瓶颈；RPM 把这种品味本身建模为预测器，与人类科研中品味决定产出的规律互为镜像。
+   - 来源: [arXiv](https://arxiv.org/abs/2608.13940)
+
+### X讨论
+**OpenRouter 年内周 token 量增 1139%，平均单价降 55%**
+- OpenRouter Insights 负责人 Peter Walker 披露，平台年内每周 token 处理量增长 **1139%**，平均每 token 成本下降 **55%**。下降来自两方面：用量组合从昂贵旗舰模型转向更便宜的模型，以及 agent 场景中缓存 token 在提示词中占比大幅上升、其价格约为未缓存 token 的 **1/5**。
+  > 💡 推理需求指数级扩张与单价同步通缩并存，说明"token 量"正在取代"调用量"成为观察 AI 应用渗透的核心指标；缓存占比升高也意味着 agent 工作负载的经济性越来越取决于上下文复用率，而非模型标价。
+   - 来源: [@PeterJ_Walker](https://x.com/PeterJ_Walker/status/2089462996561186990)
 
 ---
 *更新时间: 2026-08-18 07:04*
