@@ -188,10 +188,9 @@ def fetch_all_tweets(max_per_account: int = 10, start_time: datetime = None, end
             print(f"      @{account}: {reason}")
 
     if all_tweets:
-        save_cache(all_tweets)
         print(f"   抓取到 {len(all_tweets)} 条新推文")
     else:
-        print("   ⚠️ 本轮抓取为空，不覆盖缓存")
+        print("   ⚠️ 本轮抓取为空")
 
     return all_tweets
 
