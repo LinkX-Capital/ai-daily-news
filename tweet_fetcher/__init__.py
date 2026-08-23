@@ -1,32 +1,37 @@
-"""Twitter/X 推文抓取器 - 统一账号配置"""
+"""Twitter/X 推文抓取器 - 统一账号配置（twitterapi.io API）
 
-import feedparser
+公共 Nitter 实例已于 2026-08 全线失效（403/人机验证/白名单），改用
+twitterapi.io REST API。API key 存放于本目录 api.key（已被 .gitignore
+的 *.key 规则忽略），也可通过环境变量 TWITTERAPI_KEY 提供。
+"""
+
 import json
+import os
 import time
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import List, Dict, Optional
+from datetime import datetime, timezone
+
 import httpx
 import yaml
-from email.utils import parsedate_to_datetime
-from datetime import datetime, timezone
 
 # ============ 配置加载 ============
 CONFIG_FILE = Path(__file__).parent.parent / "accounts.yaml"
 CACHE_FILE = Path(__file__).parent / "cache.json"
-TIMEOUT = 15
+KEY_FILE = Path(__file__).parent / "api.key"
+API_URL = "https://api.twitterapi.io/twitter/user/last_tweets"
+TIMEOUT = 20
 MAX_HOURS = 24
+TITLE_MAX = 400
 
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept': 'application/rss+xml, application/xml, text/xml',
-}
 
-NITTER_INSTANCES = [
-    "https://nitter.net",
-    "https://nitter.poast.org",
-    "https://nitter.privacydev.net",
-    "https://nitter.hu",
-]
+def get_api_key() -> str:
+    if KEY_FILE.exists():
+        key = KEY_FILE.read_text().strip()
+        if key:
+            return key
+    return os.environ.get("TWITTERAPI_KEY", "")
 
 
 def load_config() -> dict:
@@ -45,7 +50,6 @@ def get_accounts() -> tuple[Dict[str, List[str]], Dict[str, str], List[str]]:
     """
     config = load_config()
     accounts = config.get("accounts", [])
-    settings = config.get("settings", {})
 
     account_groups = {"Company": [], "Researcher": []}
     account_info = {}
@@ -76,90 +80,78 @@ def get_accounts() -> tuple[Dict[str, List[str]], Dict[str, str], List[str]]:
 X_ACCOUNT_GROUPS, X_ACCOUNT_INFO, ALL_ACCOUNTS = get_accounts()
 
 
+def parse_pub_date(published: str) -> Optional[datetime]:
+    """解析推文时间：兼容 twitterapi.io 格式与 RFC822（旧缓存）"""
+    if not published:
+        return None
+    try:
+        # twitterapi.io: "Sun Aug 02 03:00:09 +0000 2026"
+        return datetime.strptime(published, "%a %b %d %H:%M:%S %z %Y")
+    except ValueError:
+        pass
+    try:
+        return parsedate_to_datetime(published)
+    except Exception:
+        return None
+
+
 def is_recent(published: str, start_time: datetime = None, end_time: datetime = None) -> bool:
     """检查推文是否在时间窗口内"""
-    try:
-        pub_date = parsedate_to_datetime(published)
-
-        # 自定义时间窗口
-        if start_time and end_time:
-            return start_time <= pub_date < end_time
-
-        # 默认：现在往前 MAX_HOURS 小时
-        now = datetime.now(timezone.utc)
-        hours_ago = (now - pub_date).total_seconds() / 3600
-        return hours_ago <= MAX_HOURS
-    except:
+    pub_date = parse_pub_date(published)
+    if pub_date is None:
         return False
 
+    # 自定义时间窗口
+    if start_time and end_time:
+        return start_time <= pub_date < end_time
 
-def get_available_instance(username: str = "OpenAI") -> Optional[str]:
-    for instance in NITTER_INSTANCES:
-        try:
-            with httpx.Client(timeout=5.0, headers=HEADERS, follow_redirects=True) as client:
-                resp = client.get(f"{instance}/{username}/rss")
-            if resp.status_code == 200 and len(resp.text) > 100 and resp.text.lstrip().startswith("<?xml"):
-                return instance
-        except Exception:
-            continue
-    return None
+    # 默认：现在往前 MAX_HOURS 小时
+    now = datetime.now(timezone.utc)
+    hours_ago = (now - pub_date).total_seconds() / 3600
+    return hours_ago <= MAX_HOURS
 
 
-def fetch_user_tweets(username: str, instance: str, count: int = 10, start_time: datetime = None, end_time: datetime = None) -> List[Dict]:
-    tweets = []
-    url = f"{instance}/{username}/rss"
+def fetch_user_tweets(username: str, count: int = 10, start_time: datetime = None, end_time: datetime = None) -> List[Dict]:
+    api_key = get_api_key()
+    if not api_key:
+        print("   ⚠️ 未配置 twitterapi.io API key（tweet_fetcher/api.key 或 TWITTERAPI_KEY）")
+        return []
 
     try:
-        client = httpx.Client(timeout=TIMEOUT, headers=HEADERS, follow_redirects=True)
-        resp = client.get(url)
-        if resp.status_code != 200 or not resp.text.lstrip().startswith("<?xml"):
+        resp = httpx.get(
+            API_URL,
+            params={"userName": username, "count": count},
+            headers={"x-api-key": api_key},
+            timeout=TIMEOUT,
+        )
+        if resp.status_code != 200:
             return []
+        raw_tweets = resp.json().get("data", {}).get("tweets", [])
+    except Exception:
+        return []
 
-        feed = feedparser.parse(resp.text)
-        if feed.entries:
-            for entry in feed.entries:
-                title = entry.get("title", "")
-                published = entry.get("published", "")
+    tweets = []
+    for tw in raw_tweets:
+        published = tw.get("createdAt", "")
+        if not is_recent(published, start_time, end_time):
+            continue
 
-                if not is_recent(published, start_time, end_time):
-                    continue
+        text = (tw.get("text") or "").strip()
+        if len(text) < 30:
+            continue
+        # 过滤：回复自己 / 回复他人（回复多为碎片噪声）
+        if tw.get("isReply"):
+            continue
 
-                # 解析格式：RT（转推）或 R to @（回复）
-                is_retweet = title.startswith("RT ")
-                is_reply = title.startswith("R to @")
-
-                # 提取实际内容
-                if is_retweet:
-                    content = title.split(": ", 1)[1] if ": " in title else title[3:]
-                elif is_reply:
-                    content = title.split(": ", 1)[1] if ": " in title else title[4:]
-                else:
-                    content = title
-
-                # 过滤：内容太短
-                if len(content.strip()) < 30:
-                    continue
-                # 过滤：自己转自己/回复自己
-                if is_retweet and f"@{username}" in title:
-                    continue
-                if is_reply and (f"R to @{username}" in title or f"R to @{username.lower()}" in title):
-                    continue
-
-                link = entry.get("link", "")
-                for nitter_instance in NITTER_INSTANCES:
-                    link = link.replace(f"{nitter_instance}/", "https://x.com/")
-
-                tweets.append({
-                    "title": title[:150] + "..." if len(title) > 150 else title,
-                    "link": link,
-                    "published": published,
-                    "source": f"@{username}",
-                    **X_ACCOUNT_INFO.get(username.lower(), {})
-                })
-                if len(tweets) >= count:
-                    break
-    except:
-        pass
+        tweets.append({
+            "title": text[:TITLE_MAX] + "..." if len(text) > TITLE_MAX else text,
+            "link": tw.get("url", ""),
+            "published": published,
+            "source": f"@{username}",
+            **X_ACCOUNT_INFO.get(username.lower(), {})
+        })
+        if len(tweets) >= count:
+            break
 
     return tweets
 
@@ -169,25 +161,24 @@ def fetch_all_tweets(max_per_account: int = 10, start_time: datetime = None, end
     failed_accounts = []
 
     for account in ALL_ACCOUNTS:
-        tweets = []
-        last_error = "no instance tried"
-        for instance in NITTER_INSTANCES:
-            tweets = fetch_user_tweets(account, instance, max_per_account, start_time, end_time)
-            if tweets:
-                break
-            last_error = f"{instance}: no recent tweets"
+        try:
+            tweets = fetch_user_tweets(account, max_per_account, start_time, end_time)
+        except Exception as e:
+            tweets = []
+            print(f"      @{account}: 请求异常 {e}")
         if tweets:
             all_tweets.extend(tweets)
         else:
-            failed_accounts.append((account, last_error))
-        time.sleep(0.3)
+            failed_accounts.append(account)
+        time.sleep(0.5)
 
     if failed_accounts:
-        print(f"   ⚠️ {len(failed_accounts)} 个账号未抓到有效推文")
-        for account, reason in failed_accounts[:10]:
-            print(f"      @{account}: {reason}")
+        print(f"   ℹ️ {len(failed_accounts)} 个账号窗口内无有效推文")
+        for account in failed_accounts[:10]:
+            print(f"      @{account}: no recent tweets")
 
     if all_tweets:
+        save_cache(all_tweets)
         print(f"   抓取到 {len(all_tweets)} 条新推文")
     else:
         print("   ⚠️ 本轮抓取为空")
