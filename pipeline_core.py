@@ -111,6 +111,13 @@ def parse_llm_array(raw: str) -> List[Dict[str, Any]]:
     limited_fix = re.sub(r",(\s*[\]}])", r"\1", text)
     if limited_fix != text:
         attempts.append(limited_fix)
+    # MiniMax-M3 intermittently drops the closing bracket while still
+    # reporting stop_reason=end_turn; repair such truncated arrays.
+    if text.startswith("[") and not text.rstrip().endswith("]"):
+        attempts.append(text.rstrip().rstrip(",") + "]")
+        bracket_fix = re.sub(r",(\s*[\]}])", r"\1", attempts[-1])
+        if bracket_fix != attempts[-1]:
+            attempts.append(bracket_fix)
 
     for candidate in attempts:
         try:
