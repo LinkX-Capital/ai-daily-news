@@ -220,16 +220,16 @@ def generate_html(articles, summary_items, month_day=None, is_latest=True,
             # Search backwards for prev
             for delta in range(1, 11):
                 p = (dt - timedelta(days=delta)).strftime("%Y-%m-%d")
-                if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                               f"daily-ai-news-{p}.html")):
-                    prev_date = p
+                matched = _match_daily_date(p)
+                if matched:
+                    prev_date = matched
                     break
             # Search forwards for next
             for delta in range(1, 11):
                 n = (dt + timedelta(days=delta)).strftime("%Y-%m-%d")
-                if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                               f"daily-ai-news-{n}.html")):
-                    next_date = n
+                matched = _match_daily_date(n)
+                if matched:
+                    next_date = matched
                     break
         except ValueError:
             pass
@@ -1429,6 +1429,20 @@ def _update_index_html(today_date_str, articles):
 
 
 
+def _match_daily_date(date_str):
+    """Return the file date-part for date_str if a daily HTML exists, including
+    combined editions (e.g. 2026-03-28+29 or 2026-09-05_06). None otherwise."""
+    base = os.path.dirname(os.path.abspath(__file__))
+    if os.path.exists(os.path.join(base, f"daily-ai-news-{date_str}.html")):
+        return date_str
+    import glob
+    combined = (glob.glob(os.path.join(base, f"daily-ai-news-{date_str}+*.html"))
+                + glob.glob(os.path.join(base, f"daily-ai-news-{date_str}_*.html")))
+    if combined:
+        return os.path.basename(combined[0]).replace('daily-ai-news-', '').replace('.html', '')
+    return None
+
+
 def _find_prev_file(today_date_str):
     """Find the actual previous daily HTML file (handles gaps and combined dates)."""
     base = os.path.dirname(os.path.abspath(__file__))
@@ -1441,16 +1455,9 @@ def _find_prev_file(today_date_str):
     for delta in range(1, 11):
         prev_dt = dt - timedelta(days=delta)
         prev_date = prev_dt.strftime("%Y-%m-%d")
-        prev_path = os.path.join(base, f"daily-ai-news-{prev_date}.html")
-        if os.path.exists(prev_path):
-            return prev_date, prev_path
-        # Check combined date format (e.g., 2026-03-28+29, 2026-04-05+06)
-        import glob
-        combined = glob.glob(os.path.join(base, f"daily-ai-news-{prev_date}+*.html"))
-        if combined:
-            basename = os.path.basename(combined[0])
-            date_part = basename.replace('daily-ai-news-', '').replace('.html', '')
-            return date_part, combined[0]
+        matched = _match_daily_date(prev_date)
+        if matched:
+            return matched, os.path.join(base, f"daily-ai-news-{matched}.html")
     return None, None
 
 
