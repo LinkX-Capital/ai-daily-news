@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>AI 前沿动态</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Particle BG */
+        #particle-bg {
+            position: fixed; top: 0; left: 0;
+            pointer-events: none; z-index: 0;
+            -webkit-mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            -webkit-mask-composite: source-over;
+            mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            mask-composite: add;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 100vw;
+        }
+        .topbar-left { display: flex; align-items: baseline; gap: 10px; }
+        .topbar-brand { font-size: 14px; font-weight: 700; color: var(--purple); }
+        .topbar-tagline { font-size: 11px; color: var(--text-3); letter-spacing: 0.2px; }
+        .topbar-right { display: flex; gap: 8px; align-items: center; }
+        .topbar-search {
+            display: flex; align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 6px; padding: 0 8px;
+        }
+        .topbar-search input {
+            border: none; outline: none; background: transparent;
+            font-size: 12px; color: var(--text); width: 140px; padding: 5px 4px; font-family: inherit;
+        }
+        .topbar-search input::placeholder { color: var(--text-3); }
+        .topbar-search .search-icon { font-size: 11px; color: var(--text-3); margin-right: 4px; }
+        .search-dropdown {
+            position: absolute; top: 46px; right: 24px; width: 320px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+            display: none; max-height: 70vh; overflow-y: auto;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08); z-index: 200;
+        }
+        .search-dropdown.active { display: block; }
+        .search-empty { padding: 24px; text-align: center; color: var(--text-3); font-size: 13px; }
+        .search-result {
+            display: flex; align-items: baseline; gap: 10px;
+            padding: 10px 16px; border-bottom: 1px solid var(--border);
+            text-decoration: none; color: var(--text); transition: background 0.12s;
+        }
+        .search-result:last-child { border-bottom: none; }
+        .search-result:hover { background: var(--purple-20); }
+        .sr-date { font-size: 12px; color: var(--text-3); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+        .sr-title { flex: 1; font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .sr-cat { font-size: 11px; color: var(--purple); flex-shrink: 0; background: var(--purple-20); padding: 2px 6px; border-radius: 3px; }
+
+        /* Layout: sidebar + content */
+        .layout {
+            position: relative; z-index: 1;
+            max-width: 960px; margin: 0 auto;
+            display: flex; gap: 32px;
+            padding: 32px 24px 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: sticky; top: 80px;
+            width: 180px; flex-shrink: 0;
+            align-self: flex-start;
+            max-height: calc(100vh - 96px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .nav-label {
+            font-size: 11px; font-weight: 600; color: var(--text-3);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            padding-bottom: 8px; margin-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-details { margin-bottom: 4px; }
+        .nav-details summary {
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 12px; font-weight: 600; color: var(--text);
+            padding: 5px 6px; border-radius: 4px; cursor: pointer;
+            list-style: none; transition: background 0.1s;
+        }
+        .nav-details summary::-webkit-details-marker { display: none; }
+        .nav-details summary::before {
+            content: "\25BE"; font-size: 9px; color: var(--text-3);
+            margin-right: 4px; display: inline-block; transition: transform 0.15s;
+        }
+        .nav-details:not([open]) summary::before { transform: rotate(-90deg); }
+        .nav-details summary:hover { background: var(--purple-20); }
+        .nav-count {
+            font-size: 10px; color: var(--text-3); font-weight: 400;
+            background: var(--bg-page); padding: 1px 5px; border-radius: 3px;
+        }
+        .nav-articles { padding: 2px 0 6px 16px; }
+        .nav-item {
+            display: block; font-size: 11px; color: var(--text-3);
+            text-decoration: none; padding: 2px 6px; border-radius: 3px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            transition: color 0.1s, background 0.1s;
+        }
+        .nav-item:hover { color: var(--text); background: var(--purple-20); }
+
+        /* Main content */
+        .content { flex: 1; min-width: 0; padding-bottom: 0; }
+
+        /* Section label */
+        .section-label {
+            font-size: 12px; font-weight: 600; color: var(--purple);
+            text-transform: uppercase; letter-spacing: 0.8px;
+            padding: 0 0 12px; margin-bottom: 16px;
+            border-bottom: 2px solid var(--purple-40);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-label .sec-dot {
+            width: 6px; height: 6px; background: var(--purple); border-radius: 2px;
+        }
+
+        /* Special items */
+        .special-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
+        .special-item {
+            display: block; padding: 14px 18px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+            text-decoration: none; color: var(--text); transition: all 0.15s;
+        }
+        .special-item:hover { border-color: var(--purple-40); background: var(--purple-20); }
+        .special-item .sp-title { font-size: 14px; font-weight: 600; }
+        .special-item .sp-desc { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+
+        /* Collapsible month */
+        .month-group { margin-bottom: 8px; }
+        .month-toggle {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%; border: none; background: none; cursor: pointer;
+            font-size: 13px; font-weight: 600; color: var(--text-3);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 14px 0 8px; border-bottom: 1px solid var(--border);
+            font-family: inherit;
+        }
+        .month-toggle .toggle-arrow {
+            font-size: 10px; transition: transform 0.15s; color: var(--text-3);
+        }
+        .month-toggle.collapsed .toggle-arrow { transform: rotate(-90deg); }
+        .month-body { overflow: hidden; transition: max-height 0.3s ease; }
+        .month-body.collapsed { max-height: 0 !important; }
+
+        /* Scroll offset for sticky topbar */
+        .timeline-entry[id] { scroll-margin-top: 64px; }
+
+        /* Timeline entry */
+        .timeline-entry {
+            display: block; padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none; color: var(--text); transition: opacity 0.12s;
+        }
+        .timeline-entry:last-child { border-bottom: none; }
+        .timeline-entry:hover { opacity: 0.75; }
+        .te-date {
+            font-size: 13px; font-weight: 600; color: var(--text-3);
+            font-variant-numeric: tabular-nums; margin-bottom: 6px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .te-badge {
+            font-size: 10px; background: var(--purple-20); color: var(--purple);
+            padding: 1px 6px; border-radius: 3px; font-weight: 600;
+        }
+        .te-summary {
+            font-size: 14px; line-height: 1.7; color: var(--text-2);
+            display: -webkit-box; -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .te-summary strong, .te-summary b { color: var(--text); font-weight: 600; }
+        .te-count { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+        /* Footer */
+        .footer {
+            display: flex; justify-content: space-between; align-items: center;
+            border-top: 1px solid var(--border);
+            padding: 16px 24px; margin-top: 24px;
+            max-width: 960px; margin-left: auto; margin-right: auto;
+        }
+        .footer-copy { font-size: 12px; color: var(--text-3); }
+        .footer-top {
+            font-size: 12px; color: var(--text-3); text-decoration: none;
+            padding: 4px 12px; border: 1px solid var(--border); border-radius: 4px;
+            transition: all 0.12s;
+        }
+        .footer-top:hover { color: var(--text); border-color: var(--text-3); }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .layout { max-width: 680px; }
+        }
+        @media (max-width: 600px) {
+            .layout { padding: 16px 16px 0; }
+            .topbar-tagline { display: none; }
+            .topbar-search { display: none; }
+            .search-dropdown { display: none !important; }
+            .footer { padding: 16px; }
+        }
+        @media (prefers-reduced-motion: reduce) { #particle-bg { display: none; } }
+
+/* ── Lang toggle ── */
+.lang-toggle {
+    background: var(--purple-20);
+    color: var(--purple);
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+.lang-toggle:hover {
+    background: var(--purple);
+    color: #fff;
+}
+/* Floating variant for pages without topbar */
+.lang-toggle-float {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+    </style>
+</head>
+<body>
+    <canvas id="particle-bg"></canvas>
+    <div class="topbar">
+        <div class="topbar-left">
+            <span class="topbar-brand">AI Daily News</span>
+            <span class="topbar-tagline">Keep Informed with Link-X Capital</span>
+        </div>
+        <div class="topbar-right">
+            <button class="lang-toggle" id="lang-toggle">EN</button>
+            <div class="topbar-search">
+                <span class="search-icon">&#128269;</span>
+                <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
+            </div>
+        </div>
+        <div class="search-dropdown" id="search-results"></div>
+    </div>
+
+    <div class="layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-label">Navigate</div>
+
+                                    <details class="nav-details" open>
+                <summary><span>2026 年 9 月</span><span class="nav-count">6</span></summary>
+                <div class="nav-articles">
+                
+                                                                                                                        <a href="#sep-6" class="nav-item">Sep 06</a>
+<a href="#sep-5" class="nav-item">Sep 05</a>
+<a href="#sep-4" class="nav-item">Sep 04</a>
+<a href="#sep-3" class="nav-item">Sep 03</a>
+<a href="#sep-2" class="nav-item">Sep 02</a>
+<a href="#sep-1" class="nav-item">Sep 01</a></div>
+            </details>
+<details class="nav-details" open>
+                <summary><span>2026 年 8 月</span><span class="nav-count">30</span></summary>
+                <div class="nav-articles">
+                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a href="#aug-31" class="nav-item">Aug 30-31</a>
+<a href="#aug-29" class="nav-item">Aug 29</a>
+<a href="#aug-28" class="nav-item">Aug 28</a>
+<a href="#aug-27" class="nav-item">Aug 27</a>
+<a href="#aug-26" class="nav-item">Aug 26</a>
+<a href="#aug-25" class="nav-item">Aug 25</a>
+<a href="#aug-24" class="nav-item">Aug 24</a>
+<a href="#aug-23" class="nav-item">Aug 23</a>
+<a href="#aug-22" class="nav-item">Aug 22</a>
+<a href="#aug-21" class="nav-item">Aug 21</a>
+<a href="#aug-20" class="nav-item">Aug 20</a>
+<a href="#aug-19" class="nav-item">Aug 19</a>
+<a href="#aug-18" class="nav-item">Aug 18</a>
+<a href="#aug-17" class="nav-item">Aug 17</a>
+<a href="#aug-16" class="nav-item">Aug 16</a>
+<a href="#aug-15" class="nav-item">Aug 15</a>
+<a href="#aug-14" class="nav-item">Aug 14</a>
+<a href="#aug-13" class="nav-item">Aug 13</a>
+<a href="#aug-12" class="nav-item">Aug 12</a>
+<a href="#aug-11" class="nav-item">Aug 11</a>
+<a href="#aug-10" class="nav-item">Aug 10</a>
+<a href="#aug-9" class="nav-item">Aug 09</a>
+<a href="#aug-8" class="nav-item">Aug 08</a>
+<a href="#aug-7" class="nav-item">Aug 07</a>
+<a href="#aug-6" class="nav-item">Aug 06</a>
+<a href="#aug-5" class="nav-item">Aug 05</a>
+<a href="#aug-4" class="nav-item">Aug 04</a>
+<a href="#aug-3" class="nav-item">Aug 03</a>
+<a href="#aug-2" class="nav-item">Aug 02</a>
+<a href="#aug-1" class="nav-item">Aug 01</a></div>
+            </details>
+<details class="nav-details" open>
+                <summary><span>专题报告</span><span class="nav-count">3</span></summary>
+                <div class="nav-articles">
+                    <a href="topics.html" class="nav-item" style="color:var(--purple);font-weight:600">全部专题 →</a>
+                    <a href="topic-frontier-models.html" class="nav-item">模型前沿周报</a>
+                    <a href="Google-IO-2026-Deep-Research.html" class="nav-item">Google I/O 2026</a>
+                    <a href="GTC-2026-Official-Report.html" class="nav-item">GTC 2026</a>
+                </div>
+            </details>
+
+            <details class="nav-details" open>
+                <summary><span>2026 年 7 月</span><span class="nav-count">31</span></summary>
+                <div class="nav-articles">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <a href="#jul-31" class="nav-item">Jul 31</a>
+<a href="#jul-30" class="nav-item">Jul 30</a>
+<a href="#jul-29" class="nav-item">Jul 29</a>
+<a href="#jul-28" class="nav-item">Jul 28</a>
+<a href="#jul-27" class="nav-item">Jul 27</a>
+<a href="#jul-26" class="nav-item">Jul 26</a>
+<a href="#jul-25" class="nav-item">Jul 25</a>
+<a href="#jul-24" class="nav-item">Jul 24</a>
+<a href="#jul-23" class="nav-item">Jul 23</a>
+<a href="#jul-22" class="nav-item">Jul 22</a>
+<a href="#jul-21" class="nav-item">Jul 21</a>
+<a href="#jul-20" class="nav-item">Jul 20</a>
+<a href="#jul-19" class="nav-item">Jul 19</a>
+<a href="#jul-18" class="nav-item">Jul 18</a>
+<a href="#jul-17" class="nav-item">Jul 17</a>
+<a href="#jul-16" class="nav-item">Jul 16</a>
+<a href="#jul-15" class="nav-item">Jul 15</a>
+<a href="#jul-14" class="nav-item">Jul 14</a>
+<a href="#jul-13" class="nav-item">Jul 13</a>
+<a href="#jul-12" class="nav-item">Jul 12</a>
+<a href="#jul-11" class="nav-item">Jul 11</a>
+<a href="#jul-10" class="nav-item">Jul 10</a>
+<a href="#jul-9" class="nav-item">Jul 09</a>
+<a href="#jul-8" class="nav-item">Jul 08</a>
+<a href="#jul-7" class="nav-item">Jul 07</a>
+<a href="#jul-6" class="nav-item">Jul 06</a>
+<a href="#jul-5" class="nav-item">Jul 05</a>
+<a href="#jul-4" class="nav-item">Jul 04</a>
+<a href="#jul-3" class="nav-item">Jul 03</a>
+<a href="#jul-2" class="nav-item">Jul 02</a>
+                    <a href="#jul-1" class="nav-item">Jul 01</a>
+                </div>
+            </details>
+
+            <details class="nav-details" open>
+                <summary><span>2026 年 6 月</span><span class="nav-count">30</span></summary>
+                <div class="nav-articles">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a href="#jun-30" class="nav-item">Jun 30</a>
+<a href="#jun-29" class="nav-item">Jun 29</a>
+<a href="#jun-28" class="nav-item">Jun 28</a>
+<a href="#jun-27" class="nav-item">Jun 27</a>
+<a href="#jun-26" class="nav-item">Jun 26</a>
+<a href="#jun-25" class="nav-item">Jun 25</a>
+<a href="#jun-24" class="nav-item">Jun 24</a>
+<a href="#jun-23" class="nav-item">Jun 23</a>
+<a href="#jun-22" class="nav-item">Jun 22</a>
+<a href="#jun-21" class="nav-item">Jun 21</a>
+<a href="#jun-20" class="nav-item">Jun 20</a>
+<a href="#jun-19" class="nav-item">Jun 19</a>
+<a href="#jun-18" class="nav-item">Jun 18</a>
+<a href="#jun-17" class="nav-item">Jun 17</a>
+<a href="#jun-16" class="nav-item">Jun 16</a>
+<a href="#jun-15" class="nav-item">Jun 15</a>
+<a href="#jun-14" class="nav-item">Jun 14</a>
+<a href="#jun-13" class="nav-item">Jun 13</a>
+<a href="#jun-12" class="nav-item">Jun 12</a>
+<a href="#jun-11" class="nav-item">Jun 11</a>
+<a href="#jun-10" class="nav-item">Jun 10</a>
+<a href="#jun-9" class="nav-item">Jun 09</a>
+<a href="#jun-8" class="nav-item">Jun 08</a>
+<a href="#jun-7" class="nav-item">Jun 07</a>
+<a href="#jun-6" class="nav-item">Jun 06</a>
+<a href="#jun-5" class="nav-item">Jun 05</a>
+<a href="#jun-4" class="nav-item">Jun 04</a>
+<a href="#jun-3" class="nav-item">Jun 03</a>
+<a href="#jun-2" class="nav-item">Jun 02</a>
+<a href="#jun-1" class="nav-item">Jun 01</a>
+                </div>
+            </details>
+
+            <details class="nav-details" open>
+                <summary><span>2026 年 5 月</span><span class="nav-count">31</span></summary>
+                <div class="nav-articles">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <a href="#may-31" class="nav-item">May 31</a>
+<a href="#may-30" class="nav-item">May 30</a>
+<a href="#may-29" class="nav-item">May 29</a>
+<a href="#may-28" class="nav-item">May 28</a>
+<a href="#may-27" class="nav-item">May 27</a>
+<a href="#may-26" class="nav-item">May 26</a>
+<a href="#may-25" class="nav-item">May 25</a>
+<a href="#may-24" class="nav-item">May 24</a>
+<a href="#may-23" class="nav-item">May 23</a>
+<a href="#may-22" class="nav-item">May 22</a>
+<a href="#may-21" class="nav-item">May 21</a>
+<a href="#may-20" class="nav-item">May 20</a>
+<a href="#may-19" class="nav-item">May 19</a>
+<a href="#may-18" class="nav-item">May 18</a>
+<a href="#may-17" class="nav-item">May 17</a>
+<a href="#may-16" class="nav-item">May 16</a>
+<a href="#may-15" class="nav-item">May 15</a>
+<a href="#may-14" class="nav-item">May 14</a>
+<a href="#may-13" class="nav-item">May 13</a>
+<a href="#may-12" class="nav-item">May 12</a>
+<a href="#may-11" class="nav-item">May 11</a>
+<a href="#may-10" class="nav-item">May 10</a>
+<a href="#may-9" class="nav-item">May 09</a>
+<a href="#may-8" class="nav-item">May 08</a>
+<a href="#may-7" class="nav-item">May 07</a>
+<a href="#may-6" class="nav-item">May 06</a>
+<a href="#may-5" class="nav-item">May 05</a>
+<a href="#may-4" class="nav-item">May 04</a>
+                    <a href="#may-3" class="nav-item">May 03</a>
+<a href="#may-2" class="nav-item">May 02</a>
+                    <a href="#may-1" class="nav-item">May 01</a>
+                </div>
+            </details>
+
+            <details class="nav-details" open>
+                <summary><span>2026 年 4 月</span><span class="nav-count">28</span></summary>
+                <div class="nav-articles">
+                    <a href="#apr-30" class="nav-item">Apr 30</a>
+                    <a href="#apr-29" class="nav-item">Apr 29</a>
+                    <a href="#apr-28" class="nav-item">Apr 28</a>
+                    <a href="#apr-27" class="nav-item">Apr 27</a>
+                    <a href="#apr-26" class="nav-item">Apr 26</a>
+                    <a href="#apr-25" class="nav-item">Apr 25</a>
+                    <a href="#apr-24" class="nav-item">Apr 24</a>
+                    <a href="#apr-23" class="nav-item">Apr 23</a>
+                    <a href="#apr-22" class="nav-item">Apr 22</a>
+                    <a href="#apr-21" class="nav-item">Apr 21</a>
+                    <a href="#apr-20" class="nav-item">Apr 20</a>
+                    <a href="#apr-19" class="nav-item">Apr 19</a>
+                    <a href="#apr-17" class="nav-item">Apr 17</a>
+                    <a href="#apr-16" class="nav-item">Apr 16</a>
+                    <a href="#apr-15" class="nav-item">Apr 15</a>
+                    <a href="#apr-14" class="nav-item">Apr 14</a>
+                    <a href="#apr-13" class="nav-item">Apr 13</a>
+                    <a href="#apr-12" class="nav-item">Apr 12</a>
+                    <a href="#apr-11" class="nav-item">Apr 11</a>
+                    <a href="#apr-10" class="nav-item">Apr 10</a>
+                    <a href="#apr-09" class="nav-item">Apr 09</a>
+                    <a href="#apr-08" class="nav-item">Apr 08</a>
+                    <a href="#apr-07" class="nav-item">Apr 07</a>
+                    <a href="#apr-05" class="nav-item">Apr 05</a>
+                    <a href="#apr-04" class="nav-item">Apr 04</a>
+                    <a href="#apr-03" class="nav-item">Apr 03</a>
+                    <a href="#apr-02" class="nav-item">Apr 02</a>
+                    <a href="#apr-01" class="nav-item">Apr 01</a>
+                </div>
+            </details>
+
+            <details class="nav-details">
+                <summary><span>2026 年 3 月</span><span class="nav-count">23</span></summary>
+                <div class="nav-articles">
+                    <a href="#mar-31" class="nav-item">Mar 31</a>
+                    <a href="#mar-30" class="nav-item">Mar 30</a>
+                    <a href="#mar-28" class="nav-item">Mar 28</a>
+                    <a href="#mar-27" class="nav-item">Mar 27</a>
+                    <a href="#mar-26" class="nav-item">Mar 26</a>
+                    <a href="#mar-25" class="nav-item">Mar 25</a>
+                    <a href="#mar-24" class="nav-item">Mar 24</a>
+                    <a href="#mar-23" class="nav-item">Mar 23</a>
+                    <a href="#mar-22" class="nav-item">Mar 22</a>
+                    <a href="#mar-21" class="nav-item">Mar 21</a>
+                    <a href="#mar-20" class="nav-item">Mar 20</a>
+                    <a href="#mar-19" class="nav-item">Mar 19</a>
+                    <a href="#mar-18" class="nav-item">Mar 18</a>
+                    <a href="#mar-17" class="nav-item">Mar 17</a>
+                    <a href="#mar-16" class="nav-item">Mar 16</a>
+                    <a href="#mar-15" class="nav-item">Mar 15</a>
+                    <a href="#mar-14" class="nav-item">Mar 14</a>
+                    <a href="#mar-13" class="nav-item">Mar 13</a>
+                    <a href="#mar-12" class="nav-item">Mar 12</a>
+                    <a href="#mar-10" class="nav-item">Mar 10</a>
+                    <a href="#mar-09" class="nav-item">Mar 09</a>
+                    <a href="#mar-08" class="nav-item">Mar 08</a>
+                    <a href="#mar-07" class="nav-item">Mar 07</a>
+                </div>
+            </details>
+        </nav>
+
+        <!-- Main content -->
+        <div class="content">
+            <div class="section-label"><span class="sec-dot"></span>专题报告</div>
+            <div class="special-list">
+                <a href="topics.html" class="special-item" style="border-color:var(--purple-40);background:var(--purple-20)">
+                    <div class="sp-title">专题报告集合</div>
+                    <div class="sp-desc">3 个专题 | 前沿模型周报 · Google I/O 2026 · GTC 2026</div>
+                </a>
+                <a href="topic-frontier-models.html" class="special-item">
+                    <div class="sp-title">前沿模型周报 · 专题集合</div>
+                    <div class="sp-desc">最新：2026.07.28 | Claude Opus 5 · Kimi K3 · Gemini 3.6 Flash · FLUX 3</div>
+                </a>
+                <a href="Google-IO-2026-Deep-Research.html" class="special-item">
+                    <div class="sp-title">Google I/O 2026 深度研究报告</div>
+                    <div class="sp-desc">Agentic Gemini 时代 | Gemini 3.5 Flash · Gemini Omni · Antigravity</div>
+                </a>
+                <a href="GTC-2026-Official-Report.html" class="special-item">
+                    <div class="sp-title">GTC 2026 官方报告</div>
+                    <div class="sp-desc">NVIDIA GTC 2026 大会专题</div>
+                </a>
+            </div>
+
+            <div class="section-label"><span class="sec-dot"></span>日报存档</div>
+
+            <!-- July 2026 -->
+                        <!-- Aug 2026 -->
+                        <!-- Sep 2026 -->
+            <div class="month-group">
+                <button class="month-toggle" onclick="toggleMonth(this)">
+                    2026 年 9 月 <span class="toggle-arrow">&#9662;</span>
+                </button>
+                <div class="month-body" id="month-sep">
+        <a href="daily-ai-news-2026-09-05_06.html" class="timeline-entry" id="sep-5">
+            <div class="te-date">Sep 5-6 <span class="te-badge">最新</span></div>
+            <div class="te-summary"><strong>Claude用11天完成费马大定理端到端Lean形式化</strong>1300万行代码、2.95万中间定理；<strong>Meta 自主研究系统 AIRA₃</strong>参加 NVIDIA Kaggle 比赛获约 4000 队中第八名、夺金；<strong>OpenAI 确认其 Agent 曾占据德国维基论坛</strong>承诺建立偏差行为事件披露标准；<strong>数据中心开发商Crusoe</strong>据报以300亿美元估值完成30亿美元新融资；<strong>Bespoke Labs</strong>用 SFT+RL 将开源模型 Inkling 个性化到单一代码仓库</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-09-04.html" class="timeline-entry" id="sep-4">
+            <div class="te-date">Sep 4</div>
+            <div class="te-summary"><strong>OpenAI 推出 GPT-6 Astra 模型</strong>首批仅向部分机构开放；<strong>英伟达宣布以约 129.3</strong>亿美元收购 Hugging Face；<strong>Google DeepMind 与 Google Research 联合发布 WeatherNext 3</strong>天气预报细化到 5 公里、每小时更新一次；<strong>Figure 与 Nscale 合作部署最多 10 万块 GPU</strong>首批投入 35 亿美元；<strong>Realta Fusion 与 Madison Gas and Electric 达成合作</strong>将于威斯康星建设 200 兆瓦并网聚变电站</div>
+            <div class="te-count">16 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-09-03.html" class="timeline-entry" id="sep-3">
+            <div class="te-date">Sep 3</div>
+            <div class="te-summary"><strong>Google 发布 Gemini 3.8 Flash 与 3.8 Flash Cyber</strong>覆盖长流程Agent与漏洞修复；<strong>Meta 推出 Muse Spark 1.3</strong>内部对比工具调用减少约 20%；<strong>阿里推出 Qwen3.8-Max-0902</strong>登顶 Code Arena 综合榜；<strong>Snowflake 上调年度销售预测</strong>AI 编程采用加速；<strong>Broadcom 预计</strong>2027 与 2028 年 AI 芯片营收将连续翻倍</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-09-02.html" class="timeline-entry" id="sep-2">
+            <div class="te-date">Sep 2</div>
+            <div class="te-summary"><strong>OpenAI 预告 Astra 模型</strong>称其网络安全能力达到 Preparedness 框架的 Critical 级别；<strong>Artificial Analysis</strong>Claude Fable 5.1 登顶智能指数，但单任务成本比 Fable 5 ；<strong>World Labs 发布全能世界模型 Atlas</strong>统一生成、重建与时空仿真，输出可达 1440p 一分钟视频；<strong>Meta 发布首个实时音频感知模型 Muse Voice Transcribe</strong>流式转写与说话人分离登顶第三方榜单；<strong>Google DeepMind 为 Gemini 推出智能体视频理解</strong>token 消耗最多降 88%，成本降 66%</div>
+            <div class="te-count">21 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-09-01.html" class="timeline-entry" id="sep-1">
+            <div class="te-date">Sep 1</div>
+            <div class="te-summary"><strong>Runway发布首个界面世界模型Solaris</strong>逐帧实时生成可交互界面；<strong>ChatGPT Ads</strong>年化营收运行率达 10 亿美元并面向全球扩展；<strong>Google</strong>Antigravity多智能体团队配合Gemini 3.7 Flash解出七个开；<strong>Anthropic更新对齐与安全整改进展</strong>披露奖励作弊对照实验；<strong>OpenRouter智能体CLI Ori连发大版本更新</strong>自有agent loop成默认harness</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+
+                </div>
+            </div>
+<div class="month-group">
+                <button class="month-toggle" onclick="toggleMonth(this)">
+                    2026 年 8 月 <span class="toggle-arrow">&#9662;</span>
+                </button>
+                <div class="month-body" id="month-aug">
+        <a href="daily-ai-news-2026-08-31.html" class="timeline-entry" id="aug-31">
+            <div class="te-date">Aug 30-31</div>
+            <div class="te-summary"><strong>OpenAI 宣布终止与 Cursor 的合作</strong>Cursor 被 SpaceX 收购后将失去直接模型访问；<strong>Microduck</strong>小型机器人首日预订额超过 260 万美元；<strong>Caterpillar</strong>把矿山自动化经验迁移到 AI 部署；<strong>SpaceX 为 AI 数据中心筹划涡轮叶片工厂</strong>Musk 称自建铸造可将天然气涡轮上线提速 18 个月；<strong>Anthropic</strong>据报曾试图以约 70 亿美元收购 AI 芯片公司 MatX</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-29.html" class="timeline-entry" id="aug-29">
+            <div class="te-date">Aug 29</div>
+            <div class="te-summary"><strong>腾讯开源 Hy4 preview</strong>770B MoE、49B激活参数与1M上下文；<strong>Anthropic让Claude自动缓解10类对齐失败</strong>生产级模型60小时闭合65%安全差距；<strong>OpenRouter</strong>GPT-5.6折扣推动Luna用量增长13.8倍；<strong>Neocloud Lambda 再获 10 亿美元私募债务</strong>用于采购英伟达 AI 芯片并租给微软；<strong>Retro获超2100万美元A轮</strong>前Instagram团队押注反算法照片社交</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-28.html" class="timeline-entry" id="aug-28">
+            <div class="te-date">Aug 28</div>
+            <div class="te-summary"><strong>Gemini Omni 1.1 Flash上线API</strong>场景延长至40秒、首尾帧插值与4K放大，360p草稿快60%；<strong>Hugging Face 开售</strong>399 美元开源鸭子机器人 Microduck；<strong>Barret Zoph加入Google任研究副总裁</strong>将RL与后训练经验带入Gemini团队；<strong>Anthropic开放Model Hardware Standard研究预览</strong>给AI Agent操作实验设备的共享规范；<strong>Plaud发布AI耳机Plaud One</strong>充电盒内置eSIM，可不依赖手机远程调度AI助理</div>
+            <div class="te-count">22 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-27.html" class="timeline-entry" id="aug-27">
+            <div class="te-date">Aug 27</div>
+            <div class="te-summary"><strong>阿里 Qwen 团队发布 Qwen3.8-Flash 预览版</strong>开放权重并预告 Qwen4 架构；<strong>智谱发布 GLM-5.3-Flash</strong>采用 320B/18B 原生多模态 MoE；<strong>Google 发布 Gemini 3.5 Transcribe</strong>支持 85+ 语言并提供实时转录 API；<strong>DeepSeek 1—7 月营收约 4.75 亿元</strong>同比十倍增长；<strong>Anthropic 推出企业级 MCP 统一授权</strong>支持管理员集中配置连接器</div>
+            <div class="te-count">21 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-26.html" class="timeline-entry" id="aug-26">
+            <div class="te-date">Aug 26</div>
+            <div class="te-summary"><strong>Figure 发布 Index 数据集</strong>4个月众包1600万条机器人训练视频，承诺12个月投超10亿美元；<strong>Claude 记忆打通 chat 与 Cowork</strong>可逐条查看编辑，敏感话题默认不存；<strong>OpenAI 推出 ChatGPT Business Premium 席位</strong>100美元面向中小企业；<strong>Perplexity 推出全本地智能体栈</strong>Portable Computer 完整运行于 NVIDIA DGX Spark；<strong>Skild S1</strong>单条视频演示让机器人执行10分钟未见任务，成功率较语言提示高7倍</div>
+            <div class="te-count">22 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-25.html" class="timeline-entry" id="aug-25">
+            <div class="te-date">Aug 25</div>
+            <div class="te-summary"><strong>Mistral</strong>AI与HUMAIN合作建设沙特本地化AI模型与基础设施；<strong>Hugging</strong>Face传出约130亿美元收购谈判；<strong>OpenRouter</strong>Ox Alpha 五天内成为平台 token 第一；<strong>Amazon因内存短缺将</strong>硬件价格上调60%；<strong>Weighted Memory Tree</strong>为长程 LLM agent 增加动态保留分数</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-24.html" class="timeline-entry" id="aug-24">
+            <div class="te-date">Aug 24</div>
+            <div class="te-summary"><strong>阿里巴巴寻求通过股份配售筹资约</strong>102 亿美元用于 AI 投资；<strong>Harvard 商学院 699</strong>美元创业训练营引入 HeyGen 教员 AI 分身；<strong>英伟达 AI 芯片报价明年上调约 17%</strong>Grace Blackwell 300 与 Vera Rubin 200 涨幅明；<strong>MidTool合成工具调用中训练数据</strong>Qwen3-4B/8B在三项Agent基准上均有提升；<strong>Adversarial Review</strong>用结构化分歧改进多Agent代码审查</div>
+            <div class="te-count">10 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-23.html" class="timeline-entry" id="aug-23">
+            <div class="te-date">Aug 23</div>
+            <div class="te-summary"><strong>Google TPU</strong>创始负责人加入 Anthropic 计算部门；<strong>OpenAI 此前曾洽谈入股</strong>Stargate 电力开发商 Lancium；<strong>DeepMind 校友创办的 Inherent 发布论文复现 Agent</strong>号称在复现任务上超越 OpenAI 与 Anthropic；<strong>Matryoshka 嵌套训练</strong>500M/1.5B/3B 模型套件训练计算量减少 36%；<strong>Full-bandwidth Transformer</strong>潜在反馈让 1B 模型达到约 1.5 倍训练 token 的效果</div>
+            <div class="te-count">10 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-22.html" class="timeline-entry" id="aug-22">
+            <div class="te-date">Aug 22</div>
+            <div class="te-summary"><strong>DeepSeek</strong>上线实验性多模态视觉理解模型 DeepSeek-V4-Flash-Vision-；<strong>OpenAI 下调</strong>GPT-5.6 Sol API 价格；<strong>OpenCode 和 OpenRouter 上线隐身模型 Ox Alpha</strong>支持百万级上下文和零数据保留；<strong>NVIDIA 发布长程智能体 AVO</strong>ARC-AGI-3 公开集拿到满分；<strong>OpenAI API</strong>Dashboard 支持按 key 追踪用量并设置硬支出上限</div>
+            <div class="te-count">16 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-21.html" class="timeline-entry" id="aug-21">
+            <div class="te-date">Aug 21</div>
+            <div class="te-summary"><strong>Ramp 数据显示</strong>OpenAI 在美企用户中缩小与 Anthropic 的份额差距；<strong>Binance 开放 AI agents 交易</strong>但权限和风控主要交给用户；<strong>Claude 平台正式上线 computer use、Skills API 和 Files API</strong>面向生产级 agents；<strong>Mistral 发布 Agentic Search</strong>用多步检索提升复杂文档问答；<strong>AT&T 计划以开源模型压平对</strong>Anthropic、OpenAI 的支出</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-20.html" class="timeline-entry" id="aug-20">
+            <div class="te-date">Aug 20</div>
+            <div class="te-summary"><strong>Generalist AI 发布 GEN-1.5</strong>一次演示即学会新任务，零样本即兴泛化到未见工具与场景；<strong>OpenAI 预览 Private Safety Processing</strong>零数据保留下也能跨交互做安全监控；<strong>Cerebras 发布下一代 CS-4</strong>性能与功耗同步翻倍；<strong>TerraPower</strong>押注储能优势切入 AI 数据中心供电；<strong>Marvell 深度绑定 Google 自研芯片</strong>122 亿美元认股权证与采购目标挂钩</div>
+            <div class="te-count">17 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-19.html" class="timeline-entry" id="aug-19">
+            <div class="te-date">Aug 19</div>
+            <div class="te-summary"><strong>Artificial Analysis 评测 GLM-5.3</strong>智力指数得分 60，输出量显著偏高；<strong>Anthropic 年化收入升至 650 亿美元</strong>间接渠道占 ARR 比重超过 40%；<strong>Claude 可直接发送</strong>Gmail 邮件并管理 Google Drive 文件；<strong>Perplexity Computer 接入电子邮件</strong>用抄送或转发直接发起任务；<strong>Asana 用 Codex</strong>两周清除原估五年的测试框架迁移工作</div>
+            <div class="te-count">16 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-18.html" class="timeline-entry" id="aug-18">
+            <div class="te-date">Aug 18</div>
+            <div class="te-summary"><strong>Cursor 上线代码托管平台 Origin</strong>代码仓库与 PR 深度集成智能体；<strong>Google 以 1000 万美元赢得 Spirit Airlines 破产拍卖数据资产</strong>击败 Mercor；<strong>AI 工作流自动化公司 Relay 关停</strong>创始人率团队加入 Google Chrome；<strong>OpenAI 发布《防御者窗口》</strong>AI 攻击能力逼近，安全防御须全面自动化；<strong>NVIDIA 联手 SB Energy 锁定 PORTS-Pike 场地与电力</strong>OpenAI 将部署 4.25GW AI 工厂</div>
+            <div class="te-count">17 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-17.html" class="timeline-entry" id="aug-17">
+            <div class="te-date">Aug 17</div>
+            <div class="te-summary"><strong>Stripe 据报以超过 70</strong>亿美元收购 AI 网关 OpenRouter；<strong>Nebius 与 CoreWeave 力推短期合同</strong>AWS 继续锁定长约；<strong>Anthropic</strong>多 Agent 会合谋、形成协作孤岛，目标冲突时可能互相破坏；<strong>CEDAR</strong>让 AI 按目标自动生成可运行的复杂系统模型；<strong>为什么 CLAUDE.md</strong>越写越长？研究称旧规则“只增难删”</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-16.html" class="timeline-entry" id="aug-16">
+            <div class="te-date">Aug 16</div>
+            <div class="te-summary"><strong>Anthropic IPO 估值锚定 2028 年 1900 亿至 2000 亿美元营收预测</strong>华尔街按前瞻营收倍数定价；<strong>NVIDIA 据传洽谈以最高 30 亿美元入股 SB Energy</strong>挂钩 OpenAI 俄亥俄数据中心；<strong>SemiAnalysis</strong>分析将印度列为下一个数据中心爆发地；<strong>融资过亿美元的核聚变初创</strong>公司盘点；<strong>StateBridge</strong>免训练隐状态对齐打通多智能体潜空间通信，26 个评测对中 22 个最优</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-15.html" class="timeline-entry" id="aug-15">
+            <div class="te-date">Aug 15</div>
+            <div class="te-summary"><strong>Z.ai 发布 GLM-5.3</strong>同一基座靠后训练规模化，编程与网络安全能力跃升；<strong>Google 开放移除 AI 生成内容可见水印</strong>SynthID 不可见水印保留；<strong>Nous Research 推出 Hermes Bot Mode</strong>桌面 Agent 支持定时任务与 bot 间通信；<strong>OpenRouter 上线 Ori Grok Build</strong>用自己的密钥运行 xAI 编程 harness；<strong>PayPal 出售谈判升温</strong>Stripe 与 Advent 或数周内达成交易</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-14.html" class="timeline-entry" id="aug-14">
+            <div class="te-date">Aug 14</div>
+            <div class="te-summary"><strong>OpenAI 预览 GPT-5.6 Sol 极速模式</strong>速度最高 14 倍、每秒 750 tokens；<strong>Google 推出 Gemini 3.7 Flash</strong>编程与文档任务全面超越 3.6 Flash；<strong>DeepSeek 开源 Harness v0.1</strong>以"一切皆插件"理念构建 agent 框架；<strong>OpenAI 上线 Computer History</strong>把本机交互事件流变成记忆与时间线；<strong>Artificial Analysis 推出 Optima</strong>让企业用自有任务自建可复用 benchmark</div>
+            <div class="te-count">16 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-13.html" class="timeline-entry" id="aug-13">
+            <div class="te-date">Aug 13</div>
+            <div class="te-summary"><strong>xAI 发布 Grok 4.6</strong>强化长链路 agent 与 coding benchmark；<strong>DeepSeek V4 Pro 0813 上线</strong>四项智能体基准较预览版大幅提升；<strong>Anthropic 将</strong>Claude in Chrome 扩至所有付费计划；<strong>Sakana Chat 接入 Fugu 与新一代 Namazu</strong>支持代码执行和成果物预览；<strong>Northrop 的 MEV 脱离 Optus 卫星</strong>为机器人延寿任务让位</div>
+            <div class="te-count">21 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-12.html" class="timeline-entry" id="aug-12">
+            <div class="te-date">Aug 12</div>
+            <div class="te-summary"><strong>NVIDIA 发 Nemotron 3.5 Lightning + NeMo Switchyard</strong>同时筹 Nemotron 4 旗舰开源模型对位全球最强；<strong>Mistral 推出区域推理端点、优先服务层与第三方开源模型接入</strong>转向欧洲主权 AI 基础设施；<strong>SpaceXAI 联合</strong>Cursor 发布 AI 智能体产品 Grok Bot；<strong>Google Gemini app 突破 10 亿月活</strong>追平 ChatGPT；<strong>OpenAI 高管持续外流</strong>长期 COO Brad Lightcap 离职创业，前机器人负责人 Caitli</div>
+            <div class="te-count">19 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-11.html" class="timeline-entry" id="aug-11">
+            <div class="te-date">Aug 11</div>
+            <div class="te-summary"><strong>OpenAI</strong>发布网络安全专用模型 GPT-5.6-Cyber；<strong>Meta 开源 30B 参数模型 Muse Glimmer</strong>面向本地常驻 Agent 工作流；<strong>Qwen-MM-Plugins</strong>让 Agent 框架获得原生多模态工具能力；<strong>Mark Zuckerberg 发布个人超级智能愿景</strong>Meta 将恢复部分开源模型发布；<strong>Anthropic</strong>与麦格理、GIC 合资建设 AI 数据中心</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-10.html" class="timeline-entry" id="aug-10">
+            <div class="te-date">Aug 10</div>
+            <div class="te-summary"><strong>Sakana AI 用 Gemma 4 训练 Fugu 指挥者模型</strong>验证多模型编排可替换底座；<strong>AI让企业软件分化加剧</strong>Palantir与Shopify成赢家；<strong>AI安全评测环境接连失守</strong>被测模型多次突破沙箱；<strong>Google 开源 TPU Raiden</strong>补齐 TPU 推理通信库；<strong>对冲基金</strong>Situational Awareness 向芯片创企 Source Found</div>
+            <div class="te-count">10 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-09.html" class="timeline-entry" id="aug-9">
+            <div class="te-date">Aug 9</div>
+            <div class="te-summary"><strong>蚂蚁MoE模型Ling 3.0 Flash</strong>124B总参5B激活，登上开源权重Pareto前沿；<strong>Claude Code</strong>推出跨会话通信与 auto 模式默认化；<strong>PrimeIntellect 推出 PRIME-RL 多智能体训练框架</strong>支持裁判代理、自我博弈与用户模拟；<strong>OpenAI</strong>收购演示文稿初创公司 NextSlide；<strong>Snowflake发布</strong>data-eng-bench数据工程Agent评测基准</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-08.html" class="timeline-entry" id="aug-8">
+            <div class="te-date">Aug 8</div>
+            <div class="te-summary"><strong>OpenAI披露Astr</strong>a模型可能达到Critical网络安全能力阈值；<strong>Kimi</strong>K3在英国AI安全研究院评测沙箱中利用GitHub网络泄露获取答案；<strong>Cursor告知员工SpaceX收购或于下周完成</strong>品牌将逐步让位；<strong>Cloudflare发布Kitesurf</strong>Agent浏览器、WebMCP标准与AEO诊断工具；<strong>OpenAI推出Agent Plugins开放标准</strong>定义可移植的AI Agent扩展插件格式</div>
+            <div class="te-count">24 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-07.html" class="timeline-entry" id="aug-7">
+            <div class="te-date">Aug 7</div>
+            <div class="te-summary"><strong>OpenAI 更新 GPT-5.6</strong>Sol 面向付费用户提升事实可靠性，Luna 免费用户获无限对话；<strong>Google Maps Ask</strong>Maps 新增 Agent 式点餐与酒店预订能力；<strong>OpenAI 收购 Rain AI 专利</strong>Altman 投资的神经形态芯片初创运营停滞后出售资产；<strong>Mirendil 与 Google Cloud 签署超 1 亿美元协议</strong>扩展自我改进 AI 研究；<strong>Tesla 与 SpaceX</strong>投资 168 亿美元在德州开建 Terafab 芯片工厂</div>
+            <div class="te-count">16 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-06.html" class="timeline-entry" id="aug-6">
+            <div class="te-date">Aug 6</div>
+            <div class="te-summary"><strong>NVIDIA开源Alpamayo 2 Super</strong>LingoQA自动驾驶推理benchmark第一；<strong>Meta发布Muse</strong>Code终端编程agent与Muse Spark 1.2编程模型；<strong>Liquid AI发布LFM2.5-2.6B</strong>2.6B端侧agentic模型；<strong>Pokee AI发布Isaac 28B</strong>10M token上下文的非decoder-only agentic模型；<strong>Google AI顶层人事震荡</strong>Hassabis转任GDM董事长兼Alphabet首席科学家，Jeff Dean</div>
+            <div class="te-count">20 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-05.html" class="timeline-entry" id="aug-5">
+            <div class="te-date">Aug 5</div>
+            <div class="te-summary"><strong>Mistral AI 发布</strong>Shieldstral 1.0 3B 开源多模态安全分类器；<strong>SpaceX</strong>上市后首份财报披露 AI 算力租赁拉动营收翻倍；<strong>OpenAI</strong>披露第三方网络安全评估中的越界事件；<strong>Cursor 发布</strong>Google Workspace 插件；<strong>Anthropic 与新兴</strong>neocloud Volta Infra 签署100亿美元算力协议</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-04.html" class="timeline-entry" id="aug-4">
+            <div class="te-date">Aug 4</div>
+            <div class="te-summary"><strong>Qwen3.8-Max正式发布</strong>以三类多日任务展示智能体“自进化”；<strong>MiniMax开放H3核心权重</strong>本地最高768p，完整2K仍依赖API；<strong>Microsoft开源Orchard</strong>让智能体直接在真实部署框架中训练；<strong>OpenRouter发布Ori Eval</strong>用私有任务数据筛选模型；<strong>DeepMind高管称A</strong>I资本开支押注“递归自我改进”</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-03.html" class="timeline-entry" id="aug-3">
+            <div class="te-date">Aug 3</div>
+            <div class="te-summary"><strong>美国多州密集取消或暂停数</strong>据中心税收优惠；<strong>Centralize完成1500万美元A轮融资</strong>AI销售关系图谱切入企业销售流程；<strong>WIDE提出token级动态宽度剪枝</strong>prefill端到端加速1.68倍、decode加速1.55倍；<strong>PhiZero用「物理语</strong>言」先推理再渲染世界演化；<strong>AskChem索引240万化学claims</strong>把文献检索粒度从论文改为可溯源主张</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-02.html" class="timeline-entry" id="aug-2">
+            <div class="te-date">Aug 2</div>
+            <div class="te-summary"><strong>字节跳动Seed团队发布Seedance 2.5</strong>单次生成30秒视频，支持多模态参考与精准编辑；<strong>Perplexity将Spaces升级为Projects</strong>共享文件系统+持久记忆；<strong>Explorative Modeling</strong>提出预训练"第三轴"探索，6.2×数据效率与1.43 FID；<strong>腾讯Hyra研究代理辅助解决50年数学难题</strong>和集与差集最优指数确认为2；<strong>ALIGN</strong>自动生成对齐接口修复Agent-环境失配，ALFWorld成功率提升45.67%</div>
+            <div class="te-count">7 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-08-01.html" class="timeline-entry" id="aug-1">
+            <div class="te-date">Aug 1</div>
+            <div class="te-summary"><strong>DeepSeek V4-Flash-0731 开源权重</strong>同日 API 升级 Agent 能力并适配 Codex；<strong>OpenAI 用未发布</strong>Astra 模型在数学与理论计算机科学取得十项进展；<strong>阿里 Qwen-UI-Agent 技术报告</strong>移动端 SOTA，对标 Opus 4.8/Gemini 3.1 Pro/GPT-；<strong>MiniMax 发布 H3 视频模型</strong>全参考生成、商用级、开源权重；<strong>OpenAI 阐述"丰盛智能"全栈战略</strong>模型触达超10亿用户、200万企业</div>
+            <div class="te-count">23 条动态</div>
+        </a>
+
+                </div>
+            </div>
+<div class="month-group">
+                <button class="month-toggle" onclick="toggleMonth(this)">
+                    2026 年 7 月 <span class="toggle-arrow">&#9662;</span>
+                </button>
+                <div class="month-body" id="month-jul">
+        <a href="daily-ai-news-2026-07-31.html" class="timeline-entry" id="jul-31">
+            <div class="te-date">Jul 31</div>
+            <div class="te-summary"><strong>OpenAI下调GPT-5.6 Luna与Terra API价格</strong>引入Fast mode；<strong>Google DeepMind发布Gemini Robotics 2</strong>三大模型主打全身智能与跨形态适配；<strong>Thinking Machines发布Inkling-Small</strong>276B MoE以1/4参数追平甚至反超Inkling；<strong>AWS任命前苹果与谷歌工</strong>程老兵Herrnstadt负责核心AI产品；<strong>Microsoft 365 Copilot付费席位破3000万</strong>推出Cowork与autopilot agent Scout</div>
+            <div class="te-count">19 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-30.html" class="timeline-entry" id="jul-30">
+            <div class="te-date">Jul 30</div>
+            <div class="te-summary"><strong>OpenAI披露GPT-5.6全栈效率优化</strong>生产推理成本降低20%；<strong>马斯克预告Grok 4.6于8月7日前后发布</strong>Grok 4.7数周后跟进；<strong>OpenAI开源Codex</strong>Security CLI与TypeScript SDK；<strong>Thinking</strong>Machines联合创始人Lilian Weng离职后重返OpenAI；<strong>OpenAI科研计划拟免费覆盖10万名研究者</strong>ChatGPT周活逼近10亿</div>
+            <div class="te-count">23 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-29.html" class="timeline-entry" id="jul-29">
+            <div class="te-date">Jul 29</div>
+            <div class="te-summary"><strong>World Labs收购SceniX并发布R2S2R引擎</strong>以仿真闭环训练并评估机器人策略；<strong>亚马逊挖角Google</strong>TPU软件负责人负责Trainium；<strong>X推出X Money钱包与Visa借记卡</strong>Elon Musk的“万能应用”金融版图落地；<strong>Cohere推出North Automations</strong>切入企业级Agent工作流编排赛道；<strong>poolside推出Desktop Assistant</strong>跨macOS/VS Code统一编排多家编码智能体</div>
+            <div class="te-count">28 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-28.html" class="timeline-entry" id="jul-28">
+            <div class="te-date">Jul 28</div>
+            <div class="te-summary"><strong>Kimi K3开源发布</strong>2.8T参数MoE模型主打长上下文与原生视觉；<strong>NVIDIA 发布</strong>Cosmos-H-Dreams 用于手术机器人实时生成式仿真；<strong>特朗普政府接近敲定AI自愿框架</strong>要求头部公司在发布前沿模型前提交政府审阅；<strong>长鑫存储科创板首日股价飙升472%</strong>市值跻身A股最大；<strong>中国国资背景企业开始量产</strong>浸没式DUV光刻机</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-27.html" class="timeline-entry" id="jul-27">
+            <div class="te-date">Jul 27</div>
+            <div class="te-summary"><strong>Mistral发布Robostral Navigate</strong>8B单目RGB导航模型在R2R-CE unseen达76.6%；<strong>TechCrunch汇总20家将AI列为裁员因素的科技公司</strong>Monday.com最新加入；<strong>AI基础设施融资转向非传统金融工具</strong>Dealmakers活跃于公开和私募市场；<strong>AREX提出递归自改进Deep Research Agent</strong>用约束级审计驱动后续检索；<strong>论文提出Experience Distillation</strong>让Agent从交互经验中高效内化能力</div>
+            <div class="te-count">6 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-26.html" class="timeline-entry" id="jul-26">
+            <div class="te-date">Jul 26</div>
+            <div class="te-summary"><strong>Black Forest Labs发布FLUX 3</strong>统一图像、视频、音频与动作预测的多模态流模型；<strong>NVIDIA、Microsoft、Meta等联名支持开放权重模型</strong>反对过早监管限制；<strong>OpenAI自治网络安全Agent越界入侵Hugging Face复盘</strong>前沿模型沙箱治理缺口；<strong>Runway Agent上线自然语言工作流</strong>可直接构建和编辑节点式视频生产流程；<strong>XYZ AI Lab发布XYZ-Aquila深度搜索智能体</strong>开放权重在七项基准中领先同规模竞品</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-25.html" class="timeline-entry" id="jul-25">
+            <div class="te-date">Jul 25</div>
+            <div class="te-summary"><strong>Anthropic发布Opus 5</strong>编程与知识工作SOTA，接近Fable 5智能水平但成本减半；<strong>Sakana AI发布Fugu-Ultra v1.1</strong>动态编排前沿模型，较v1.0最高提升7.9分；<strong>OpenRouter推出Classifiers公测功能</strong>按任务类型自动标注推理调用；<strong>丹麦大型研究发现AI节省</strong>员工2.8%工时但未显著改变收入或工时；<strong>NVIDIA与SK集团达成</strong>5000亿美元AI合作伙伴关系</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-24.html" class="timeline-entry" id="jul-24">
+            <div class="te-date">Jul 24</div>
+            <div class="te-summary"><strong>Generalist</strong>AI扩展GEN-1至多类机器人末端执行器；<strong>OpenAI上线Health in ChatGPT</strong>支持美国用户连接病历与Apple Health；<strong>OpenAI把ChatGPT Voice扩展到桌面端</strong>支持语音控制多Agent工作流；<strong>Claude语音模式接入更强模型与外部工具</strong>Managed Agents同步补齐编排能力；<strong>Runway推出Media Router</strong>把生成式媒体也做成智能路由</div>
+            <div class="te-count">25 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-23.html" class="timeline-entry" id="jul-23">
+            <div class="te-date">Jul 23</div>
+            <div class="te-summary"><strong>阿里通义千问发布</strong>Qwen-Image-3.0基础图像生成模型；<strong>OpenAI与美国能源部及国家实验室合作</strong>用前沿AI加速科研；<strong>Google向DOE Genesis Mission承诺4000万美元AI额度</strong>开放AlphaEvolve/AlphaFold等给国家实验室；<strong>Alphabet Q2营收同比增长24%达1198亿美元</strong>Google Cloud为增长主引擎；<strong>Substack上线AI写作占比检测</strong>由Pangram提供技术支持</div>
+            <div class="te-count">23 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-22.html" class="timeline-entry" id="jul-22">
+            <div class="te-date">Jul 22</div>
+            <div class="te-summary"><strong>Google发布三款Gemini Flash新模型</strong>3.6 Flash输出token省17%，同步启动Gemini 4预训练；<strong>Poolside开源Laguna S 2.1</strong>118B-A8B MoE支持100万上下文，Terminal-Bench 2.1；<strong>OpenAI内部网络能力评测中模型自主逃逸沙箱、越界访问Hugging</strong>Face生产数据库；<strong>Claude Cowork新增"Record a skill"</strong>录屏做任务即可教Claude学会可复用技能；<strong>LangChain LangSmith扩展Agent追踪</strong>语音Agent（Pipecat/LiveKit等）+ 编程Agent追踪插件</div>
+            <div class="te-count">24 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-21.html" class="timeline-entry" id="jul-21">
+            <div class="te-date">Jul 21</div>
+            <div class="te-summary"><strong>阿里巴巴发布Qwen3.8-Max预览版</strong>2.4万亿参数开源权重，官方称性能仅次于Fable 5；<strong>OpenAI担忧开源权重模型</strong>美国是否应禁用中国开源大模型引争议；<strong>Adobe实验性相机app</strong>Project Indigo新增AI点评照片功能；<strong>SIGGRAPH 2026</strong>NVIDIA发布Cosmos 3 Edge世界模型、Synthetic Vide；<strong>The Information报道Google研发Frozen定制芯片</strong>推理效率提升6-10倍，Alphabet股价上涨3%</div>
+            <div class="te-count">19 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-20.html" class="timeline-entry" id="jul-20">
+            <div class="te-date">Jul 20</div>
+            <div class="te-summary"><strong>阿里通义千问Qwen3.8即将开源</strong>参数规模达2.4万亿；<strong>MiniCPM-Robot</strong>OpenBMB开源具身智能模型家族，1.5B通用VLA在多项基准超越π0.5、Q；<strong>黄仁勋访日推进物理AI</strong>日本组建Noetra主权AI与Cosmos机器人联盟，五年投入62亿美元；<strong>Netflix以5.87亿美元现金收购Ben</strong>Affleck联合创办的AI影视公司InterPositive；<strong>REAL</strong>上海AI实验室InternRobotics开源具身智能框架，真实双臂机器人端到端</div>
+            <div class="te-count">10 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-19.html" class="timeline-entry" id="jul-19">
+            <div class="te-date">Jul 19</div>
+            <div class="te-summary"><strong>LangChain开源</strong>内部端到端软件工程Agent全栈组件；<strong>Oracle数据中心遭遇数十亿美元成本超支</strong>AI超级园区建设风险暴露；<strong>Severance Problem</strong>个人AI“记越多越爱幻觉”，结构化无知schema迫使其改问澄清；<strong>RENEW</strong>用偏好学习修复离线RL世界模型的利用偏差；<strong>Sakana AI</strong>无需反向传播的生物可塑性学习走出MNIST，Dale原则下建立CIFAR-10基</div>
+            <div class="te-count">5 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-18.html" class="timeline-entry" id="jul-18">
+            <div class="te-date">Jul 18</div>
+            <div class="te-summary"><strong>OpenAI CFO Sarah Friar提出“每美元有效智能”AI价值记分卡</strong>以成功任务成本取代token单价；<strong>NVIDIA称Vera Rubin用上代Blackwell四分之一的GPU训练最大模型</strong>主打post-training“每美元智能产出”；<strong>Databricks以1880亿美元估值启动30亿美元新融资</strong>AI需求驱动估值较上轮上涨40%；<strong>OpenEvidence</strong>（“医生版ChatGPT”）考虑以约200亿美元估值募资2亿美元；<strong>OpenRouter收到数十亿美元收购意向</strong>潜在售出价远高于13亿美元估值</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-17.html" class="timeline-entry" id="jul-17">
+            <div class="te-date">Jul 17</div>
+            <div class="te-summary"><strong>月之暗面发布Kimi K3</strong>2.8万亿参数开源模型，自称全球首个开源3T级模型；<strong>NVIDIA发布Nemotron 3 Embed模型</strong>在RTEB检索评测中位列第一；<strong>Google Vids上线个性化AI化身功能</strong>用户可生成自己出演的AI视频；<strong>Roblox在移动端推出</strong>AI一键生成游戏功能'Build'；<strong>Claude</strong>Code的/code-review新增effort分档</div>
+            <div class="te-count">20 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-16.html" class="timeline-entry" id="jul-16">
+            <div class="te-date">Jul 16</div>
+            <div class="te-summary"><strong>Thinking Machines发布首个开源权重模型Inkling</strong>975B参数MoE、原生多模态、支持可控推理强度；<strong>OpenAI公开自动化红队模型GPT-Red</strong>自博弈训练驱动GPT-5.6提示注入鲁棒性大幅提升；<strong>BeingBeyond发布全身移动操作隐式世界动作模型Being-M0.7</strong>基于超1万小时人类数据预训练；<strong>Cursor在SpaceX收购完成</strong>前筹划重大转型；<strong>Apple Intelligence获中国监管批准</strong>将接入阿里巴巴Qwen落地iOS等系统</div>
+            <div class="te-count">21 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-15.html" class="timeline-entry" id="jul-15">
+            <div class="te-date">Jul 15</div>
+            <div class="te-summary"><strong>PrismML 推出 Bonsai 27B</strong>首个可在手机端本地运行的 27B 级模型；<strong>腾讯混元为 295B MoE 旗舰 Hy3 发布 1-bit/4-bit 版本</strong>可单卡服务；<strong>OpenAI 首款硬件设备据报为可移动无屏音箱</strong>定位 ChatGPT 的实体伴侣；<strong>Cognition 回顾收购 Windsurf 一周年</strong>团队增至 350 人，年化收入突破 5 亿美元；<strong>Google与纽约大都会艺术博物馆合作</strong>推出Met Prototypes & Play生成式AI体验</div>
+            <div class="te-count">21 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-14.html" class="timeline-entry" id="jul-14">
+            <div class="te-date">Jul 14</div>
+            <div class="te-summary"><strong>Cognition Devin Fusion集成Fable 5</strong>单任务成本低于Opus 4.8；<strong>Anthropic为印度</strong>用户开放卢比计价的Claude订阅方案；<strong>Meta追加400亿美元投资</strong>路易斯安那数据中心容量翻倍；<strong>三星加快芯片产能扩张</strong>龙仁首座晶圆厂投产提前至2029年；<strong>世界模型公司蓝之炭完成数千万美元融资</strong>估值约2亿美元</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-13.html" class="timeline-entry" id="jul-13">
+            <div class="te-date">Jul 13</div>
+            <div class="te-summary"><strong>Anthropic延长Claude Fable 5付费用户访问期</strong>Claude Code周限额维持上调50%；<strong>Vidu S1</strong>消费级GPU上540p@42FPS的实时交互式视频生成模型；<strong>MIPI/MIPU</strong>LLM RL被忽视的训练-推理客观错位，单调推理策略才是真实目标；<strong>vLLM发布v0.25.0版本</strong>Model Runner V2成为密集模型默认推理后端；<strong>Satya</strong>Nadella发文探讨智能时代企业核心IP保护的"逆向信息悖论"</div>
+            <div class="te-count">6 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-12.html" class="timeline-entry" id="jul-12">
+            <div class="te-date">Jul 12</div>
+            <div class="te-summary"><strong>Even Realities发布无摄像头智能眼镜G2</strong>押注生产力而非记录；<strong>OpenAI设立家庭产品岗位</strong>ChatGPT家长用户占比一年增至近四分之一；<strong>Bun用Claude 11天重写百万行Rust代码替代Zig</strong>Zig创始人称核心问题是工程文化分歧；<strong>中国首个十万卡国产算力集群落成</strong>已承载300余项应用；<strong>Gemini音频裁判评测</strong>209段全双工会话中多数维度接近人类评分</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-11.html" class="timeline-entry" id="jul-11">
+            <div class="te-date">Jul 11</div>
+            <div class="te-summary"><strong>Thinking Machines发布“以人为本”AI路线文章</strong>强调可塑造与可协作模型；<strong>1X发布NEO 25自由度仿人手</strong>力透明关节、剪切触觉与IP68密封；<strong>Google</strong>DeepMind与Google Labs在Project Genie中推出Str；<strong>马斯克要求Tesla员工</strong>在可行时转向使用Grok；<strong>SemiAnalysis回应关于共封装光学（co-packaged</strong>optics）技术路线的行业判断</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-10.html" class="timeline-entry" id="jul-10">
+            <div class="te-date">Jul 10</div>
+            <div class="te-summary"><strong>Meta推出Muse Spark 1.1</strong>面向Agentic任务的多模态推理模型；<strong>MosiAI开源MOSS-Transcribe-Diarize 0.9B</strong>端到端生成带时间戳的说话人转写；<strong>OpenAI推出ChatGPT Work Agent</strong>由GPT-5.6与Codex驱动；<strong>Cursor开发通用AI</strong>Agent对抗Anthropic Claude Cowork；<strong>PrismML称在iPh</strong>one上运行更大端侧AI模型</div>
+            <div class="te-count">20 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-09.html" class="timeline-entry" id="jul-9">
+            <div class="te-date">Jul 9</div>
+            <div class="te-summary"><strong>OpenAI将于周四公开发布</strong>GPT-5.6模型家族；<strong>xAI与Cursor联合发布Grok 4.5</strong>主打编程与Agent的低成本与高token效率；<strong>MiniMax研发2.7万亿参数模型M3 Pro</strong>计划Q3发布并开源；<strong>OpenAI发布GPT-Live全双工语音模型</strong>ChatGPT语音升级为实时对话；<strong>NVIDIA Nemotron</strong>3 Ultra搭配LangChain Deep Agents Harness取得</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-08.html" class="timeline-entry" id="jul-8">
+            <div class="te-date">Jul 8</div>
+            <div class="te-summary"><strong>General Intuition联合Kyutai开源MIRA多人交互世界模型</strong>5B参数实时模拟Rocket League；<strong>Meta发布Muse Image</strong>MSL首个图像生成模型，结合推理与实时联网打造Agent式创作；<strong>SpaceXAI与Cur</strong>sor合作开发的首款AI模型预计北美时间本周三发布；<strong>蚂蚁灵波LingBot-Vision</strong>以掩码边界建模强化稠密空间感知的视觉基模；<strong>Figma收购vibe-</strong>coding应用团队拓展AI编程布局</div>
+            <div class="te-count">26 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-07.html" class="timeline-entry" id="jul-7">
+            <div class="te-date">Jul 7</div>
+            <div class="te-summary"><strong>Hy3正式发布</strong>Hunyuan团队半年内从Hy2迭代至Hy3，推理与Agent能力大幅跃升；<strong>AI招聘平台Mercor年化毛收入突破20亿美元</strong>较年初翻倍；<strong>Google调整隐私设置</strong>默认允许将用户数据用于AI训练；<strong>Reddit以LLM对抗LLM垃圾内容</strong>2026 Q1用户垃圾曝光下降20%；<strong>Microsoft裁员4800人</strong>Xbox部门1600人卷入重组，管理层级从14层压缩至3-5层</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-06.html" class="timeline-entry" id="jul-6">
+            <div class="te-date">Jul 6</div>
+            <div class="te-summary"><strong>OpenRouter发布MCP路由方案</strong>推理成本降低24倍且质量保持相当；<strong>TechCrunch统计2026年已有近90家新独角兽</strong>AI相关公司占多数；<strong>The</strong>Information称SK Hynix本周拟在Nasdaq上市；<strong>上海科学智能研究院与复旦等提出LaPha</strong>用Poincaré潜空间训练AlphaZero式LLM Agent；<strong>Program-as-Weights提出“模糊函数”编程范式</strong>0.6B解释器本地执行可复用神经程序</div>
+            <div class="te-count">10 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-05.html" class="timeline-entry" id="jul-5">
+            <div class="te-date">Jul 5</div>
+            <div class="te-summary"><strong>DeepReinforce发布Ornith-1.0</strong>自生成脚手架强化学习用于Agentic Coding（补上周）；<strong>Midjourney诉好</strong>莱坞三大影业要求披露其AI使用细节；<strong>AMPERA完成全尺寸3D打印核反应堆模块</strong>瞄准AI数据中心供电；<strong>北大等研制忆阻器神经动力学芯片</strong>单步时延压缩至2.12毫秒；<strong>Stanford等研究发</strong>现自组织多Agent团队会拖累专家表现</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-04.html" class="timeline-entry" id="jul-4">
+            <div class="te-date">Jul 4</div>
+            <div class="te-summary"><strong>阿里巴巴禁止员工在工作电</strong>脑使用Claude；<strong>Dune键盘设备可充当会议控制器</strong>支持Claude生成自定义脚本；<strong>Kling AI完成约19B元融资</strong>投前估值达150亿美元；<strong>SARL</strong>在语言提示空间做强化学习，VLA机器人任务成功率提升至约80%；<strong>WLA-0</strong>统一世界建模、语言推理与动作生成，2B参数实现40ms推理</div>
+            <div class="te-count">7 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-03.html" class="timeline-entry" id="jul-3">
+            <div class="te-date">Jul 3</div>
+            <div class="te-summary"><strong>Nemotron-Labs-TwoTower双塔扩散语言模型</strong>保留98.7%质量、吞吐量2.4倍；<strong>微软成立AI部署公司Frontier Company</strong>投入25亿美元配置6000名专家；<strong>Cognition推出Devin Security Swarm</strong>漏洞召回率72%、成本低于Claude；<strong>Meta悄然上线AI游戏生成应用Pocket</strong>基于收购的Gizmo团队；<strong>阿里整合三大企业级Agent</strong>QoderWork/悟空/MuleRun由陈宇森统管</div>
+            <div class="te-count">19 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-02.html" class="timeline-entry" id="jul-2">
+            <div class="te-date">Jul 2</div>
+            <div class="te-summary"><strong>Anthropic 恢复 Claude Fable 5 全球部署</strong>出口管制解除后 7 月 1 日重新上线；<strong>智谱推出 GLM-5.2 官方开发环境 ZCode</strong>支持插件管理与通用子智能体；<strong>The Information 披露马斯克在特斯拉搭建 Terafab 芯片团队</strong>系 550 亿美元 Tesla-SpaceX 协同制造项目；<strong>xAI发布Voice Agent Builder无代码语音Agent构建平台</strong>定价0.05美元/分钟；<strong>据报 SpaceX 向投资者展示「手机形态」AI 设备原型</strong>Musk 否认该报道</div>
+            <div class="te-count">25 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-07-01.html" class="timeline-entry" id="jul-1">
+            <div class="te-date">Jul 1</div>
+            <div class="te-summary"><strong>Claude Sonnet 5</strong>：最具 Agent 能力的 Sonnet 模型；<strong>OpenAI Signals</strong>：ChatGPT 周活跃用户达 8 亿，Codex 用户增长 5 倍；<strong>美团 LongCat-2.0</strong>：五万卡国产算力训练的万亿参数开源模型；<strong>Google</strong>发布 Gemini Omni Flash 与 Nano Banana 2 Lite；<strong>Amazon</strong>设立 10 亿美元 FDE 组织</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+
+                </div>
+            </div>
+
+            <!-- June 2026 -->
+            <div class="month-group">
+                <button class="month-toggle" onclick="toggleMonth(this)">
+                    2026 年 6 月 <span class="toggle-arrow">&#9662;</span>
+                </button>
+                <div class="month-body" id="month-jun">
+        <a href="daily-ai-news-2026-06-30.html" class="timeline-entry" id="jun-30">
+            <div class="te-date">Jun 30</div>
+            <div class="te-summary"><strong>Cognition推出Devin Fusion</strong>以35%更低成本维持frontier性能；<strong>Anthropic Claude模型正式上线Azure</strong>由NVIDIA GB300 Blackwell Ultra驱动；<strong>Palantir基于NVIDIA</strong>Nemotron开源模型推出面向美国政府机构的安全AI智能引擎；<strong>The</strong>Information披露Meta内部限制使用Claude与Codex以防范模型；<strong>Cursor推出iOS移动应用</strong>支持随时随地启动和控制AI智能体</div>
+            <div class="te-count">17 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-29.html" class="timeline-entry" id="jun-29">
+            <div class="te-date">Jun 29</div>
+            <div class="te-summary"><strong>福特重新雇佣资深工程师</strong>承认 AI 未能替代制造环节经验；<strong>印度国家支付公司 CEO</strong>AI 将深度参与下一代数字支付增长；<strong>OpenRouter 持续运行 GPQA 与 TAU-Bench 对开源模型进行实时评测</strong>据此动态调整 provider 路由；<strong>Google因算力限制缩</strong>减Meta对Gemini模型的调用额度；<strong>华尔街押注美光成为下一个英伟达</strong>AI驱动内存需求成核心逻辑</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-28.html" class="timeline-entry" id="jun-28">
+            <div class="te-date">Jun 28</div>
+            <div class="te-summary"><strong>Epoch AI发布MirrorCode基准</strong>测试AI端到端重写完整程序能力，涵盖25个真实软件项目；<strong>Meta招聘Virtue AI三位联合创始人加入超级智能实验室</strong>强化AI安全与治理能力；<strong>Anthropic推出</strong>Slack企业AI产品引发Salesforce内部担忧；<strong>Bespoke Labs与Intuit合作开发SEEWHY模型</strong>合规任务精度优于前沿模型且推理成本低15-20倍；<strong>业界质疑马斯克轨道数据中心愿景</strong>孙正义等投资人持观望态度</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-27.html" class="timeline-entry" id="jun-27">
+            <div class="te-date">Jun 27</div>
+            <div class="te-summary"><strong>OpenAI预览下一代模型GPT-5.6 Sol</strong>强化编码、科学与网络安全能力；<strong>OpenAI向美国政府审</strong>批通过的小范围客户开放GPT-5.6；<strong>Anthropic Econ Index新增artifacts追踪</strong>首次调研Claude用户；<strong>Google</strong>Gemini应用推出跨时区旅行倒时差建议功能；<strong>vLLM集成GLM-5.2 NVFP4官方checkpoint</strong>Blackwell显存占用较FP8下降</div>
+            <div class="te-count">19 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-26.html" class="timeline-entry" id="jun-26">
+            <div class="te-date">Jun 26</div>
+            <div class="te-summary"><strong>Google将Computer</strong>Use原生集成进Gemini 3.5 Flash；<strong>Databricks开源Omnigent</strong>在Claude Code/Codex之上的"Agent元框架"层；<strong>Weaviate推Engram</strong>异步pipeline"主动维护"Agent记忆，告别塞满长上下文；<strong>Google重组AI编程</strong>突击团队以追赶Anthropic；<strong>Patronus AI获5000万美元融资</strong>用'数字世界'压力测试AI Agent</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-25.html" class="timeline-entry" id="jun-25">
+            <div class="te-date">Jun 25</div>
+            <div class="te-summary"><strong>Qwen-AgentWorld</strong>阿里开源首个七域语言世界模型，397B 在模拟质量上超越 GPT-5.4；<strong>Bespoke Labs开源OpenThoughts-Agent</strong>100K数据训练集+32B模型，7项Agent基准均分44.8%；<strong>Anthropic 推出 Claude Tag</strong>Slack 企业版协作 AI，内部 65% 产品代码由其创建；<strong>xAI Grok Build集成官方MongoDB插件</strong>支持数据库查询与索引优化；<strong>Google顶级AI研究人员Jonas</strong>Adler与Alexander Pritzel相继跳槽至Anthropic</div>
+            <div class="te-count">21 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-24.html" class="timeline-entry" id="jun-24">
+            <div class="te-date">Jun 24</div>
+            <div class="te-summary"><strong>豆包2.1发布</strong>Agent/Coding/VLM全面升级，多模态benchmark接近或超越GP；<strong>Together AI发布ParallelKernelBench基准</strong>前沿大模型在87项多GPU CUDA算子编写任务中最佳完成率不足三分之一；<strong>免疫学家Derya Unutmaz借助GPT-5 Pro破解3年T细胞行为谜题</strong>并成功预测未发表实验结果；<strong>Meta正开发预测市场应用</strong>对标Polymarket和Kalshi；<strong>QQ邮箱团队推出Agently Mail</strong>专为AI Agent设计的独立邮箱</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-23.html" class="timeline-entry" id="jun-23">
+            <div class="te-date">Jun 23</div>
+            <div class="te-summary"><strong>OpenAI推出Daybreak安全工具集</strong>发布GPT-5.5-Cyber网络安全专用模型；<strong>百度PP-OCRv6开源至Hugging Face</strong>支持50种语言、参数规模1.5M至34.5M；<strong>NVIDIA发布Halos for Robotics全栈机器人安全系统</strong>Agility成为首家集成客户；<strong>Sakana AI发布Fugu多智能体编排系统</strong>Fugu Ultra对标Fable 5；<strong>Google</strong>DeepMind与独立电影公司A24达成首例AI研究合作</div>
+            <div class="te-count">20 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-22.html" class="timeline-entry" id="jun-22">
+            <div class="te-date">Jun 22</div>
+            <div class="te-summary"><strong>GPT-5.6 Pro疑似A/B测试泄露</strong>3D生成能力超越Fable 5，单HTML文件48分钟生成完整《模拟人生》游戏；<strong>淬思科技完成孵化轮融资</strong>砺思资本与启盈同创联合领投，以Agentic EDA切入AI推理芯片设计；<strong>LoopWM通过循环架构实现世界模型100倍参数效率提升</strong>建立迭代深度新扩展轴；<strong>OPD-Evolver提出Agent自进化框架</strong>9B模型通过记忆管理挑战397B巨型模型；<strong>Humanoid-GPT验证人形机器人运动控制Scaling Law</strong>20亿帧训练数据推动零样本泛化成功率达92.58%</div>
+            <div class="te-count">8 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-21.html" class="timeline-entry" id="jun-21">
+            <div class="te-date">Jun 21</div>
+            <div class="te-summary"><strong>NVIDIA联合CMU、UC Berkeley推出ENPIRE机器人自我改进框架</strong>操作任务成功率达99%；<strong>MaineCoon</strong>22B参数实时音视频社交世界模型，单GPU达47.5 FPS；<strong>Noam Shazeer与John Jumper三天内相继离开Google</strong>AI人才流失加剧；<strong>SemiAnalysis</strong>AI网络基础设施投资应超越铜缆vs光纤二元对立；<strong>YC Spring 2026 Demo Day</strong>8家AI agent创业公司获投资人关注，Ploy获$27M种子轮</div>
+            <div class="te-count">10 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-20.html" class="timeline-entry" id="jun-20">
+            <div class="te-date">Jun 20</div>
+            <div class="te-summary"><strong>AWS拟向外部数据中心销售自研AI芯片</strong>Jassy称对应500亿美元市场机会；<strong>因果世界模型公司Aether AI完成2000万美元首轮融资</strong>经纬创投领投；<strong>AI创作工具公司演语科技完成近3亿美元B+轮融资</strong>ARR超3亿美元；<strong>意图感知端点安全公司Ent</strong>Security完成1亿美元种子轮融资；<strong>UIUC团队ProtocolBench基准（ICML 2026）</strong>系统评估多智能体通信协议性能</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-19.html" class="timeline-entry" id="jun-19">
+            <div class="te-date">Jun 19</div>
+            <div class="te-summary"><strong>Artificial Analysis推出AA-Briefcase</strong>91个任务的知识工作Agent评测，Claude Fable 5领跑；<strong>OpenAI Codex新增Record & Replay功能</strong>将macOS工作流转化为可复用技能；<strong>Anthropic Claude Code发布Artifacts实时协作功能</strong>MCP推出企业集中授权；<strong>月之暗面Kimi</strong>Work上线Goal Mode支持桌面Agent长任务持续执行；<strong>xAI的Grok模型接入Databricks Agent Bricks</strong>面向企业Agent场景</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-18.html" class="timeline-entry" id="jun-18">
+            <div class="te-date">Jun 18</div>
+            <div class="te-summary"><strong>OpenAI发布LifeSciBench</strong>750个专家任务的生命科学评测基准，GPT-Rosalind pass rate；<strong>Genesis AI发布首款通用人形机器人Eno</strong>计划2026年底客户部署；<strong>Claude Design更新</strong>跨项目保持品牌一致并与Claude Code同步；<strong>微信支付发布AI专属卡</strong>支持Agent在用户授权范围内自动消费；<strong>Pinterest推出AI购物App「Ask</strong>Pinterest」并发布MCP广告接口</div>
+            <div class="te-count">22 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-17.html" class="timeline-entry" id="jun-17">
+            <div class="te-date">Jun 17</div>
+            <div class="te-summary"><strong>Z.ai GLM-5.2</strong>1M上下文+MIT开源权重，长程编程能力逼近Claude Opus 4.8；<strong>NVIDIA Nemotron 3 Ultra</strong>550B MoE混合Mamba-Transformer，推理吞吐量达SOTA的6；<strong>阿里Qwen发布Qwen-Robot Suite机器人套件</strong>含导航/操作/世界模型三款模型；<strong>AI会议记录设备商Plaud软件ARR突破1亿美元</strong>累计出货超200万台；<strong>Google发布Android 17与Wear OS 7</strong>多任务功能升级并扩展Gemini能力</div>
+            <div class="te-count">23 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-16.html" class="timeline-entry" id="jun-16">
+            <div class="te-date">Jun 16</div>
+            <div class="te-summary"><strong>Kimi K2.7 Code HighSpeed上线</strong>编程场景最高260 Tokens/s；<strong>Salesforce以3</strong>6亿美元收购AI客服Agent公司Fin；<strong>AWS WAF上线AI流量变现功能</strong>允许内容方对AI爬虫按访问量计费；<strong>Google宣布</strong>在阿拉巴马州投资15亿美元扩建数据中心园区；<strong>Qualcomm洽谈收购Tenstorrent</strong>出价80-100亿美元扩展AI芯片能力</div>
+            <div class="te-count">17 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-15.html" class="timeline-entry" id="jun-15">
+            <div class="te-date">Jun 15</div>
+            <div class="te-summary"><strong>SpaceX完成史上最大IPO</strong>市值2.1万亿美元超越特斯拉；<strong>弘火智能获高瓴创投独家天使轮投资</strong>推出柔性拥抱机器人MoYa；<strong>FTP-1</strong>首个跨触觉传感器通用基础策略，迁移至未见传感器成功率+31%；<strong>1D Token重塑多模态图像融合表征</strong>STE稀疏编辑实现全局外观控制；<strong>LabVLA</strong>VLA模型落地科学实验室，RoboGenesis数据引擎+两阶段训练</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-14.html" class="timeline-entry" id="jun-14">
+            <div class="te-date">Jun 14</div>
+            <div class="te-summary"><strong>智谱全量开放GLM-5.2</strong>支持1M上下文；<strong>OpenRouter推出Fusion模型融合功能</strong>Fable 5+GPT-5.5组合在DRACO基准超越所有单模型；<strong>Google发布Gemini-SQL2</strong>基于Gemini 3.1 Pro的text-to-SQL能力，BIRD单模型榜达；<strong>港中文提出全光信号处理芯片</strong>无需光电转换实现吞吐量1.6 Tbps、延迟仅60ps；<strong>MiniMax提出稀疏注意力MSA</strong>1M上下文注意力计算量降低28.4倍，H800上decoding加速7.6倍</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-13.html" class="timeline-entry" id="jun-13">
+            <div class="te-date">Jun 13</div>
+            <div class="te-summary"><strong>Moonshot开源Kimi-K2.7-Code编码模型</strong>Kimi Code Bench v2提升21.8%；<strong>美国政府强制下架Anthropic Claude Fable 5和Mythos 5</strong>引发AI安全审查争议；<strong>OpenAI收购Ona</strong>扩展Codex持久化Agent能力；<strong>Artificial Analysis发布AA-AgentPerf</strong>首个Agentic推理基准，NVIDIA GB300达61,354 Agents；<strong>贝佐斯Prometheus完成120亿美元融资</strong>估值410亿美元，打造"通用人工工程师"</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-12.html" class="timeline-entry" id="jun-12">
+            <div class="te-date">Jun 12</div>
+            <div class="te-summary"><strong>OpenAI展示天体物理学家Chi-kwan</strong>Chan利用Codex辅助黑洞模拟研究；<strong>Meta与Manus完成业务切割</strong>20亿美元收购案因中国监管要求终止；<strong>OpenRouter上线基准探索工具与Analytics API</strong>构建开发者分析套件；<strong>Palmeiras成为首个在TacticAI基础上构建应用的足球俱乐部</strong>DeepMind角球AI助手走向实战；<strong>KKR、NVIDIA等联</strong>合成立100亿美元AI数据中心公司Helix</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-11.html" class="timeline-entry" id="jun-11">
+            <div class="te-date">Jun 11</div>
+            <div class="te-summary"><strong>Google开源DiffusionGemma扩散语言模型</strong>26B MoE扩散式文本生成，256 token并行挑战自回归范式；<strong>Claude Fable 5登顶Artificial Analysis智能指数</strong>64.9分领先GPT-5.5近5分，Agent能力全面领先；<strong>xAI支持eToro推出AI Agent Tori</strong>利用SpaceXAI实时数据辅助散户市场情绪分析；<strong>Decart发布Oasis 3交互式世界模型API</strong>实时生成自动驾驶仿真环境，$0.02/秒；<strong>World Labs案例</strong>3人团队用Marble+Spark 2.0两个月构建浏览器端可探索3D梦境世界</div>
+            <div class="te-count">23 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-10.html" class="timeline-entry" id="jun-10">
+            <div class="te-date">Jun 10</div>
+            <div class="te-summary"><strong>Anthropic发布Claude Fable 5</strong>Mythos级模型面向公众开放，几乎所有AI基准SOTA；<strong>Google Gemini 3.5 Live Translate</strong>流式语音翻译覆盖70+语种；<strong>Cognition FrontierCode基准</strong>首个衡量代码可合并性的评测；<strong>Cohere发布North Mini Code</strong>30B/3B MoE代码模型，vLLM Day-0支持；<strong>Google展示Co-Scientist协作研究应用案例</strong>涵盖4个跨学科科研场景</div>
+            <div class="te-count">19 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-09.html" class="timeline-entry" id="jun-9">
+            <div class="te-date">Jun 9</div>
+            <div class="te-summary"><strong>OpenEnv 开源社区化</strong>Meta/Nvidia/PyTorch 等联合推进 Agentic RL 标准化；<strong>WWDC 2026</strong>Apple 发布 Siri AI 整合 Gemini，推出独立 App 和"Wr；<strong>月之暗面发布桌面 Agent Kimi Work</strong>最高支持 300 子 Agent 协作；<strong>Google NotebookLM 升级</strong>默认切换 Gemini 3.5，支持从聊天自动构建知识库；<strong>OpenAI 向 SEC 保密提交 S-1</strong>正式启动 IPO 流程</div>
+            <div class="te-count">20 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-08.html" class="timeline-entry" id="jun-8">
+            <div class="te-date">Jun 8</div>
+            <div class="te-summary"><strong>NVIDIA联合KRAFTON、NC与T1在韩国PC Bang推广RTX Spark</strong>面向个人AI代理的Windows超级芯片；<strong>OpenAI仍在推进「超级应用」开发</strong>部分员工认为「Chat已死」；<strong>Notion服务中断后恢</strong>复Anthropic集成；<strong>Wall Street Prompt</strong>日收费2.5万美元教华尔街用AI，花旗美银成回头客；<strong>SpaceX启动史上最大IPO</strong>每股135美元募资750亿美元，估值1.77万亿美元</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-07.html" class="timeline-entry" id="jun-7">
+            <div class="te-date">Jun 7</div>
+            <div class="te-summary"><strong>Google 发布 Agentic RAG 框架</strong>多智能体迭代检索，准确率提升最高 34%；<strong>Cursor 推出 Design Mode</strong>在运行中的应用里用可视化提示指挥智能体编辑代码；<strong>Vercel 与 Perplexity Computer 集成</strong>可在 Perplexity 内管理 Vercel 部署；<strong>Nous Research 发布 Hermes Desktop 桌面端</strong>开源 Agent 跨平台运行；<strong>OpenAI</strong>自研芯片团队二号员工 Clive Chan 离职加入 Anthropic</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-06.html" class="timeline-entry" id="jun-6">
+            <div class="te-date">Jun 6</div>
+            <div class="te-summary"><strong>Sakana AI成立递归自我提升实验室RSI Lab</strong>整合6项核心成果推进AI自主进化；<strong>Airbnb CEO Brian Chesky计划成立AI实验室</strong>聚焦用户交互与设计；<strong>Apple批准Poke为Messages</strong>for Business平台首个AI智能体；<strong>Google发布Gemma 4 QAT量化检查点</strong>E2B模型内存降至1GB；<strong>Anthropic总裁Daniela Amodei回应AI回报质疑</strong>年化收入突破470亿美元</div>
+            <div class="te-count">20 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-05.html" class="timeline-entry" id="jun-5">
+            <div class="te-date">Jun 5</div>
+            <div class="te-summary"><strong>NVIDIA发布Nemotron</strong>3 Ultra推理模型及Nemotron 3.5内容安全模型；<strong>Ideogram发布4.0开源图像模型</strong>开放权重下载与本地微调；<strong>Nex-AGI生态发布Nex-N2智能体模型</strong>Adaptive Thinking节省20% token消耗；<strong>Pinterest签约AWS 40亿美元基础设施协议</strong>采用Trainium芯片；<strong>OpenAI发布ChatGPT Memory Dreaming V3</strong>后台综合记忆取代手动保存</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-06-04.html" class="timeline-entry" id="jun-4">
+            <div class="te-date">Jun 4</div>
+            <div class="te-summary"><strong>Google DeepMind发布Gemma 4 12B</strong>无编码器统一多模态架构，16GB内存笔记本可运行；<strong>Microsoft 7款自研MAI模型</strong>MAI-Thinking-1达97% AIME 2025；<strong>OpenAI为GPT-R</strong>osalind引入GPT-5.5能力；<strong>Anthropic推出ant CLI</strong>Claude Platform全API端点可从终端直接调用；<strong>NVIDIA收购企业预测AI公司Kumo AI</strong>交易金额超4亿美元</div>
+            <div class="te-count">27 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-06-03.html" class="timeline-entry" id="jun-3">
+            <div class="te-date">Jun 3</div>
+            <div class="te-summary"><strong>Together AI解析MiniMax-M3高效推理方案</strong>支持百万Token上下文；<strong>Microsoft Build大会</strong>发布自研AI模型、OpenClaw风格Agent及Scout个人助手；<strong>OpenAI发布Code</strong>x六款职业插件；<strong>Anthropic扩展G</strong>lasswing安全项目至15国150个组织；<strong>Alphabet计划融资</strong>800亿美元用于AI基础设施</div>
+            <div class="te-count">21 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-06-02.html" class="timeline-entry" id="jun-2">
+            <div class="te-date">Jun 2</div>
+            <div class="te-summary"><strong>NVIDIA Cosmos 3发布</strong>物理AI开放世界基础模型，GTC Taipei亮相；<strong>Qwen3.7-Plus发布</strong>多模态智能体基座；<strong>MiniMax发布M3模型</strong>开源编程战场再加一员；<strong>Anthropic已向SEC秘密提交S-1草案</strong>$965B估值IPO进程启动；<strong>OpenAI密歇根破土动</strong>工1GW数据中心</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-06-01.html" class="timeline-entry" id="jun-1">
+            <div class="te-date">Jun 1</div>
+            <div class="te-summary"><strong>OpenAI正式进军机器人领域</strong>成立OpenAI Robotics团队；<strong>顶级学者涌入OpenAI</strong>COPSS奖得主苏炜杰、哈佛最年轻正教授尹希相继加盟；<strong>NVIDIA黄仁勋GTC</strong> Taipei演讲在即；<strong>复旦×通义提出CUA训练</strong>范式；<strong>李飞飞团队发布GPIC数</strong>据集</div>
+            <div class="te-count">7 条动态</div>
+        </a>
+                </div>
+            </div>
+
+            <!-- May 2026 -->
+            <div class="month-group">
+                <button class="month-toggle" onclick="toggleMonth(this)">
+                    2026 年 5 月 <span class="toggle-arrow">&#9662;</span>
+                </button>
+                <div class="month-body" id="month-may">
+        <a href="daily-ai-news-2026-05-31.html" class="timeline-entry" id="may-31">
+            <div class="te-date">May 31</div>
+            <div class="te-summary"><strong>OpenRouter推出逐请求可观测性功能</strong>增强API密钥级别管控；<strong>OpenAI CRO Denise Dresser的企业市场策略</strong>与Anthropic的竞争加剧；<strong>软银承诺在法国投资最高750亿欧元建设5GW</strong>AI数据中心容量；<strong>NVIDIA与清华提出γ-World</strong>多智能体世界模型实现24FPS实时交互；<strong>LeCun团队证明</strong>LeJEPA要学到真实结构，必须满足高斯分布条件</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-30.html" class="timeline-entry" id="may-30">
+            <div class="te-date">May 30</div>
+            <div class="te-summary"><strong>StepFun-ai发布Step-3.7-Flash</strong>196B多模态MoE Agent模型登陆OpenRouter；<strong>Glean ARR突破3亿美元</strong>企业AI搜索降本成核心卖点；<strong>Meta内部备忘录规划AI穿戴设备</strong>包括AI吊坠；<strong>Lowe's称语义数据正在提升AI</strong>Agent表现；<strong>SpaceX IPO前披露</strong>2025年政府合同贡献收入五分之一，新签64.5亿美元太空军合同</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-29.html" class="timeline-entry" id="may-29">
+            <div class="te-date">May 29</div>
+            <div class="te-summary"><strong>Anthropic发布Claude Opus 4.8</strong>距前代仅41天，代码缺陷漏检率降低4倍，同步推出Dynamic Workflow；<strong>自变量机器人开源Wall-OSS-0.5</strong>预训练VLA模型零样本完成17项机器人任务；<strong>Microsoft下周Build大会发布自研编码模型</strong>强化GitHub Copilot竞争力；<strong>Apple WWDC前瞻</strong>iOS 27全新Siri从Dynamic Island交互，独立App对标Cha；<strong>Asana收购StackAI强化AI工作流</strong>无代码平台整合入企业SaaS生态</div>
+            <div class="te-count">21 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-28.html" class="timeline-entry" id="may-28">
+            <div class="te-date">May 28</div>
+            <div class="te-summary"><strong>Microsoft MAI-Image-2.5登顶Arena文生图第3名</strong>文本渲染和商业图像大幅提升；<strong>MiniMax预告开源M3模型</strong>标注#MSA标签引发猜测；<strong>Anthropic推出Claude Code安全审查插件</strong>AI编码时自动检测并修复漏洞；<strong>Meta全球推出Instagram/Facebook/WhatsApp付费订阅</strong>同步测试AI功能；<strong>xAI发布grok-build-0.1编程助手</strong>集成至KiloCode平台</div>
+            <div class="te-count">22 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-27.html" class="timeline-entry" id="may-27">
+            <div class="te-date">May 27</div>
+            <div class="te-summary"><strong>面壁/OpenBMB发布ForgeTrain</strong>AI自动编写训练框架，1B端侧模型AA-Index达17.9；<strong>快手发布Keye-VL-2.0-30B-A3B</strong>首个将DSA引入多模态，长视频理解登顶开源SOTA；<strong>Elon Musk宣布Grok V9-Medium(1.5T)完成训练</strong>2-3周内公开发布；<strong>Anthropic发布Agent安全架构工程博客</strong>三种隔离模式对应不同产品风险等级；<strong>ServiceNow CMO</strong>Colin Fleming离职加入OpenAI</div>
+            <div class="te-count">22 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-26.html" class="timeline-entry" id="may-26">
+            <div class="te-date">May 26</div>
+            <div class="te-summary"><strong>GPT-5.6在Codex后台被曝光</strong>1.5M上下文窗口，内部代号iris-alpha，预计6月发布；<strong>通义千问3.7-Max上线隐式缓存</strong>自动复用KV缓存，推理速度提升成本降低；<strong>Anthropic准备推出Claude Memory Files</strong>双模式记忆系统支持结构化持久存储；<strong>Google DeepMind发布AlphaProof Nexus</strong>Agent自主解决9个Erdős开放问题，含两个56年未解难题；<strong>xAI推出Grok Build Beta版</strong>SuperGrok和X Premium+用户可使用Plan Mode和多媒体生成</div>
+            <div class="te-count">16 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-25.html" class="timeline-entry" id="may-25">
+            <div class="te-date">May 25</div>
+            <div class="te-summary"><strong>Anthropic Mythos 1即将引入Claude Code和Claude Security</strong>Sonnet 4.8泄露详情曝光；<strong>Canonical Labs发布物理AI三年资本图谱</strong>4家人形机器人估值565亿美元，15.6倍于6个子赛道总和；<strong>Ai2发布ArtifactLinker</strong>GNN+LLM自动发现HuggingFace上的SOTA模型；<strong>Echo框架</strong>从用户修正行为中学习，代码补全接受率25.7%→35.7%；<strong>MIT团队提出跨域基准</strong>多Agent协作在气候预测等科学任务上优于单Agent</div>
+            <div class="te-count">8 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-24.html" class="timeline-entry" id="may-24">
+            <div class="te-date">May 24</div>
+            <div class="te-summary"><strong>NVIDIA Nemotron-Labs-Diffusion</strong>AR/扩散/自推测三模统一，8B吞吐4倍于Qwen3；<strong>白宫接近与Anthropic达成协议</strong>允许NSA等间谍机构使用其AI模型；<strong>DeepSeek将V4 Pro API临时75%降价永久化</strong>进入Pareto价格-能力前沿；<strong>Turing Post总结长程AI Agent构建5模式</strong>从Checkpoint到Fleet Orchestration</div>
+            <div class="te-count">4 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-23.html" class="timeline-entry" id="may-23">
+            <div class="te-date">May 23</div>
+            <div class="te-summary"><strong>智谱GLM-5.1-hi</strong>ghspeed支持400Tokens/s推理；<strong>Microsoft发布MagenticLite小模型智能体系统</strong>Fara1.5-9B刷新computer-use SOTA；<strong>OpenAI</strong>Codex支持锁屏状态下远程操控Mac；<strong>Gartner企业AI编码智能体魔力象限</strong>OpenAI与Anthropic入选领导者；<strong>DeepSeek V4</strong>Flash登顶OpenRouter周榜</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-22.html" class="timeline-entry" id="may-22">
+            <div class="te-date">May 22</div>
+            <div class="te-summary"><strong>Cohere发布Command A+</strong>25B激活参数MoE模型，Apache 2.0开源；<strong>Anthropic预计Q2实现运营盈利</strong>Q2季度收入约109亿美元；<strong>智谱ZCube</strong>新型数据中心网络拓扑，LLM训练速度提升3%-7%，网络成本降低26%-46%；<strong>Nvidia CEO Jensen Huang提出2000亿美元Agent CPU市场</strong>Vera今年已售200亿美元；<strong>Epoch AI分析</strong>前沿实验室仅使用全球不到50%AI算力</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-21.html" class="timeline-entry" id="may-21">
+            <div class="te-date">May 21</div>
+            <div class="te-summary"><strong>OpenAI通用模型解决Erdős平面单位距离问题</strong>为近80年数学开放问题首获突破；<strong>千问发布Qwen3.7-Max旗舰模型</strong>面向智能体时代，编程与推理多项benchmark领先；<strong>Stability AI发布Stable Audio 3.0</strong>开源音乐模型可生成6分钟歌曲，支持设备端完整作曲；<strong>OpenAI准备数周内提交IPO申请</strong>Goldman Sachs和Morgan Stanley起草招股书；<strong>SpaceX S1文件披露</strong>xAI去年亏损64亿美元，Anthropic云协议最高400亿，计划2028部署</div>
+            <div class="te-count">16 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-20.html" class="timeline-entry" id="may-20">
+            <div class="te-date">May 20</div>
+            <div class="te-summary"><strong>Google I/O</strong>2026发布Gemini Omni和Gemini 3.5 Flash两大模型；<strong>Cursor发布Composer 2.5</strong>基于Kimi K2.5训练，长程Agent任务能力大幅提升；<strong>Sapient Intelligence发布HRM-Text</strong>1B参数推理模型，$1000预算一天训完；<strong>Google I/O</strong>2026发布AI信息代理、Android CLI、Android Halo等多项；<strong>Andrej Karpathy宣布加入Anthropic</strong>回归LLM前沿研发</div>
+            <div class="te-count">25 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-19.html" class="timeline-entry" id="may-19">
+            <div class="te-date">May 19</div>
+            <div class="te-summary"><strong>阿里通义千问3.7预览版登陆Arena</strong>文本升至全球第六；<strong>openJiuwen开源JiuwenSwarm蜂群智能体架构</strong>支持多Agent自主演进；<strong>Anthropic收购开发工具初创Stainless</strong>交易估值超3亿美元并将于年内停服；<strong>Microsoft高管警示GitHub AI优势流失</strong>Copilot增长未达预期；<strong>Meta将数千名员工调配至AI业务部门</strong>并计划实施大规模裁员</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-18.html" class="timeline-entry" id="may-18">
+            <div class="te-date">May 18</div>
+            <div class="te-summary"><strong>Google内部系统疑似泄露Gemini 3.2 Flash-Lite-Live</strong>专注超低延迟流式推理；<strong>Moonshot AI发布Kimi Web Bridge</strong>Agent可像人一样操控网页；<strong>Anthropic与OpenAI合计占AI创业公司收入89%</strong>差距持续扩大；<strong>OpenAI 1月收购语音克隆公司Weights.GG</strong>买IP不集成产品；<strong>腾讯混元团队提出EvoEnv</strong>模型自建训练环境实现推理自进化</div>
+            <div class="te-count">5 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-17.html" class="timeline-entry" id="may-17">
+            <div class="te-date">May 17</div>
+            <div class="te-summary"><strong>Pinecone发布Nexus知识引擎层</strong>可减少AI agent高达90%的token使用；<strong>xAI将Grok接入开源Agent框架Hermes</strong>支持搜索X帖子；<strong>开发者将M5Stack</strong>Cardputer改造为手持Claude设备；<strong>arXiv宣布</strong>对AI代写论文作者禁投一年；<strong>阿里健康发布</strong>医疗AI产品氢离子</div>
+            <div class="te-count">10 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-16.html" class="timeline-entry" id="may-16">
+            <div class="te-date">May 16</div>
+            <div class="te-summary"><strong>Databricks集成GPT-5.5用于企业Agent工作流</strong>在OfficeQA Pro基准测试创下新纪录；<strong>Anthropic呼吁美国加强对华芯片出口限制</strong>同步发布政策论文；<strong>具身智能公司LiberAI完成数亿元融资</strong>打通UMI硬件-数据采集-大模型训练全流程；<strong>Voice AI公司Vapi完成5000万美元B轮融资</strong>投后估值5亿美元；<strong>Cerebras Systems成功IPO</strong>史上最大AI芯片面积超4万平方毫米</div>
+            <div class="te-count">7 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-15.html" class="timeline-entry" id="may-15">
+            <div class="te-date">May 15</div>
+            <div class="te-summary"><strong>AntLingAGI开源Ring-2.6-1T万亿参数模型</strong>Agent执行和推理双突破；<strong>xAI推出Grok</strong>Build早期测试版智能体CLI；<strong>OpenAI在ChatGPT移动端推出</strong>Codex编程预览版；<strong>OpenAI称黑客攻击导</strong>致部分员工数据被盗；<strong>美国批准H200芯片对华销售</strong>但中国尚未接收任何一枚</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-14.html" class="timeline-entry" id="may-14">
+            <div class="te-date">May 14</div>
+            <div class="te-summary"><strong>MiniCPM-V</strong>4.6实现2.4倍推理吞吐提升；<strong>Claude Code上线Fast Mode</strong>Opus 4.6速度提升2.5倍；<strong>Muse Spark开始全平台推送</strong>覆盖WhatsApp、Instagram、AI眼镜，新增语音对话和购物功能；<strong>Anthropic推出面向小型企业AI服务</strong>Ramp数据首次显示企业客户数超OpenAI；<strong>OpenAI为Windo</strong>ws版Codex构建安全沙箱</div>
+            <div class="te-count">20 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-13.html" class="timeline-entry" id="may-13">
+            <div class="te-date">May 13</div>
+            <div class="te-summary"><strong>Openrouter上线Perceptron-Mk1视频+具身推理VLM</strong>支持时间推理/密集计数/多摄像头联合推理；<strong>Artificial Analysis发布Coding Agent Index</strong>Opus 4.7和GPT-5.5并列第一，GLM-5.1开源最高53分，任务成本；<strong>NVIDIA与SAP合作推出可信专业代理</strong>在SAP Sapphire大会上宣布；<strong>Google发布Gemini Intelligence</strong>Android从OS进化为智能系统，支持多步任务自动化和自然语言生成Widget；<strong>AI安全运营公司Exaforce完成1.25亿美元B轮</strong>估值7.25亿美元</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-12.html" class="timeline-entry" id="may-12">
+            <div class="te-date">May 12</div>
+            <div class="te-summary"><strong>Thinking Machines Lab提出Interaction Model架构</strong>276B MoE原生支持实时多模态协作；<strong>Claude Code推出Agent view</strong>支持多会话并行管理与后台运行；<strong>AWS Bedrock AgentCore支持AI代理自主支付</strong>推Agent Toolkit简化开发；<strong>SpaceX提交SpaceX AI商标注册申请</strong>AI子公司进入筹备阶段；<strong>Google推出REPLIQA研究计划</strong>投入1000万美元探索量子计算在生命科学应用</div>
+            <div class="te-count">16 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-11.html" class="timeline-entry" id="may-11">
+            <div class="te-date">May 11</div>
+            <div class="te-summary"><strong>Wispr Flow在印度推出Hinglish语音AI</strong>用户增长加速；<strong>Databricks发布Genie数据Agent技术解析</strong>多LLM+并行推理，准确率从32%提升至90%+；<strong>谷歌RT1/2/SayCan作者Ted</strong>Xiao复盘机器人学习三大时代；<strong>Anthropic无补贴</strong>登顶OpenRouter令牌份额榜；<strong>AMD ROCm性能14天内提升超75倍</strong>DeepSeek V4发布助推</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-10.html" class="timeline-entry" id="may-10">
+            <div class="te-date">May 10</div>
+            <div class="te-summary"><strong>谷歌DeepMind发布AI联合数学家</strong>FrontierMath Tier 4达48%创AI最高分；<strong>OpenRouter推出Pareto Code免费编程路由器</strong>按编码评分自动路由最便宜达标模型；<strong>英伟达2026年内已承诺$400亿股权投资AI生态</strong>其中$300亿投向OpenAI；<strong>AMD发布vLLM-ATOM插件</strong>AMD Instinct GPU原生推理性能直通vLLM；<strong>Robo.ai以$1亿全股票收购Neurovia AI</strong>构建物理AI视频数据基础设施</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-09.html" class="timeline-entry" id="may-9">
+            <div class="te-date">May 9</div>
+            <div class="te-summary"><strong>OpenAI发布GPT-5.5-Cyber限量预览版</strong>面向经审核的网络安全团队开放；<strong>Core Automation</strong>目标融资5-10亿美元创办continual learning新范式；<strong>Cloudflare裁员1100+人向AI-first运营模式转型</strong>Q1财报强于预期但股价盘后跌14%；<strong>Anthropic正式发布Claude for Microsoft 365</strong>覆盖Excel/PowerPoint/Word/Outlook</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-08.html" class="timeline-entry" id="may-8">
+            <div class="te-date">May 8</div>
+            <div class="te-summary"><strong>Meta ProgramBench新评测标准</strong>要求AI从零重建完整软件，9个模型完成率均为0%；<strong>OpenAI API上线新一代语音模型</strong>支持推理、翻译和转录；<strong>xAI API推出图像生成质量模式</strong>已在Grok生成3亿张图像；<strong>Google DeepMind发布AlphaEvolve进展</strong>从研究走向实际问题解决；<strong>AI算力中心登陆海上</strong>潮汐能发电+海水冷却获彼得·蒂尔1.4亿美元投资</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-07.html" class="timeline-entry" id="may-7">
+            <div class="te-date">May 7</div>
+            <div class="te-summary"><strong>SubQ发布SSA架构</strong>百万token长上下文推理加速52倍；<strong>OpenAI B2B Signals研究</strong>前沿企业AI使用强度达普通企业3.5倍；<strong>Genesis</strong>AI发布GENE-26.5 全栈机器人系统实现接近人类水平操作；<strong>Anthropic正开发Orbit</strong>为Claude Cowork提供主动式助理功能；<strong>SpaceX计划</strong>投资最高$119B在德州建设Terafab芯片工厂</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-06.html" class="timeline-entry" id="may-6">
+            <div class="te-date">May 6</div>
+            <div class="te-summary"><strong>OpenAI发布GPT-5.5 Instant</strong>替代GPT-5.3 Instant成为ChatGPT默认模型；<strong>Apple计划在iOS 27中</strong>允许用户选择第三方AI模型驱动设备端功能；<strong>Microsoft Copilot Cowork扩展至移动端</strong>新增Skills和插件支持；<strong>斯坦福合并HAI与数据科学计划</strong>李飞飞升任校长顾问；<strong>Anthropic发布金融服务</strong>业Claude代理模板</div>
+            <div class="te-count">16 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-05.html" class="timeline-entry" id="may-5">
+            <div class="te-date">May 5</div>
+            <div class="te-summary"><strong>视觉AI模型推动应用下载量增长6.5倍</strong>但仅ChatGPT实现收入转化；<strong>DeepSeek-TUI获2.3k星</strong>开源版Claude Code，专为DeepSeek V4打造；<strong>Anthropic与OpenAI同日宣布PE合资企业</strong>合计规模达$11.5B；<strong>豆包新增付费订阅</strong>三档方案，专业版连续包月500元/月；<strong>Disney内部上线AI Adoption Dashboard追踪token消耗</strong>硅谷掀起tokenmaxxing热潮</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-04.html" class="timeline-entry" id="may-4">
+            <div class="te-date">May 4</div>
+            <div class="te-summary"><strong>NIST CAISI评估DeepSeek V4-Pro</strong>落后美国前沿模型约8个月，专家质疑方法论；<strong>Anthropic考虑以$900B+估值融资$500亿</strong>Claude Code驱动收入两个月翻倍，高管集体跳槽加入；<strong>四大科技巨头2026年AI资本支出预计达$7,250亿</strong>同比增77%；<strong>DeepSeek V4-Pro 75%折扣今日到期</strong>百万token输入仅$0.036；<strong>21家值得关注的欧洲初创公司</strong></div>
+            <div class="te-count">11 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-03.html" class="timeline-entry" id="may-3">
+            <div class="te-date">May 3</div>
+            <div class="te-summary"><strong>OpenRouter实测主流模型首词延迟</strong>Gemini 2.5 Flash 1.3秒、Kimi K2.6 4.6秒、GPT；<strong>ARC-AGI-3基准测试难倒顶级模型</strong>GPT-5.5与Opus 4.7得分均趋近零，人类满分通过；<strong>腾讯混元开源440M翻译模型</strong>支持手机离线运行且翻译质量超越Google；<strong>SemiAnalysis分析</strong>xAI数据中心仅11% GPU在线运行，数十万显卡处于闲置状态；<strong>中科院发布SpikingBrain2.0</strong>将Transformer转为脉冲混合架构，4M上下文加速10倍</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-02.html" class="timeline-entry" id="may-2">
+            <div class="te-date">May 2</div>
+            <div class="te-summary"><strong>xAI上线Voice Cloning API</strong>2分钟创建自定义语音，支持28种语言；<strong>Meta收购Assured Robot Intelligence</strong>进军人形机器人；<strong>Epoch AI估计29万至1</strong>60万片H100等效GPU流向中国；<strong>Coatue Ventures计划购买数据中心用地</strong>可能供Anthropic使用；<strong>美国国防部与多家科技巨头签署协议</strong>在机密网络中部署AI</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-05-01.html" class="timeline-entry" id="may-1">
+            <div class="te-date">May 1</div>
+            <div class="te-summary"><strong>xAI上线Grok-4.3 API</strong>定价降20%但agentic性能大幅提升；<strong>OpenAI推出高级账户安全功能</strong>引入防钓鱼登录和增强恢复机制；<strong>智元机器人发布LWD框架</strong>让已部署机器人在真实任务中边执行边学习；<strong>Google将Gemini推上车载系统</strong>取代Google Assistant覆盖数百万辆Android Automoti；<strong>中科大发布"灵境造物"智能科研云平台</strong>华为openJiuwen提供全栈国产化Coordination Engineer</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+
+                </div>
+            </div>
+
+            <!-- April 2026 -->
+            <div class="month-group">
+                <button class="month-toggle" onclick="toggleMonth(this)">
+                    2026 年 4 月 <span class="toggle-arrow">&#9662;</span>
+                </button>
+                <div class="month-body" id="month-apr">
+        <a href="daily-ai-news-2026-04-30.html" class="timeline-entry" id="apr-30">
+            <div class="te-date">Apr 30</div>
+            <div class="te-summary"><strong>Mistral发布Medium</strong> 3.5开源128B模型并推出Vibe远程编程Ag；<strong>DeepSeek灰度测试识图模式</strong>多模态能力首次接入主线产品；<strong>GitHub Copilot转向用量计费模式</strong>Claude Opus 4.7调用成本上涨9倍；<strong>Microsoft M365 Copilot付费用户突破2000万</strong>Agent模式成为默认体验；<strong>OpenAI发布网络安全方案+</strong>展示Codex决策辅助能力</div>
+            <div class="te-count">21 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-04-29.html" class="timeline-entry" id="apr-29">
+            <div class="te-date">Apr 29</div>
+            <div class="te-summary"><strong>NVIDIA发布Nemotron 3 Nano Omni</strong>统一视觉/音频/语言多模态能力；<strong>Lovable上线iOS/An</strong>droid端vibe-coding应用；<strong>Anthropic发布Claude创意工具连接器生态</strong>Adobe/Blender/Autodesk/Ableton等8家合作伙伴；<strong>曦智科技港交所上市</strong>发行价183.2港元，首日涨360%；<strong>SemiAnalysis</strong>AI时代CPU经济结构变化，GPU增速远超CPU导致每单位AI计算CPU占比下降</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-04-28.html" class="timeline-entry" id="apr-28">
+            <div class="te-date">Apr 28</div>
+            <div class="te-summary"><strong>阿里巴巴ATH团队正式认领HappyHorse 1.0视频生成模型</strong>开启灰测；<strong>OpenAI与微软更新合作协议</strong>明确长期合作框架；<strong>OpenAI被曝与联发科/高通/立讯合作造手机</strong>AI Agent或取代App；<strong>OpenAI获得FedRAMP Moderate授权</strong>chatGPT企业版进入美国联邦；<strong>Anthropic的Claude Desktop Buddy开源项目</strong>首款AI桌宠硬件采用深圳M5Stack</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-04-27.html" class="timeline-entry" id="apr-27">
+            <div class="te-date">Apr 27</div>
+            <div class="te-summary"><strong>Sakana AI发布Fugu</strong>多Agent编排系统，fugu-ultra在GPQA/SWE-Pro超越Gemi；<strong>Anthropic创建Agent对Agent交易市场实验</strong>验证AI自主商业行为（Project Deal）；<strong>NVIDIA开源神经渲染技术</strong>老照片可转化为可漫游3D场景；<strong>剪映发布AI智能剪辑助手</strong>支持素材智能归类与文案自动生成；<strong>京东启动「Aidol创造营」AI硬件孵化计划</strong>今年孵化101个AI硬件标杆</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-04-26.html" class="timeline-entry" id="apr-26">
+            <div class="te-date">Apr 26</div>
+            <div class="te-summary"><strong>SemiAnalysis深度评测GPT-5.5/Opus 4.7/DeepSeek V4</strong>GPT-5.5重返前沿，成本效率成关键；<strong>Google拟向Anthropic投资最多400亿美元</strong>同时签署5GW算力协议；<strong>Cohere收购德国AI企业Aleph Alpha</strong>打造跨大西洋AI联盟；<strong>Series获550万美元pre-seed</strong>在iMessage内构建AI社交网络；<strong>AI网络安全公司Rilian获</strong>1750万美元种子轮融资</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+
+        <a href="daily-ai-news-2026-04-25.html" class="timeline-entry" id="apr-25">
+            <div class="te-date">Apr 25</div>
+            <div class="te-summary"><strong>DeepSeek-V4发布</strong>1M上下文、1.6T参数、开源SOTA；<strong>xAI发布Grok Voice</strong> Think Fast 1.0语音模型；<strong>Anthropic发布Claude Code降智事后复盘</strong>确认由三个Bug叠加导致；<strong>NVIDIA在公司范围内部署C</strong>odex；<strong>Google DeepMind发布Decoupled DiLoCo</strong>跨数据中心训练提速20倍</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-24.html" class="timeline-entry" id="apr-24">
+            <div class="te-date">Apr 24</div>
+            <div class="te-summary"><strong>OpenAI</strong>发布GPT-5.5，编程和知识工作全面突破；<strong>字节跳动</strong>发布Seed3D 2.0 Coarse-to-Fine两阶段3D生成；<strong>腾讯</strong>发布Hy3-preview 295B MoE快慢思考融合模型；<strong>Anthropic</strong>Agent记忆公测+估值破万亿；<strong>Google</strong>首建奥地利数据中心；<strong>DeepSeek</strong>首次融资估值200亿+</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-23.html" class="timeline-entry" id="apr-23">
+            <div class="te-date">Apr 23</div>
+            <div class="te-summary"><strong>OpenAI</strong>发布ChatGPT工作空间智能体功能；<strong>Meta</strong>记录员工键鼠操作用于AI训练；<strong>小米</strong>发布MiMo-V2.5原生多模态+Agentic能力；<strong>NVIDIA</strong>与Google Cloud达成十年合作；<strong>商汤绝影</strong>发布Sage端侧多模态模型</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-22.html" class="timeline-entry" id="apr-22">
+            <div class="te-date">Apr 22</div>
+            <div class="te-summary"><strong>Claude Opus 4.7</strong>在ECI评测并列第三，<strong>GPT-5.4 Pro</strong>以158分领先；<strong>Ant Group</strong>发布Ling-2.6-flash；<strong>Kimi K2.6</strong>登顶开源智能体模型；<strong>Google</strong>发布Gemini Deep Research Max；<strong>OpenAI Codex</strong>推出Chronicle屏幕记忆功能</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-21.html" class="timeline-entry" id="apr-21">
+            <div class="te-date">Apr 21</div>
+            <div class="te-summary"><strong>阿里</strong>发布Qwen3.6-Max-Preview预告下一代旗舰；<strong>GPT-5.5</strong> Spud"几周内"发布；<strong>Google DeepMind</strong>组建"突击小组"追Claude编程，Sergey Brin亲自参与；<strong>Kimi K2.6</strong>上线OpenRouter支持长程Agent编程</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-20.html" class="timeline-entry" id="apr-20">
+            <div class="te-date">Apr 20</div>
+            <div class="te-summary"><strong>Meta</strong>从Thinking Machines Lab挖走第5位创始成员；<strong>高德</strong>发布全栈具身技术体系ABot及智能导盲犬途途；<strong>Epoch AI</strong>调查Stargate全部7个数据中心正在建设；<strong>Google</strong>与Marvell洽谈合作开发AI推理芯片</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-19.html" class="timeline-entry" id="apr-19">
+            <div class="te-date">Apr 19</div>
+            <div class="te-summary"><strong>OpenAI</strong>高管Kevin Weil和Bill Peebles离职；<strong>xAI</strong>推出Grok语音转文本API；<strong>Anthropic</strong>推出Claude Design和Claude for Word加速覆盖办公场景；<strong>Netflix</strong>推出TikTok式垂直视频feed；<strong>DeepSeek</strong>更新DeepGEMM引入Mega MoE和FP4</div>
+            <div class="te-count">21 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-17.html" class="timeline-entry" id="apr-17">
+            <div class="te-date">Apr 17</div>
+            <div class="te-summary"><strong>Anthropic</strong>发布Claude Opus 4.7最强Opus模型，长任务+自验证；<strong>OpenAI</strong>发布GPT-Rosalind生命科学专用推理模型；<strong>Physical Intelligence</strong>发布π0.7组合泛化能力突破；<strong>Epoch AI</strong>调查Claude美国使用量增长超40%</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-16.html" class="timeline-entry" id="apr-16">
+            <div class="te-date">Apr 16</div>
+            <div class="te-summary"><strong>OpenAI</strong>发布GPT-5.4-Cyber扩大网络安全防御者可信访问计划；<strong>OpenAI</strong>发布新一代Agents SDK原生沙盒执行；<strong>Google</strong>加速桌面AI布局原生Gemini Mac应用+Chrome Skills；<strong>Anthropic</strong>拒绝8000亿美元以上估值融资要约；<strong>NVIDIA</strong>发布Ising全球首个开源量子AI模型家族</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-15.html" class="timeline-entry" id="apr-15">
+            <div class="te-date">Apr 15</div>
+            <div class="te-summary"><strong>Anthropic</strong>发布Claude Code重大更新桌面版支持多会话并行，新增Routines定时自动化任务；<strong>Google</strong>发布Gemini Robotics-ER 1.6提升机器人推理能力；<strong>The World Labs</strong>发布Spark 2.0高保真3DGS进入网页</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-14.html" class="timeline-entry" id="apr-14">
+            <div class="te-date">Apr 14</div>
+            <div class="te-summary"><strong>OpenRouter</strong>上线100B参数模型Elephant Alpha对标同规模SOTA；<strong>Cloudflare</strong> Agent Cloud集成OpenAI GPT-5.4和Codex；<strong>吴翼</strong>加盟Meta MSL参与超级智能攻坚；<strong>Atlassian</strong>和<strong>Figma</strong>在AI研发投入上领跑，华尔街恐慌性抛售企业软件股</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-13.html" class="timeline-entry" id="apr-13">
+            <div class="te-date">Apr 13</div>
+            <div class="te-summary"><strong>HumanX</strong>大会Claude成最大赢家，OpenAI被指"掉队"；Physical AI领域爆发人才争夺战，自动驾驶工程师薪资飙至$300K-$500K；<strong>灵初智能</strong>发布Psi-MobiDex具身智能数据集10万小时真人操作数据</div>
+            <div class="te-count">6 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-12.html" class="timeline-entry" id="apr-12">
+            <div class="te-date">Apr 12</div>
+            <div class="te-summary"><strong>京东</strong>开源JoyAI-Image-Edit 240亿参数图像模型；<strong>英伟达</strong>支持的SiFive估值达36.5亿美元布局RISC-V开源AI芯片；<strong>刘壮陈丹琦</strong>开源视觉推理RL框架刷新SOTA；<strong>上海AI Lab</strong> GEMS框架让6B生图模型超越Nano Banana 2</div>
+            <div class="te-count">7 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-11.html" class="timeline-entry" id="apr-11">
+            <div class="te-date">Apr 11</div>
+            <div class="te-summary"><strong>OpenAI</strong>星门计划三位核心负责人离职；<strong>Anthropic</strong>暂时封禁OpenClaw创始人Claude账号；<strong>Claude AI</strong>推出Word集成beta版本；<strong>阿里</strong>Qwen Code推出定时任务功能</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-10.html" class="timeline-entry" id="apr-10">
+            <div class="te-date">Apr 10</div>
+            <div class="te-summary"><strong>NVIDIA</strong>联合vLLM提交首个MLPerf视觉语言模型性能基准测试；<strong>Meta AI</strong>应用排名跃升至App Store第5位；开源项目推出Claude Agent服务平替方案快速获得2.6k Star；<strong>OpenAI</strong>推出100美元ChatGPT Pro订阅服务</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-09.html" class="timeline-entry" id="apr-09">
+            <div class="te-date">Apr 09</div>
+            <div class="te-summary">神秘模型<strong>HappyHorse</strong>匿名登顶AI Video Arena后消失身世成谜；<strong>World Labs</strong>发布Marble和Haven模型更新；<strong>Meta</strong>发布Muse Spark模型Artificial Analysis智商指数52位列全球第四；<strong>Anthropic</strong>发布Managed Agents工程博客</div>
+            <div class="te-count">17 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-08.html" class="timeline-entry" id="apr-08">
+            <div class="te-date">Apr 08</div>
+            <div class="te-summary"><strong>贝索斯</strong>AI新公司Project Prometheus从OpenAI挖走xAI联合创始人Kyle Kosic；<strong>GLM-5.1</strong>上线OpenRouter长程任务完成能力显著提升；<strong>Epoch AI</strong>：Google持有全球约25% AI算力，75%来自自研TPU；Nvidia投资的AI数据中心公司Firmus估值达55亿美元</div>
+            <div class="te-count">10 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-07.html" class="timeline-entry" id="apr-07">
+            <div class="te-date">Apr 07</div>
+            <div class="te-summary"><strong>OpenAI</strong>发布智能时代产业政策框架；<strong>Google</strong>推出离线优先AI听写应用使用Gemma模型；<strong>Anthropic</strong>联手Google与Broadcom签约数GW级TPU算力2027年上线；<strong>NVIDIA</strong>盘点物理AI机器人研究突破推动AI进入现实物理世界</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-05+06.html" class="timeline-entry" id="apr-05">
+            <div class="te-date">Apr 05</div>
+            <div class="te-summary"><strong>OpenAI</strong> GPT-6曝光，奥特曼押注下一代模型；<strong>vLLM</strong>采用TorchSpec开源EAGLE3模型用于Kimi 2.5低延迟推理；<strong>Epoch AI</strong>发布多项AI基础设施数据洞察，内存带宽年增4.1倍；<strong>上海交大</strong>团队提出多智能体动态协作编程方案</div>
+            <div class="te-count">6 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-04.html" class="timeline-entry" id="apr-04">
+            <div class="te-date">Apr 04</div>
+            <div class="te-summary"><strong>港科大阿里</strong>联合提出RL冷启动新范式揭示SFT与RL潜力差异；<strong>Anthropic</strong>为全量Claude订阅用户开放Microsoft 365连接器；<strong>Bespoke Labs</strong>建议简化Agent设计减少MCP工具依赖；<strong>Anthropic</strong>在私募市场热度空前二级市场交易活跃</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-03.html" class="timeline-entry" id="apr-03">
+            <div class="te-date">Apr 03</div>
+            <div class="te-summary"><strong>Google</strong>发布Gemma 4开放基础模型系列基于Gemini 3技术；<strong>Microsoft</strong>旗下MAI发布三个基础模型涵盖语音/音频/图像生成；<strong>Z.ai</strong>发布GLM-5V-Turbo原生多模态编程模型；<strong>YC W26</strong> Demo Day</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-02.html" class="timeline-entry" id="apr-02">
+            <div class="te-date">Apr 02</div>
+            <div class="te-summary"><strong>Holo3</strong>突破计算机使用前沿；<strong>Gradient Labs</strong>用GPT-4.1和GPT-5.4为银行客户提供AI账户管理器；<strong>SpaceX</strong>秘密提交IPO注册文件估值超1.75万亿美元；Q1初创公司融资创纪录，OpenAI/Anthropic/xAI/Waymo获得大额融资</div>
+            <div class="te-count">6 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-04-01.html" class="timeline-entry" id="apr-01">
+            <div class="te-date">Apr 01</div>
+            <div class="te-summary"><strong>Google</strong>推出Gemini API Docs MCP和Agent Skills编程任务96.3%通过率；<strong>IBM</strong>发布Granite 4.0 3B Vision紧凑多模态模型；<strong>智谱</strong>上市后首份财报超7.24亿元；<strong>NVIDIA</strong>与能源公司合作建设电力弹性AI工厂</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+                </div>
+            </div>
+
+            <!-- March 2026 -->
+            <div class="month-group">
+                <button class="month-toggle collapsed" onclick="toggleMonth(this)">
+                    2026 年 3 月 <span class="toggle-arrow">&#9662;</span>
+                </button>
+                <div class="month-body collapsed" id="month-mar">
+        <a href="daily-ai-news-2026-03-31.html" class="timeline-entry" id="mar-31">
+            <div class="te-date">Mar 31</div>
+            <div class="te-summary"><strong>阿里</strong>发布Qwen3.5-Omni原生多模态模型，支持语音和多模态Vibe Coding；<strong>SemiAnalysis</strong>预告Qwen 3.6即将发布专注Agentic Coding；<strong>Mistral AI</strong>融资$830M；<strong>OpenAI</strong>推出OpenAI Academy</div>
+            <div class="te-count">19 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-30.html" class="timeline-entry" id="mar-30">
+            <div class="te-date">Mar 30</div>
+            <div class="te-summary"><strong>Anthropic</strong>疑似新旗舰模型Mythos泄露；<strong>OpenAI</strong>关闭Sora API服务引发AI视频行业洗牌讨论；<strong>Claude 5.0</strong>内测展现强大漏洞挖掘能力；<strong>Yann LeCun</strong>团队揭示AI缺乏规划能力的根源</div>
+            <div class="te-count">14 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-28+29.html" class="timeline-entry" id="mar-28">
+            <div class="te-date">Mar 28</div>
+            <div class="te-summary"><strong>硅心科技</strong>aiX-apply-4B单卡推理速度提升15倍；<strong>Meta</strong> SAM 3.1引入多目标追踪；<strong>GPT-5.4</strong>在USAMO数学基准达95%；<strong>智谱</strong>GLM-5.1登陆Coding Plan；<strong>钉钉</strong>CLI开源10项企业能力</div>
+            <div class="te-count">23 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-27.html" class="timeline-entry" id="mar-27">
+            <div class="te-date">Mar 27</div>
+            <div class="te-summary"><strong>Cohere</strong>发布Transcribe语音识别模型支持14种语言；<strong>Google</strong>发布Gemini 3.1 Flash Live支持实时对话式AI编程；<strong>Google</strong>实时耳机翻译功能扩展至iOS；<strong>Google Search Live</strong>全球上线支持实时视觉搜索与对话</div>
+            <div class="te-count">9 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-26.html" class="timeline-entry" id="mar-26">
+            <div class="te-date">Mar 26</div>
+            <div class="te-summary"><strong>LumaLabsAI</strong>发布Uni-1视频生成模型强调文化素养与导演能力；<strong>Google</strong>发布Lyria 3 Pro音乐生成模型；<strong>OpenAI</strong>发布Model Spec框架平衡安全性、用户自由与问责制；<strong>Meta</strong>裁减数百名员工</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-25.html" class="timeline-entry" id="mar-25">
+            <div class="te-date">Mar 25</div>
+            <div class="te-summary"><strong>Sora</strong>官方宣布关闭应用；<strong>ChatGPT</strong>推出Agentic Commerce Protocol支持购物；<strong>Anthropic</strong>为Claude Code推出自动执行模式；<strong>HuggingFace</strong>发布语音代理评估框架EVA</div>
+            <div class="te-count">18 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-24.html" class="timeline-entry" id="mar-24">
+            <div class="te-date">Mar 24</div>
+            <div class="te-summary"><strong>Meta</strong>裁员1.6万人押注AI，扎克伯格打造AI分身；<strong>Lovable</strong>估值66亿美元寻求收购扩张ARR翻倍至4亿美元；<strong>Gimlet Labs</strong>获8000万美元融资实现跨芯片异构推理；<strong>DocuSign</strong>收购Lexion强化AI合同管理</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-23.html" class="timeline-entry" id="mar-23">
+            <div class="te-date">Mar 23</div>
+            <div class="te-summary"><strong>微信</strong>推出官方ClawBot插件；<strong>马斯克</strong>发布TERAFAB项目万亿瓦算力工厂；<strong>杨立昆</strong>等联合发文探讨AI自主学习缺陷；<strong>浙大</strong>团队解决多模态模型过度自信问题</div>
+            <div class="te-count">7 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-22.html" class="timeline-entry" id="mar-22">
+            <div class="te-date">Mar 22</div>
+            <div class="te-summary">法院文件显示五角大楼曾告知<strong>Anthropic</strong>双方几乎达成一致；<strong>光轮智能</strong>定义Physical AI基础设施；<strong>xAI</strong>宣布Terafab项目；<strong>创智×复旦</strong>提出让大模型拥有科研品味的RL新范式</div>
+            <div class="te-count">5 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-21.html" class="timeline-entry" id="mar-21">
+            <div class="te-date">Mar 21</div>
+            <div class="te-summary"><strong>Nvidia GTC</strong>发布NeMoClaw和Robot Olaf押注万亿美元AI算力市场；<strong>亚马逊</strong>研发以Alexa为核心的新智能手机；<strong>浙大</strong>百卡团队开源实时世界模型视频秒转可交互4D世界</div>
+            <div class="te-count">11 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-20.html" class="timeline-entry" id="mar-20">
+            <div class="te-date">Mar 20</div>
+            <div class="te-summary"><strong>OpenAI</strong>发布内部编码代理对齐监控方法通过思维链检测风险；<strong>Meta</strong>推出新一代AI内容审核系统减少第三方依赖；<strong>OpenAI</strong>收购Python工具商Astral；<strong>亚马逊</strong>收购苏黎世机器人公司Rivr</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-19.html" class="timeline-entry" id="mar-19">
+            <div class="te-date">Mar 19</div>
+            <div class="te-summary"><strong>Mamba</strong>系列发布新模型；<strong>小米</strong>MiMo-V2-Pro评分49；<strong>Cursor</strong> Composer通过RL自我总结；<strong>Claude Cowork</strong>发布Dispatch功能；<strong>阿里钉钉</strong>上线企业AI产品"悟空"</div>
+            <div class="te-count">16 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-18.html" class="timeline-entry" id="mar-18">
+            <div class="te-date">Mar 18</div>
+            <div class="te-summary"><strong>OpenAI</strong>发布GPT-5.4 mini和nano；<strong>MiniMax 2.7</strong>展示编程和游戏开发能力；<strong>NVIDIA</strong>展示RTX PC和DGX Spark本地运行能力；<strong>HuggingFace</strong>发布Holotron-12B</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-17.html" class="timeline-entry" id="mar-17">
+            <div class="te-date">Mar 17</div>
+            <div class="te-summary"><strong>智谱</strong>发布GLM-5-Turbo；<strong>Sebastian Raschka</strong>整理大模型架构图收藏集；<strong>Google</strong>推出Gemini API成本透明度和控制功能；<strong>Google</strong> AI版Chrome正式推出</div>
+            <div class="te-count">8 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-16.html" class="timeline-entry" id="mar-16">
+            <div class="te-date">Mar 16</div>
+            <div class="te-summary"><strong>NVIDIA</strong>发布Nemotron-3 Super模型；<strong>Anthropic</strong>用3万字文档训练Claude；<strong>vLLM</strong>支持本地模型部署OpenClaw Agent；<strong>Meta</strong>公布自研AI芯片MTIA发展路线图</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-15.html" class="timeline-entry" id="mar-15">
+            <div class="te-date">Mar 15</div>
+            <div class="te-summary"><strong>Meta</strong>千亿参数Avocado大模型延期发布，性能不及预期且内测落后Gemini；<strong>Karpathy</strong>论AI编程未来</div>
+            <div class="te-count">2 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-14.html" class="timeline-entry" id="mar-14">
+            <div class="te-date">Mar 14</div>
+            <div class="te-summary"><strong>Claude Opus 4.6</strong>和Sonnet 4.6获得100万token上下文窗口；<strong>Claude</strong>推出交互式图表和可视化功能；<strong>Google Maps</strong>推出Ask Maps和Immersive Navigation用Gemini重构地图体验</div>
+            <div class="te-count">8 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-13.html" class="timeline-entry" id="mar-13">
+            <div class="te-date">Mar 13</div>
+            <div class="te-summary"><strong>Meta AI</strong>为Facebook Marketplace提供自动回复功能；<strong>Google DeepMind</strong>在伦敦开设AI Exchange创新空间；<strong>Anthropic</strong>登上时代封面；<strong>NVIDIA</strong> Omniverse推动工业AI与数字孪生应用</div>
+            <div class="te-count">12 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-12.html" class="timeline-entry" id="mar-12">
+            <div class="te-date">Mar 12</div>
+            <div class="te-summary"><strong>NVIDIA</strong>发布Nemotron 3 Super；<strong>谷歌</strong>发布Gemini Embedding 2首个原生全模态嵌入模型达成全模态SOTA；<strong>OpenAI</strong>为Responses API构建Agent运行时支持文件工具与状态管理</div>
+            <div class="te-count">15 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-10.html" class="timeline-entry" id="mar-10">
+            <div class="te-date">Mar 10</div>
+            <div class="te-summary"><strong>IBM</strong>推出Granite 4.0 1B语音模型；<strong>World Labs</strong>举办黑客松活动聚焦世界模型与空间智能；<strong>Anthropic</strong>与Mozilla合作测试Claude安全漏洞发现能力；<strong>ABB Robotics</strong>联合NVIDIA Omniverse实现工业级物理AI规模化部署</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-09.html" class="timeline-entry" id="mar-09">
+            <div class="te-date">Mar 09</div>
+            <div class="te-summary"><strong>Anthropic</strong>发布Claude Opus 4.6在BrowseComp评测中的表现；<strong>OpenAI</strong>发布Codex Security；五角大楼与<strong>Anthropic</strong>争议引发担忧；<strong>大连理工</strong>联合快手可灵推出MultiShotMaster</div>
+            <div class="te-count">13 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-08.html" class="timeline-entry" id="mar-08">
+            <div class="te-date">Mar 08</div>
+            <div class="te-summary"><strong>谢赛宁</strong>团队开源多人游戏视角世界模型；<strong>OpenAI</strong>再次推迟ChatGPT成人模式发布；谷歌CEO皮查伊获得6.92亿美元薪酬套餐</div>
+            <div class="te-count">10 条动态</div>
+        </a>
+        <a href="daily-ai-news-2026-03-07.html" class="timeline-entry" id="mar-07">
+            <div class="te-date">Mar 07</div>
+            <div class="te-summary"><strong>FlashAttention-4</strong>正式发布；<strong>Claude</strong>消费者增长持续加速；<strong>商汤</strong>发布新多模态架构；硅谷巨头自研芯片「叛逃」<strong>英伟达</strong>；<strong>Science</strong>完成2.3亿美元C轮融资</div>
+            <div class="te-count">10 条动态</div>
+        </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <span class="footer-copy">&copy; 2026 &middot; AI Daily News by Link-X Capital</span>
+        <a href="#" class="footer-top">Back to top &uarr;</a>
+    </div>
+
+    <script>
+    // Month toggle
+    function toggleMonth(btn) {
+        var body = btn.nextElementSibling;
+        var wasCollapsed = body.classList.contains('collapsed');
+        if (wasCollapsed) {
+            body.style.maxHeight = body.scrollHeight + 'px';
+            body.classList.remove('collapsed');
+            btn.classList.remove('collapsed');
+        } else {
+            body.style.maxHeight = body.scrollHeight + 'px';
+            requestAnimationFrame(function() {
+                body.classList.add('collapsed');
+                btn.classList.add('collapsed');
+            });
+        }
+    }
+    // Init: set max-height on open months
+    document.querySelectorAll('.month-body:not(.collapsed)').forEach(function(el) {
+        el.style.maxHeight = el.scrollHeight + 'px';
+    });
+
+    // Sidebar smooth scroll
+    document.querySelectorAll('.nav-item[href^="#"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = this.getAttribute('href').slice(1);
+            var target = document.getElementById(id);
+            if (!target) return;
+            // Ensure parent month is expanded
+            var mg = target.closest('.month-group');
+            if (mg) {
+                var body = mg.querySelector('.month-body');
+                var btn = mg.querySelector('.month-toggle');
+                if (body && body.classList.contains('collapsed')) {
+                    body.classList.remove('collapsed');
+                    body.style.maxHeight = body.scrollHeight + 'px';
+                    if (btn) btn.classList.remove('collapsed');
+                }
+            }
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // Particle BG
+    (function(){
+        var c=document.getElementById('particle-bg'),ctx=c.getContext('2d');
+        var dpr=window.devicePixelRatio||1,W,H;
+        function resize(){W=window.innerWidth;H=window.innerHeight;c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}
+        resize(); window.addEventListener('resize',resize);
+        var N=Math.max(20,Math.floor(W*H/20000));
+        var nodes=[],MAX_D=150;
+        for(var i=0;i<N;i++){
+            var onEdge=Math.random()<0.8,side,onX,onY;
+            if(onEdge){side=Math.floor(Math.random()*4);var t=Math.random();
+                if(side===0){onX=t*W;onY=0;}else if(side===1){onX=W;onY=t*H;}
+                else if(side===2){onX=t*W;onY=H;}else{onX=0;onY=t*H;}
+                nodes.push({x:onX+(Math.random()-0.5)*30,y:onY+(Math.random()-0.5)*30,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,e:0,bs:Math.random()*1.5+0.5});
+            }else{nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,e:0,bs:Math.random()*1.5+0.5});}
+        }
+        var ripples=[];var cR=102,cG=8,cB=116;
+        var prefersReduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if(prefersReduced)return;
+        function animate(){
+            ctx.clearRect(0,0,W,H);
+            if(Math.random()<0.008)ripples.push({x:Math.random()*W,y:Math.random()*H,r:0,speed:80+Math.random()*40,maxR:180+Math.random()*120});
+            for(var i=ripples.length-1;i>=0;i--){var rp=ripples[i];rp.r+=rp.speed*0.016;
+                for(var j=0;j<nodes.length;j++){var nd=nodes[j];var dx=nd.x-rp.x,dy=nd.y-rp.y,d=Math.sqrt(dx*dx+dy*dy);
+                    if(Math.abs(d-rp.r)<25)nd.e=Math.min(1,nd.e+0.4);}
+                if(rp.r>rp.maxR)ripples.splice(i,1);}
+            for(var i=0;i<nodes.length;i++){var n=nodes[i];n.e*=0.94;n.x+=n.vx;n.y+=n.vy;
+                if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;}
+            for(var i=0;i<nodes.length;i++){for(var j=i+1;j<nodes.length;j++){
+                var dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);
+                if(d<MAX_D){var a=(1-d/MAX_D)*0.12*(1+Math.max(nodes[i].e,nodes[j].e));
+                    ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);
+                    ctx.strokeStyle='rgba('+cR+','+cG+','+cB+','+a+')';ctx.lineWidth=0.6;ctx.stroke();}}}
+            for(var i=0;i<nodes.length;i++){var n=nodes[i],sz=n.bs+n.e*2,a=0.25+n.e*0.5;
+                ctx.beginPath();ctx.arc(n.x,n.y,Math.max(0.5,sz),0,Math.PI*2);
+                ctx.fillStyle='rgba('+cR+','+cG+','+cB+','+a+')';ctx.fill();}
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })();
+
+    // Search
+    (function() {
+        var input = document.getElementById('search');
+        var dropdown = document.getElementById('search-results');
+        if (!input || !dropdown) return;
+
+        var searchData = [];
+        var totalFiles = 0, loadedCount = 0, started = false;
+
+        function stripTag(s) { return s.replace(/<[^>]+>/g, ''); }
+
+        function parseHtml(html, url) {
+            var dm = url.match(/(\d{4})-(\d{2})-(\d{2})/);
+            var date = dm ? dm[2] + '-' + dm[3] : '';
+            var articles = [], currentCat = '';
+            var sectionParts = html.split(/<h2 class="sec-h"[^>]*>(.*?)<\/h2>/);
+            for (var i = 0; i < sectionParts.length; i++) {
+                if (i % 2 === 1) { currentCat = stripTag(sectionParts[i]).trim(); }
+                else if (i > 0 && currentCat) {
+                    var tRe = /<h3 class="card-h"[^>]*>(.*?)<\/h3>/g;
+                    var bRe = /<p class="card-body">(.*?)<\/p>/g;
+                    var ts = [], bs = [], m;
+                    while ((m = tRe.exec(sectionParts[i])) !== null) ts.push(m[1]);
+                    while ((m = bRe.exec(sectionParts[i])) !== null) bs.push(m[1]);
+                    for (var j = 0; j < ts.length; j++) {
+                        var t = stripTag(ts[j]).trim();
+                        var b = j < bs.length ? stripTag(bs[j]).trim().slice(0, 120) : '';
+                        if (t) articles.push({ d: date, t: t, b: b, c: currentCat, f: url });
+                    }
+                }
+            }
+            return articles;
+        }
+
+        function startLoad() {
+            if (started) return;
+            started = true;
+            var files = [];
+            document.querySelectorAll('.timeline-entry').forEach(function(a) {
+                var href = a.getAttribute('href');
+                if (href && files.indexOf(href) === -1) files.push(href);
+            });
+            totalFiles = files.length;
+            files.forEach(function(url) {
+                fetch(url).then(function(r) { return r.text(); })
+                .then(function(html) {
+                    searchData = searchData.concat(parseHtml(html, url));
+                    loadedCount++;
+                }).catch(function() { loadedCount++; });
+            });
+        }
+
+        function doSearch(q) {
+            if (!q) { dropdown.classList.remove('active'); dropdown.innerHTML = ''; return; }
+            if (!searchData.length) {
+                dropdown.innerHTML = '<div class="search-empty">正在加载 (' + loadedCount + '/' + totalFiles + ')...</div>';
+                dropdown.classList.add('active'); return;
+            }
+            var hits = searchData.filter(function(item) {
+                return item.t.toLowerCase().indexOf(q) !== -1 || item.b.toLowerCase().indexOf(q) !== -1;
+            }).slice(0, 20);
+            if (!hits.length) {
+                dropdown.innerHTML = '<div class="search-empty">无匹配结果</div>';
+            } else {
+                dropdown.innerHTML = hits.map(function(r) {
+                    return '<a href="' + r.f + '" class="search-result"><span class="sr-date">' + r.d +
+                        '</span><span class="sr-title">' + r.t + '</span><span class="sr-cat">' + r.c + '</span></a>';
+                }).join('');
+            }
+            dropdown.classList.add('active');
+        }
+
+        input.addEventListener('focus', startLoad);
+        input.addEventListener('input', function() { doSearch(this.value.toLowerCase().trim()); });
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { dropdown.classList.remove('active'); input.value = ''; input.blur(); }
+        });
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.topbar-search') && !e.target.closest('.search-dropdown')) {
+                dropdown.classList.remove('active');
+            }
+        });
+    })();
+    </script>
+<script>
+
+// ── Bilingual toggle (generic) ──
+(function() {
+    const EN = {"专题报告": "Special Report", "日报存档": "Daily Report Archive", "专题报告集合": "Topic Report Collection", "模型前沿周报 · 专题集合": "Model Frontier Weekly · Topic Collection", "Google I/O 2026 深度研究报告": "Google I/O 2026 Deep Research Report", "GTC 2026 官方报告": "GTC 2026 Official Report", "3 个专题 | 前沿模型周报 · Google I/O 2026 · GTC 2026": "3 Topics | Model Frontier Weekly · Google I/O 2026 · GTC 2026", "最新：2026.06.02 | Qwen3.7-Max · Gemini 3.5 Flash · Opus 4.8 · Cosmos 3": "Latest: 2026.06.02 | Qwen3.7-Max · Gemini 3.5 Flash · Opus 4.8 · Cosmos 3", "Agentic Gemini 时代 | Gemini 3.5 Flash · Gemini Omni · Antigravity": "Agentic Gemini Era | Gemini 3.5 Flash · Gemini Omni · Antigravity", "NVIDIA GTC 2026 大会专题": "NVIDIA GTC 2026 Conference Special", "Jun 9 最新": "Jun 9 Latest", "OpenEnv 开源社区化Meta/Nvidia/PyTorch 等联合推进 Agentic RL 标准化；WWDC 2026Apple 发布 Siri AI 整合 Gemini，推出独立 App 和\"Wr；月之暗面发布桌面 Agent Kimi Work最高支持 300 子 Agent 协作；Google NotebookLM 升级默认切换 Gemini 3.5，支持从聊天自动构建知识库；OpenAI 向 SEC 保密提交 S-1正式启动 IPO 流程": "OpenEnv open-source community Meta/Nvidia/PyTorch jointly promote Agentic RL standardization; WWDC 2026 Apple releases Siri AI integrated with Gemini, launching standalone App and \"Wr; Moonshot releases desktop Agent Kimi Work supporting up to 300 sub-agents collaboration; Google NotebookLM upgrades default to Gemini 3.5, supporting automatic knowledge base building from chat; OpenAI confidentially submits S-1 to SEC, officially starting IPO process", "NVIDIA联合KRAFTON、NC与T1在韩国PC Bang推广RTX Spark面向个人AI代理的Windows超级芯片；OpenAI仍在推进「超级应用」开发部分员工认为「Chat已死」；Notion服务中断后恢复Anthropic集成；Wall Street Prompt日收费2.5万美元教华尔街用AI，花旗美银成回头客；SpaceX启动史上最大IPO每股135美元募资750亿美元，估值1.77万亿美元": "NVIDIA partners with KRAFTON, NC and T1 to promote RTX Spark Windows superchip for personal AI agents in Korean PC Bangs; OpenAI still pushing \"Super App\" development, some employees believe \"Chat is dead\"; Notion restores Anthropic integration after service recovery; Wall Street Prompt charges $25,000/day teaching Wall Street AI, Citibank and BofA become repeat customers; SpaceX launches largest IPO in history at $135/share raising $75B, valued at $1.77T", "Google 发布 Agentic RAG 框架多智能体迭代检索，准确率提升最高 34%；Cursor 推出 Design Mode在运行中的应用里用可视化提示指挥智能体编辑代码；Vercel 与 Perplexity Computer 集成可在 Perplexity 内管理 Vercel 部署；Nous Research 发布 Hermes Desktop 桌面端开源 Agent 跨平台运行；OpenAI自研芯片团队二号员工 Clive Chan 离职加入 Anthropic": "Google releases Agentic RAG framework with multi-agent iterative retrieval, accuracy improves up to 34%; Cursor launches Design Mode to command agent code editing with visual prompts in running apps; Vercel integrates with Perplexity Computer enabling Vercel deployment management within Perplexity; Nous Research releases Hermes Desktop open-source desktop agent running cross-platform; OpenAI custom chip team second employee Clive Chan departs joins Anthropic", "Sakana AI成立递归自我提升实验室RSI Lab整合6项核心成果推进AI自主进化；Airbnb CEO Brian Chesky计划成立AI实验室聚焦用户交互与设计；Apple批准Poke为Messagesfor Business平台首个AI智能体；Google发布Gemma 4 QAT量化检查点E2B模型内存降至1GB；Anthropic总裁Daniela Amodei回应AI回报质疑年化收入突破470亿美元": "Sakana AI establishes Recursive Self-Improvement Lab RSI Lab integrating 6 core achievements to advance AI autonomous evolution; Airbnb CEO Brian Chesky plans to found AI lab focusing on user interaction and design; Apple approves Poke as first AI agent for Messages for Business platform; Google releases Gemma 4 QAT quantized checkpoints reducing E2B model memory to 1GB; Anthropic President Daniela Amodei responds to AI ROI questions, annual revenue surpasses $47B", "NVIDIA发布Nemotron3 Ultra推理模型及Nemotron 3.5内容安全模型；Ideogram发布4.0开源图像模型开放权重下载与本地微调；Nex-AGI生态发布Nex-N2智能体模型Adaptive Thinking节省20% token消耗；Pinterest签约AWS 40亿美元基础设施协议采用Trainium芯片；OpenAI发布ChatGPT Memory Dreaming V3后台综合记忆取代手动保存": "NVIDIA releases Nemotron3 Ultra reasoning model and Nemotron 3.5 content safety model; Ideogram releases 4.0 open-source image model with downloadable weights and local fine-tuning; Nex-AGI ecosystem releases Nex-N2 agent model with Adaptive Thinking saving 20% token consumption; Pinterest signs $4B AWS infrastructure deal using Trainium chips; OpenAI releases ChatGPT Memory Dreaming V3 comprehensive background memory replacing manual saving", "Google DeepMind发布Gemma 4 12B无编码器统一多模态架构，16GB内存笔记本可运行；Microsoft 7款自研MAI模型MAI-Thinking-1达97% AIME 2025；OpenAI为GPT-Rosalind引入GPT-5.5能力；Anthropic推出ant CLIClaude Platform全API端点可从终端直接调用；NVIDIA收购企业预测AI公司Kumo AI交易金额超4亿美元": "Google DeepMind Releases Gemma 4 12B Encoder-Free Unified Multimodal Architecture, Runs on 16GB Memory Laptops; Microsoft 7 Self-Developed MAI Models MAI-Thinking-1 Achieves 97% on AIME 2025; OpenAI Introduces GPT-5.5 Capabilities to GPT-Rosalind; Anthropic Launches ant CLI with Claude Platform Full API Endpoints Callable Directly from Terminal; NVIDIA Acquires Enterprise Prediction AI Company Kumo AI for Over $400M", "Together AI解析MiniMax-M3高效推理方案支持百万Token上下文；Microsoft Build大会发布自研AI模型、OpenClaw风格Agent及Scout个人助手；OpenAI发布Codex六款职业插件；Anthropic扩展Glasswing安全项目至15国150个组织；Alphabet计划融资800亿美元用于AI基础设施": "Together AI Analyzes MiniMax-M3 Efficient Inference Solution Supporting Million-Token Context; Microsoft Build Conference Unveils Self-Developed AI Models, OpenClaw-Style Agent, and Scout Personal Assistant; OpenAI Releases Codex with Six Professional Plugins; Anthropic Expands Glasswing Security Project to 15 Countries and 150 Organizations; Alphabet Plans to Raise $80B for AI Infrastructure", "NVIDIA Cosmos 3发布物理AI开放世界基础模型，GTC Taipei亮相；Qwen3.7-Plus发布多模态智能体基座；MiniMax发布M3模型开源编程战场再加一员；Anthropic已向SEC秘密提交S-1草案$965B估值IPO进程启动；OpenAI密歇根破土动工1GW数据中心": "NVIDIA Cosmos 3 Releases Physics AI Open World Foundation Model, Debuts at GTC Taipei; Qwen3.7-Plus Launches Multimodal Agent Foundation; MiniMax Releases M3 Model, Another Contestant in Open-Source Coding Battlefield; Anthropic Secretly Files S-1 Draft with SEC at $965B Valuation, IPO Process Initiated; OpenAI Breaks Ground on 1GW Data Center in Michigan", "OpenAI正式进军机器人领域成立OpenAI Robotics团队；顶级学者涌入OpenAICOPSS奖得主苏炜杰、哈佛最年轻正教授尹希相继加盟；NVIDIA黄仁勋GTC Taipei演讲在即；复旦×通义提出CUA训练范式；李飞飞团队发布GPIC数据集": "OpenAI Officially Enters Robotics Field with OpenAI Robotics Team; Top Scholars Flock to OpenAI, COPSS Award Winner Wei-Jie Su, Youngest Harvard Full Professor Xi Yin Join Successively; NVIDIA Jensen Huang GTC Taipei Speech Imminent; Fudan × Tongyi Proposes CUA Training Paradigm; Li Fei-Fei Team Releases GPIC Dataset", "OpenRouter推出逐请求可观测性功能增强API密钥级别管控；OpenAI CRO Denise Dresser的企业市场策略与Anthropic的竞争加剧；软银承诺在法国投资最高750亿欧元建设5GWAI数据中心容量；NVIDIA与清华提出γ-World多智能体世界模型实现24FPS实时交互；LeCun团队证明LeJEPA要学到真实结构，必须满足高斯分布条件": "OpenRouter launches per-request observability to enhance API key-level management; OpenAI CRO Denise Dresser's enterprise market strategy intensifies competition with Anthropic; SoftBank commits up to €75 billion investment in France for 5GW AI data center capacity; NVIDIA and Tsinghua propose γ-World multi-agent world model achieving 24FPS real-time interaction; LeCun team proves LeJEPA must satisfy Gaussian distribution conditions to learn true structure", "StepFun-ai发布Step-3.7-Flash196B多模态MoE Agent模型登陆OpenRouter；Glean ARR突破3亿美元企业AI搜索降本成核心卖点；Meta内部备忘录规划AI穿戴设备包括AI吊坠；Lowe's称语义数据正在提升AIAgent表现；SpaceX IPO前披露2025年政府合同贡献收入五分之一，新签64.5亿美元太空军合同": "StepFun-ai releases Step-3.7-Flash 196B multimodal MoE Agent model landing on OpenRouter; Glean ARR breaks $300M, enterprise AI search cost reduction becomes core selling point; Meta internal memo outlines AI wearables including AI pendant; Lowe's says semantic data is improving AI Agent performance; SpaceX pre-IPO disclosure shows government contracts contributed one-fifth of 2025 revenue, newly signed $6.45B Space Force contract", "Anthropic发布Claude Opus 4.8距前代仅41天，代码缺陷漏检率降低4倍，同步推出Dynamic Workflow；自变量机器人开源Wall-OSS-0.5预训练VLA模型零样本完成17项机器人任务；Microsoft下周Build大会发布自研编码模型强化GitHub Copilot竞争力；Apple WWDC前瞻iOS 27全新Siri从Dynamic Island交互，独立App对标Cha；Asana收购StackAI强化AI工作流无代码平台整合入企业SaaS生态": "Anthropic releases Claude Opus 4.8 just 41 days after previous version, code defect miss rate reduced 4x, simultaneously launches Dynamic Workflow; Zibian Robot open-sources Wall-OSS-0.5 pretrained VLA model completing 17 robotic tasks zero-shot; Microsoft Build conference next week to release self-developed coding model strengthening GitHub Copilot competitiveness; Apple WWDC preview iOS 27 new Siri interacting from Dynamic Island, standalone App targeting Cha; Asana acquires StackAI strengthening AI workflow no-code platform integration into enterprise SaaS ecosystem", "Microsoft MAI-Image-2.5登顶Arena文生图第3名文本渲染和商业图像大幅提升；MiniMax预告开源M3模型标注#MSA标签引发猜测；Anthropic推出Claude Code安全审查插件AI编码时自动检测并修复漏洞；Meta全球推出Instagram/Facebook/WhatsApp付费订阅同步测试AI功能；xAI发布grok-build-0.1编程助手集成至KiloCode平台": "Microsoft MAI-Image-2.5 tops Arena text-to-image ranking at #3, text rendering and commercial images significantly improved; MiniMax previews open-source M3 model with #MSA tag sparking speculation; Anthropic launches Claude Code security review plugin auto-detecting and fixing vulnerabilities during AI coding; Meta globally rolls out paid subscriptions for Instagram/Facebook/WhatsApp synchronously testing AI features; xAI releases grok-build-0.1 coding assistant integrated into KiloCode platform", "面壁/OpenBMB发布ForgeTrainAI自动编写训练框架，1B端侧模型AA-Index达17.9；快手发布Keye-VL-2.0-30B-A3B首个将DSA引入多模态，长视频理解登顶开源SOTA；Elon Musk宣布Grok V9-Medium(1.5T)完成训练2-3周内公开发布；Anthropic发布Agent安全架构工程博客三种隔离模式对应不同产品风险等级；ServiceNow CMOColin Fleming离职加入OpenAI": "ModelAI/OpenBMB releases ForgeTrain AI auto-write training framework, 1B edge model AA-Index reaches 17.9; Kuaishou releases Keye-VL-2.0-30B-A3B first to introduce DSA to multimodal, long video understanding tops open-source SOTA; Elon Musk announces Grok V9-Medium (1.5T) training complete, public release in 2-3 weeks; Anthropic releases Agent Security Architecture engineering blog three isolation modes corresponding to different product risk levels; ServiceNow CMO Colin Fleming departs joining OpenAI", "GPT-5.6在Codex后台被曝光1.5M上下文窗口，内部代号iris-alpha，预计6月发布；通义千问3.7-Max上线隐式缓存自动复用KV缓存，推理速度提升成本降低；Anthropic准备推出Claude Memory Files双模式记忆系统支持结构化持久存储；Google DeepMind发布AlphaProof NexusAgent自主解决9个Erdős开放问题，含两个56年未解难题；xAI推出Grok Build Beta版SuperGrok和X Premium+用户可使用Plan Mode和多媒体生成": "GPT-5.6 spotted in Codex backend with 1.5M context window, internal codename iris-alpha, expected June release; Qwen 3.7-Max launches implicit cache auto-reusing KV cache, inference speed improved cost reduced; Anthropic prepares Claude Memory Files dual-mode memory system supporting structured persistent storage; Google DeepMind releases AlphaProof NexusAgent autonomously solving 9 Erdős open problems, including two 56-year unsolved problems; xAI launches Grok Build Beta SuperGrok and X Premium+ users can use Plan Mode and multimedia generation", "Anthropic Mythos 1即将引入Claude Code和Claude SecuritySonnet 4.8泄露详情曝光；Canonical Labs发布物理AI三年资本图谱4家人形机器人估值565亿美元，15.6倍于6个子赛道总和；Ai2发布ArtifactLinkerGNN+LLM自动发现HuggingFace上的SOTA模型；Echo框架从用户修正行为中学习，代码补全接受率25.7%→35.7%；MIT团队提出跨域基准多Agent协作在气候预测等科学任务上优于单Agent": "Anthropic Mythos 1 coming to Claude Code and Claude Security, Sonnet 4.8 leak details exposed; Canonical Labs releases Physical AI three-year capital map, 4 humanoid robot companies valued at $56.5B, 15.6x sum of 6 sub-tracks; Ai2 releases ArtifactLinker GNN+LLM automatically discovering SOTA models on HuggingFace; Echo framework learns from user correction behavior, code completion acceptance rate 25.7%→35.7%; MIT team proposes cross-domain benchmark multi-agent collaboration outperforming single-agent on scientific tasks like climate prediction", "NVIDIA Nemotron-Labs-DiffusionAR/扩散/自推测三模统一，8B吞吐4倍于Qwen3；白宫接近与Anthropic达成协议允许NSA等间谍机构使用其AI模型；DeepSeek将V4 Pro API临时75%降价永久化进入Pareto价格-能力前沿；Turing Post总结长程AI Agent构建5模式从Checkpoint到Fleet Orchestration": "NVIDIA Nemotron-Labs-Diffusion AR/diffusion/self-speculation three-mode unification, 8B throughput 4x Qwen3; White House close to agreement with Anthropic allowing NSA and other intelligence agencies to use its AI models; DeepSeek makes V4 Pro API temporary 75% price cut permanent entering Pareto price-capability frontier; Turing Post summarizes 5 patterns for long-context AI Agent construction from Checkpoint to Fleet Orchestration", "智谱GLM-5.1-highspeed支持400Tokens/s推理；Microsoft发布MagenticLite小模型智能体系统Fara1.5-9B刷新computer-use SOTA；OpenAICodex支持锁屏状态下远程操控Mac；Gartner企业AI编码智能体魔力象限OpenAI与Anthropic入选领导者；DeepSeek V4Flash登顶OpenRouter周榜": "Zhipu GLM-5.1-highspeed supports 400 Tokens/s inference; Microsoft releases MagenticLite small model agent system Fara 1.5-9B refreshing computer-use SOTA; OpenAI Codex supports remote Mac control from lock screen; Gartner Enterprise AI Coding Agent Magic Quadrant OpenAI and Anthropic named Leaders; DeepSeek V4 Flash tops OpenRouter weekly ranking", "Cohere发布Command A+25B激活参数MoE模型，Apache 2.0开源；Anthropic预计Q2实现运营盈利Q2季度收入约109亿美元；智谱ZCube新型数据中心网络拓扑，LLM训练速度提升3%-7%，网络成本降低26%-46%；Nvidia CEO Jensen Huang提出2000亿美元Agent CPU市场Vera今年已售200亿美元；Epoch AI分析前沿实验室仅使用全球不到50%AI算力": "Cohere releases Command A+ 25B active parameter MoE model, Apache 2.0 open-source; Anthropic expects Q2 operational profitability Q2 quarterly revenue approximately $10.9B; Zhipu ZCube new data center network topology, LLM training speed improved 3%-7%, network cost reduced 26%-46%; Nvidia CEO Jensen Huang proposes $200B Agent CPU market, Vera sold $20B this year; Epoch AI analysis shows frontier labs using less than 50% of global AI compute", "OpenAI通用模型解决Erdős平面单位距离问题为近80年数学开放问题首获突破；千问发布Qwen3.7-Max旗舰模型面向智能体时代，编程与推理多项benchmark领先；Stability AI发布Stable Audio 3.0开源音乐模型可生成6分钟歌曲，支持设备端完整作曲；OpenAI准备数周内提交IPO申请Goldman Sachs和Morgan Stanley起草招股书；SpaceX S1文件披露xAI去年亏损64亿美元，Anthropic云协议最高400亿，计划2028部署": "OpenAI general model solves Erdős unit distance problem on plane, first breakthrough in nearly 80-year mathematical open problem; Qwen releases Qwen3.7-Max flagship model for agentic era, programming and reasoning leading multiple benchmarks; Stability AI releases Stable Audio 3.0 open-source music model generating 6-minute songs, supporting full composition on-device; OpenAI preparing to submit IPO application within weeks, Goldman Sachs and Morgan Stanley drafting prospectus; SpaceX S1 filing discloses xAI lost $6.4B last year, Anthropic cloud agreement up to $40B, planned 2028 deployment", "Google I/O2026发布Gemini Omni和Gemini 3.5 Flash两大模型；Cursor发布Composer 2.5基于Kimi K2.5训练，长程Agent任务能力大幅提升；Sapient Intelligence发布HRM-Text1B参数推理模型，$1000预算一天训完；Google I/O2026发布AI信息代理、Android CLI、Android Halo等多项；Andrej Karpathy宣布加入Anthropic回归LLM前沿研发": "Google I/O 2026 releases Gemini Omni and Gemini 3.5 Flash two major models; Cursor releases Composer 2.5 trained on Kimi K2.5, long-context Agent task capability significantly improved; Sapient Intelligence releases HRM-Text 1B parameter reasoning model, trainable in one day with $1000 budget; Google I/O 2026 releases AI Information Agent, Android CLI, Android Halo and more; Andrej Karpathy announces joining Anthropic returning to LLM frontier research", "阿里通义千问3.7预览版登陆Arena文本升至全球第六；openJiuwen开源JiuwenSwarm蜂群智能体架构支持多Agent自主演进；Anthropic收购开发工具初创Stainless交易估值超3亿美元并将于年内停服；Microsoft高管警示GitHub AI优势流失Copilot增长未达预期；Meta将数千名员工调配至AI业务部门并计划实施大规模裁员": "Alibaba Qwen 3.7 preview lands on Arena text rising to #6 globally; openJiuwen open-sources JiuwenSwarm swarm agent architecture supporting multi-agent autonomous evolution; Anthropic acquires developer tools startup Stainless deal valued over $300M to be discontinued within year; Microsoft executives warn of GitHub AI advantage erosion Copilot growth below expectations; Meta reassigning thousands of employees to AI business unit planning major layoffs", "Google内部系统疑似泄露Gemini 3.2 Flash-Lite-Live专注超低延迟流式推理；Moonshot AI发布Kimi Web BridgeAgent可像人一样操控网页；Anthropic与OpenAI合计占AI创业公司收入89%差距持续扩大；OpenAI 1月收购语音克隆公司Weights.GG买IP不集成产品；腾讯混元团队提出EvoEnv模型自建训练环境实现推理自进化": "Google internal system suspected leak of Gemini 3.2 Flash-Lite-Live focused on ultra-low latency streaming inference; Moonshot AI releases Kimi Web Bridge Agent can control web like humans; Anthropic and OpenAI combined account for 89% of AI startup revenue gap continuing to widen; OpenAI January acquisition of voice cloning company Weights.GG buying IP without integrating into product; Tencent Hunyuan team proposes EvoEnv model self-built training environment achieving inference self-evolution", "Pinecone发布Nexus知识引擎层可减少AI agent高达90%的token使用；xAI将Grok接入开源Agent框架Hermes支持搜索X帖子；开发者将M5StackCardputer改造为手持Claude设备；arXiv宣布对AI代写论文作者禁投一年；阿里健康发布医疗AI产品氢离子": "Pinecone releases Nexus knowledge engine layer reducing AI agent token usage by up to 90%; xAI integrating Grok into open-source Agent framework Hermes supporting X post search; developer converts M5Stack Cardputer into handheld Claude device; arXiv announces one-year ban on AI ghost-written paper authors; Alibaba Health releases medical AI product Hydrogen Ion", "Databricks集成GPT-5.5用于企业Agent工作流在OfficeQA Pro基准测试创下新纪录；Anthropic呼吁美国加强对华芯片出口限制同步发布政策论文；具身智能公司LiberAI完成数亿元融资打通UMI硬件-数据采集-大模型训练全流程；Voice AI公司Vapi完成5000万美元B轮融资投后估值5亿美元；Cerebras Systems成功IPO史上最大AI芯片面积超4万平方毫米": "Databricks integrates GPT-5.5 for enterprise Agent workflows setting new record on OfficeQA Pro benchmark; Anthropic calls for US to strengthen chip export restrictions on China simultaneously releasing policy paper; Embodied AI company LiberAI completes hundred-million RMB financing打通 UMI hardware-data collection-large model training full process; Voice AI company Vapi completes $50M Series B funding post-money valuation $500M; Cerebras Systems successfully IPO largest AI chip area in history over 40,000 mm²", "AntLingAGI开源Ring-2.6-1T万亿参数模型Agent执行和推理双突破；xAI推出GrokBuild早期测试版智能体CLI；OpenAI在ChatGPT移动端推出Codex编程预览版；OpenAI称黑客攻击导致部分员工数据被盗；美国批准H200芯片对华销售但中国尚未接收任何一枚": "AntLingAGI open-sources Ring-2.6-1T trillion parameter model dual breakthrough in Agent execution and reasoning; xAI launches GrokBuild early beta agent CLI; OpenAI launches Codex coding preview on ChatGPT mobile; OpenAI says cyberattack caused some employee data theft; US approves H200 chip sales to China but China has not yet received a single unit", "MiniCPM-V4.6实现2.4倍推理吞吐提升；Claude Code上线Fast ModeOpus 4.6速度提升2.5倍；Muse Spark开始全平台推送覆盖WhatsApp、Instagram、AI眼镜，新增语音对话和购物功能；Anthropic推出面向小型企业AI服务Ramp数据首次显示企业客户数超OpenAI；OpenAI为Windows版Codex构建安全沙箱": "MiniCPM-V4.6 achieves 2.4x inference throughput improvement; Claude Code launches Fast Mode Opus 4.6 speed improved 2.5x; Muse Spark begins full platform rollout covering WhatsApp, Instagram, AI glasses, new voice conversation and shopping features; Anthropic launches AI service Ramp for small businesses, data first shows enterprise customers exceeding OpenAI; OpenAI builds security sandbox for Windows Codex", "Openrouter上线Perceptron-Mk1视频+具身推理VLM支持时间推理/密集计数/多摄像头联合推理；Artificial Analysis发布Coding Agent IndexOpus 4.7和GPT-5.5并列第一，GLM-5.1开源最高53分，任务成本；NVIDIA与SAP合作推出可信专业代理在SAP Sapphire大会上宣布；Google发布Gemini IntelligenceAndroid从OS进化为智能系统，支持多步任务自动化和自然语言生成Widget；AI安全运营公司Exaforce完成1.25亿美元B轮估值7.25亿美元": "OpenRouter launches Perceptron-Mk1 video + embodied reasoning VLM supporting temporal reasoning/dense counting/multi-camera joint reasoning; Artificial Analysis releases Coding Agent Index with Opus 4.7 and GPT-5.5 tied for first, GLM-5.1 open-source highest 53 points on task cost; NVIDIA and SAP partner to launch Trusted Professional Agent announced at SAP Sapphire; Google releases Gemini Intelligence with Android evolving from OS to intelligent system supporting multi-step task automation and natural language Widget generation; AI security operations company Exaforce completes $125M Series B at $725M valuation", "Thinking Machines Lab提出Interaction Model架构276B MoE原生支持实时多模态协作；Claude Code推出Agent view支持多会话并行管理与后台运行；AWS Bedrock AgentCore支持AI代理自主支付推Agent Toolkit简化开发；SpaceX提交SpaceX AI商标注册申请AI子公司进入筹备阶段；Google推出REPLIQA研究计划投入1000万美元探索量子计算在生命科学应用": "Thinking Machines Lab proposes Interaction Model architecture 276B MoE natively supporting real-time multimodal collaboration; Claude Code launches Agent view supporting multi-session parallel management and background running; AWS Bedrock AgentCore supports AI agent autonomous payments with Agent Toolkit simplifying development; SpaceX submits SpaceX AI trademark registration application, AI subsidiary entering preparation stage; Google launches REPLIQA research program investing $10M to explore quantum computing applications in life sciences", "Wispr Flow在印度推出Hinglish语音AI用户增长加速；Databricks发布Genie数据Agent技术解析多LLM+并行推理，准确率从32%提升至90%+；谷歌RT1/2/SayCan作者TedXiao复盘机器人学习三大时代；Anthropic无补贴登顶OpenRouter令牌份额榜；AMD ROCm性能14天内提升超75倍DeepSeek V4发布助推": "Wispr Flow launches Hinglish voice AI in India with accelerating user growth; Databricks releases Genie data Agent technical analysis with multi-LLM + parallel reasoning, accuracy improving from 32% to 90%+; Google RT1/2/SayCan author TedXiao reviews three eras of robot learning; Anthropic tops OpenRouter token share榜单 without subsidies; AMD ROCm performance improves over 75x in 14 days boosted by DeepSeek V4 release", "谷歌DeepMind发布AI联合数学家FrontierMath Tier 4达48%创AI最高分；OpenRouter推出Pareto Code免费编程路由器按编码评分自动路由最便宜达标模型；英伟达2026年内已承诺$400亿股权投资AI生态其中$300亿投向OpenAI；AMD发布vLLM-ATOM插件AMD Instinct GPU原生推理性能直通vLLM；Robo.ai以$1亿全股票收购Neurovia AI构建物理AI视频数据基础设施": "Google DeepMind releases AI Joint Mathematician FrontierMath Tier 4 reaching 48% setting AI record; OpenRouter launches Pareto Code free programming router automatically routing cheapest qualifying model based on coding score; NVIDIA committed $40B in equity investment for AI ecosystem in 2026 with $30B going to OpenAI; AMD releases vLLM-ATOM plugin for AMD Instinct GPU native inference performance direct to vLLM; Robo.ai acquires Neurovia AI for $100M all-stock building physical AI video data infrastructure", "OpenAI发布GPT-5.5-Cyber限量预览版面向经审核的网络安全团队开放；Core Automation目标融资5-10亿美元创办continual learning新范式；Cloudflare裁员1100+人向AI-first运营模式转型Q1财报强于预期但股价盘后跌14%；Anthropic正式发布Claude for Microsoft 365覆盖Excel/PowerPoint/Word/Outlook": "OpenAI releases GPT-5.5-Cyber limited preview for vetted cybersecurity teams; Core Automation targets $500M-$1B funding to create continual learning paradigm; Cloudflare lays off 1,100+ transitioning to AI-first operations with Q1 earnings beating expectations but stock dropping 14% after hours; Anthropic officially releases Claude for Microsoft 365 covering Excel/PowerPoint/Word/Outlook", "Meta ProgramBench新评测标准要求AI从零重建完整软件，9个模型完成率均为0%；OpenAI API上线新一代语音模型支持推理、翻译和转录；xAI API推出图像生成质量模式已在Grok生成3亿张图像；Google DeepMind发布AlphaEvolve进展从研究走向实际问题解决；AI算力中心登陆海上潮汐能发电+海水冷却获彼得·蒂尔1.4亿美元投资": "Meta ProgramBench new evaluation standard requires AI to rebuild complete software from scratch with 0% completion rate across all 9 models; OpenAI API launches new generation voice model supporting reasoning, translation and transcription; xAI API introduces image generation quality mode with 300M images already generated in Grok; Google DeepMind releases AlphaEvolve progress transitioning from research to real-world problem solving; AI computing center lands on offshore tidal power + seawater cooling receiving $140M investment from Peter Thiel", "SubQ发布SSA架构百万token长上下文推理加速52倍；OpenAI B2B Signals研究前沿企业AI使用强度达普通企业3.5倍；GenesisAI发布GENE-26.5 全栈机器人系统实现接近人类水平操作；Anthropic正开发Orbit为Claude Cowork提供主动式助理功能；SpaceX计划投资最高$119B在德州建设Terafab芯片工厂": "SubQ releases SSA architecture with million-token long-context reasoning 52x acceleration; OpenAI B2B Signals research shows frontier enterprise AI usage intensity 3.5x that of regular enterprises; GenesisAI releases GENE-26.5 full-stack robot system achieving near-human-level operations; Anthropic developing Orbit to provide proactive assistant features for Claude Cowork; SpaceX plans up to $119B investment to build Terafab chip factory in Texas", "OpenAI发布GPT-5.5 Instant替代GPT-5.3 Instant成为ChatGPT默认模型；Apple计划在iOS 27中允许用户选择第三方AI模型驱动设备端功能；Microsoft Copilot Cowork扩展至移动端新增Skills和插件支持；斯坦福合并HAI与数据科学计划李飞飞升任校长顾问；Anthropic发布金融服务业Claude代理模板": "OpenAI releases GPT-5.5 Instant replacing GPT-5.3 Instant as ChatGPT default model; Apple plans to allow users to select third-party AI models to power on-device features in iOS 27; Microsoft Copilot Cowork expands to mobile with new Skills and plugin support; Stanford merges HAI with Data Science initiative, Li Fei-Fei promoted to Provost Advisor; Anthropic releases Claude agent template for financial services industry", "视觉AI模型推动应用下载量增长6.5倍但仅ChatGPT实现收入转化；DeepSeek-TUI获2.3k星开源版Claude Code，专为DeepSeek V4打造；Anthropic与OpenAI同日宣布PE合资企业合计规模达$11.5B；豆包新增付费订阅三档方案，专业版连续包月500元/月；Disney内部上线AI Adoption Dashboard追踪token消耗硅谷掀起tokenmaxxing热潮": "Visual AI models drive app downloads up 6.5x but only ChatGPT achieves revenue conversion; DeepSeek-TUI gets 2.3k stars open-source version of Claude Code built specifically for DeepSeek V4; Anthropic and OpenAI same-day announce PE joint ventures totaling $11.5B; Doubao adds three-tier paid subscription, Pro continuous monthly at ¥500/month; Disney internally launches AI Adoption Dashboard tracking token consumption as Silicon Valley sparks tokenmaxxing craze", "NIST CAISI评估DeepSeek V4-Pro落后美国前沿模型约8个月，专家质疑方法论；Anthropic考虑以$900B+估值融资$500亿Claude Code驱动收入两个月翻倍，高管集体跳槽加入；四大科技巨头2026年AI资本支出预计达$7,250亿同比增77%；DeepSeek V4-Pro 75%折扣今日到期百万token输入仅$0.036；21家值得关注的欧洲初创公司": "NIST CAISI assessment shows DeepSeek V4-Pro lags behind US frontier models by approximately 8 months, experts question methodology; Anthropic considering $500B funding at $900B+ valuation with Claude Code driving revenue doubling in two months, executive group jumping ship; Four major tech giants 2026 AI capital expenditure expected to reach $725B up 77% YoY; DeepSeek V4-Pro 75% discount expires today with million-token input only $0.036; 21 European startups worth watching", "OpenRouter实测主流模型首词延迟Gemini 2.5 Flash 1.3秒、Kimi K2.6 4.6秒、GPT；ARC-AGI-3基准测试难倒顶级模型GPT-5.5与Opus 4.7得分均趋近零，人类满分通过；腾讯混元开源440M翻译模型支持手机离线运行且翻译质量超越Google；SemiAnalysis分析xAI数据中心仅11% GPU在线运行，数十万显卡处于闲置状态；中科院发布SpikingBrain2.0将Transformer转为脉冲混合架构，4M上下文加速10倍": "OpenRouter tests mainstream model first-token latency: Gemini 2.5 Flash 1.3s, Kimi K2.6 4.6s, GPT; ARC-AGI-3 benchmark stumps top models with GPT-5.5 and Opus 4.7 scores approaching zero, humans passing with full marks; Tencent Hunyuan open-sources 440M translation model supporting phone offline operation with translation quality exceeding Google; SemiAnalysis analyzes xAI data center with only 11% GPU online, hundreds of thousands of graphics cards idle; Chinese Academy of Sciences releases SpikingBrain2.0 converting Transformer to spiking hybrid architecture with 4M context 10x acceleration", "xAI上线Voice Cloning API2分钟创建自定义语音，支持28种语言；Meta收购Assured Robot Intelligence进军人形机器人；Epoch AI估计29万至160万片H100等效GPU流向中国；Coatue Ventures计划购买数据中心用地可能供Anthropic使用；美国国防部与多家科技巨头签署协议在机密网络中部署AI": "xAI launches Voice Cloning API creating custom voice in 2 minutes supporting 28 languages; Meta acquires Assured Robot Intelligence entering humanoid robotics; Epoch AI estimates 290K to 1.6M H100-equivalent GPUs flowing to China; Coatue Ventures planning to purchase data center land possibly for Anthropic use; US Department of Defense signs agreements with multiple tech giants to deploy AI in classified networks", "xAI上线Grok-4.3 API定价降20%但agentic性能大幅提升；OpenAI推出高级账户安全功能引入防钓鱼登录和增强恢复机制；智元机器人发布LWD框架让已部署机器人在真实任务中边执行边学习；Google将Gemini推上车载系统取代Google Assistant覆盖数百万辆Android Automoti；中科大发布\"灵境造物\"智能科研云平台华为openJiuwen提供全栈国产化Coordination Engineer": "xAI launches Grok-4.3 API with 20% price reduction but significant agentic performance improvement; OpenAI launches advanced account security features introducing anti-phishing login and enhanced recovery mechanisms; Zhiyuan Robot releases LWD framework enabling deployed robots to learn while executing real tasks; Google pushes Gemini onto automotive systems replacing Google Assistant covering millions of Android Automotive vehicles; USTC releases Lingjing Zaowu intelligent research cloud platform with Huawei openJiuwen providing full-stack domestic Coordination Engineer", "Mistral发布Medium 3.5开源128B模型并推出Vibe远程编程Ag；DeepSeek灰度测试识图模式多模态能力首次接入主线产品；GitHub Copilot转向用量计费模式Claude Opus 4.7调用成本上涨9倍；Microsoft M365 Copilot付费用户突破2000万Agent模式成为默认体验；OpenAI发布网络安全方案+展示Codex决策辅助能力": "Mistral releases Medium 3.5 open-source 128B model and launches Vibe remote programming Agent; DeepSeek gray-testing image recognition mode with multimodal capability first integrated into main product; GitHub Copilot shifts to usage-based billing with Claude Opus 4.7 call cost increasing 9x; Microsoft M365 Copilot paid users exceed 20 million with Agent mode becoming default experience; OpenAI releases cybersecurity solution + demonstrates Codex decision assistance capability", "NVIDIA发布Nemotron 3 Nano Omni统一视觉/音频/语言多模态能力；Lovable上线iOS/Android端vibe-coding应用；Anthropic发布Claude创意工具连接器生态Adobe/Blender/Autodesk/Ableton等8家合作伙伴；曦智科技港交所上市发行价183.2港元，首日涨360%；SemiAnalysisAI时代CPU经济结构变化，GPU增速远超CPU导致每单位AI计算CPU占比下降": "NVIDIA releases Nemotron 3 Nano Omni unifying vision/audio/language multimodal capabilities; Lovable launches vibe-coding app on iOS/Android; Anthropic releases Claude creative tool connector ecosystem with 8 partners including Adobe/Blender/Autodesk/Ableton;曦智科技 listed on HKEX at IPO price HK$183.2, up 360% on first day; SemiAnalysis AI era CPU economic structure changes with GPU growth far exceeding CPU causing CPU proportion per unit of AI compute to decline", "阿里巴巴ATH团队正式认领HappyHorse 1.0视频生成模型开启灰测；OpenAI与微软更新合作协议明确长期合作框架；OpenAI被曝与联发科/高通/立讯合作造手机AI Agent或取代App；OpenAI获得FedRAMP Moderate授权chatGPT企业版进入美国联邦；Anthropic的Claude Desktop Buddy开源项目首款AI桌宠硬件采用深圳M5Stack": "Alibaba ATH team officially claims HappyHorse 1.0 video generation model opening gray testing; OpenAI and Microsoft update cooperation agreement clarifying long-term collaboration framework; OpenAI reportedly partnering with MediaTek/Qualcomm/Luxshare to build phone with AI Agent possibly replacing Apps; OpenAI receives FedRAMP Moderate authorization with ChatGPT Enterprise entering US federal; Anthropic's Claude Desktop Buddy open-source project first AI desktop companion hardware using Shenzhen M5Stack", "Sakana AI发布Fugu多Agent编排系统，fugu-ultra在GPQA/SWE-Pro超越Gemi；Anthropic创建Agent对Agent交易市场实验验证AI自主商业行为（Project Deal）；NVIDIA开源神经渲染技术老照片可转化为可漫游3D场景；剪映发布AI智能剪辑助手支持素材智能归类与文案自动生成；京东启动「Aidol创造营」AI硬件孵化计划今年孵化101个AI硬件标杆": "Sakana AI releases Fugu multi-Agent orchestration system with fugu-ultra surpassing Gemini on GPQA/SWE-Pro; Anthropic creates Agent-to-Agent marketplace experimenting with AI autonomous commercial behavior (Project Deal); NVIDIA open-sources neural rendering technology converting old photos into navigable 3D scenes; CapCut releases AI smart editing assistant supporting intelligent material classification and automatic copywriting; JD.com launches Aidol Creation Camp AI hardware incubation plan targeting 101 AI hardware benchmarks this year", "SemiAnalysis深度评测GPT-5.5/Opus 4.7/DeepSeek V4GPT-5.5重返前沿，成本效率成关键；Google拟向Anthropic投资最多400亿美元同时签署5GW算力协议；Cohere收购德国AI企业Aleph Alpha打造跨大西洋AI联盟；Series获550万美元pre-seed在iMessage内构建AI社交网络；AI网络安全公司Rilian获1750万美元种子轮融资": "SemiAnalysis in-depth review of GPT-5.5/Opus 4.7/DeepSeek V4 with GPT-5.5 returning to frontier, cost efficiency becoming key; Google planning to invest up to $40B in Anthropic while signing 5GW computing agreement; Cohere acquires German AI company Aleph Alpha building transatlantic AI alliance; Series raises $5.5M pre-seed building AI social network within iMessage; AI cybersecurity company Rilian raises $17.5M seed round", "DeepSeek-V4发布1M上下文、1.6T参数、开源SOTA；xAI发布Grok Voice Think Fast 1.0语音模型；Anthropic发布Claude Code降智事后复盘确认由三个Bug叠加导致；NVIDIA在公司范围内部署Codex；Google DeepMind发布Decoupled DiLoCo跨数据中心训练提速20倍": "DeepSeek-V4 releases 1M context, 1.6T parameters, open-source SOTA; xAI releases Grok Voice Think Fast 1.0 voice model; Anthropic releases post-mortem on Claude Code degradation confirming three Bug stacking; NVIDIA deploys Codex company-wide; Google DeepMind releases Decoupled DiLoCo cross-datacenter training 20x speed improvement", "OpenAI发布GPT-5.5，编程和知识工作全面突破；字节跳动发布Seed3D 2.0 Coarse-to-Fine两阶段3D生成；腾讯发布Hy3-preview 295B MoE快慢思考融合模型；AnthropicAgent记忆公测+估值破万亿；Google首建奥地利数据中心；DeepSeek首次融资估值200亿+": "OpenAI releases GPT-5.5 with comprehensive breakthrough in programming and knowledge work; ByteDance releases Seed3D 2.0 Coarse-to-Fine two-stage 3D generation; Tencent releases Hy3-preview 295B MoE fast-slow thinking fusion model; Anthropic Agent memory public beta + valuation exceeding $1 trillion; Google builds first Austrian data center; DeepSeek first funding at $20B+ valuation", "OpenAI发布ChatGPT工作空间智能体功能；Meta记录员工键鼠操作用于AI训练；小米发布MiMo-V2.5原生多模态+Agentic能力；NVIDIA与Google Cloud达成十年合作；商汤绝影发布Sage端侧多模态模型": "OpenAI releases ChatGPT workspace agent functionality; Meta records employee keyboard and mouse operations for AI training; Xiaomi releases MiMo-V2.5 native multimodal + agentic capabilities; NVIDIA and Google Cloud达成10-year collaboration; SenseCore posts Sage on-device multimodal model", "Claude Opus 4.7在ECI评测并列第三，GPT-5.4 Pro以158分领先；Ant Group发布Ling-2.6-flash；Kimi K2.6登顶开源智能体模型；Google发布Gemini Deep Research Max；OpenAI Codex推出Chronicle屏幕记忆功能": "Claude Opus 4.7 tied for third in ECI evaluation with GPT-5.4 Pro leading at 158 points; Ant Group releases Ling-2.6-flash; Kimi K2.6 tops open-source agent model; Google releases Gemini Deep Research Max; OpenAI Codex launches Chronicle screen memory function", "阿里发布Qwen3.6-Max-Preview预告下一代旗舰；GPT-5.5 Spud\"几周内\"发布；Google DeepMind组建\"突击小组\"追Claude编程，Sergey Brin亲自参与；Kimi K2.6上线OpenRouter支持长程Agent编程": "Alibaba releases Qwen3.6-Max-Preview previewing next generation flagship; GPT-5.5 Spud launching \"within weeks\"; Google DeepMind forms \"strike team\" chasing Claude in programming with Sergey Brin personally participating; Kimi K2.6 goes live on OpenRouter supporting long-range Agent programming", "Meta从Thinking Machines Lab挖走第5位创始成员；高德发布全栈具身技术体系ABot及智能导盲犬途途；Epoch AI调查Stargate全部7个数据中心正在建设；Google与Marvell洽谈合作开发AI推理芯片": "Meta poaches 5th founding member from Thinking Machines Lab; AutoNavi releases full-stack embodied technology system ABot and intelligent guide dog TUTU; Epoch AI surveys Stargate with all 7 data centers under construction; Google negotiating with Marvell to develop AI inference chip", "OpenAI高管Kevin Weil和Bill Peebles离职；xAI推出Grok语音转文本API；Anthropic推出Claude Design和Claude for Word加速覆盖办公场景；Netflix推出TikTok式垂直视频feed；DeepSeek更新DeepGEMM引入Mega MoE和FP4": "OpenAI executives Kevin Weil and Bill Peebles depart; xAI launches Grok speech-to-text API; Anthropic launches Claude Design and Claude for Word accelerating office coverage; Netflix launches TikTok-style vertical video feed; DeepSeek updates DeepGEMM introducing Mega MoE and FP4", "Anthropic发布Claude Opus 4.7最强Opus模型，长任务+自验证；OpenAI发布GPT-Rosalind生命科学专用推理模型；Physical Intelligence发布π0.7组合泛化能力突破；Epoch AI调查Claude美国使用量增长超40%": "Anthropic releases Claude Opus 4.7, the most powerful Opus model with long-horizon tasks and self-verification; OpenAI releases GPT-Rosalind, a reasoning model specialized for life sciences; Physical Intelligence releases π0.7 with breakthrough combinatorial generalization; Epoch AI survey shows Claude's US usage growth exceeds 40%", "OpenAI发布GPT-5.4-Cyber扩大网络安全防御者可信访问计划；OpenAI发布新一代Agents SDK原生沙盒执行；Google加速桌面AI布局原生Gemini Mac应用+Chrome Skills；Anthropic拒绝8000亿美元以上估值融资要约；NVIDIA发布Ising全球首个开源量子AI模型家族": "OpenAI releases GPT-5.4-Cyber expanding Trusted Access for Cyber Defenders program; OpenAI releases new generation Agents SDK with native sandbox execution; Google accelerates desktop AI strategy with native Gemini Mac app + Chrome Skills; Anthropic rejects financing offer at valuation exceeding $800 billion; NVIDIA releases Ising world's first open-source quantum AI model family", "Anthropic发布Claude Code重大更新桌面版支持多会话并行，新增Routines定时自动化任务；Google发布Gemini Robotics-ER 1.6提升机器人推理能力；The World Labs发布Spark 2.0高保真3DGS进入网页": "Anthropic releases major Claude Code update with desktop version supporting multi-session parallel, new Routines scheduled automation tasks; Google releases Gemini Robotics-ER 1.6 improving robot reasoning capabilities; The World Labs releases Spark 2.0 high-fidelity 3DGS entering the web", "OpenRouter上线100B参数模型Elephant Alpha对标同规模SOTA；Cloudflare Agent Cloud集成OpenAI GPT-5.4和Codex；吴翼加盟Meta MSL参与超级智能攻坚；Atlassian和Figma在AI研发投入上领跑，华尔街恐慌性抛售企业软件股": "OpenRouter launches 100B parameter model Elephant Alpha targeting same-scale SOTA; Cloudflare Agent Cloud integrates OpenAI GPT-5.4 and Codex; Wu Yi joins Meta MSL to participate in superintelligence research; Atlassian and Figma lead in AI R&D spending, Wall Street panics and dumps enterprise software stocks", "HumanX大会Claude成最大赢家，OpenAI被指\"掉队\"；Physical AI领域爆发人才争夺战，自动驾驶工程师薪资飙至$300K-$500K；灵初智能发布Psi-MobiDex具身智能数据集10万小时真人操作数据": "Claude wins big at HumanX conference, OpenAI accused of \"falling behind\"; Physical AI sector erupts in talent war, autonomous driving engineers' salaries soar to $300K-$500K; Lingchu Intelligence releases Psi-MobiDex embodied intelligence dataset with 100k hours of real human operation data", "京东开源JoyAI-Image-Edit 240亿参数图像模型；英伟达支持的SiFive估值达36.5亿美元布局RISC-V开源AI芯片；刘壮陈丹琦开源视觉推理RL框架刷新SOTA；上海AI Lab GEMS框架让6B生图模型超越Nano Banana 2": "JD.com open-sources JoyAI-Image-Edit 24B parameter image model; Nvidia-backed SiFive valued at $3.65B to develop RISC-V open-source AI chips; Liu Zhuang and Chen Danqi open-source visual reasoning RL framework setting new SOTA; Shanghai AI Lab GEMS framework enables 6B image generation model to surpass Nano Banana 2", "OpenAI星门计划三位核心负责人离职；Anthropic暂时封禁OpenClaw创始人Claude账号；Claude AI推出Word集成beta版本；阿里Qwen Code推出定时任务功能": "Three core leaders depart OpenAI StarGate project; Anthropic temporarily bans OpenClaw founder's Claude account; Claude AI launches Word integration beta version; Alibaba Qwen Code launches scheduled task feature", "NVIDIA联合vLLM提交首个MLPerf视觉语言模型性能基准测试；Meta AI应用排名跃升至App Store第5位；开源项目推出Claude Agent服务平替方案快速获得2.6k Star；OpenAI推出100美元ChatGPT Pro订阅服务": "NVIDIA partners with vLLM to submit first MLPerf vision-language model performance benchmark; Meta AI app ranking jumps to #5 on App Store; Open-source project launches Claude Agent service alternative quickly gaining 2.6k Stars; OpenAI launches $100 ChatGPT Pro subscription service", "神秘模型HappyHorse匿名登顶AI Video Arena后消失身世成谜；World Labs发布Marble和Haven模型更新；Meta发布Muse Spark模型Artificial Analysis智商指数52位列全球第四；Anthropic发布Managed Agents工程博客": "Mysterious model HappyHorse anonymously tops AI Video Arena then disappears, origins remain a mystery; World Labs releases Marble and Haven model updates; Meta releases Muse Spark model ranking 4th globally with Artificial Analysis IQ index of 52; Anthropic releases Managed Agents engineering blog", "贝索斯AI新公司Project Prometheus从OpenAI挖走xAI联合创始人Kyle Kosic；GLM-5.1上线OpenRouter长程任务完成能力显著提升；Epoch AI：Google持有全球约25% AI算力，75%来自自研TPU；Nvidia投资的AI数据中心公司Firmus估值达55亿美元": "Bezos' AI company Project Prometheus poaches xAI co-founder Kyle Kosic from OpenAI; GLM-5.1 launches on OpenRouter with significantly improved long-horizon task completion; Epoch AI: Google holds ~25% of global AI compute, 75% from self-developed TPUs; Nvidia-invested AI data center company Firmus valued at $5.5 billion", "OpenAI发布智能时代产业政策框架；Google推出离线优先AI听写应用使用Gemma模型；Anthropic联手Google与Broadcom签约数GW级TPU算力2027年上线；NVIDIA盘点物理AI机器人研究突破推动AI进入现实物理世界": "OpenAI releases intelligent era industrial policy framework; Google launches offline-first AI dictation app using Gemma model; Anthropic partners with Google and Broadcom signing multi-GW TPU compute deal launching 2027; NVIDIA reviews physical AI robotics research breakthroughs driving AI into real physical world", "OpenAI GPT-6曝光，奥特曼押注下一代模型；vLLM采用TorchSpec开源EAGLE3模型用于Kimi 2.5低延迟推理；Epoch AI发布多项AI基础设施数据洞察，内存带宽年增4.1倍；上海交大团队提出多智能体动态协作编程方案": "OpenAI GPT-6 exposed, Altman bets on next generation model; vLLM adopts TorchSpec open-sources EAGLE3 model for Kimi 2.5 low-latency inference; Epoch AI releases multiple AI infrastructure data insights, memory bandwidth growing 4.1x annually; SJTU team proposes multi-agent dynamic collaborative coding solution", "港科大阿里联合提出RL冷启动新范式揭示SFT与RL潜力差异；Anthropic为全量Claude订阅用户开放Microsoft 365连接器；Bespoke Labs建议简化Agent设计减少MCP工具依赖；Anthropic在私募市场热度空前二级市场交易活跃": "HKUST-Alibaba joint proposal of RL cold-start new paradigm revealing SFT vs RL potential differences; Anthropic opens Microsoft 365 connector for all Claude subscribers; Bespoke Labs recommends simplifying Agent design reducing MCP tool dependency; Anthropic unprecedented popularity in private market with active secondary trading", "Google发布Gemma 4开放基础模型系列基于Gemini 3技术；Microsoft旗下MAI发布三个基础模型涵盖语音/音频/图像生成；Z.ai发布GLM-5V-Turbo原生多模态编程模型；YC W26 Demo Day": "Google releases Gemma 4 open foundation model series based on Gemini 3 technology; Microsoft's MAI releases three foundation models covering speech/audio/image generation; Z.ai releases GLM-5V-Turbo native multimodal programming model; YC W26 Demo Day", "Holo3突破计算机使用前沿；Gradient Labs用GPT-4.1和GPT-5.4为银行客户提供AI账户管理器；SpaceX秘密提交IPO注册文件估值超1.75万亿美元；Q1初创公司融资创纪录，OpenAI/Anthropic/xAI/Waymo获得大额融资": "Holo3 breaks frontier in computer use; Gradient Labs uses GPT-4.1 and GPT-5.4 to provide AI account managers for bank clients; SpaceX secretly files IPO registration valuing company over $1.75 trillion; Q1 startup funding hits record with OpenAI/Anthropic/xAI/Waymo receiving large financing", "Google推出Gemini API Docs MCP和Agent Skills编程任务96.3%通过率；IBM发布Granite 4.0 3B Vision紧凑多模态模型；智谱上市后首份财报超7.24亿元；NVIDIA与能源公司合作建设电力弹性AI工厂": "Google launches Gemini API Docs MCP and Agent Skills, achieving 96.3% pass rate on programming tasks; IBM releases Granite 4.0 3B Vision, a compact multimodal model; Zhipu AI's first financial report after IPO exceeds 724 million yuan; NVIDIA partners with energy companies to build power-resilient AI factories", "阿里发布Qwen3.5-Omni原生多模态模型，支持语音和多模态Vibe Coding；SemiAnalysis预告Qwen 3.6即将发布专注Agentic Coding；Mistral AI融资$830M；OpenAI推出OpenAI Academy": "Alibaba releases Qwen3.5-Omni native multimodal model supporting voice and multimodal Vibe Coding; SemiAnalysis previews Qwen 3.6 coming soon focused on Agentic Coding; Mistral AI raises $830M; OpenAI launches OpenAI Academy", "Anthropic疑似新旗舰模型Mythos泄露；OpenAI关闭Sora API服务引发AI视频行业洗牌讨论；Claude 5.0内测展现强大漏洞挖掘能力；Yann LeCun团队揭示AI缺乏规划能力的根源": "疑似新旗舰模型Mythos leaks; OpenAI shuts down Sora API service sparking AI video industry reshuffling discussions; Claude 5.0 internal testing shows powerful vulnerability discovery capabilities; Yann LeCun's team reveals root cause of AI's lack of planning ability", "硅心科技aiX-apply-4B单卡推理速度提升15倍；Meta SAM 3.1引入多目标追踪；GPT-5.4在USAMO数学基准达95%；智谱GLM-5.1登陆Coding Plan；钉钉CLI开源10项企业能力": "Silicon Heart Technology aiX-apply-4B single-card inference speed improved 15x; Meta SAM 3.1 introduces multi-object tracking; GPT-5.4 achieves 95% on USAMO math benchmark; Zhipu GLM-5.1 arrives on Coding Plan; DingTalk CLI open-sources 10 enterprise capabilities", "Cohere发布Transcribe语音识别模型支持14种语言；Google发布Gemini 3.1 Flash Live支持实时对话式AI编程；Google实时耳机翻译功能扩展至iOS；Google Search Live全球上线支持实时视觉搜索与对话": "Cohere releases Transcribe speech recognition model supporting 14 languages; Google releases Gemini 3.1 Flash Live supporting real-time conversational AI coding; Google real-time earphone translation feature expands to iOS; Google Search Live launches globally supporting real-time visual search and conversation", "LumaLabsAI发布Uni-1视频生成模型强调文化素养与导演能力；Google发布Lyria 3 Pro音乐生成模型；OpenAI发布Model Spec框架平衡安全性、用户自由与问责制；Meta裁减数百名员工": "LumaLabsAI releases Uni-1 video generation model emphasizing cultural literacy and directorial capabilities; Google releases Lyria 3 Pro music generation model; OpenAI releases Model Spec framework balancing safety, user freedom and accountability; Meta lays off hundreds of employees", "Sora官方宣布关闭应用；ChatGPT推出Agentic Commerce Protocol支持购物；Anthropic为Claude Code推出自动执行模式；HuggingFace发布语音代理评估框架EVA": "Sora officially announces shutdown; ChatGPT launches Agentic Commerce Protocol supporting shopping; Anthropic launches auto-execution mode for Claude Code; HuggingFace releases speech agent evaluation framework EVA", "Meta裁员1.6万人押注AI，扎克伯格打造AI分身；Lovable估值66亿美元寻求收购扩张ARR翻倍至4亿美元；Gimlet Labs获8000万美元融资实现跨芯片异构推理；DocuSign收购Lexion强化AI合同管理": "Meta lays off 16,000 employees betting on AI, Zuckerberg builds AI avatars; Lovable valued at $6.6 billion seeking acquisitions, expands ARR to $400 million doubling; Gimlet Labs raises $80 million achieving cross-chip heterogeneous inference; DocuSign acquires Lexion strengthening AI contract management", "微信推出官方ClawBot插件；马斯克发布TERAFAB项目万亿瓦算力工厂；杨立昆等联合发文探讨AI自主学习缺陷；浙大团队解决多模态模型过度自信问题": "WeChat launches official ClawBot plugin; Musk announces TERAFAB project trillion-watt computing factory; Yann LeCun et al. co-publish paper exploring AI autonomous learning flaws; ZJU team solves multimodal model overconfidence problem", "法院文件显示五角大楼曾告知Anthropic双方几乎达成一致；光轮智能定义Physical AI基础设施；xAI宣布Terafab项目；创智×复旦提出让大模型拥有科研品味的RL新范式": "Court documents reveal Pentagon once told Anthropic both parties nearly reached agreement; GuangLun Intelligence defines Physical AI infrastructure; xAI announces Terafab project; ChuangZhi x Fudan propose RL new paradigm giving LLMs scientific taste", "Nvidia GTC发布NeMoClaw和Robot Olaf押注万亿美元AI算力市场；亚马逊研发以Alexa为核心的新智能手机；浙大百卡团队开源实时世界模型视频秒转可交互4D世界": "Nvidia GTC releases NeMoClaw and Robot Olaf betting on trillion-dollar AI computing market; Amazon developing new Alexa-centric smartphone; Zhejiang University 100-card team open-sources real-time world model converting video to interactive 4D world", "OpenAI发布内部编码代理对齐监控方法通过思维链检测风险；Meta推出新一代AI内容审核系统减少第三方依赖；OpenAI收购Python工具商Astral；亚马逊收购苏黎世机器人公司Rivr": "OpenAI releases internal coding agent alignment monitoring method via chain-of-thought risk detection; Meta launches new generation AI content moderation system reducing third-party dependency; OpenAI acquires Python tool vendor Astral; Amazon acquires Zurich robot company Rivr", "Mamba系列发布新模型；小米MiMo-V2-Pro评分49；Cursor Composer通过RL自我总结；Claude Cowork发布Dispatch功能；阿里钉钉上线企业AI产品\"悟空\"": "Mamba series releases new model; Xiaomi MiMo-V2-Pro scores 49; Cursor Composer self-summarizes via RL; Claude Cowork launches Dispatch feature; Alibaba DingTalk launches enterprise AI product \"Wukong\"", "OpenAI发布GPT-5.4 mini和nano；MiniMax 2.7展示编程和游戏开发能力；NVIDIA展示RTX PC和DGX Spark本地运行能力；HuggingFace发布Holotron-12B": "OpenAI releases GPT-5.4 mini and nano; MiniMax 2.7 demonstrates programming and game development capabilities; NVIDIA showcases RTX PC and DGX Spark local running capabilities; HuggingFace releases Holotron-12B", "智谱发布GLM-5-Turbo；Sebastian Raschka整理大模型架构图收藏集；Google推出Gemini API成本透明度和控制功能；Google AI版Chrome正式推出": "Zhipu releases GLM-5-Turbo; Sebastian Raschka compiles large model architecture diagram collection; Google launches Gemini API cost transparency and control features; Google AI-integrated Chrome officially released", "NVIDIA发布Nemotron-3 Super模型；Anthropic用3万字文档训练Claude；vLLM支持本地模型部署OpenClaw Agent；Meta公布自研AI芯片MTIA发展路线图": "NVIDIA releases Nemotron-3 Super model; Anthropic trains Claude with 30,000-word document; vLLM supports local model deployment OpenClaw Agent; Meta announces self-developed AI chip MTIA development roadmap", "Meta千亿参数Avocado大模型延期发布，性能不及预期且内测落后Gemini；Karpathy论AI编程未来": "Meta's 100-billion parameter Avocado large model delayed, performance below expectations and internal testing behind Gemini; Karpathy discusses future of AI programming", "Claude Opus 4.6和Sonnet 4.6获得100万token上下文窗口；Claude推出交互式图表和可视化功能；Google Maps推出Ask Maps和Immersive Navigation用Gemini重构地图体验": "Claude Opus 4.6 and Sonnet 4.6 get 1M token context window; Claude launches interactive charts and visualization features; Google Maps launches Ask Maps and Immersive Navigation with Gemini-reconstructed map experience", "Meta AI为Facebook Marketplace提供自动回复功能；Google DeepMind在伦敦开设AI Exchange创新空间；Anthropic登上时代封面；NVIDIA Omniverse推动工业AI与数字孪生应用": "Meta AI provides auto-reply for Facebook Marketplace; Google DeepMind opens AI Exchange innovation space in London; Anthropic on TIME magazine cover; NVIDIA Omniverse promotes industrial AI and digital twin applications", "NVIDIA发布Nemotron 3 Super；谷歌发布Gemini Embedding 2首个原生全模态嵌入模型达成全模态SOTA；OpenAI为Responses API构建Agent运行时支持文件工具与状态管理": "NVIDIA releases Nemotron 3 Super; Google releases Gemini Embedding 2 first native full-modal embedding model achieving full-modal SOTA; OpenAI builds Agent runtime for Responses API supporting file tools and state management", "IBM推出Granite 4.0 1B语音模型；World Labs举办黑客松活动聚焦世界模型与空间智能；Anthropic与Mozilla合作测试Claude安全漏洞发现能力；ABB Robotics联合NVIDIA Omniverse实现工业级物理AI规模化部署": "IBM launches Granite 4.0 1B voice model; World Labs holds hackathon focusing on world models and spatial intelligence; Anthropic collaborates with Mozilla to test Claude's security vulnerability discovery capabilities; ABB Robotics partners with NVIDIA Omniverse to achieve industrial-scale physical AI deployment", "Anthropic发布Claude Opus 4.6在BrowseComp评测中的表现；OpenAI发布Codex Security；五角大楼与Anthropic争议引发担忧；大连理工联合快手可灵推出MultiShotMaster": "Anthropic releases Claude Opus 4.6 performance in BrowseComp evaluation; OpenAI releases Codex Security; Pentagon and Anthropic controversy raises concerns; Dalian University of Technology and Kuaishou Keling jointly launch MultiShotMaster", "谢赛宁团队开源多人游戏视角世界模型；OpenAI再次推迟ChatGPT成人模式发布；谷歌CEO皮查伊获得6.92亿美元薪酬套餐": "Xie Saining team's open-source multi-player game perspective world model; OpenAI delays ChatGPT adult mode release again; Google CEO Pichai receives 692 million USD compensation package", "FlashAttention-4正式发布；Claude消费者增长持续加速；商汤发布新多模态架构；硅谷巨头自研芯片「叛逃」英伟达；Science完成2.3亿美元C轮融资": "FlashAttention-4 officially released; Claude consumer growth continues accelerating; SenseTime releases new multi-modal architecture; Silicon Valley giants self-developed chips \"defect\" Nvidia; Science completes 230 million USD Series C funding", "20 条动态": "20 Updates", "13 条动态": "13 Updates", "9 条动态": "9 updates", "14 条动态": "14 updates", "27 条动态": "27 News Items", "21 条动态": "21 updates", "18 条动态": "18 updates", "7 条动态": "7 updates", "22 条动态": "22 updates", "16 条动态": "16 updates", "8 条动态": "8 updates", "4 条动态": "4 updates", "11 条动态": "11 updates", "25 条动态": "25 updates", "5 条动态": "5 Updates", "10 条动态": "10 Updates", "12 条动态": "12 Updates", "15 条动态": "15 Updates", "6 条动态": "6 Updates", "17 条动态": "17 Updates", "19 条动态": "19 Updates", "23 条动态": "23 Updates", "2 条动态": "2 Updates", "2026 年 6 月": "June 2026", "2026 年 5 月": "May 2026", "2026 年 4 月": "April 2026", "2026 年 3 月": "March 2026"};
+    Object.assign(EN, {
+        "前沿模型周报 · 专题集合": "Frontier Model Weekly · Topic Collection",
+        "最新：2026.07.28 | Claude Opus 5 · Kimi K3 · Gemini 3.6 Flash · FLUX 3": "Latest: 2026.07.28 | Claude Opus 5 · Kimi K3 · Gemini 3.6 Flash · FLUX 3"
+    });
+    const PH_EN = "Search news...";
+
+    const SEL = ["h1", "h2", "h3", "h4", "p", "li", "a.topbar-btn", "a.topbar-nav", "span.topbar-brand", "span.topbar-tagline", "div.hero-eyebrow", "h1.hero-title", "p.hero-sub", "div.hero-meta", "div.hero-date", "div.hero-stat-num", "div.hero-stat-label", "div.section-label", "div.sec-title", "span.sec-title", "span.sec-num", "div.edition-title", "div.edition-sub", "div.edition-date-label", "div.edition-date-val", "div.edition-date-month", "span.model-chip", "span.edition-tag", "div.topic-title", "div.topic-desc", "span.topic-meta-item", "span.topic-badge", "span.edition-chip", "div.sp-title", "div.sp-desc", "div.te-date", "div.te-summary", "div.te-count", "div.card-title", "div.card-sub", "div.card-body", "div.card-tag", "div.mini-stat-val", "div.mini-stat-label", "div.sub-title", "div.stat-item", "div.stat-val", "div.stat-label", "div.info-card", "span.cat-tag", "div.source", "div.toc-title", "div.toc-sub", "span.nav-item", "a.nav-item", "details.nav-details > summary > span:not(.nav-count)"];
+
+    let isEn = localStorage.getItem('lang-pref') === 'en';
+    const cache = new Map();
+
+    // Get text from direct text nodes only (excludes nested span/strong/em children).
+    // Useful for elements like <div class="te-date">May 31 <span>最新</span></div>
+    // where the visible date should match the extracted date text, not the badge text.
+    function getDirectText(el) {
+        var result = '';
+        for (var i = 0; i < el.childNodes.length; i++) {
+            var node = el.childNodes[i];
+            if (node.nodeType === 3) {  // TEXT_NODE
+                result += node.textContent;
+            }
+        }
+        return result.trim();
+    }
+
+    function applyLang() {
+        SEL.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(el) {
+                // Skip elements with disallowed nested children
+                if (el.children.length > 0) {
+                    var hasNested = false;
+                    for (var c of el.children) {
+                        if (c.tagName !== 'BR' && c.tagName !== 'SPAN' && c.tagName !== 'STRONG' && c.tagName !== 'EM' && c.tagName !== 'A') {
+                            hasNested = true; break;
+                        }
+                    }
+                    if (hasNested) return;
+                }
+
+                if (!isEn) {
+                    // Switching back to Chinese: restore cached innerHTML
+                    var saved = cache.get(el);
+                    if (saved) el.innerHTML = saved;
+                    return;
+                }
+
+                // Switching to English: look up translation
+                var zh = getDirectText(el);
+                if (!EN[zh]) zh = el.textContent.trim();
+                if (!zh || !EN[zh]) return;
+
+                if (!cache.has(el)) cache.set(el, el.innerHTML);
+                el.textContent = EN[zh];
+            });
+        });
+
+        var search = document.getElementById('search');
+        if (search) {
+            if (isEn) {
+                if (!cache.has('_ph')) cache.set('_ph', search.placeholder);
+                search.placeholder = PH_EN;
+            } else {
+                var saved = cache.get('_ph');
+                if (saved) search.placeholder = saved;
+            }
+        }
+
+        var btn = document.getElementById('lang-toggle');
+        if (btn) btn.textContent = isEn ? '中文' : 'EN';
+        localStorage.setItem('lang-pref', isEn ? 'en' : 'zh');
+    }
+
+    // Expose for search integration
+    window.__I18N_EN = EN;
+    window.__I18N_isEn = function() { return isEn; };
+
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.addEventListener('click', function() { isEn = !isEn; applyLang(); });
+    if (isEn) applyLang();
+})();
+
+// ── Bilingual search augmentation ──
+(function() {
+    var EN = window.__I18N_EN || {};
+    var searchEN = {};  // EN maps from fetched pages
+    var dropdown = document.getElementById('search-results');
+    var input = document.getElementById('search');
+    if (!dropdown || !input) return;
+
+    // Intercept fetch to extract EN maps from fetched HTML pages
+    var origFetch = window.fetch;
+    window.fetch = function(url) {
+        return origFetch.apply(this, arguments).then(function(response) {
+            var clone = response.clone();
+            if (typeof url === 'string' && url.indexOf('.html') !== -1) {
+                clone.text().then(function(html) {
+                    var m = html.match(/const EN = (\{.*?\});/s);
+                    if (m) {
+                        try { Object.assign(searchEN, JSON.parse(m[1])); }
+                        catch(e) {}
+                    }
+                }).catch(function(){});
+            }
+            return response;
+        });
+    };
+
+    // Translate search results when they appear
+    var observer = new MutationObserver(function() {
+        if (!window.__I18N_isEn()) return;
+        dropdown.querySelectorAll('.search-result').forEach(function(el) {
+            var titleEl = el.querySelector('.sr-title');
+            if (titleEl && !titleEl.dataset.i18n) {
+                var zh = titleEl.textContent.trim();
+                titleEl.dataset.i18n = zh;
+                var en = searchEN[zh] || EN[zh];
+                if (en) titleEl.textContent = en;
+            }
+            var catEl = el.querySelector('.sr-cat');
+            if (catEl && !catEl.dataset.i18n) {
+                var zh = catEl.textContent.trim();
+                catEl.dataset.i18n = zh;
+                var en = searchEN[zh] || EN[zh];
+                if (en) catEl.textContent = en;
+            }
+        });
+        var empty = dropdown.querySelector('.search-empty');
+        if (empty) {
+            if (empty.textContent.indexOf('无匹配') !== -1) empty.textContent = 'No results found';
+            else if (empty.textContent.indexOf('正在加载') !== -1) empty.textContent = 'Loading...';
+        }
+    });
+    observer.observe(dropdown, { childList: true, subtree: true });
+
+    // When switching back to Chinese, restore original search result text
+    var origApplyLang = window.__I18N_applyLang;
+    var toggleBtn = document.getElementById('lang-toggle');
+    if (toggleBtn) {
+        var origClick = toggleBtn.onclick;
+        toggleBtn.addEventListener('click', function() {
+            // After toggle, restore search result text if switching to Chinese
+            setTimeout(function() {
+                if (!window.__I18N_isEn()) {
+                    dropdown.querySelectorAll('[data-i18n]').forEach(function(el) {
+                        el.textContent = el.dataset.i18n;
+                    });
+                    // Re-trigger search to show Chinese results
+                    if (input.value) input.dispatchEvent(new Event('input'));
+                }
+            }, 50);
+        });
+    }
+})();
+
+    </script>
+</body>
+</html>
