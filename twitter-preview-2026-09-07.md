@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-09-07 07:15
-**总计**：26 条推文
+**总计**：27 条推文
 
 ---
 
@@ -13,15 +13,21 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **Intelligence Index v4.2 - v5路线图加速推进**
-   @artificialanlys
-2. **Meta Muse Spark 1.3 (Max) 性能媲美 Fable 5 和 GPT 5.6 Sol，价格低4-8倍**
-   @aiatmeta
-3. **在团队服务器中内置 slopmeter 工具**
+1. **OpenAI发布关于模型加速研究的数据**
+   @sama (RT kliu128)
+2. **Meta AI发布下一代自主AI研究进展**
+   @jaseweston (RT AIatMeta)
+3. **GPT-6绘制迈克尔·杰克逊图像测试**
+   @steipete (RT aadilpickle)
+4. **Astra在减少幻觉方面的重大改进**
+   @steipete (RT haider1)
+5. **AI行业从业者工作强度讨论**
+   @steipete (RT rauchg)
+6. **Astra通过观看原广告重现OpenAI超级碗广告**
+   @steipete (RT prd_008)
+7. **团队服务器内置slopmeter测试质量监控工具**
    @steipete
-4. **Astra 在减少幻觉方面的最大改进被埋没**
-   @steipete
-5. **可视化侧边栏中的子代理(Subagents)想法**
+8. **侧边栏可视化子代理的概念设计**
    @steipete
 
 ---
@@ -33,11 +39,6 @@
 - RT @ValsAI: Meta Muse Spark 1.3 (Max) matches the performance of Fable 5 and GPT 5.6 Sol on the Vals Index, at 4x - 8x cheaper. https://t.c…
   [查看](https://x.com/AIatMeta/status/2096663862565339176)
 
-### @artificialanlys | Model
-
-- Intelligence Index v4.2 is an acceleration of our v5 roadmap, which is focused on long-horizon tasks that better resemble real-world problem solving, a greater proportion of private test sets to prevent gaming, and reducing saturation. Expect further updates as we continue our v5 rollout!  We are accelerating our rollout because the Intelligence Index needs to measure what AI is capable of to be u...
-  [查看](https://x.com/ArtificialAnlys/status/2096395066747306102)
-
 ### @semianalysis_ | Infra
 
 - What is the cost of 1 F-35 fighter in terms of the # of OG Rubin Ultra 1024GB HBM vs. the new Rubin "Ultra" 192GB HBM? https://t.co/JjUlAIVd19
@@ -47,18 +48,20 @@
 
 ### @theturingpost | Research
 
+- RT @TheTuringPost: AI can improve AI. Why hasn't recursive self-improvement (RSI) happened yet?  There are at least two problems.  1. Strat…
+  [查看](https://x.com/TheTuringPost/status/2096757904682762298)
+- RT @TheTuringPost: AREX-Skill turns knowledge from GitHub repos into reusable skill packages for AI agents.  It teaches agents how to opera…
+  [查看](https://x.com/TheTuringPost/status/2096755396090486932)
 - RT @TheTuringPost: 12 best AI image generators in 2026 (models and tools)  ▪️ GPT Image 2 ▪️ Nano Banana 2 / Nano Banana Pro ▪️ Midjourney…
   [查看](https://x.com/TheTuringPost/status/2096745316074885558)
 - AI can improve AI. Why hasn't recursive self-improvement (RSI) happened yet?  There are at least two problems.  1. Strategy AI is good at execution - it follows an existing plan and just iterates. But it often falls out of the full RSI loop because it doesn’t update the method driving the system's improvement. It’s a lack of "rethinking."  2. Memory AI already has the right skills and knowledge, b...
   [查看](https://x.com/TheTuringPost/status/2096711234049753551)
-- RT @TheTuringPost: AREX-Skill turns knowledge from GitHub repos into reusable skill packages for AI agents.  It teaches agents how to opera…
-  [查看](https://x.com/TheTuringPost/status/2096649699545825681)
 - 12 best AI image generators in 2026 (models and tools)  ▪️ GPT Image 2 ▪️ Nano Banana 2 / Nano Banana Pro ▪️ Midjourney V8.2 ▪️ Adobe Firefly Image Model 5 ▪️ FLUX.2 ▪️ Seedream 5.0 Pro / Lite ▪️ Grok Imagine Image 2.0 ▪️ Ideogram 4.0 ▪️ Recraft V4.1 ▪️ Stable Diffusion 3.5 ▪️ Leonardo AI ▪️ Microsoft Designer Image Creator  Check out why they are so distinct and which one to choose for your needs...
   [查看](https://x.com/TheTuringPost/status/2096607653095219382)
 - RT @TheTuringPost: https://t.co/gcsQxAV1sK
   [查看](https://x.com/TheTuringPost/status/2096406269707923519)
 
-## 👤 研究者动态（17条）
+## 👤 研究者动态（18条）
 
 ### @gklambauer | Research
 
@@ -102,6 +105,11 @@
   [查看](https://x.com/steipete/status/2096427353467654338)
 - Can’t remember last time we had such a large jump in capabilities.
   [查看](https://x.com/steipete/status/2096403459579015374)
+
+### @swyx [AI社区] | App
+
+- RT @lily_gpupoor: Introducing 𝐒𝐩𝐞𝐜𝐮𝐥𝐚𝐭𝐢𝐯𝐞 𝐃𝐞𝐜𝐨𝐝𝐢𝐧𝐠: 𝐇𝐨𝐰 𝐈𝐭 𝐄𝐯𝐨𝐥𝐯𝐞𝐝, 𝐖𝐡𝐞𝐧 𝐈𝐭 𝐒𝐭𝐚𝐲𝐬 𝐋𝐨𝐬𝐬𝐥𝐞𝐬𝐬, 𝐚𝐧𝐝 𝐖𝐡𝐚𝐭'𝐬 𝐍𝐞𝐱𝐭. An interactive tutorial @Madis…
+  [查看](https://x.com/swyx/status/2096712501354463500)
 
 ### @ylecun [NYU] | Research
 
