@@ -1486,9 +1486,10 @@ def _collapse_ranked_events(ordered_ids, article_by_id, expected_count):
             break
     minimum_publishable = min(RANK_TARGET_COUNT, expected_count)
     if len(kept) < minimum_publishable:
-        raise PipelineBlocked(
-            f"事件去重后仅剩 {len(kept)} 条，无法满足 "
-            f"{minimum_publishable} 条成稿需求"
+        # 2026-09-07 起降级为警告：候选池小的日子（周末/源荒）宁可少发也不阻断。
+        print(
+            f"   ⚠️ 事件去重后仅 {len(kept)} 条（常规目标 {minimum_publishable} 条），"
+            f"按实际数量继续成稿"
         )
     return kept
 
@@ -1768,6 +1769,9 @@ def _rank_candidates(rank_candidates, recent_articles):
         article_by_id,
         final_count,
     )
+    # 事件级去重可能耗尽候选池（小池子+同事件多报道）；回填目标以实际唯一事件数为准，
+    # 否则 _build_editorial_portfolio 会因凑不满 final_count 而误判阻断。
+    final_count = len(collapsed)
     duplicate_count = sum(
         bool(article_by_id[candidate_id].get("_event_duplicate_of"))
         for candidate_id in preliminary_ids

@@ -419,9 +419,11 @@ def evaluate_release_gate(
 
         low_value_marker = find_low_value_marker(f"{title}\n{body}")
         if low_value_marker:
+            # 2026-09-07 起降级为警告：关键词（招聘/报名等）可能出现在重大产业
+            # 动态的事实描述中（如"通过组建团队曝光进军新业务"），不应拦截整期发布。
             issues.append(GateIssue(
                 "low_value",
-                "blocker",
+                "warning",
                 display_title,
                 f"含低价值/推广信号: {low_value_marker}",
                 index,
