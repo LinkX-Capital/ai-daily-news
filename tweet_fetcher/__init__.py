@@ -125,10 +125,12 @@ def fetch_user_tweets(username: str, count: int = 10, start_time: datetime = Non
             timeout=TIMEOUT,
         )
         if resp.status_code != 200:
-            return []
+            # API 层失败（限流/5xx 等）返回 None，与"确实没有推文"（[]）区分，
+            # 供上层重试与告警。
+            return None
         raw_tweets = resp.json().get("data", {}).get("tweets", [])
     except Exception:
-        return []
+        return None
 
     tweets = []
     for tw in raw_tweets:
@@ -159,19 +161,45 @@ def fetch_user_tweets(username: str, count: int = 10, start_time: datetime = Non
 def fetch_all_tweets(max_per_account: int = 10, start_time: datetime = None, end_time: datetime = None) -> List[Dict]:
     all_tweets = []
     failed_accounts = []
+    api_error_accounts = []
+    # 这些账号几乎每天发推；它们为空大概率是 API 静默失败而非真的没推文。
+    _ALWAYS_ACTIVE = {"openai", "anthropicai", "claudeai", "googledeepmind", "xai", "googleai"}
+    suspicious_empty = []
 
     for account in ALL_ACCOUNTS:
         try:
             tweets = fetch_user_tweets(account, max_per_account, start_time, end_time)
         except Exception as e:
-            tweets = []
+            tweets = None
             print(f"      @{account}: 请求异常 {e}")
-        if tweets:
+        if tweets is None:
+            api_error_accounts.append(account)
+        elif tweets:
             all_tweets.extend(tweets)
         else:
             failed_accounts.append(account)
+            if account.lower() in _ALWAYS_ACTIVE:
+                suspicious_empty.append(account)
         time.sleep(0.5)
 
+    # API 层失败的账号统一重试一次（限流类故障常在数秒后恢复）
+    if api_error_accounts:
+        print(f"   ⚠️ {len(api_error_accounts)} 个账号 API 失败，重试一次: {', '.join(a for a in api_error_accounts[:5])}{'...' if len(api_error_accounts) > 5 else ''}")
+        time.sleep(3)
+        still_failed = []
+        for account in api_error_accounts:
+            tweets = fetch_user_tweets(account, max_per_account, start_time, end_time)
+            if tweets:
+                all_tweets.extend(tweets)
+            else:
+                still_failed.append(account)
+            time.sleep(0.5)
+        api_error_accounts = still_failed
+
+    if suspicious_empty:
+        print(f"   ⚠️ 高活跃账号返回空（疑似静默失败，建议复核）: {', '.join(suspicious_empty)}")
+    if api_error_accounts:
+        print(f"   ⚠️ {len(api_error_accounts)} 个账号重试后仍失败: {', '.join(api_error_accounts[:8])}")
     if failed_accounts:
         print(f"   ℹ️ {len(failed_accounts)} 个账号窗口内无有效推文")
         for account in failed_accounts[:10]:

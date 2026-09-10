@@ -33,6 +33,17 @@ _EXTRA_FILTER_KEYWORDS = [
 ]
 
 
+def _is_whitelist_source(source: str) -> bool:
+    """source（如 @drfeifei）是否为 accounts.yaml 中 feed_whitelist 的账号"""
+    try:
+        from config_loader import _load_accounts_yaml
+        acc = _load_accounts_yaml()
+        handle = source.lstrip("@").lower()
+        return handle in {h.lstrip("@").lower() for h in (acc.get("company_whitelist", set()) | acc.get("researcher_whitelist", set()))}
+    except Exception:
+        return False
+
+
 def is_non_news(title: str, summary: str = "") -> bool:
     """判断是否是非新闻内容（应被过滤）"""
     text = (title + " " + (summary or "")).lower()
@@ -430,6 +441,19 @@ def improve_news(articles: List[Dict], do_filter: bool = True) -> List[Dict]:
         for a in improved:
             title = a.get("title", "")
             summary = a.get("summary", "")
+            # 白名单（feed_whitelist）账号的 RT 是编辑推荐信号：剥离 "RT @xxx:" 前缀，
+            # 按被转原帖内容评估（原帖文本就在推文正文里），不因 RT 前缀被关键词误杀；
+            # 非白名单账号的转发仍按无增量信息处理。
+            if title.startswith("RT @") and _is_whitelist_source(a.get("source", "")):
+                stripped = re.sub(r"^RT @\S+:?\s*", "", title).strip()
+                if stripped:
+                    recommender = a.get("source", "")
+                    a = dict(a)
+                    a["title"] = stripped
+                    a["raw_title"] = (a.get("raw_title") or "").replace(title, stripped) if a.get("raw_title") else stripped
+                    a["_via_repost"] = recommender
+                    title = stripped
+                    print(f"   🔁 白名单转发深挖（@{recommender}）: {stripped[:50]}...")
             if is_non_news(title, summary):
                 print(f"   过滤: {title[:50]}...")
             else:

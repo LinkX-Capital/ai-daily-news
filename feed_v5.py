@@ -162,7 +162,10 @@ EXTRA_SOURCES = {
     # 添加官方 RSS 源（确认有效的）
     "HuggingFace Blog": ("https://huggingface.co/blog/feed.xml", "US"),
     "The Keyword": ("https://blog.google/rss/", "US"),
-    # 其他需要手动确认 RSS 地址
+    # arXiv RSS (export.arxiv.org/rss/*) 已持续返回空 channel（2026-09-10 实测 0 items），
+    # 改用 arXiv API（Atom，feedparser 兼容）按提交时间取最新论文；覆盖 OPML 同名条目。
+    "arXiv cs.CL": ("http://export.arxiv.org/api/query?search_query=cat:cs.CL&sortBy=submittedDate&sortOrder=descending&max_results=60", "US"),
+    "arXiv cs.LG": ("http://export.arxiv.org/api/query?search_query=cat:cs.LG&sortBy=submittedDate&sortOrder=descending&max_results=60", "US"),
 }
 SOURCES.update(EXTRA_SOURCES)
 
