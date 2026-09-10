@@ -1380,8 +1380,14 @@ def _update_index_html(today_date_str, articles):
                 f'            </details>\n'
             )
             first_details = html.find('<details class="nav-details"')
+            # 「专题报告」固定置顶：新月份插到专题报告块之后，而不是整个侧栏最前。
+            topic_block = re.search(
+                r'<details class="nav-details"[^>]*>\s*<summary><span>专题报告</span>.*?</details>',
+                html, re.S)
+            if topic_block:
+                first_details = topic_block.end()
             if first_details != -1:
-                html = html[:first_details] + new_details + html[first_details:]
+                html = html[:first_details] + '\n            ' + new_details + html[first_details:]
                 print(f"Auto-created sidebar details for {month_cn}")
             nav_match = re.search(nav_section_pattern, html)
         if nav_match:
