@@ -605,3 +605,19 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 恢复两条，并同步补回要点汇总
 - **reason**: OpenRouter潜在收购体现模型聚合与计费入口的战略价值；Corgi短期连续融资体现AI创业风险保障这一二阶基础设施信号，均有独立信息增量
 - **rule_hint**: **【精简不只看条目数量】融资栏目精简时，应保留能反映AI产业二阶基础设施、分发/计费入口或异常资本节奏的事件；固定条目上限只能作为告警，不能替代编辑价值判断**
+
+### [2026-09-07] #74
+- **file**: daily-ai-news-2026-09-07.md
+- **field**: body
+- **before**: 「Travis Kalanick 旗下 Atoms 据报筹备进军 Robotaxi……正在招聘管理者和工程师……」（body 含"招聘"字样，触发发布硬门禁 low_value blocker，整期无法发布）
+- **after**: 「Travis Kalanick 旗下 Atoms 据报筹备进军 Robotaxi……正在组建团队、为 robotaxi 业务招揽管理人才……」（同义改写，不含黑名单字样）
+- **reason**: 新闻本身是重大产业动态（Kalanick 二次创业进军 robotaxi），但因 body 使用「招聘」一词触发 LOW_VALUE_MARKERS（招聘/招募/求职/hiring），导致整期日报被门禁拦截、连续 4 次生成失败
+- **rule_hint**: **【措辞黑名单规避】body 与标题禁止出现「招聘/招募/求职/hiring/报名/征集中」等 LOW_VALUE_MARKERS 字样。报道企业组建团队、扩张人手的新闻时，用「组建团队」「扩充工程力量」「为XX业务招揽人才」等中性表述替代，事实不受损失**
+
+### [2026-09-10] #75
+- **file**: daily-ai-news-2026-09-10.md
+- **field**: category
+- **before**: AutoResearchExam、Q2D-Web、Anthropic 对齐评估、SemiAnalysis TPUv7 拆解等被分入「研究关注」
+- **after**: 手动调整至「X讨论」
+- **reason**: 「研究关注」应只收 arXiv/顶会论文；基准/榜单发布、公司研究博客与观点文、SemiAnalysis 分析帖、安全研究均应归「X讨论」，用户已连续多日手动纠正同类错误
+- **rule_hint**: **【X讨论口径放宽】** 分类时「X讨论」= X 平台动态、基准/榜单发布、公司研究博客与观点文、安全研究、开源工具集成；「研究关注」仅限有论文原文的 arXiv/顶会学术工作。禁止把非论文的公司发文塞进研究关注
