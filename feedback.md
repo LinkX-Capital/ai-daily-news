@@ -621,3 +621,11 @@ Daily corrections accumulated from user reviews. Each entry is a structured trai
 - **after**: 手动调整至「X讨论」
 - **reason**: 「研究关注」应只收 arXiv/顶会论文；基准/榜单发布、公司研究博客与观点文、SemiAnalysis 分析帖、安全研究均应归「X讨论」，用户已连续多日手动纠正同类错误
 - **rule_hint**: **【X讨论口径放宽】** 分类时「X讨论」= X 平台动态、基准/榜单发布、公司研究博客与观点文、安全研究、开源工具集成；「研究关注」仅限有论文原文的 arXiv/顶会学术工作。禁止把非论文的公司发文塞进研究关注
+
+### [2026-09-13] #76
+- **file**: daily-ai-news-2026-09-12_13.md
+- **field**: body
+- **before**: 研究关注多条 body 以「arXiv 论文 Motus2 提出…」「arXiv 论文 WMRL 针对…」「arXiv 论文 Zero-WAM 把…」「arXiv 论文提出 environment-probing curation」开头
+- **after**: 用户统一改为「论文提出…/论文针对…/论文把…」；arXiv 仅保留在来源链接 [arXiv](URL)
+- **reason**: arXiv 是预印本托管平台而非作者或出处属性，作 body 主语既冗余又不具体；该问题已连续多期出现，用户再次手动修正
+- **rule_hint**: **【arXiv 措辞】** 论文类条目 body 用「论文提出/论文指出」或具体团队/机构名（如 Intern-NCP 团队、商汤）开头，禁止「arXiv 论文」作主语或定语；「arXiv」只出现在来源链接标签 [arXiv](URL)。与 #75「研究关注仅限有论文原文的学术工作」配套
