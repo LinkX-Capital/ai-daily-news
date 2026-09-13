@@ -6,9 +6,9 @@
 
 ## 要点汇总
 
-- 产业动态：Garry Tan：监管不应插手蒸馏，美国开源实验室也应被允许“正当蒸馏”前沿模型; OpenAI 因 Astra 需求暂停 200 美元 Pro 套餐新订阅; Cursor 推出 Projects：协调智能体指挥数千子智能体，重度用户合并 PR 量达六倍; Moonshot AI 目标年底 20 亿美元年化收入，K3 在 OpenRouter 日生成 token 达 3000 亿; LangChain 发布 LangSmith Engine：用 agent 自动从生产 trace 发现问题并提交修复 PR; Simile 行为模拟帮 Itaú 把五周研究周期压缩到四天，获 ESOMAR 拉美 AI 奖; The Information：NVIDIA 据传讨论在 Anthropic IPO 中认购最多 100 亿美元; Altman：OpenAI 今年上市“并不合适”，不会在 2026 年完成 IPO; Max Insights：Physical AI 数据下一战场是“经验密度”，而不只是小时数
+- 产业动态：Garry Tan：监管不应插手蒸馏，美国开源实验室也应被允许“正当蒸馏”前沿模型; OpenAI 因 Astra 需求暂停 200 美元 Pro 套餐新订阅; Cursor 推出 Projects：协调智能体指挥数千子智能体，重度用户合并 PR 量达六倍; Moonshot AI 目标年底 20 亿美元年化收入，K3 在 OpenRouter 日生成 token 达 3000 亿; LangChain 发布 LangSmith Engine：用 agent 自动从生产 trace 发现问题并提交修复 PR; Simile 行为模拟帮 Itaú 把五周研究周期压缩到四天，获 ESOMAR 拉美 AI 奖; Max Insights：Physical AI 数据下一战场是“经验密度”，而不只是小时数
 - 算力追踪：SemiAnalysis：GB300 NVL72 在 Agent 推理上每美元性能可达 Hopper 的 13 倍
-- 初创&融资：机器人训练数据公司 Mecka AI 据传接近以约 5 亿美元估值完成 Sequoia 领投新轮
+- 初创&融资：机器人训练数据公司 Mecka AI 据传接近以约 5 亿美元估值完成 Sequoia 领投新轮; NVIDIA 据传讨论在 Anthropic IPO 中认购最多 100 亿美元; Altman：OpenAI 今年上市“并不合适”，不会在 2026 年完成 IPO
 - 研究关注：NCP-ArchPreview：用“下一概念预测”训练 8.9B 潜空间语言模型，51.3% token 追平 OLMo-3-7B 预训练损失; Motus2：策略/模拟器/评估器共享权重的自进化灵巧操作世界模型; WMRL：用世界模型替代真实执行做 agent RL，训练提速 3-4 倍; Zero-WAM：人类视频作为上下文任务描述，机器人零样本执行未见任务成功率 47%; Grounding Agent Memory：给记忆管理 agent 加环境探查权限，CLBench 通过率 39%→73%
 - X讨论：25 位菲尔兹奖得主在 mathandai.org 联署声明：AI 把数学当刷题基准与数学界目标严重错位; Dario Amodei 发文主张给前沿模型降速：Anthropic 承诺引入常驻第三方评估者，Altman 回应跟进; Artificial Analysis 首次将多模型编码 Agent Devin Fusion 纳入编码 Agent 指数; Cognition 在 Devin CLI 中推出 Fusion，可在规划与执行阶段分别选用不同模型; SemiAnalysis：DeepSeek V4.1 Flash 在 AMD 上每美元性能较 NVIDIA H200 最差达 14.8 倍
 
@@ -18,7 +18,7 @@
 
 ### 产业动态
 **Garry Tan：监管不应插手蒸馏，美国开源实验室也应被允许“正当蒸馏”前沿模型**
-- Y Combinator CEO Garry Tan 在接受 CNBC 采访谈及中国实验室蒸馏美国前沿模型时表示监管者应“什么都不做”，并主张建立“美国蒸馏机制”：让美国本土的开源权重（open-weight）实验室从前沿实验室“走正门”蒸馏，为美国提供不依赖中国的开源权重选项。他解释了两个理由：模型厂商通过 API 服务条款限制客户对输出的使用属于过度控制，且前沿实验室训练时也未经许可大量摄取受版权保护的人类知识，“基于广泛公开数据训练的智能应更接近公共产品，而不是锁在限制性条款后面”。他同时强调真正的前沿推进仍需可投资、可持续，而他眼中的末日场景是“只剩一家垄断公司拿走全部 AI 能力”。这一立场与 Anthropic 本周发布的第二份“非法蒸馏”报告及 Dario Amodei 呼吁监管打击蒸馏的态度形成直接对立。
+- Y Combinator CEO Garry Tan 在接受 CNBC 采访谈及中国实验室蒸馏美国前沿模型时表示监管者应“什么都不做”，并主张建立“美国蒸馏机制”：让美国本土的开源权重（open-weight）实验室从前沿实验室“走正门”蒸馏，为美国提供不依赖中国的开源权重选项。他解释了两个理由：模型厂商通过 API 服务条款限制客户对输出的使用属于过度控制，且前沿实验室训练时也未经许可大量摄取受版权保护的人类知识，“基于广泛公开数据训练的智能应更接近公共产品，而不是锁在限制性条款后面”。他同时强调真正的前沿推进仍需可投资、可持续，而他眼中的末日场景是“只剩一家垄断公司拿走全部 AI 能力”。
   > 💡 蒸馏争议首次出现硅谷核心孵化器与前沿实验室的公开路线分歧：Anthropic 要产权化模型输出，Tan 要把“用 API 输出训练”正当化为公共品获取——这场博弈的走向将直接决定开源生态能否持续从前沿模型受益，也考验监管在 ToS 与公共利益之间如何划线。
    - 来源: [TechCrunch](https://techcrunch.com/2026/09/11/y-combinators-garry-tan-wants-u-s-open-weight-ai-labs-to-distill-frontier-models-too/)
 
@@ -47,16 +47,6 @@
   > 💡 AI 模拟消费者研究从“听起来像”走向“可验证”是关键分水岭——Simile 用留出数据验证+置信度模型回答了 LLM 模拟人群最难的自证问题；强监管的银行率先采用并获行业方法论奖项，说明模拟研究正在进入正规研究采购流程，而非停留在营销叙事。
    - 来源: [Simile Blog](https://www.simile.com/blog/itau-at-esomar) | [@percyliang](https://x.com/percyliang/status/2098550578096087449)
 
-**NVIDIA 据传讨论在 Anthropic IPO 中认购最多 100 亿美元**
-- 据报道，NVIDIA 已就 Anthropic 即将进行的 IPO 进行投资讨论，IPO 募资规模可能高达 1000 亿美元，对应估值约 2 万亿美元。报道称 NVIDIA 可能按 IPO 价格认购最多 100 亿美元的 Anthropic 股份。
-  > 💡 若 NVIDIA 大额参与 Anthropic IPO，意味着芯片厂与前沿模型公司的资本绑定进一步加深，既可锁定大客户的算力需求，也使 NVIDIA 在模型路线上的中立性面临更多市场质疑。
-   - 来源: [The Information](https://www.theinformation.com/briefings/nvidia-may-invest-10-billion-anthropics-ipo)
-
-**Altman：OpenAI 今年上市“并不合适”，不会在 2026 年完成 IPO**
-- OpenAI CEO Sam Altman 在接受《财富》主编 Alyson Shontell 采访时表示，鉴于 AI 安全领域的种种事态，目前并非上市良机。Altman 称 OpenAI 不急于 IPO，会在业务准备就绪且社会时机合适时再推进，并明确回应“不会是 2026 年”。他同时强调公司“还有很多事情要做”。
-  > 💡 Altman 的表态叠加此前《纽约时报》关于 IPO 已悄悄递表、银行与律师团队目标 2026 年三或四季度的报道，意味着 OpenAI 实际上已从内部目标时间表后撤，2027 年成为更现实窗口；这一节奏也会影响其算力扩张与人才激励的工具选择。
-   - 来源: [TechCrunch](https://techcrunch.com/2026/09/12/openais-sam-altman-says-it-would-be-ill-advised-to-go-public-in-2026)
-
 **Max Insights：Physical AI 数据下一战场是“经验密度”，而不只是小时数**
 - 数据服务商 Max Insights 发文分析 Physical AI 数据 scaling：Dyna Robotics 的 Dyna-2 在 1K→1M 小时人类第一人称视频上预测性能单调提升且跨越具身鸿沟，但消融显示仅动作标签训练没有同样的跨具身 scaling，加入视频预测与人类视频共训练才是关键；Genesis AI 的 GENE-26.5 则用第三人称视频+第一人称视频+仪器手套混合数据引擎保留手部状态、接触与触觉信息，许多困难技能在**不到 1 小时**任务专属机器人数据上达到自主执行。文章提出双轴框架：Experience Scale（收集多少小时）× Experience Density（每小时含多少可学习物理信息），并称具身数据是“制造业问题”——良率关卡层层叠加，10M 小时时代的核心 KPI 应转向“每美元有效物理经验增速”。
   > 💡 具身数据竞争从“堆小时”进入“堆信息密度”的叙事切换，与 Mecka AI 被抢投、Motus2 的双目+触觉升级互为印证；文章直言“边际信息增益”和“状态覆盖度”两个指标尚无公认定义——谁先定义它们，谁可能拿到下一代具身数据采购的定价权。
@@ -73,6 +63,16 @@
 - 机器人训练数据公司 Mecka AI 正接近完成由 Sequoia Capital 领投的新一轮融资，估值约 5 亿美元，融资规模和具体条款尚未最终确定。Mecka 主营业务是通过体感和智能手机收集并分析人类动作数据，用于人形机器人等通用机器人训练，名称源自日语中“mecha”。四名 2024 年联合创始人 Josh Gao、Mogen Cheng、Jason Chong 与 Duy Nguyen 均无机器人背景；公司在三个月前刚宣布完成 6000 万美元 Series A，由 Framework Ventures 领投，Menlo Ventures、SV Angel 与 Kindred Ventures 跟投。
   > 💡 继 Scale AI、Mercor、Surge 等围绕 LLM 训练数据崛起的公司之后，专门面向 Physical AI 的人体动作数据正在被快速资本化；Sequoia 在三个月内连续加注同一标的，反映出资方对具身智能数据瓶颈这一叙事的押注正在加码。
    - 来源: [TechCrunch](https://techcrunch.com/2026/09/11/mecka-ai-nears-500m-valuation-in-sequoia-led-deal-amid-rush-for-robot-training-data)
+
+**NVIDIA 据传讨论在 Anthropic IPO 中认购最多 100 亿美元**
+- 据报道，NVIDIA 已就 Anthropic 即将进行的 IPO 进行投资讨论，IPO 募资规模可能高达 1000 亿美元，对应估值约 2 万亿美元。报道称 NVIDIA 可能按 IPO 价格认购最多 100 亿美元的 Anthropic 股份。
+  > 💡 若 NVIDIA 大额参与 Anthropic IPO，意味着芯片厂与前沿模型公司的资本绑定进一步加深，既可锁定大客户的算力需求，也使 NVIDIA 在模型路线上的中立性面临更多市场质疑。
+   - 来源: [The Information](https://www.theinformation.com/briefings/nvidia-may-invest-10-billion-anthropics-ipo)
+
+**Altman：OpenAI 今年上市“并不合适”，不会在 2026 年完成 IPO**
+- OpenAI CEO Sam Altman 在接受《财富》主编 Alyson Shontell 采访时表示，鉴于 AI 安全领域的种种事态，目前并非上市良机。Altman 称 OpenAI 不急于 IPO，会在业务准备就绪且社会时机合适时再推进，并明确回应“不会是 2026 年”。他同时强调公司“还有很多事情要做”。
+  > 💡 Altman 的表态叠加此前《纽约时报》关于 IPO 已悄悄递表、银行与律师团队目标 2026 年三或四季度的报道，意味着 OpenAI 实际上已从内部目标时间表后撤，2027 年成为更现实窗口；这一节奏也会影响其算力扩张与人才激励的工具选择。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/09/12/openais-sam-altman-says-it-would-be-ill-advised-to-go-public-in-2026)
 
 ### 研究关注
 **NCP-ArchPreview：用“下一概念预测”训练 8.9B 潜空间语言模型，51.3% token 追平 OLMo-3-7B 预训练损失**
