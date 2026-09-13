@@ -9,7 +9,7 @@
 - 产业动态：Garry Tan：监管不应插手蒸馏，美国开源实验室也应被允许“正当蒸馏”前沿模型; OpenAI 因 Astra 需求暂停 200 美元 Pro 套餐新订阅; Cursor 推出 Projects：协调智能体指挥数千子智能体，重度用户合并 PR 量达六倍; Moonshot AI 目标年底 20 亿美元年化收入，K3 在 OpenRouter 日生成 token 达 3000 亿; LangChain 发布 LangSmith Engine：用 agent 自动从生产 trace 发现问题并提交修复 PR; Simile 行为模拟帮 Itaú 把五周研究周期压缩到四天，获 ESOMAR 拉美 AI 奖; The Information：NVIDIA 据传讨论在 Anthropic IPO 中认购最多 100 亿美元; Altman：OpenAI 今年上市“并不合适”，不会在 2026 年完成 IPO
 - 算力追踪：SemiAnalysis：GB300 NVL72 在 Agent 推理上每美元性能可达 Hopper 的 13 倍; SemiAnalysis：DeepSeek V4.1 Flash 在 AMD 上每美元性能较 NVIDIA H200 最差达 14.8 倍
 - 初创&融资：机器人训练数据公司 Mecka AI 据传接近以约 5 亿美元估值完成 Sequoia 领投新轮
-- 研究关注：Grounding Agent Memory：给记忆管理 agent 加环境探查权限，CLBench 通过率 39%→73%; Max Insights：Physical AI 数据下一战场是“经验密度”，而不只是小时数; WMRL：用世界模型替代真实执行做 agent RL，训练提速 3-4 倍; Zero-WAM：人类视频作为上下文任务描述，机器人零样本执行未见任务成功率 47%; Motus2：策略/模拟器/评估器共享权重的自进化灵巧操作世界模型; NCP-ArchPreview：用“下一概念预测”训练 8.9B 潜空间语言模型，51.3% token 追平 OLMo-3-7B 预训练损失; 商汤发布 SenseNova-U1.5：8B 原生统一多模态模型，无 encoder 无 VAE 覆盖理解与生成
+- 研究关注：NCP-ArchPreview：用“下一概念预测”训练 8.9B 潜空间语言模型，51.3% token 追平 OLMo-3-7B 预训练损失; Motus2：策略/模拟器/评估器共享权重的自进化灵巧操作世界模型; WMRL：用世界模型替代真实执行做 agent RL，训练提速 3-4 倍; Zero-WAM：人类视频作为上下文任务描述，机器人零样本执行未见任务成功率 47%; 商汤发布 SenseNova-U1.5：8B 原生统一多模态模型，无 encoder 无 VAE 覆盖理解与生成; Grounding Agent Memory：给记忆管理 agent 加环境探查权限，CLBench 通过率 39%→73%; Max Insights：Physical AI 数据下一战场是“经验密度”，而不只是小时数
 - X讨论：25 位菲尔兹奖得主在 mathandai.org 联署声明：AI 把数学当刷题基准与数学界目标严重错位; Dario Amodei 发文主张给前沿模型降速：Anthropic 承诺引入常驻第三方评估者，Altman 回应跟进; Artificial Analysis 首次将多模型编码 Agent Devin Fusion 纳入编码 Agent 指数; Cognition 在 Devin CLI 中推出 Fusion，可在规划与执行阶段分别选用不同模型
 
 ---
@@ -57,11 +57,6 @@
   > 💡 Altman 的表态叠加此前《纽约时报》关于 IPO 已悄悄递表、银行与律师团队目标 2026 年三或四季度的报道，意味着 OpenAI 实际上已从内部目标时间表后撤，2027 年成为更现实窗口；这一节奏也会影响其算力扩张与人才激励的工具选择。
    - 来源: [TechCrunch](https://techcrunch.com/2026/09/12/openais-sam-altman-says-it-would-be-ill-advised-to-go-public-in-2026)
 
-**Max Insights：Physical AI 数据下一战场是“经验密度”，而不只是小时数**
-- 数据服务商 Max Insights 发文分析 Physical AI 数据 scaling：Dyna Robotics 的 Dyna-2 在 1K→1M 小时人类第一人称视频上预测性能单调提升且跨越具身鸿沟，但消融显示仅动作标签训练没有同样的跨具身 scaling，加入视频预测与人类视频共训练才是关键；Genesis AI 的 GENE-26.5 从另一头突破，用第三人称视频+第一人称视频+仪器手套混合数据引擎保留手部状态、接触与触觉信息，报告称许多困难技能在**不到 1 小时**任务专属机器人数据上达到自主执行。文章提出双轴框架：Experience Scale（收集多少小时）× Experience Density（每小时含多少可学习物理信息），并提出具身数据是“制造业问题”——四个 95% 良率关卡端到端只剩 81%，10M 小时时代的核心 KPI 应从“收集多少小时”转向“每美元有效物理经验增速”。
-  > 💡 具身数据竞争从“堆小时”进入“堆信息密度”的叙事切换，与 Mecka AI 被抢投、Motus2 的双目+触觉升级互为印证；文章直言“边际信息增益”和“状态覆盖度”两个指标尚无公认定义——谁先定义它们，谁可能拿到下一代具身数据采购的定价权。
-   - 来源: [Max Insights](https://www.maxinsights.ai/blog/Beyond_1M_Hours)
-
 ### 算力追踪
 **SemiAnalysis：DeepSeek V4.1 Flash 在 AMD 上每美元性能较 NVIDIA H200 最差达 14.8 倍**
 - SemiAnalysis 在 X 发文指出，CUDA 版 vLLM 上线 DeepSeek V4.1 Flash 仅两天后，AMD 才公开放出对应的运行镜像，AMD 平台在功能上开箱即用，但每美元性能相比 H200 最差落后约 14.8 倍，相比 B200/B300 最差落后约 42 倍。SemiAnalysis 将这一差距归因为 NVIDIA 与 vLLM 等软件栈的深度协作所构筑的 CUDA 生态护城河。
@@ -80,10 +75,15 @@
    - 来源: [TechCrunch](https://techcrunch.com/2026/09/11/mecka-ai-nears-500m-valuation-in-sequoia-led-deal-amid-rush-for-robot-training-data)
 
 ### 研究关注
-**Grounding Agent Memory：给记忆管理 agent 加环境探查权限，CLBench 通过率 39%→73%**
-- arXiv 论文提出 environment-probing curation：企业级 agent 平台正在引入持久记忆帮助长程 agent 跨会话积累经验，但只能看已完成轨迹的任务后 curator agent 容易保留错误、过度泛化或知识过时。该工作给异步 curator agent 配备最小权限、只读的环境工具来校验、限定和刷新候选记忆，无需重训模型，也不改动任务 agent、检索器和生产写入权限。在基于 GitHub Copilot SDK 搭建的生产级 harness 上，CLBench 数据库探索通过率从 39% 提升到 **73%**，pass-discounted reward 从 8.60 升到 22.60，同时每问题查询从 8.8 降到 4.7、任务 agent 成本从 $3.38 降到 **$1.68**；在 6 个 APEX 咨询任务世界里 18 组记忆 vs 基线对比全部为正，任务 agent 工具调用下降 16-75%，且在 Sonnet 4.6 与 Opus 4.7 上均有效。
-  > 💡 agent 记忆研究的重心正从“存什么”转向“如何验证存的东西仍然为真”——用环境实时探查替代纯轨迹自证，对正在上线持久记忆的 Copilot 类产品是可直接落地的部署级方案，也和 LangSmith Engine 用生产 trace 闭环运维是同一问题的两个切面。
-   - 来源: [arXiv](https://arxiv.org/abs/2609.11060)
+**NCP-ArchPreview：用“下一概念预测”训练 8.9B 潜空间语言模型，51.3% token 追平 OLMo-3-7B 预训练损失**
+- Intern-NCP 团队发布 NCP-ArchPreview 技术报告，将自回归预训练从 next-token prediction（NTP）扩展为同时学习 Next Concept Prediction（NCP）：从隐藏状态直接构建乘积量化（product-quantized）概念词表，由独立 Concept Module 预测跨多 token 的离散概念并回馈到 token 层引导后续生成，NTP 与 NCP 端到端联合训练。规模 8.9B 参数、5.73T token（Dolma-3 数据集），是迄今最大的潜空间语言模型验证：仅消耗 **51.3%** 训练 token 即达到 OLMo-3-7B 最终预训练损失，下游宏平均反超 **2.45 分**（GSM8K +5.99）；仅用 **85%** 算力即可逼近参数对齐的 8.9B 基线。预训练后潜空间仍有复用价值：只更新 1700 万参数的 VQ 模块即可做轻量领域适配，概念表示注入 DFlash2 投机解码 drafter 将平均接受长度提升 4.17%。
+  > 💡 在“下一个 token”之外显式加入“下一个概念”目标，首次在 9B 量级拿到可复现的训练效率收益，方向上与 LeCun 式“预测抽象表示”的世界模型思路殊途同归；同等损失省一半 token 对算力受限团队是直接的训练经济学信号。
+   - 来源: [arXiv](https://arxiv.org/abs/2609.10715)
+
+**Motus2：策略/模拟器/评估器共享权重的自进化灵巧操作世界模型**
+- arXiv 论文 Motus2 提出面向灵巧操作（dexterous manipulation）的自进化通用世界模型：单一共享权重模型暴露三个控制接口——**策略（world-action model）**提出候选动作块、**模拟器（action-conditioned world model）**预测视觉后果、**评估器（value model）**打分，三者耦合形成闭环的决策-学习循环用于策略改进。数据侧从大规模单目第一人称数据升级到同步双目第一人称数据再做机器人域适配，并加入触觉反馈实现接触感知控制，最终部署在带立体视觉、双臂、双灵巧手和触觉传感的仿生平台上；失败和次优交互不再是无用副产物，而是动力学建模与价值学习的证据。论文 8 月 31 日提交，9 月 10 日更新 v2。
+  > 💡 相比“世界模型+动作头”的常见做法，Motus2 把“行动-预测-评估”压进同一个模型形成自提升闭环，呼应了具身智能从开环演示模仿转向闭环自我改进的趋势；失败数据变成训练养料的设计，对数据成本高昂的机器人训练尤其关键。
+   - 来源: [arXiv](https://arxiv.org/abs/2608.30237)
 
 **WMRL：用世界模型替代真实执行做 agent RL，训练提速 3-4 倍，4B/9B 超 48B/120B 开源 agent**
 - arXiv 论文 WMRL（World Model RL）针对自动研究（AutoResearch）agent 的 RL 扩展瓶颈：轨迹中 agent 生成可通过 batching 共享算力，而每次环境执行独占沙箱和真实机时，随轨迹变长环境执行会主导训练成本。WMRL 用世界模型替代环境执行移除瓶颈，并针对世界模型奖励的偏差与噪声设计 Online Debiasing 和 Inverse-Variance Denoising 两项缓解，理论上证明二者严格改善收敛保证。实验中 WMRL 在不同规模的多种任务上加速训练 **3-4 倍**且超过标准 RL 基线；后训练的 4B/9B agent 在 held-out 基准上超过 48B/120B 的更大开源权重 agent，方法还迁移到具身 VLA 策略后训练。
@@ -95,20 +95,21 @@
   > 💡 “给机器人看一段人类示范视频就能干活”把任务泛化问题转化为任务规格问题——与 Motus2 的 world-action model 相互印证：世界模型正在成为人与机器人之间的通用翻译层，动作不再是必须重新训练的接口。
    - 来源: [arXiv](https://arxiv.org/abs/2608.26103)
 
-**Motus2：策略/模拟器/评估器共享权重的自进化灵巧操作世界模型**
-- arXiv 论文 Motus2 提出面向灵巧操作（dexterous manipulation）的自进化通用世界模型：单一共享权重模型暴露三个控制接口——**策略（world-action model）**提出候选动作块、**模拟器（action-conditioned world model）**预测视觉后果、**评估器（value model）**打分，三者耦合形成闭环的决策-学习循环用于策略改进。数据侧从大规模单目第一人称数据升级到同步双目第一人称数据再做机器人域适配，并加入触觉反馈实现接触感知控制，最终部署在带立体视觉、双臂、双灵巧手和触觉传感的仿生平台上；失败和次优交互不再是无用副产物，而是动力学建模与价值学习的证据。论文 8 月 31 日提交，9 月 10 日更新 v2。
-  > 💡 相比“世界模型+动作头”的常见做法，Motus2 把“行动-预测-评估”压进同一个模型形成自提升闭环，呼应了具身智能从开环演示模仿转向闭环自我改进的趋势；失败数据变成训练养料的设计，对数据成本高昂的机器人训练尤其关键。
-   - 来源: [arXiv](https://arxiv.org/abs/2608.30237)
-
-**NCP-ArchPreview：用“下一概念预测”训练 8.9B 潜空间语言模型，51.3% token 追平 OLMo-3-7B 预训练损失**
-- Intern-NCP 团队发布 NCP-ArchPreview 技术报告，将自回归预训练从 next-token prediction（NTP）扩展为同时学习 Next Concept Prediction（NCP）：从隐藏状态直接构建乘积量化（product-quantized）概念词表，由独立 Concept Module 预测跨多 token 的离散概念并回馈到 token 层引导后续生成，NTP 与 NCP 端到端联合训练。规模 8.9B 参数、5.73T token（Dolma-3 数据集），是迄今最大的潜空间语言模型验证：仅消耗 **51.3%** 训练 token 即达到 OLMo-3-7B 最终预训练损失，下游宏平均反超 **2.45 分**（GSM8K +5.99）；仅用 **85%** 算力即可逼近参数对齐的 8.9B 基线。预训练后潜空间仍有复用价值：只更新 1700 万参数的 VQ 模块即可做轻量领域适配，概念表示注入 DFlash2 投机解码 drafter 将平均接受长度提升 4.17%。
-  > 💡 在“下一个 token”之外显式加入“下一个概念”目标，首次在 9B 量级拿到可复现的训练效率收益，方向上与 LeCun 式“预测抽象表示”的世界模型思路殊途同归；同等损失省一半 token 对算力受限团队是直接的训练经济学信号。
-   - 来源: [arXiv](https://arxiv.org/abs/2609.10715)
-
 **商汤 SenseNova-U1.5：8B 原生统一多模态模型，无 encoder 无 VAE 覆盖理解与生成**
 - 商汤 SenseNova-U1.5，**8B MoT（Mixture-of-Transformers）**原生统一多模态模型，在无 encoder、无 VAE 的架构内同时完成视觉理解、推理与生成，支持最高 **4K** 原生分辨率。训练侧通过空间连贯的 patch 重建强化视觉接口，用精选生成/编辑数据、结构化 prompt 增强扩展训练；后训练针对视觉美学、中英双语文本渲染、信息图生成、图像编辑分别优化专家模型，再经多专家 on-policy 蒸馏整合。评测显示其在图像保真、文本渲染、复杂构图、多参考编辑和交错生成上全面进步，且在生成数据中结构化格式曝光有限的情况下，泛化到长而复杂的结构化视觉指令——表明多模态理解能力可迁移到视觉规划与创作。训练代码（SFT/RL/on-policy 蒸馏）将开源。
   > 💡 生成与理解统一进单一 backbone 且砍掉 encoder/VAE 两个“胶水”组件，是对原生多模态路线的又一次加注；配合训练代码开源，中小团队复现统一多模态的门槛在快速下降。
    - 来源: [arXiv](https://arxiv.org/abs/2609.11929)
+
+**Grounding Agent Memory：给记忆管理 agent 加环境探查权限，CLBench 通过率 39%→73%**
+- arXiv 论文提出 environment-probing curation：企业级 agent 平台正在引入持久记忆帮助长程 agent 跨会话积累经验，但只能看已完成轨迹的任务后 curator agent 容易保留错误、过度泛化或知识过时。该工作给异步 curator agent 配备最小权限、只读的环境工具来校验、限定和刷新候选记忆，无需重训模型，也不改动任务 agent、检索器和生产写入权限。在基于 GitHub Copilot SDK 搭建的生产级 harness 上，CLBench 数据库探索通过率从 39% 提升到 **73%**，pass-discounted reward 从 8.60 升到 22.60，同时每问题查询从 8.8 降到 4.7、任务 agent 成本从 $3.38 降到 **$1.68**；在 6 个 APEX 咨询任务世界里 18 组记忆 vs 基线对比全部为正，任务 agent 工具调用下降 16-75%，且在 Sonnet 4.6 与 Opus 4.7 上均有效。
+  > 💡 agent 记忆研究的重心正从“存什么”转向“如何验证存的东西仍然为真”——用环境实时探查替代纯轨迹自证，对正在上线持久记忆的 Copilot 类产品是可直接落地的部署级方案，也和 LangSmith Engine 用生产 trace 闭环运维是同一问题的两个切面。
+   - 来源: [arXiv](https://arxiv.org/abs/2609.11060)
+
+**Max Insights：Physical AI 数据下一战场是“经验密度”，而不只是小时数**
+- 数据服务商 Max Insights 发文分析 Physical AI 数据 scaling：Dyna Robotics 的 Dyna-2 在 1K→1M 小时人类第一人称视频上预测性能单调提升且跨越具身鸿沟，但消融显示仅动作标签训练没有同样的跨具身 scaling，加入视频预测与人类视频共训练才是关键；Genesis AI 的 GENE-26.5 从另一头突破，用第三人称视频+第一人称视频+仪器手套混合数据引擎保留手部状态、接触与触觉信息，报告称许多困难技能在**不到 1 小时**任务专属机器人数据上达到自主执行。文章提出双轴框架：Experience Scale（收集多少小时）× Experience Density（每小时含多少可学习物理信息），并提出具身数据是“制造业问题”——四个 95% 良率关卡端到端只剩 81%，10M 小时时代的核心 KPI 应从“收集多少小时”转向“每美元有效物理经验增速”。
+  > 💡 具身数据竞争从“堆小时”进入“堆信息密度”的叙事切换，与 Mecka AI 被抢投、Motus2 的双目+触觉升级互为印证；文章直言“边际信息增益”和“状态覆盖度”两个指标尚无公认定义——谁先定义它们，谁可能拿到下一代具身数据采购的定价权。
+   - 来源: [Max Insights](https://www.maxinsights.ai/blog/Beyond_1M_Hours)
+
 
 ### X讨论
 **25 位菲尔兹奖得主在 mathandai.org 联署声明：AI 把数学当刷题基准与数学界目标严重错位**
@@ -132,4 +133,4 @@
    - 来源: [@cognition](https://x.com/cognition/status/2098445562404024343)
 
 ---
-*更新时间: 2026-09-13 11:58*
+*更新时间: 2026-09-13 14:35*
