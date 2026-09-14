@@ -68,7 +68,7 @@
 **EXO Labs 创始人质疑专门化推理引擎扎堆发布：vLLM/sgLang 之外的碎片化有害**
 - EXO Labs 创始人 Alex Cheema 发文问“为什么大家突然都决定做专门化推理引擎？一个月内至少见了 5 个，vLLM/sgLang 哪里不好？现在确实能很快生成一个凑合的推理引擎，但为什么要碎片化生态？这是有害的”，获得 **18 万**浏览。SemiAnalysis 转发了 vLLM 核心贡献者尤凯超的反讽：“专门化推理引擎是 @thsottiaux 又给大家一次 reset 时用来消耗空闲 token 的业余项目——推理引擎远不止在特定硬件上跑模型，它是一个推理生态。”评论区 Jeffrey Emanuel 主张“谁想做什么就做，市场决定优劣”；Chaofan Shou 则指出 vllm-ascend 至今无法正确高效地服务 GLM5.2，暗示主流引擎覆盖并不完善。
   > 💡 争论实质是 LLM 让“写一个推理引擎”的门槛骤降后，生态应围绕少数通用引擎收敛、还是允许垂直引擎分化——硬件异构（如昇腾）与模型特异性恰是通用引擎今天的短板，碎片化可能是必要的中场而非纯损耗。
-   - 来源: [@alexocheema](https://x.com/alexocheema/status/2098920115681063284) | [@semianalysis_](https://x.com/SemiAnalysis_/status/2099008310259163291)
+   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2099008310259163291) | [@alexocheema](https://x.com/alexocheema/status/2098920115681063284)
 
 **OpenAI 展示 GPT-6 Astra 社区构建成果：从 3D 解剖到 UE 曼哈顿**
 - OpenAI 开发者账号汇总 GPT-6 Astra 发布后的社区构建案例：2234 个建模解剖部位的 3D 浏览器、Unreal Engine 复刻曼哈顿、六幅梵高画作变成 Three.js 可行走小镇、老火车涂鸦转成含 **3295 个可编辑对象**的 Blender 模型、Unity 混合现实空管模拟器、屏幕录像直接转为带动画的可交互界面、C++ 光线追踪器 Swift 移植到 iPhone GPU 等，覆盖 3D、游戏、AR 与工程移植多类工作流。
