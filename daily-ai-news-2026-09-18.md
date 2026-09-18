@@ -11,7 +11,7 @@
 - 算力追踪：华为提前 9 个月推出 AI 芯片 Ascend 960DT 对标 NVIDIA; SemiAnalysis：智能体流量已占整体推理流量超 70%
 - 初创&融资：Arcee 完成 B 轮融资估值超 10 亿美元：接棒 Llama 做美国开源前沿模型; Watney Robotics 完成 8000 万美元 A 轮融资; Polyphron：DeepMind 研究员离职创办"自主组织铸造厂"
 - 研究关注：LimiX-2：面向通用结构化数据智能的表格基础模型; PPO 的 Value Flattening 问题与 SP³O 修复; ScienceIDE：把全球科学代码库变成智能体可学习环境; Agora：用 Git 作为共享记忆的多智能体协同科研; LLM 智能体系统的集体失控：突变、传染与恢复的流行病学分析
-- X讨论：GLM 用自家 Infra Agent 优化自身推理系统：两周完成国产加速器迁移，吞吐提升 3.2 倍; MiMo 沉寂半年只研究一个问题："RL 能 scale 到多远"，MiMo-V2.6 RL 训练进行中; Cognition 实验：让 Devin 自己经营生意赚了 75 美元; SemiAnalysis：AMD MI355X 在智能体推理的 perf/TCO 上正逼近 GB300；Anthropic 介绍 Claude 优化 30 余个生物学开源模型推理; Humanoid 公司：机器人需要具备三维空间感知能力; Anthropic Institute 公开三类 AI 发展速度内部指标
+- X讨论：GLM 用自家 Infra Agent 优化自身推理系统：两周完成国产加速器迁移，吞吐提升 3.2 倍; MiMo 沉寂半年只研究一个问题："RL 能 scale 到多远"，MiMo-V2.6 RL 训练进行中; Cognition 实验：让 Devin 自己经营生意赚了 75 美元; SemiAnalysis：AMD MI355X 在智能体推理的 perf/TCO 上正逼近 GB300; Anthropic 介绍 Claude 优化 30 余个生物学开源模型推理; Humanoid 公司：机器人需要具备三维空间感知能力; Anthropic Institute 公开三类 AI 发展速度内部指标
 
 ---
 
