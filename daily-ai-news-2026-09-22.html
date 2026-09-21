@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>09月22日周二 AI前沿动态</title>
+    <style>
+        html { scroll-behavior: smooth; }
+
+        :root {
+            --bg: #ffffff;
+            --bg-page: #FAF9F6;
+            --text: #1a1a1a;
+            --text-2: #444444;
+            --text-3: #888888;
+            --border: #D9D8D6;
+            --note-bg: #f4eff5;
+            --pill-bg: #EFEDEA;
+            --purple: #660874;
+            --purple-80: #843990;
+            --purple-60: #a36bac;
+            --purple-40: #c29cc8;
+            --purple-20: #e8dce9;
+            --sidebar-w: 220px;
+            --max-w: 740px;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0a0a0a;
+                --bg-page: #0a0a0a;
+                --text: #e5e5e5;
+                --text-2: #aaaaaa;
+                --text-3: #666666;
+                --border: #1e1e1e;
+                --note-bg: #1a111b;
+                --pill-bg: #161412;
+                --purple: #b87cc4;
+                --purple-80: #a06aad;
+                --purple-60: #8a5d96;
+                --purple-40: #6e3f7a;
+                --purple-20: #3d1e45;
+            }
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Noto Sans SC", sans-serif;
+            background: var(--bg-page);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ========== Particle BG ========== */
+        #particle-bg {
+            position: fixed; top: 0; left: 0;
+            pointer-events: none;
+            z-index: 0;
+            -webkit-mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            -webkit-mask-composite: source-over;
+            mask-image:
+                linear-gradient(to right, black 5%, transparent 25%, transparent 75%, black 95%),
+                linear-gradient(to bottom, black 8%, transparent 30%, transparent 70%, black 92%);
+            mask-composite: add;
+        }
+
+        /* ========== Top Bar ========== */
+        .topbar {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        .topbar-brand {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--purple);
+            letter-spacing: -0.3px;
+        }
+        .topbar-tagline {
+            font-size: 11px;
+            color: var(--text-3);
+            letter-spacing: 0.2px;
+        }
+        .topbar-right {
+            display: flex;
+            gap: 8px;
+        }
+        .topbar-btn {
+            font-size: 12px;
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        .topbar-btn:hover {
+            color: var(--text);
+            border-color: var(--text-3);
+        }
+        .topbar-search {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 0 8px;
+            height: 28px;
+            margin-right: 4px;
+        }
+        .topbar-search input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 12px;
+            color: var(--text);
+            width: 100px;
+            font-family: inherit;
+        }
+        .topbar-search input::placeholder {
+            color: var(--text-3);
+        }
+        .topbar-search .search-icon {
+            font-size: 11px;
+            color: var(--text-3);
+            margin-right: 4px;
+        }
+
+        /* ========== Search Dropdown ========== */
+        .search-dropdown {
+            position: fixed;
+            top: 52px;
+            right: 32px;
+            width: 440px;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 200;
+        }
+        .search-dropdown.active { display: block; }
+        .search-empty {
+            padding: 20px 16px;
+            font-size: 13px;
+            color: var(--text-3);
+            text-align: center;
+        }
+        .search-result {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .search-result:last-child { border-bottom: none; }
+        .search-result:hover { background: var(--purple-20); }
+        .search-result-date {
+            font-size: 11px;
+            color: var(--text-3);
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .search-result-title {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .search-result-cat {
+            font-size: 11px;
+            color: var(--purple-80);
+            flex-shrink: 0;
+        }
+
+        /* ========== Page wrapper ========== */
+        .page {
+            max-width: calc(var(--max-w) + var(--sidebar-w) + 80px);
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* --- Header (above layout) --- */
+        .header {
+            padding: 28px 0 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .header-date {
+            font-size: 12px;
+            color: var(--text-3);
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 8px;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1.4;
+            color: var(--text);
+        }
+        .header-sub {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-3);
+        }
+
+        /* --- Summary / Briefing (above layout) --- */
+        .summary {
+            padding: 20px 0 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sum-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+        }
+        .sum-cat {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .sum-cat:last-child {
+            margin-bottom: 0;
+        }
+        .sum-cat-name {
+            display: inline-block;
+            background: var(--purple-20);
+            color: var(--purple);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .sum-item {
+            background: var(--pill-bg);
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 13px;
+            color: var(--text-2);
+            line-height: 1.5;
+        }
+
+        /* ========== Layout (sidebar + content) ========== */
+        .layout {
+            display: flex;
+        }
+
+        /* ========== Sidebar ========== */
+        .sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            padding: 20px 16px 20px 0;
+            position: sticky;
+            top: 48px;
+            height: calc(100vh - 48px);
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+        .sidebar::-webkit-scrollbar { width: 0; }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-bottom: 16px;
+        }
+
+        .nav-details {
+            margin-bottom: 2px;
+        }
+        .nav-details summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }
+        .nav-details summary::-webkit-details-marker { display: none; }
+        .nav-details summary::before {
+            content: "\25BE";
+            font-size: 9px;
+            color: var(--text-3);
+            margin-right: 5px;
+            display: inline-block;
+            transition: transform 0.15s ease;
+        }
+        .nav-details:not([open]) summary::before {
+            transform: rotate(-90deg);
+        }
+        .nav-count {
+            font-size: 10px;
+            color: var(--text-3);
+            font-variant-numeric: tabular-nums;
+            margin-left: auto;
+            padding-left: 4px;
+        }
+
+        .nav-articles {
+            padding-left: 14px;
+            border-left: 1px solid var(--border);
+            margin: 2px 0 12px;
+        }
+        .nav-item {
+            display: block;
+            padding: 3px 8px;
+            font-size: 12px;
+            color: var(--text-3);
+            text-decoration: none;
+            line-height: 1.45;
+            transition: color 0.15s ease;
+        }
+        .nav-item:hover {
+            color: var(--text-2);
+        }
+        .nav-item.active {
+            color: var(--purple);
+            font-weight: 500;
+        }
+
+        /* ========== Main ========== */
+        .main {
+            flex: 1;
+            max-width: var(--max-w);
+            padding: 20px 0 0 24px;
+            min-width: 0;
+        }
+
+        /* --- Section --- */
+        .sec {
+            margin-bottom: 32px;
+            scroll-margin-top: 64px;
+        }
+        .sec-h {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        /* --- Card --- */
+        .card {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            scroll-margin-top: 64px;
+            cursor: default;
+        }
+        .card:last-child { border-bottom: none; }
+        .card-h {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: var(--text);
+            letter-spacing: -0.2px;
+            margin-bottom: 8px;
+        }
+
+        .ent {
+            font-weight: 500;
+        }
+
+        .card-body {
+            font-size: 14px;
+            line-height: 1.75;
+            color: var(--text-2);
+        }
+        .card-body strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .card-note {
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: var(--note-bg);
+            font-size: 13px;
+            line-height: 1.75;
+            color: var(--text-2);
+            border-radius: 2px;
+        }
+        .note-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--purple-80);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 6px;
+        }
+
+        .card-src {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-3);
+        }
+        .card-src a {
+            color: var(--text-3);
+            text-decoration: none;
+        }
+        .card-src a:hover {
+            color: var(--text);
+        }
+
+        /* ========== Bottom (independent) ========== */
+        .bottom {
+            border-top: 1px solid var(--border);
+            margin-top: 16px;
+            padding: 20px 0 32px;
+        }
+
+        /* --- Issue Navigation --- */
+        .issue-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .issue-nav a {
+            font-size: 13px;
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            color: var(--text-3);
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        .issue-nav a:hover {
+            color: var(--text);
+            border-color: var(--text-3);
+        }
+
+        /* --- Footer --- */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+        .footer-copy {
+            font-size: 12px;
+            color: var(--text-3);
+        }
+        .footer-top {
+            font-size: 12px;
+            color: var(--text-3);
+            text-decoration: none;
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            transition: all 0.15s ease;
+        }
+        .footer-top:hover {
+            color: var(--text);
+            border-color: var(--text-3);
+        }
+
+        /* ========== Mobile TOC ========== */
+        .mob-toc {
+            display: none;
+            overflow-x: auto;
+            gap: 0;
+            padding: 0 16px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 48px; z-index: 50;
+            height: 40px;
+            align-items: center;
+        }
+        .mob-toc::-webkit-scrollbar { display: none; }
+        .mob-toc a {
+            flex-shrink: 0;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-3);
+            white-space: nowrap;
+        }
+        .mob-toc a:hover { color: var(--text); }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .mob-toc { display: flex !important; }
+            .main {
+                max-width: 100%;
+                padding: 24px 20px 48px;
+            }
+            .header { padding: 20px 0 16px; }
+            .header h1 { font-size: 20px; }
+        }
+        @media (max-width: 480px) {
+            .main { padding: 20px 16px 40px; }
+            .header { padding: 16px 0 12px; }
+            .header h1 { font-size: 18px; }
+            .card-h { font-size: 15px; }
+            .topbar-tagline { display: none; }
+            .topbar-search { display: none; }
+            .search-dropdown { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-bg"></canvas>
+    <!-- Top bar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <span class="topbar-brand">AI Daily News</span>
+            <span class="topbar-tagline">Keep Informed with Link-X Capital</span>
+        </div>
+        <div class="topbar-right">
+            <div class="topbar-search">
+                <span class="search-icon">&#128269;</span>
+                <input type="text" id="search" placeholder="搜索新闻..." autocomplete="off">
+            </div>
+            <a href="index.html" class="topbar-btn">往期动态</a>
+            <a href="topics.html" class="topbar-btn">专题报告</a>
+        </div>
+    </div>
+
+    <div class="search-dropdown" id="search-dropdown"></div>
+
+    <!-- Mobile TOC -->
+    <div class="mob-toc" id="mob-toc">
+        <a href="#s-模型前沿">模型前沿</a><a href="#s-产业动态">产业动态</a><a href="#s-算力追踪">算力追踪</a><a href="#s-初创and融资">初创&融资</a><a href="#s-研究关注">研究关注</a><a href="#s-X讨论">X讨论</a>
+    </div>
+
+    <!-- Page wrapper: header + briefing above, sidebar + content below -->
+    <div class="page">
+        <header class="header">
+            <div class="header-date">2026-09-22</div>
+            <h1>Artificial Analysis：Grok 4.7 在智能指数上拿到 46 分</h1>
+            <div class="header-sub">15 stories, 24h window</div>
+        </header>
+
+        
+            <div class="summary">
+                <div class="sum-label">Briefing</div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">模型前沿</span>
+                    <span class="sum-item">Artificial Analysis：Grok 4.7 在智能指数上拿到 46 分</span>
+                    <span class="sum-item">OpenRouter 上线小米 MiMo-V2.6 系列三款模型</span>
+                    <span class="sum-item">SGLang-Diffusion 首日接入 Qwen-Image-2.1，支持文生图与多图编辑</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">产业动态</span>
+                    <span class="sum-item">DeepSeek 据传押注华为芯片，目标今年四季度交付训练芯片</span>
+                    <span class="sum-item">阿里任命资深 AI 研究员刘大一恒为 Qwen 大模型团队负责人</span>
+                    <span class="sum-item">宇树发布 22 自由度仿生灵巧手 Unitree Dex5-S，起售价 6.5 千美元</span>
+                    <span class="sum-item">三星 C&T 向 Kairos Power 注资最高 1 亿美元，为 Google 建造 50 兆瓦示范堆</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">算力追踪</span>
+                    <span class="sum-item">SemiAnalysis：将 Engram 卸载到 DRAM 在多款 GPU 上最高带来 50% 性能提升</span>
+                    <span class="sum-item">vLLM 在 GB300 NVL72 上跑通 Qwen3.8-2.4T，给出 PD 调优路径</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">初创&融资</span>
+                    <span class="sum-item">行云集成电路完成近 8 亿人民币融资，宁德时代溥泉资本领投</span>
+                    <span class="sum-item">AI 原生数据安全平台 Mind Security 完成 7200 万美元 B 轮融资</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">研究关注</span>
+                    <span class="sum-item">IntBMoE 通过块级条件化把参与、执行与稀疏路由参数化解耦</span>
+                    <span class="sum-item">OmniVBench 与 Omni-R2V Dataset 评测并支撑全参考视频生成</span>
+                    <span class="sum-item">Gricea 把对话式 AI 研究封装为可配置、可复用的科研工件</span>
+                </div>
+                <div class="sum-cat">
+                    <span class="sum-cat-name">X讨论</span>
+                    <span class="sum-item">NVIDIA：以“Physical AI Halos”框架应对规模化部署中的多层安全挑战</span>
+                </div>
+            </div>
+
+        <div class="layout">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <div class="nav-label">Contents</div>
+                
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>模型前沿</span>
+                <span class="nav-count">3</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-模型前沿-0" class="nav-item">Artificial Analysis：Grok 4.7 在智能指数上拿…</a>
+                <a href="#c-模型前沿-1" class="nav-item">OpenRouter 上线小米 MiMo-V2.6 系列三款模型</a>
+                <a href="#c-模型前沿-2" class="nav-item">SGLang-Diffusion 首日接入 Qwen-Image-2.1…</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>产业动态</span>
+                <span class="nav-count">4</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-产业动态-0" class="nav-item">DeepSeek 据传押注华为芯片，目标今年四季度交付训练芯片</a>
+                <a href="#c-产业动态-1" class="nav-item">阿里任命资深 AI 研究员刘大一恒为 Qwen 大模型团队负责人</a>
+                <a href="#c-产业动态-2" class="nav-item">宇树发布 22 自由度仿生灵巧手 Unitree Dex5-S，起售价 …</a>
+                <a href="#c-产业动态-3" class="nav-item">三星 C&T 向 Kairos Power 注资最高 1 亿美元，为 G…</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>算力追踪</span>
+                <span class="nav-count">2</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-算力追踪-0" class="nav-item">SemiAnalysis：将 Engram 卸载到 DRAM 在多款 G…</a>
+                <a href="#c-算力追踪-1" class="nav-item">vLLM 在 GB300 NVL72 上跑通 Qwen3.8-2.4T…</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>初创&融资</span>
+                <span class="nav-count">2</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-初创and融资-0" class="nav-item">行云集成电路完成近 8 亿人民币融资，宁德时代溥泉资本领投</a>
+                <a href="#c-初创and融资-1" class="nav-item">AI 原生数据安全平台 Mind Security 完成 7200 万美…</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>研究关注</span>
+                <span class="nav-count">3</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-研究关注-0" class="nav-item">IntBMoE 通过块级条件化把参与、执行与稀疏路由参数化解耦</a>
+                <a href="#c-研究关注-1" class="nav-item">OmniVBench 与 Omni-R2V Dataset 评测并支撑全…</a>
+                <a href="#c-研究关注-2" class="nav-item">Gricea 把对话式 AI 研究封装为可配置、可复用的科研工件</a>
+            </div>
+        </details>
+        <details class="nav-details" open>
+            <summary class="nav-section">
+                <span>X讨论</span>
+                <span class="nav-count">1</span>
+            </summary>
+            <div class="nav-articles">
+                <a href="#c-X讨论-0" class="nav-item">NVIDIA：以“Physical AI Halos”框架应对规模化部署…</a>
+            </div>
+        </details>
+            </nav>
+
+            <!-- Main content -->
+            <div class="main">
+                
+        <section class="sec" id="s-模型前沿">
+            <h2 class="sec-h">模型前沿</h2>
+        <article class="card" id="c-模型前沿-0">
+            <h3 class="card-h">Artificial Analysis：Grok 4.7 在智能指数上拿到 46 分</h3>
+            <p class="card-body">Artificial Analysis 在 X 上公布测评结果，Grok 4.7 在其 <span class="ent">Intel</span>ligence Index 上取得 46 分，使 <span class="ent">SpaceX</span>AI 进入全球前四大 AI 实验室行列。Grok 4.7 较 Grok 4.6 在 <span class="ent">Intel</span>ligence Index 上提升 2 分，在 agentic knowledge work 类任务上表现突出，并在 Coding Agent Index 上超越 <span class="ent">GPT-5</span>.6 Sol。测评在 xhigh reasoning effort 设置下进行。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> Grok 4.7 在第三方综合指数与编码代理榜单双双抬升，标志着 <span class="ent">SpaceX</span>AI 在头部模型梯队中站稳位置；智能指数分数追平第二梯队的同时，编码代理能力反超 <span class="ent">GPT-5</span>.6 Sol，体现出 <span class="ent">xAI</span> 在 agentic 评测维度上的加速布局。</div>
+            <div class="card-src"><a href="https://x.com/ArtificialAnlys/status/2102074898327932987" target="_blank">@artificialanlys</a></div>
+        </article>
+        <article class="card" id="c-模型前沿-1">
+            <h3 class="card-h">OpenRouter 上线小米 MiMo-V2.6 系列三款模型</h3>
+            <p class="card-body">OpenRouter 在 X 上宣布，小米 MiMo-V2.6 系列已在平台上线，共包含三款模型，分别为 1T+ 参数旗舰版、开源 MoE 版以及较旗舰版快约 10 倍的轻量版本。三款模型均支持文本、图像、视频和音频输入，上下文长度为 100 万 tokens。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 小米通过一次性提供旗舰、开源与速度三档模型，覆盖了从研究评测到高吞吐生产的不同需求场景；将多模态 1M 上下文直接搬上 OpenRouter，意味着国产模型在第三方推理路由层面的可获得性进一步提升。</div>
+            <div class="card-src"><a href="https://x.com/OpenRouter/status/2102142830034698644" target="_blank">@openrouter</a></div>
+        </article>
+        <article class="card" id="c-模型前沿-2">
+            <h3 class="card-h">SGLang-Diffusion 首日接入 <span class="ent">Qwen</span>-Image-2.1，支持文生图与多图编辑</h3>
+            <p class="card-body">阿里 <span class="ent">Qwen</span> 团队在官方账号宣布 SGLang-Diffusion 已于发布首日接入 <span class="ent">Qwen</span>-Image-2.1。该集成覆盖文生图、多图编辑以及透明 RGBA 输出等能力，并提示社区试用。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 新图像生成模型在发布当天即获得主流推理框架支持，意味着 <span class="ent">Qwen</span>-Image-2.1 与 vLLM-Omni 等生态的协同已经在同步铺开，开源图像模型的可部署门槛进一步降低。</div>
+            <div class="card-src"><a href="https://x.com/Alibaba_Qwen/status/2101866688425984233" target="_blank">@alibaba_qwen</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-产业动态">
+            <h2 class="sec-h">产业动态</h2>
+        <article class="card" id="c-产业动态-0">
+            <h3 class="card-h"><span class="ent">DeepSeek</span> 据传押注华为芯片，目标今年四季度交付训练芯片</h3>
+            <p class="card-body">The Information 援引两位知情人士报道，<span class="ent">DeepSeek</span> CEO 梁文锋在一次周日举行的闭门面对面会议上告诉投资者，公司的一项主要优先事项是在模型训练环节加大使用国产芯片。他预计华为最早将于今年第四季度开始向 <span class="ent">DeepSeek</span> 交付训练芯片。梁文锋发表上述言论之际，<span class="ent">DeepSeek</span> 正在敲定第二轮融资，目标是以 5000 亿元人民币估值募集 500 亿元人民币（约 75 亿美元）。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> <span class="ent">DeepSeek</span> 与华为的合作把美国先进芯片出口管制压力转化为国产 AI 算力联盟的推进动力；一旦华为训练芯片如期交付，将影响国内大模型公司在 <span class="ent">NVIDIA</span> 之外的训练路线选择与算力成本结构。</div>
+            <div class="card-src"><a href="https://www.theinformation.com/articles/deepseek-bets-big-huawei-chips-bypass-u-s-export-controls" target="_blank">The Information</a></div>
+        </article>
+        <article class="card" id="c-产业动态-1">
+            <h3 class="card-h">阿里任命资深 AI 研究员刘大一恒为 <span class="ent">Qwen</span> 大模型团队负责人</h3>
+            <p class="card-body">据两名知情员工透露，阿里集团已任命资深 AI 研究员刘大一恒（Dayiheng Liu）为 <span class="ent">Qwen</span> 大语言模型团队负责人。此次任命是在 <span class="ent">Qwen</span> 团队今年经历多轮重组之后落地，旨在让团队领导架构更加清晰。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> <span class="ent">Qwen</span> 团队今年持续经历架构调整与开源节奏密集发布（<span class="ent">Qwen</span>-Image-2.1 等），由资深研究员接棒有助于稳定研发节奏；但该任命需结合后续组织变更与产品路线一起观察。</div>
+            <div class="card-src"><a href="https://www.theinformation.com/briefings/alibaba-appoints-new-head-qwen-llm-team" target="_blank">The Information</a></div>
+        </article>
+        <article class="card" id="c-产业动态-2">
+            <h3 class="card-h">宇树发布 22 自由度仿生灵巧手 Unitree Dex5-S，起售价 6.5 千美元</h3>
+            <p class="card-body">宇树科技（Unitree）正式推出仿生灵巧手 Unitree Dex5-S，整手具备 22 个自由度、采用 1:1 真手尺寸设计。该产品起售价为 6.5 千美元（税与运费另计），全部 22 个关节支持顺滑的反向驱动（backdrivability），并配备极限碰撞扭矩保护。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 宇树把 22 自由度灵巧手的整机价格压到 6.5 千美元区间，并强调全关节反向驱动能力，意味着高自由度灵巧手正从实验室演示走向可量产的硬件平台；价格与耐用性指标会直接影响具身智能数据采集规模。</div>
+            <div class="card-src"><a href="https://x.com/UnitreeRobotics/status/2101996861259395234" target="_blank">@unitreerobotics</a></div>
+        </article>
+        <article class="card" id="c-产业动态-3">
+            <h3 class="card-h">三星 C&T 向 Kairos Power 注资最高 1 亿美元，为 <span class="ent">Google</span> 建造 50 兆瓦示范堆</h3>
+            <p class="card-body">未来 <span class="ent">Google</span> 供应商 Kairos Power 与三星 C&T 签署协议，由后者协助建设其首座 50 兆瓦核电示范堆，目标 2030 年完工。三星 C&T 将以股权方式投资 Kairos，并提供“实物”工程服务，合计金额最高达 1 亿美元，其中股权部分为 7000 万美元。三星 C&T 此前在全球参建约 12 座核反应堆。Kairos 当前在田纳西州 Oak Ridge 建造 Hermes 1 与 Hermes 2 两座反应堆，前者为低功率示范装置，后者为氟盐冷却高温堆、商用规模首堆，其输出将计入与 <span class="ent">Google</span> 协议的首批 50 兆瓦；公司预计 Hermes 2 于 2030 年投运。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> AI 数据中心拉动的新一波核电订单正从“购电协议”延伸到“工程共建+股权绑定”，三星 C&T 的入局意味着传统核电工程总包方正式进入北美先进堆供应链；Kairos 用 Hermes 双堆节奏把 <span class="ent">Google</span> 的 2030 年并网时点逐段锁死，是核电 AI 化时间表里少有的可执行细节。</div>
+            <div class="card-src"><a href="https://techcrunch.com/2026/09/21/kairos-power-gets-up-to-100m-from-samsung-group-to-build-nuclear-reactor-for-google" target="_blank">TechCrunch</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-算力追踪">
+            <h2 class="sec-h">算力追踪</h2>
+        <article class="card" id="c-算力追踪-0">
+            <h3 class="card-h">SemiAnalysis：将 Engram 卸载到 DRAM 在多款 GPU 上最高带来 50% 性能提升</h3>
+            <p class="card-body">SemiAnalysis 在 X 上表示，实验显示将 Engram 卸载到 DRAM 后，在 H200、B200、B300 以及 GB300 NVL72 上均获得最高约 50% 的性能提升。其技术团队与 PyTorch 的 Emad Barsoum、Anush Elangovan 等工程师合作，已为 vLLM 在 ROCm 上游引入 Engram DRAM 卸载支持，相关 PR 57491 在 <span class="ent">AMD</span> 平台上同样观察到最高 50% 的性能提升。涉及的上游 PR 编号包括 985、1002、1005 等。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> Engram 这一新模型架构对显存子系统的依赖度被 DRAM 卸载方案显著放大，跨 <span class="ent">NVIDIA</span> 与 <span class="ent">AMD</span> 平台同步落地上游意味着相关优化正在从研究阶段进入生产推理框架，对未来大模型推理基础设施的拓扑设计具有参考意义。</div>
+            <div class="card-src"><a href="https://x.com/SemiAnalysis_/status/2102050260721807397" target="_blank">@semianalysis_</a></div>
+        </article>
+        <article class="card" id="c-算力追踪-1">
+            <h3 class="card-h">vLLM 在 GB300 NVL72 上跑通 <span class="ent">Qwen</span>3.8-2.4T，给出 PD 调优路径</h3>
+            <p class="card-body">vLLM 团队在 X 上表示，在 <span class="ent">NVIDIA</span> GB300 NVL72 上针对 <span class="ent">Qwen</span>3.8-2.4T 通过调优的 Prefill-Decode 配置，实现了在高吞吐下每 GPU 5K total tokens/s、低延迟下每用户 180 output tokens/s 的 Pareto 前沿。负载条件为 8K 输入、1K 输出。其分享的调优路径依次为：预算 KV 缓存、分别基准测试 prefill 与 decode、随后选择拓扑与并发配置。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> vLLM 把超大规模 MoE 模型在 GB300 NVL72 上的调优经验拆解成可复用的 PD 步骤清单，对其他万亿参数级开源模型的部署具有直接参考价值；将 prefill 与 decode 分阶段基准测试作为通用方法论，也降低了新硬件平台上的迁移成本。</div>
+            <div class="card-src"><a href="https://x.com/vllm_project/status/2102051703579373706" target="_blank">@vllm_project</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-初创and融资">
+            <h2 class="sec-h">初创&融资</h2>
+        <article class="card" id="c-初创and融资-0">
+            <h3 class="card-h">行云集成电路完成近 8 亿人民币融资，宁德时代溥泉资本领投</h3>
+            <p class="card-body">行云集成电路专注于面向大模型推理的高显存规格、软件亲和芯片，并以异构、白盒硬件形态推动大模型计算系统降本。近日公司宣布完成新一轮近 8 亿人民币融资，由宁德时代旗下唯一产业投资平台溥泉资本及自有资金领投，春华资本、基石创投等机构跟投。本轮资金将用于产品工程化、供应链准备与客户交付，由云岫资本担任长期独家财务顾问。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 宁德时代亲自下场领投大模型推理芯片厂商，反映出能源龙头正在把算力硬件纳入产业链布局；高显存规格与白盒异构的定位若能与一体机方案结合，有望切入推理算力国产替代的细分市场。</div>
+            <div class="card-src"><a href="https://www.itjuzi.com/investevent/14704968" target="_blank">IT桔子</a></div>
+        </article>
+        <article class="card" id="c-初创and融资-1">
+            <h3 class="card-h">AI 原生数据安全平台 Mind Security 完成 7200 万美元 B 轮融资</h3>
+            <p class="card-body">Mind Security 定位为 AI 原生数据安全平台，旗下自主 DLP 平台融合数据防泄漏与内部风险管理，依靠自研多层 AI 引擎完成敏感数据自动发现与分类，覆盖 SaaS、生成式 AI、终端与本地存储等场景。该公司近日宣布完成 7200 万美元 B 轮融资，由 Crosspoint Capital Partners 领投，老股东 YL Ventures 与 Paladin Capital Group 跟投。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 在生成式 AI 与 SaaS 普及的背景下，传统 DLP 高误报率的问题被反复提及；Mind Security 用多层 AI 引擎重构分类与处置流程，反映出企业安全预算正向 AI 原生方案倾斜，传统规则型 DLP 厂商将面临代际压力。</div>
+            <div class="card-src"><a href="https://www.itjuzi.com/investevent/14704984" target="_blank">IT桔子</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-研究关注">
+            <h2 class="sec-h">研究关注</h2>
+        <article class="card" id="c-研究关注-0">
+            <h3 class="card-h">IntBMoE 通过块级条件化把参与、执行与稀疏路由参数化解耦</h3>
+            <p class="card-body">论文提出 IntBMoE，一种在块级条件化下解耦专家参与度、执行成本与稀疏路由参数化数量的 MoE 结构。每个 token 由超网络把整池专家合并为一个组合专家，保证参与度满覆盖；路由器只把 token 送往少量块，使执行保持稀疏；块数量由小型学习码本固定，与输入无关，从而限制参数化存储量。论文还设计 Dual-Path Residual Gating，通过乘法门控耦合两条独立组合路径。实验在图像分类上相对代表性稀疏与稠密 MoE 基线取得稳定提升，并扩展至语言建模与序列推荐任务。IntBMoE 已在高德生成式推荐系统全量部署，服务数亿用户且延迟预算 60 毫秒，在线 A/B 测试中 UVCTR 相对提升 2.4%。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 把参与度、执行成本与参数化存储三件事拆开后，MoE 终于可以在不牺牲覆盖率的前提下同时控住算力与显存，这对推荐系统等延迟与吞吐敏感的在线业务尤为关键；高德线上收益是其工业价值的直接背书。</div>
+            <div class="card-src"><a href="https://huggingface.co/papers/2609.21346" target="_blank">HuggingFace Daily Papers</a></div>
+        </article>
+        <article class="card" id="c-研究关注-1">
+            <h3 class="card-h">OmniVBench 与 Omni-R2V Dataset 评测并支撑全参考视频生成</h3>
+            <p class="card-body">论文发布 OmniVBench 基准，覆盖 7 类任务家族与 18 个细粒度子任务，涵盖内容、运动、风格、结构、叙事与多参考等设置，并引入 12172 项按样例编排的核查清单，用以评估参考因素是否被忠实保持、正确解绑并按指令落到目标对象上。同期发布的 Omni-R2V Dataset 基于专业视频素材构建，包含 34 万条处理后的训练样本，提供面向多参考类型的工业级训练资源，并附带参考—目标配对的工程化构建流程。对当前主流开源与闭源 R2V 模型的评测显示，不同任务家族与评估维度上存在明显的能力差距。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> omni R2V 的瓶颈已从“能不能生成”转向“参考是否被正确解绑并按指令落地”，OmniVBench 的核查清单思路把评测从整体一致性推向因果级归因；同步放出的大规模数据集与构建流水线，是该方向少见的工业级配套。</div>
+            <div class="card-src"><a href="https://huggingface.co/papers/2609.22069" target="_blank">HuggingFace Daily Papers</a></div>
+        </article>
+        <article class="card" id="c-研究关注-2">
+            <h3 class="card-h">Gricea 把对话式 AI 研究封装为可配置、可复用的科研工件</h3>
+            <p class="card-body">论文介绍 Gricea，一个面向对话式 AI（CAI）的开放科学平台，将研究本身表示为可配置、可部署、可检视与共享的研究工件，使其它研究者能够运行、检查与复用。在复现研究中，Gricea 覆盖了 CUI 2026 论文中 93% 的可复现配置，同时在 96% 的论文中标记出阻碍忠实复现的缺失信息。随后的用户研究中，来自不同背景的研究者与实践者借助 Gricea 成功搭建出可运行的研究样例，验证其在构造、复现与扩展 CAI 研究上的支持能力。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 对话系统研究的可复现性长期被“零散报告”拖累，Gricea 用统一工件把研究流程、受试系统与对话行为三者绑定，本质是在补 CAI 领域的工程化基础设施，比单纯又一个 benchmark 更难被替代。</div>
+            <div class="card-src"><a href="https://huggingface.co/papers/2609.22039" target="_blank">HuggingFace Daily Papers</a></div>
+        </article>
+        </section>
+        <section class="sec" id="s-X讨论">
+            <h2 class="sec-h">X讨论</h2>
+        <article class="card" id="c-X讨论-0">
+            <h3 class="card-h"><span class="ent">NVIDIA</span>：以“Physical AI Halos”框架应对规模化部署中的多层安全挑战</h3>
+            <p class="card-body"><span class="ent">NVIDIA</span> 博客指出，Physical AI 正快速从研究走向规模化部署，并援引 ABI Research 预测：到 2035 年 L3–L5 自动驾驶汽车保有量将达 4900 万辆；Omdia 则估算 2026 至 2035 年间将部署约 6000 万台工业机器人。博客以此为背景，倡导在物理 AI 系统进入道路、工厂、仓储等与人共处的环境时引入贯穿各层的系统级安全机制（<span class="ent">NVIDIA</span> 称之为 Physical AI Halos）。原文在可读片段中并未披露该框架的具体技术栈细节。</p>
+            <div class="card-note"><span class="note-label">Insight by AI</span> 把“自动驾驶+工业机器人”的部署数字摆到一起，<span class="ent">NVIDIA</span> 实质在为 Halos 安全框架做需求侧铺垫：Physical AI 的规模化拐点若真按 2030–2035 年到来，安全层将是车厂与集成商无法绕开的采购项，这也是 <span class="ent">NVIDIA</span> 从算力供应商升级为“安全标准供应商”的关键卡位。</div>
+            <div class="card-src"><a href="https://blogs.nvidia.com/blog/physical-ai-halos-safety" target="_blank">NVIDIA Blog</a></div>
+        </article>
+        </section>
+            </div>
+        </div>
+
+        <!-- Bottom: independent of layout -->
+        <div class="bottom">
+            <div class="issue-nav">
+                <a href="daily-ai-news-2026-09-21.html" class="issue-prev">&larr; 上一期</a><span></span>
+            </div>
+            <div class="footer">
+                <span class="footer-copy">&copy; 2026 &middot; AI Daily News by Link-X Capital</span>
+                <a href="#" class="footer-top">Back to top &uarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll spy -->
+    <script>
+    (function() {
+        const cards = document.querySelectorAll('.card[id]');
+        const navs = document.querySelectorAll('.nav-item[href^="#c-"]');
+        if (!cards.length || !navs.length) return;
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    navs.forEach(n => n.classList.remove('active'));
+                    const hit = document.querySelector('.nav-item[href="#' + e.target.id + '"]');
+                    if (hit) hit.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-80px 0px -65% 0px' });
+        cards.forEach(c => obs.observe(c));
+    })();
+
+    // Search — real-time, fetches HTML pages in browser
+    (function() {
+        const input = document.getElementById('search');
+        const dropdown = document.getElementById('search-dropdown');
+        if (!input || !dropdown) return;
+
+        const cards = document.querySelectorAll('.card');
+        const sections = document.querySelectorAll('.sec[id]');
+        const details = document.querySelectorAll('.nav-details');
+
+        let searchData = [];
+        let totalFiles = 0, loadedCount = 0, started = false;
+
+        function stripTag(s) { return s.replace(/<[^>]+>/g, ''); }
+
+        function parseHtml(html, url) {
+            const dm = url.match(/(\d{4})-(\d{2})-(\d{2})/);
+            const date = dm ? dm[2] + '-' + dm[3] : '';
+            let articles = [], currentCat = '';
+            const parts = html.split(/<h2 class="sec-h"[^>]*>(.*?)<\/h2>/);
+            for (let i = 0; i < parts.length; i++) {
+                if (i % 2 === 1) currentCat = stripTag(parts[i]).trim();
+                else if (i > 0 && currentCat) {
+                    const tRe = /<h3 class="card-h"[^>]*>(.*?)<\/h3>/g, bRe = /<p class="card-body">(.*?)<\/p>/g;
+                    const ts = [], bs = [];
+                    let m;
+                    while ((m = tRe.exec(parts[i])) !== null) ts.push(m[1]);
+                    while ((m = bRe.exec(parts[i])) !== null) bs.push(m[1]);
+                    for (let j = 0; j < ts.length; j++) {
+                        const t = stripTag(ts[j]).trim();
+                        const b = j < bs.length ? stripTag(bs[j]).trim().slice(0, 120) : '';
+                        if (t) articles.push({ d: date, t, b, c: currentCat, f: url });
+                    }
+                }
+            }
+            return articles;
+        }
+
+        function startLoad() {
+            if (started) return;
+            started = true;
+            // Fetch index.html to get the file list
+            fetch('index.html').then(r => r.text()).then(html => {
+                const re = /href="(daily-ai-news-20\d{2}-[^"]+\.html)"/g;
+                const files = []; let m;
+                while ((m = re.exec(html)) !== null) files.push(m[1]);
+                totalFiles = files.length;
+                files.forEach(url => {
+                    fetch(url).then(r => r.text()).then(h => {
+                        searchData = searchData.concat(parseHtml(h, url));
+                        loadedCount++;
+                    }).catch(() => { loadedCount++; });
+                });
+            }).catch(() => {});
+        }
+
+        input.addEventListener('focus', startLoad);
+
+        input.addEventListener('input', function() {
+            const q = this.value.toLowerCase().trim();
+
+            if (!q) {
+                cards.forEach(c => c.style.display = '');
+                sections.forEach(s => s.style.display = '');
+                details.forEach(d => d.style.display = '');
+                dropdown.classList.remove('active');
+                return;
+            }
+
+            // In-page filter
+            cards.forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+            sections.forEach(sec => {
+                const vis = sec.querySelectorAll('.card:not([style*="none"])');
+                sec.style.display = vis.length ? '' : 'none';
+            });
+            details.forEach(det => {
+                const link = det.querySelector('.nav-item');
+                if (!link) return;
+                const sec = document.querySelector(link.getAttribute('href'));
+                det.style.display = (sec && sec.style.display !== 'none') ? '' : 'none';
+            });
+
+            // Cross-archive dropdown
+            if (!searchData.length) {
+                if (started) {
+                    dropdown.innerHTML = '<div class="search-empty">正在加载 (' + loadedCount + '/' + totalFiles + ')...</div>';
+                    dropdown.classList.add('active');
+                }
+                return;
+            }
+            const results = searchData.filter(item =>
+                item.t.toLowerCase().includes(q) || item.b.toLowerCase().includes(q)
+            ).slice(0, 15);
+
+            if (!results.length) {
+                dropdown.innerHTML = '<div class="search-empty">无匹配结果</div>';
+            } else {
+                dropdown.innerHTML = results.map(r =>
+                    '<a href="' + r.f + '" class="search-result">' +
+                    '<span class="search-result-date">' + r.d + '</span>' +
+                    '<span class="search-result-title">' + r.t + '</span>' +
+                    '<span class="search-result-cat">' + r.c + '</span>' +
+                    '</a>'
+                ).join('');
+            }
+            dropdown.classList.add('active');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.topbar-search') && !e.target.closest('.search-dropdown')) {
+                dropdown.classList.remove('active');
+            }
+        });
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { dropdown.classList.remove('active'); input.blur(); }
+        });
+    })();
+
+    // Diamond-frame particle network with ripple energy
+    (function() {
+        const canvas = document.getElementById('particle-bg');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const rgb = isDark ? '184,124,196' : '102,8,116';
+
+        let W, H;
+        const MAX_D = 160, RIPPLE_SPEED = 80, RIPPLE_LIFE = 3.5;
+        let nodes = [], ripples = [];
+
+        function resize() {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+            // Diamond frame distribution
+            const cx = W / 2, cy = H / 2;
+            const dw = W * 0.42, dh = H * 0.42;
+            const dEdges = [
+                [cx, cy - dh, cx + dw, cy],
+                [cx + dw, cy, cx, cy + dh],
+                [cx, cy + dh, cx - dw, cy],
+                [cx - dw, cy, cx, cy - dh]
+            ];
+            const count = Math.max(20, Math.round(50 * (W * H) / (1600 * 900)));
+            nodes = [];
+            for (let i = 0; i < count; i++) {
+                let x, y;
+                if (Math.random() < 0.80) {
+                    const ei = Math.random() * 4 | 0;
+                    const t = Math.random();
+                    const e = dEdges[ei];
+                    x = e[0] + (e[2] - e[0]) * t + (Math.random() - 0.5) * 20;
+                    y = e[1] + (e[3] - e[1]) * t + (Math.random() - 0.5) * 20;
+                } else {
+                    x = Math.random() * W;
+                    y = Math.random() * H;
+                }
+                nodes.push({
+                    x, y,
+                    vx: (Math.random() - 0.5) * 0.25,
+                    vy: (Math.random() - 0.5) * 0.20,
+                    r: 1.2 + Math.random() * 1.8,
+                    energy: 0
+                });
+            }
+            ripples = [];
+        }
+
+        let t0 = performance.now(), lastF = 0, fc = 0;
+
+        function loop(now) {
+            requestAnimationFrame(loop);
+            if (now - lastF < 16.67) return;
+            lastF = now;
+            const t = (now - t0) / 1000;
+            fc++;
+
+            // Spawn ripple every ~2s
+            if (fc % 120 === 0 && nodes.length) {
+                const s = nodes[Math.random() * nodes.length | 0];
+                ripples.push({ x: s.x, y: s.y, born: t });
+            }
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                if (t - ripples[i].born > RIPPLE_LIFE) ripples.splice(i, 1);
+            }
+
+            // Move & energy
+            for (const n of nodes) {
+                n.x += n.vx; n.y += n.vy;
+                if (n.x < 0 || n.x > W) n.vx *= -1;
+                if (n.y < 0 || n.y > H) n.vy *= -1;
+                n.energy *= 0.94;
+                for (const r of ripples) {
+                    const dx = n.x - r.x, dy = n.y - r.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const ringR = RIPPLE_SPEED * (t - r.born);
+                    if (Math.abs(dist - ringR) < 18) n.energy = Math.min(1, n.energy + 0.5);
+                }
+            }
+
+            ctx.clearRect(0, 0, W, H);
+
+            // Ripple rings
+            for (const r of ripples) {
+                const age = t - r.born;
+                const radius = RIPPLE_SPEED * age;
+                const alpha = 0.12 * Math.max(0, 1 - age / RIPPLE_LIFE);
+                ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Connections
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const a = nodes[i], b = nodes[j];
+                    const dx = a.x - b.x, dy = a.y - b.y;
+                    const d = Math.sqrt(dx*dx + dy*dy);
+                    if (d > MAX_D) continue;
+                    const distA = 1 - d / MAX_D;
+                    const maxE = Math.max(a.energy, b.energy);
+                    const alpha = distA * (0.08 + 0.22 * maxE);
+                    ctx.strokeStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                    ctx.lineWidth = 0.6;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.stroke();
+                }
+            }
+
+            // Nodes (dots)
+            for (const n of nodes) {
+                const alpha = 0.22 + 0.40 * n.energy;
+                const r = n.r + n.energy * 1.5;
+                ctx.fillStyle = 'rgba(' + rgb + ',' + alpha + ')';
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+        requestAnimationFrame(loop);
+    })();
+    </script>
+</body>
+</html>
