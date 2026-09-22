@@ -1,0 +1,127 @@
+## 09月22日 AI 前沿动态
+
+> 自动汇总 | 时间窗口: 24h | 全局精选 21 条
+
+---
+
+## 要点汇总
+
+- 模型前沿：SpaceXAI 发布 Grok 4.7：Terminal-Bench 翻倍至 38%，同价换新基座; 小米发布并开源 MiMo-V2.6：AA 指数 46 分登顶最强开源权重模型
+- 产业动态：OpenAI 成立数学与 AI 独立咨询小组：新模型已解决 Navier-Stokes 千禧难题并攻克 100+ 开放问题; Meta Muse 与 Shopify 达成合作：Shop Pay 支持全部 Shopify 商店的 agentic checkout; DeepSeek 据传押注华为芯片，目标今年四季度交付训练芯片; 宇树发布 Dex5 系列灵巧手：Dex5-S 22 自由度起售 6.5 千美元，Dex5-1 每手 94 个触觉传感器; Kimi 发布 Kimi Code Desktop 桌面客户端：macOS/Windows 同步上线; Cognition 推出 Devin Cloud in Terminal：CLI 中创建/接管云端会话，可 SSH 进入 Devin VM; LangChain 将 TypeSafe 的 Jev 引入 LangSmith：作为第三类 Agent 评测裁判; 阿里任命资深 AI 研究员刘大一恒为 Qwen 大模型团队负责人
+- 算力追踪：SemiAnalysis：将 Engram 卸载到 DRAM 在多款 GPU 上最高带来 50% 性能提升; 三星 C&T 向 Kairos Power 注资最高 1 亿美元，为 Google 建造 50 兆瓦示范堆
+- 初创&融资：Corridor 获 2500 万美元种子轮：为中小企业构建 AI 健康保险经纪平台
+- 研究关注：RetroChimera 逆向合成模型登上 Nature：化学家更偏好其预测路线而非已发表参考反应; CodeMidas 从源代码自动构造 5545 个 RL 环境：训练 MiMo-V2.5 多基准全面提升; EvoOntology 为数据 Agent 构建自进化本体层：以 MCP Server 形式运行时交互; RecreationWorld 发布五平台混合 CUA 基准：GPT-6 Astra 仅 2.8% 任务全通过; IntBMoE 通过块级条件化把参与、执行与稀疏路由参数化解耦
+- X讨论：NVIDIA：以“Physical AI Halos”框架应对规模化部署中的多层安全挑战; OpenAI 呼吁美国牵头建立前沿 AI 全球技术标准：覆盖 RSI 评测与事故报告
+
+---
+
+## 📖 详细参考
+
+### 模型前沿
+**SpaceXAI 发布 Grok 4.7：Terminal-Bench 翻倍至 38%，同价换新基座**
+- xAI（SpaceXAI）发布 Grok 4.7：采用**新的更大基座模型**，在偏多小时级的难题组合上做了更长 RL 训练，价格与速度与 Grok 4.6 持平（**每百万 token 输入 2 美元、输出 6 美元**），当日上线 Cursor 与 Grok Build。官方数据显示 CursorBench 4.0 达 **46.3%**、Terminal-Bench 4.0 从 4.6 的 20.3% 跃升至 **38.0%**，EEBench **64.0%**、Harvey 法律基准 **19.6%** 领先同档。安全方面 LatchBio 生物安全基准 **62.4%** 居首，HackerBench 危险提示仅 **3.3%** 通过。第三方 AA 测得其智能指数 **46 分**（+2 分），SpaceXAI 由此进入全球前四大 AI 实验室行列。
+  > 💡 Grok 4.7 在官方专业基准与第三方综合指数双双抬升，Terminal-Bench 翻倍式提升说明长时终端任务是其 RL 投入的主战场；价格不变的前提下把法律、电气、生物安全等专业指标拉开，SpaceXAI 正用"同等价格下的专业纵深"卡位头部梯队。
+   - 来源: [xAI](https://x.ai/news/grok-4-7) ; [@spacexai](https://x.com/SpaceXAI/status/2102069815225586149) ; [@artificialanlys](https://x.com/ArtificialAnlys/status/2102074898327932987)
+
+**小米发布并开源 MiMo-V2.6：AA 指数 46 分登顶最强开源权重模型**
+- 小米正式发布并开源全模态模型 MiMo-V2.6 系列（Pro/Flash 等），同步开源权重、技术报告与 **7k+ RL 任务环境**。MiMo-V2.6-Pro 为 MoE 架构（**总参数 1.02T、激活 42B**），在 AA 综合智能指数中取得 **46 分**（前代仅 26 分），超过 Kimi K3 与 GLM-5.3 登顶最强开源权重模型，但仍落后 Claude Fable 5.1、GPT-6 Astra（均 53 分）。小米罕见公开 RL 训练账单与实时 dashboard：Pro 与 Flash 历时不到 6 天、成本分别约 **262 万与 85 万美元**，DeepSWE v1.1 分别提升约 **14 分与 17 分**。定价沿用 V2.5，同等智能下价格为海外模型的 **1/20 至 1/60**，并新增 3D 空间推理与计算机操作能力。
+  > 💡 小米把 RL 训练的全过程账单和故障日志都公开，等于把"规模化 Agentic RL 到底要花多少钱、跑多久"变成公共知识——对跟进者既是路线图也是成本锚点；AA 登顶开源叠加 1/20 价格，把国产开源模型的价格战直接推进闭源旗舰的腹地。
+   - 来源: [小米 MiMo 官网](https://mimo.xiaomi.com/zh/mimo-v2-6) ; [@artificialanlys](https://x.com/ArtificialAnlys/status/2102128560962187701) ; [@openrouter](https://x.com/OpenRouter/status/2102142830034698644)
+
+### 产业动态
+**OpenAI 成立数学与 AI 独立咨询小组：新模型已解决 Navier-Stokes 千禧难题并攻克 100+ 开放问题**
+- OpenAI 官方披露，8 月 28 日开始训练的一个新内部模型已解决 Navier-Stokes 千禧年大奖难题，并在数学多数领域**解决了超过 100 个长期开放问题**，进展速度令 OpenAI 内部的数学家感到意外。作为对数学界公开信《A Severe Misalignment of AI in Mathematics》的回应，OpenAI 与数学家成立独立咨询小组，成员包括 Timothy Gowers、Edward Witten、Martin Hairer 等 9 人，就新结果的评审与传播、学术规范及数学研究工具提供建议。小组独立运作：成员不领 OpenAI 薪酬、可公开其建议，但**不负责就 OpenAI 数学进展的内部速度提出建议**。
+  > 💡 "解决千禧难题"与"成立独立咨询小组"同时公布，说明 OpenAI 已预判到 AI 数学能力对学术共同体信任体系的冲击，把结果评审权外置给 Gowers/Witten 级别的小组是一次罕见的治理实验；但"不就节奏提建议"的边界也表明，能力加速本身不在协商范围内。
+   - 来源: [OpenAI](https://openai.com/index/advisory-group-on-mathematics-and-ai/) ; [@openai](https://x.com/OpenAI/status/2102093145051943229)
+
+**Meta Muse 与 Shopify 达成合作：Shop Pay 支持全部 Shopify 商店的 agentic checkout**
+- Meta 首席 AI 官 Alexandr Wang 宣布，Meta 个人 AI agent Muse 正与 Shopify 深度合作，通过 Shop Pay 在**所有 Shopify 商店**实现 agentic checkout；Shopify CEO Tobi Lütke 同日宣布该集成，消息公布后 **Shopify 股价周一大涨 7.3%**。据 American Banker 报道，Muse 通过 Shopify Catalog 检索商品、经通用商业协议（Universal Commerce Protocol）完成结账，Shopify 商家默认可被 Muse 发现和购买。形成对照的是，Amazon 同期封锁了 Muse 在其平台上的购物行为，Pivotal Research 分析师称这是自主购物 agent 冲击购物类广告的第一个明确信号。
+  > 💡 Muse×Shopify 与 Amazon 封锁 Muse 构成 agentic commerce 的分水岭时刻：平台要么把商品目录与支付基础设施开放给 agent（Shopify 模式，Deutsche Bank 认为这直接反驳了"agent 去中介化"的空头论点），要么筑墙保护广告收入（Amazon 模式）；决定输赢的不是模型能力，而是谁控制结账层。
+   - 来源: [@alexandr_wang](https://x.com/alexandr_wang/status/2102092011021217911) ; [MarketWatch](https://www.morningstar.com/news/marketwatch/20260921102/amazon-and-shopify-make-starkly-different-moves-in-the-brewing-battle-over-ai-shopping)
+
+**DeepSeek 据传押注华为芯片，目标今年四季度交付训练芯片**
+- 据报道，DeepSeek CEO 梁文锋在一次周日举行的闭门面对面会议上告诉投资者，公司的一项主要优先事项是在模型训练环节加大使用国产芯片。他预计华为最早将于今年第四季度开始向 DeepSeek 交付训练芯片。梁文锋发表上述言论之际，DeepSeek 正在敲定第二轮融资，目标是以 5000 亿元人民币估值募集 500 亿元人民币（约 75 亿美元）。
+  > 💡 DeepSeek 与华为的合作把美国先进芯片出口管制压力转化为国产 AI 算力联盟的推进动力；一旦华为训练芯片如期交付，将影响国内大模型公司在 NVIDIA 之外的训练路线选择与算力成本结构。
+   - 来源: [The Information](https://www.theinformation.com/articles/deepseek-bets-big-huawei-chips-bypass-u-s-export-controls)
+
+**宇树发布 Dex5 系列灵巧手：Dex5-S 22 自由度起售 6.5 千美元，Dex5-1 每手 94 个触觉传感器**
+- 宇树科技（Unitree）发布 Dex5 系列仿生灵巧手。Dex5-S 整手具备 **22 个自由度**、1:1 真手尺寸，起售价 **6.5 千美元**（税与运费另计），全部 22 个关节支持顺滑反向驱动（backdrivability）并配备极限碰撞扭矩保护。同系列 Dex5-1 为 **20 自由度（16 主动+4）**，五指可独立更换，四指支持 **±22° 侧摆**以适配曲面抓取，每手集成 **94 个压力传感器**（12 组阵列，支持触觉算法二次开发），采用 12 个自研微型力控复合传动关节（实现触觉本体感知）+4 个力控齿轮传动关节，掌心向下最大负载 **3.5kg**、掌心朝左 **4.5kg**，整手尺寸 217.3×127.5×72.1mm。
+  > 💡 宇树把 22 自由度灵巧手压到 6.5 千美元区间，再给 20 自由度版本配上每手 94 点触觉阵列，等于同时押注"可量产"与"可感知"两条线——全关节反向驱动方便 RL 训练、触觉数据可二次开发，直接指向具身智能数据采集这一瓶颈环节。
+   - 来源: [@unitreerobotics](https://x.com/UnitreeRobotics/status/2101996861259395234) ; [Unitree](https://www.unitree.com/Dex5-1)
+
+**Kimi 发布 Kimi Code Desktop 桌面客户端：macOS/Windows 同步上线**
+- Kimi 正式发布 Kimi Code Desktop，macOS（Apple/Intel 芯片）与 Windows 同步上线，将 Kimi Code CLI 的 Agent 能力图形化：通过对话让 Agent **读写代码、运行命令、完成自动化任务**，支持 Plan 模式（先出可评审计划再动手）、Goal 长任务模式、Swarm 子 Agent 调度与实验性 Tower 多 Agent 并行模式。工作流方面内置**终端、浏览器与 Git 状态查看**：可直接运行构建/测试与格式检查，截图标注发给 Agent 指哪改哪，让 Agent 操作内置浏览器验证页面效果；右侧面板按文件或单轮修改审阅 diff，并关联 PR 状态跟踪评审与合并进度。CLI 用户的本地任务会直接出现在桌面端；Kimi Coding Plan 订阅会员登录即用，也可配置第三方模型供应商。
+  > 💡 Kimi 把 CLI coding agent 搬进带 GUI 的桌面端并内置浏览器/终端/PR 跟踪，瞄准的是"终端极客工具到普通开发者日常"的扩散拐点；配合订阅套餐，国产 coding agent 的竞争已从模型能力转向工作流覆盖与桌面入口争夺。
+   - 来源: [Kimi](https://www.kimi.com/news/kimi-code-desktop)
+
+**Cognition 推出 Devin Cloud in Terminal：CLI 中创建/接管云端会话，可 SSH 进入 Devin VM**
+- Cognition 发布 Devin Cloud in Terminal 与 devin ssh 两项更新。开发者可在终端用 `devin --cloud` 或 `/cloud` 创建、转向、恢复并观看 Devin Cloud 会话；`/handoff` 可把本地任务即时移交 Devin 在其云端 VM 上继续（也可反向执行：把云会话的 PR 分支拉回本地继续打磨），云会话独立于终端存续，`/open` 可随时切换到网页或桌面端查看。新的 `devin ssh` 首次允许 SSH 进入 Devin 的专属 VM，把其开发环境当自己的用：直接编辑源码、启动开发服务器并转发端口测试、用 scp 在 VM 与本机间拷贝文件。官方提供 **10 月 8 日前的免费 SWE-2 会话**。
+  > 💡 把"本地 CLI 快迭代"与"云端长任务"的切换成本压到一条命令，并以 SSH 开放底层 VM，Devin 正把 agent 的运行环境变成开发者可直接接管的工作站；这模糊了"AI 工具"与"开发环境租用"的边界，也是对本地优先路线 coding agent 的差异化反击。
+   - 来源: [@cognition](https://x.com/cognition/status/2102104259219406886) ; [Devin Blog](https://devin.ai/blog/devin-cloud-in-your-terminal)
+
+**LangChain 将 TypeSafe 的 Jev 引入 LangSmith：作为第三类 Agent 评测裁判**
+- LangChain 宣布 TypeSafe AI 的 System One 模型 Jev 以"Jev-as-a-judge"形式进入 LangSmith 评测。Jev 不是传统 LLM、不生成文本，而是对 agent 轨迹等状态直接返回类型化答案（是/否概率、单选、量表评分）；据 TypeSafe AI，其在分类任务上比可比 LLM **便宜约 450 倍、快约 200 倍**。LangChain 实测中，Jev 与人类评审在每个判断上一致，方差比 LLM 裁判低 **92-913 倍**，平均 **0.44 秒/次**（LLM 裁判 2.16-2.83 秒），完整判断集成本仅 **0.34 美元**（Claude Sonnet 4.6 为 28.17 美元）。这使"给每条生产 trace 全量打分而非抽样"在经济上变得可行，PII 泄露等安全类反馈可设告警触发自动响应。
+  > 💡 评测成本是 agent 迭代速度的隐形税，450 倍价差让全量评测从奢望变成默认；若非生成式的 System One 模型在裁判场景站住脚，可能催生一类专做高速结构化决策的小模型市场，与 LLM 形成"系统一/系统二"分工。
+   - 来源: [LangChain Blog](https://www.langchain.com/blog/jev-is-now-available-in-langsmith-evals) ; [@langchain](https://x.com/LangChain/status/2102081155277246532)
+
+**阿里任命资深 AI 研究员刘大一恒为 Qwen 大模型团队负责人**
+- 据两名知情员工透露，阿里集团已任命资深 AI 研究员刘大一恒（Dayiheng Liu）为 Qwen 大语言模型团队负责人。此次任命是在 Qwen 团队今年经历多轮重组之后落地，旨在让团队领导架构更加清晰。
+  > 💡 Qwen 团队今年持续经历架构调整与开源节奏密集发布（Qwen-Image-2.1 等），由资深研究员接棒有助于稳定研发节奏；但该任命需结合后续组织变更与产品路线一起观察。
+   - 来源: [The Information](https://www.theinformation.com/briefings/alibaba-appoints-new-head-qwen-llm-team)
+
+### 算力追踪
+**SemiAnalysis：将 Engram 卸载到 DRAM 在多款 GPU 上最高带来 50% 性能提升**
+- SemiAnalysis 实验显示将 Engram 卸载到 DRAM 后，在 H200、B200、B300 以及 GB300 NVL72 上均获得最高约 50% 的性能提升。其技术团队与 PyTorch 的 Emad Barsoum、Anush Elangovan 等工程师合作，已为 vLLM 在 ROCm 上游引入 Engram DRAM 卸载支持，相关 PR 57491 在 AMD 平台上同样观察到最高 50% 的性能提升。涉及的上游 PR 编号包括 985、1002、1005 等。
+  > 💡 Engram 这一新模型架构对显存子系统的依赖度被 DRAM 卸载方案显著放大，跨 NVIDIA 与 AMD 平台同步落地上游意味着相关优化正在从研究阶段进入生产推理框架，对未来大模型推理基础设施的拓扑设计具有参考意义。
+   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2102050260721807397)
+
+**三星 C&T 向 Kairos Power 注资最高 1 亿美元，为 Google 建造 50 兆瓦示范堆**
+- 未来 Google 供应商 Kairos Power 与三星 C&T 签署协议，由后者协助建设其首座 50 兆瓦核电示范堆，目标 2030 年完工。三星 C&T 将以股权方式投资 Kairos，并提供“实物”工程服务，合计金额最高达 1 亿美元，其中股权部分为 7000 万美元。三星 C&T 此前在全球参建约 12 座核反应堆。Kairos 当前在田纳西州 Oak Ridge 建造 Hermes 1 与 Hermes 2 两座反应堆，前者为低功率示范装置，后者为氟盐冷却高温堆、商用规模首堆，其输出将计入与 Google 协议的首批 50 兆瓦；公司预计 Hermes 2 于 2030 年投运。
+  > 💡 AI 数据中心拉动的新一波核电订单正从“购电协议”延伸到“工程共建+股权绑定”，三星 C&T 的入局意味着传统核电工程总包方正式进入北美先进堆供应链；Kairos 用 Hermes 双堆节奏把 Google 的 2030 年并网时点逐段锁死，是核电 AI 化时间表里少有的可执行细节。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/09/21/kairos-power-gets-up-to-100m-from-samsung-group-to-build-nuclear-reactor-for-google)
+
+### 初创&融资
+**Corridor 获 2500 万美元种子轮：为中小企业构建 AI 健康保险经纪平台**
+- AI 健康保险经纪公司 Corridor 宣布完成 **2500 万美元种子轮**，Bain Capital Ventures 领投，BoxGroup 及 OpenAI、Scale AI、Ramp 的高管参投。公司聚焦被传统经纪忽视的中小企业市场：客户与人类顾问协作，AI agent 在后台处理行政工作，如核实医生是否在保险网络内、预约就诊、向医生更新患者保险信息，CEO Nikhil Aggarwal 称公司是"每位员工与管理层的一切医疗事务礼宾服务"。联合创始人 Jackson Wagner 曾任 Scale AI 产品负责人，因一次跑步事故的治疗纠纷走上创业路径。公司正备战四季度——Aggarwal 称 **80% 的中小企业在 Q4 选定健康计划**；该赛道已有 Ignition Benefits、Nava Benefits 等玩家。
+  > 💡 健康保险经纪是典型的"人力密集+信息不对称"中介行业，AI agent 接管行政工作后，原本因佣金太低而不经济的中小企业账户变成可服务市场；种子轮即 2500 万美元，说明投资人把它当作保险分发环节的平台级机会下注。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/09/21/corridor-raises-25m-seed-to-build-a-health-benefits-brokerage-for-smbs/)
+
+### 研究关注
+**IntBMoE 通过块级条件化把参与、执行与稀疏路由参数化解耦**
+- 论文提出 IntBMoE，一种在块级条件化下解耦专家参与度、执行成本与稀疏路由参数化数量的 MoE 结构。每个 token 由超网络把整池专家合并为一个组合专家，保证参与度满覆盖；路由器只把 token 送往少量块，使执行保持稀疏；块数量由小型学习码本固定，与输入无关，从而限制参数化存储量。论文还设计 Dual-Path Residual Gating，通过乘法门控耦合两条独立组合路径。实验在图像分类上相对代表性稀疏与稠密 MoE 基线取得稳定提升，并扩展至语言建模与序列推荐任务。IntBMoE 已在高德生成式推荐系统全量部署，服务数亿用户且延迟预算 60 毫秒，在线 A/B 测试中 UVCTR 相对提升 2.4%。
+  > 💡 把参与度、执行成本与参数化存储三件事拆开后，MoE 终于可以在不牺牲覆盖率的前提下同时控住算力与显存，这对推荐系统等延迟与吞吐敏感的在线业务尤为关键；高德线上收益是其工业价值的直接背书。
+   - 来源: [arXiv](https://arxiv.org/abs/2609.21346)
+
+**RetroChimera 逆向合成模型登上 Nature：化学家更偏好其预测路线而非已发表参考反应**
+- Microsoft Research AI for Science 联合 Novartis、GSK 在 Nature 发表逆向合成模型 RetroChimera。研究先系统分析现有 AI 合成规划模型的失败模式——低频但战略关键的反应预测差、幻觉式预测与化学家预期错位，再以两个具有互补归纳偏置的新组件经学习式集成构建模型。跨多个数量级数据规模的实验显示 RetroChimera 超越主流基线、训练分布外稳健，且**每类反应只需极少量样本即可学习**；在成对与单点盲测中，**有机化学家更偏好 RetroChimera 的预测路线，胜过已发表的参考反应和其他 AI 模型**。论文还展示了对两家大型药企内部数据集的零样本迁移与微调，在分布偏移下保持稳健泛化；模型代码与权重已在 GitHub 开源。
+  > 💡 化学合成是药物发现与生产最大的瓶颈之一，"化学家盲测偏好胜过文献参考反应"是 AI 合成规划少有的量化里程碑；MSR+Novartis+GSK 的组合说明该路线已从学术演示进入药企内部数据验证阶段。
+   - 来源: [Nature](https://www.nature.com/articles/s41586-026-11160-9) ; [@marwinsegler](https://x.com/marwinsegler/status/2102075427749564522)
+
+**CodeMidas 从源代码自动构造 5545 个 RL 环境：训练 MiMo-V2.5 多基准全面提升**
+- 论文提出 CodeMidas，一条仅以源代码为任务特定输入、把既有代码库中已实现功能转化为可执行 RL 环境的 agentic 流水线：agent 探索代码功能形成行为规格、基于原代码执行构造测试，并通过执行检查与重复求解 rollout 验证过滤候选任务，绕开了依赖 issue/commit 等开发副产品的传统方法。最终产出**5,545 个训练任务，来自 3,185 个开源代码库，覆盖 23 种编程语言、15 个技术领域**。用这些任务以 GRPO 训练 MiMo-V2.5 后五个基准全面上涨：DeepSWE **+11.7%**、ProgramBench **+17%**、Terminal-Bench v2.1 **+8.5%**；轨迹分析显示 RL 训练后的 agent 更倾向探索代码库、自我验证方式更多样。
+  > 💡 依赖 issue/commit 的环境构造方法受社区活跃度限制，"只用源代码"把 RL 环境供给上限解放为代码库总量；对 coding agent 厂商而言这相当于一条可自我复制的训练环境生产线。
+   - 来源: [arXiv](https://arxiv.org/abs/2609.22068)
+
+**EvoOntology 为数据 Agent 构建自进化本体层：以 MCP Server 形式运行时交互**
+- 论文针对数据 agent 的"agent-数据鸿沟"（异构数据在 agent 之外，agent 只能经列名、文件路径等通用工具访问）提出 EvoOntology：把本体封装为含模式层、内容层与工具层的 **MCP Server**，让 agent 在运行时主动查询和交互本体；由 builder agent 自主构建本体，自进化循环通过归因引导的类型化编辑持续精炼，且只有在主干条件配对评测通过后才接受修改。在 **3 个主流数据 agent 基准、4 个 LLM 主干**上，EvoOntology 稳定超越强基线与现有语义层方法。代码已开源。
+  > 💡 相比把语义层硬塞进 prompt 的静态做法，"本体即 MCP 服务+自进化"让数据语义变成 agent 可主动调用的活设施；随着 MCP 成为 agent-工具事实标准，这类运行时可交互的知识层可能成为企业数据 agent 的标配组件。
+   - 来源: [arXiv](https://arxiv.org/abs/2609.15779)
+
+**RecreationWorld 发布五平台混合 CUA 基准：GPT-6 Astra 仅 2.8% 任务全通过**
+- 论文研究混合计算机使用 agent（CUA）——自主决定何时探索图形界面、何时写代码实现并运行验证，而非两条路线简单串联。RecreationWorld 提供覆盖 **Ubuntu、macOS、Windows、Android 与 Web 五个平台**的可复现环境，以"复刻"为核心任务：给定一个运行中的参考应用，agent 需自主发现其行为并忠实重建，运行中的参考应用充当隐藏行为测试的判分 oracle、提供执行级奖励。新评测 RecreationBench 含 **250 项跨领域任务**：**GPT-6 Astra 以 58.1% 总体分领先，但仅 2.8% 的任务通过全部程序化测试**；agent 复刻静态界面比交互行为与计算输出更可靠，生成的应用也比参考实现更小、更单体。
+  > 💡 "复刻一个真实运行的应用"给 CUA 提供了天然的执行级判分，绕开纯 GUI 任务难以验证的痛点；58.1% 总分与 2.8% 全通过的落差说明，当前最强 agent 离"真正可用的软件重建"仍有数量级差距——好看与能用之间隔着隐藏行为测试。
+   - 来源: [arXiv](https://arxiv.org/abs/2609.22000)
+
+### X讨论
+**NVIDIA：以“Physical AI Halos”框架应对规模化部署中的多层安全挑战**
+- NVIDIA 指出，Physical AI 正快速从研究走向规模化部署，并援引 ABI Research 预测：到 2035 年 L3–L5 自动驾驶汽车保有量将达 4900 万辆；Omdia 则估算 2026 至 2035 年间将部署约 6000 万台工业机器人。博客以此为背景，倡导在物理 AI 系统进入道路、工厂、仓储等与人共处的环境时引入贯穿各层的系统级安全机制（NVIDIA 称之为 Physical AI Halos）。原文在可读片段中并未披露该框架的具体技术栈细节。
+  > 💡 把“自动驾驶+工业机器人”的部署数字摆到一起，NVIDIA 实质在为 Halos 安全框架做需求侧铺垫：Physical AI 的规模化拐点若真按 2030–2035 年到来，安全层将是车厂与集成商无法绕开的采购项，这也是 NVIDIA 从算力供应商升级为“安全标准供应商”的关键卡位。
+   - 来源: [NVIDIA Blog](https://blogs.nvidia.com/blog/physical-ai-halos-safety)
+
+**OpenAI 呼吁美国牵头建立前沿 AI 全球技术标准：覆盖 RSI 评测与事故报告**
+- OpenAI 发文呼吁由美国牵头、联合各国建立前沿 AI（含递归自我改进 RSI）的全球技术标准，以应对三类问题：各国评测/报告/事故定义碎片化、RSI 可能加速到超出集体理解与监督能力的集体行动困境、前沿研发能力全球分布不均。建议路径包括借助澳、加、法、日、韩、新、印、英等国已成立的 AI 安全机构网络与 CAISI 推进标准制定，并建立 RSI 进展评测、人类监督触发条件与对齐问题事故分级报告等公共度量。OpenAI 强调这些技术标准**不是许可制或发布前审批**，各国政府自行决定是否纳入本国法律，并称美中在这些领域的对话是积极一步。文中明确"完全自主的 RSI 今天并未发生"，在能安全推进之前不应追求。
+  > 💡 这是 OpenAI 首次系统性地把 RSI 治理纳入国际标准议程，把 alignment 研究与共享标准并列为"节奏控制"的两大支柱；由企业主动提议标准化，既是抢占规则话语权，也是对监管碎片化的预防性投资。
+   - 来源: [OpenAI](https://openai.com/index/building-standards-next-phase-ai)
+
+---
+*更新时间: 2026-09-22 06:46*
