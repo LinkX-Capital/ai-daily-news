@@ -1,17 +1,17 @@
 ## 09月22日 AI 前沿动态
 
-> 自动汇总 | 时间窗口: 24h | 全局精选 21 条
+> 自动汇总 | 时间窗口: 24h | 全局精选 19 条
 
 ---
 
 ## 要点汇总
 
 - 模型前沿：SpaceXAI 发布 Grok 4.7：Terminal-Bench 翻倍至 38%，同价换新基座; 小米发布并开源 MiMo-V2.6：AA 指数 46 分登顶最强开源权重模型
-- 产业动态：OpenAI 成立数学与 AI 独立咨询小组：新模型已解决 Navier-Stokes 千禧难题并攻克 100+ 开放问题; Meta Muse 与 Shopify 达成合作：Shop Pay 支持全部 Shopify 商店的 agentic checkout; DeepSeek 据传押注华为芯片，目标今年四季度交付训练芯片; 宇树发布 Dex5 系列灵巧手：Dex5-S 22 自由度起售 6.5 千美元，Dex5-1 每手 94 个触觉传感器; Kimi 发布 Kimi Code Desktop 桌面客户端：macOS/Windows 同步上线; Cognition 推出 Devin Cloud in Terminal：CLI 中创建/接管云端会话，可 SSH 进入 Devin VM; LangChain 将 TypeSafe 的 Jev 引入 LangSmith：作为第三类 Agent 评测裁判; 阿里任命资深 AI 研究员刘大一恒为 Qwen 大模型团队负责人
-- 算力追踪：SemiAnalysis：将 Engram 卸载到 DRAM 在多款 GPU 上最高带来 50% 性能提升; 三星 C&T 向 Kairos Power 注资最高 1 亿美元，为 Google 建造 50 兆瓦示范堆
+- 产业动态：OpenAI 成立数学与 AI 独立咨询小组：新模型已解决 Navier-Stokes 千禧难题并攻克 100+ 开放问题; Meta Muse 与 Shopify 达成合作：Shop Pay 支持全部 Shopify 商店的 agentic checkout; 宇树发布 Dex5 系列灵巧手：Dex5-S 22 自由度起售 6.5 千美元，Dex5-1 每手 94 个触觉传感器; Kimi 发布 Kimi Code Desktop 桌面客户端：macOS/Windows 同步上线; 阿里任命资深 AI 研究员刘大一恒为 Qwen 大模型团队负责人
+- 算力追踪：DeepSeek 据传押注华为芯片，目标今年四季度交付训练芯片; 三星 C&T 向 Kairos Power 注资最高 1 亿美元，为 Google 建造 50 兆瓦示范堆
 - 初创&融资：Corridor 获 2500 万美元种子轮：为中小企业构建 AI 健康保险经纪平台
 - 研究关注：RetroChimera 逆向合成模型登上 Nature：化学家更偏好其预测路线而非已发表参考反应; CodeMidas 从源代码自动构造 5545 个 RL 环境：训练 MiMo-V2.5 多基准全面提升; EvoOntology 为数据 Agent 构建自进化本体层：以 MCP Server 形式运行时交互; RecreationWorld 发布五平台混合 CUA 基准：GPT-6 Astra 仅 2.8% 任务全通过; IntBMoE 通过块级条件化把参与、执行与稀疏路由参数化解耦
-- X讨论：NVIDIA：以“Physical AI Halos”框架应对规模化部署中的多层安全挑战; OpenAI 呼吁美国牵头建立前沿 AI 全球技术标准：覆盖 RSI 评测与事故报告
+- X讨论：Cognition 推出 Devin Cloud in Terminal：CLI 中创建/接管云端会话，可 SSH 进入 Devin VM; LangChain 将 TypeSafe 的 Jev 引入 LangSmith：作为第三类 Agent 评测裁判; NVIDIA：以“Physical AI Halos”框架应对规模化部署中的多层安全挑战; OpenAI 呼吁美国牵头建立前沿 AI 全球技术标准：覆盖 RSI 评测与事故报告
 
 ---
 
@@ -39,11 +39,6 @@
   > 💡 Muse×Shopify 与 Amazon 封锁 Muse 构成 agentic commerce 的分水岭时刻：平台要么把商品目录与支付基础设施开放给 agent（Shopify 模式，Deutsche Bank 认为这直接反驳了"agent 去中介化"的空头论点），要么筑墙保护广告收入（Amazon 模式）；决定输赢的不是模型能力，而是谁控制结账层。
    - 来源: [@alexandr_wang](https://x.com/alexandr_wang/status/2102092011021217911) ; [MarketWatch](https://www.morningstar.com/news/marketwatch/20260921102/amazon-and-shopify-make-starkly-different-moves-in-the-brewing-battle-over-ai-shopping)
 
-**DeepSeek 据传押注华为芯片，目标今年四季度交付训练芯片**
-- 据报道，DeepSeek CEO 梁文锋在一次周日举行的闭门面对面会议上告诉投资者，公司的一项主要优先事项是在模型训练环节加大使用国产芯片。他预计华为最早将于今年第四季度开始向 DeepSeek 交付训练芯片。梁文锋发表上述言论之际，DeepSeek 正在敲定第二轮融资，目标是以 5000 亿元人民币估值募集 500 亿元人民币（约 75 亿美元）。
-  > 💡 DeepSeek 与华为的合作把美国先进芯片出口管制压力转化为国产 AI 算力联盟的推进动力；一旦华为训练芯片如期交付，将影响国内大模型公司在 NVIDIA 之外的训练路线选择与算力成本结构。
-   - 来源: [The Information](https://www.theinformation.com/articles/deepseek-bets-big-huawei-chips-bypass-u-s-export-controls)
-
 **宇树发布 Dex5 系列灵巧手：Dex5-S 22 自由度起售 6.5 千美元，Dex5-1 每手 94 个触觉传感器**
 - 宇树科技（Unitree）发布 Dex5 系列仿生灵巧手。Dex5-S 整手具备 **22 个自由度**、1:1 真手尺寸，起售价 **6.5 千美元**（税与运费另计），全部 22 个关节支持顺滑反向驱动（backdrivability）并配备极限碰撞扭矩保护。同系列 Dex5-1 为 **20 自由度（16 主动+4）**，五指可独立更换，四指支持 **±22° 侧摆**以适配曲面抓取，每手集成 **94 个压力传感器**（12 组阵列，支持触觉算法二次开发），采用 12 个自研微型力控复合传动关节（实现触觉本体感知）+4 个力控齿轮传动关节，掌心向下最大负载 **3.5kg**、掌心朝左 **4.5kg**，整手尺寸 217.3×127.5×72.1mm。
   > 💡 宇树把 22 自由度灵巧手压到 6.5 千美元区间，再给 20 自由度版本配上每手 94 点触觉阵列，等于同时押注"可量产"与"可感知"两条线——全关节反向驱动方便 RL 训练、触觉数据可二次开发，直接指向具身智能数据采集这一瓶颈环节。
@@ -54,26 +49,16 @@
   > 💡 Kimi 把 CLI coding agent 搬进带 GUI 的桌面端并内置浏览器/终端/PR 跟踪，瞄准的是"终端极客工具到普通开发者日常"的扩散拐点；配合订阅套餐，国产 coding agent 的竞争已从模型能力转向工作流覆盖与桌面入口争夺。
    - 来源: [Kimi](https://www.kimi.com/news/kimi-code-desktop)
 
-**Cognition 推出 Devin Cloud in Terminal：CLI 中创建/接管云端会话，可 SSH 进入 Devin VM**
-- Cognition 发布 Devin Cloud in Terminal 与 devin ssh 两项更新。开发者可在终端用 `devin --cloud` 或 `/cloud` 创建、转向、恢复并观看 Devin Cloud 会话；`/handoff` 可把本地任务即时移交 Devin 在其云端 VM 上继续（也可反向执行：把云会话的 PR 分支拉回本地继续打磨），云会话独立于终端存续，`/open` 可随时切换到网页或桌面端查看。新的 `devin ssh` 首次允许 SSH 进入 Devin 的专属 VM，把其开发环境当自己的用：直接编辑源码、启动开发服务器并转发端口测试、用 scp 在 VM 与本机间拷贝文件。官方提供 **10 月 8 日前的免费 SWE-2 会话**。
-  > 💡 把"本地 CLI 快迭代"与"云端长任务"的切换成本压到一条命令，并以 SSH 开放底层 VM，Devin 正把 agent 的运行环境变成开发者可直接接管的工作站；这模糊了"AI 工具"与"开发环境租用"的边界，也是对本地优先路线 coding agent 的差异化反击。
-   - 来源: [@cognition](https://x.com/cognition/status/2102104259219406886) ; [Devin Blog](https://devin.ai/blog/devin-cloud-in-your-terminal)
-
-**LangChain 将 TypeSafe 的 Jev 引入 LangSmith：作为第三类 Agent 评测裁判**
-- LangChain 宣布 TypeSafe AI 的 System One 模型 Jev 以"Jev-as-a-judge"形式进入 LangSmith 评测。Jev 不是传统 LLM、不生成文本，而是对 agent 轨迹等状态直接返回类型化答案（是/否概率、单选、量表评分）；据 TypeSafe AI，其在分类任务上比可比 LLM **便宜约 450 倍、快约 200 倍**。LangChain 实测中，Jev 与人类评审在每个判断上一致，方差比 LLM 裁判低 **92-913 倍**，平均 **0.44 秒/次**（LLM 裁判 2.16-2.83 秒），完整判断集成本仅 **0.34 美元**（Claude Sonnet 4.6 为 28.17 美元）。这使"给每条生产 trace 全量打分而非抽样"在经济上变得可行，PII 泄露等安全类反馈可设告警触发自动响应。
-  > 💡 评测成本是 agent 迭代速度的隐形税，450 倍价差让全量评测从奢望变成默认；若非生成式的 System One 模型在裁判场景站住脚，可能催生一类专做高速结构化决策的小模型市场，与 LLM 形成"系统一/系统二"分工。
-   - 来源: [LangChain Blog](https://www.langchain.com/blog/jev-is-now-available-in-langsmith-evals) ; [@langchain](https://x.com/LangChain/status/2102081155277246532)
-
 **阿里任命资深 AI 研究员刘大一恒为 Qwen 大模型团队负责人**
-- 据两名知情员工透露，阿里集团已任命资深 AI 研究员刘大一恒（Dayiheng Liu）为 Qwen 大语言模型团队负责人。此次任命是在 Qwen 团队今年经历多轮重组之后落地，旨在让团队领导架构更加清晰。
+- 阿里集团已任命资深 AI 研究员刘大一恒（Dayiheng Liu）为 Qwen 大语言模型团队负责人。此次任命是在 Qwen 团队今年经历多轮重组之后落地，旨在让团队领导架构更加清晰。
   > 💡 Qwen 团队今年持续经历架构调整与开源节奏密集发布（Qwen-Image-2.1 等），由资深研究员接棒有助于稳定研发节奏；但该任命需结合后续组织变更与产品路线一起观察。
    - 来源: [The Information](https://www.theinformation.com/briefings/alibaba-appoints-new-head-qwen-llm-team)
 
 ### 算力追踪
-**SemiAnalysis：将 Engram 卸载到 DRAM 在多款 GPU 上最高带来 50% 性能提升**
-- SemiAnalysis 实验显示将 Engram 卸载到 DRAM 后，在 H200、B200、B300 以及 GB300 NVL72 上均获得最高约 50% 的性能提升。其技术团队与 PyTorch 的 Emad Barsoum、Anush Elangovan 等工程师合作，已为 vLLM 在 ROCm 上游引入 Engram DRAM 卸载支持，相关 PR 57491 在 AMD 平台上同样观察到最高 50% 的性能提升。涉及的上游 PR 编号包括 985、1002、1005 等。
-  > 💡 Engram 这一新模型架构对显存子系统的依赖度被 DRAM 卸载方案显著放大，跨 NVIDIA 与 AMD 平台同步落地上游意味着相关优化正在从研究阶段进入生产推理框架，对未来大模型推理基础设施的拓扑设计具有参考意义。
-   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2102050260721807397)
+**DeepSeek 据传押注华为芯片，目标今年四季度交付训练芯片**
+- 据报道，DeepSeek CEO 梁文锋在一次周日举行的闭门面对面会议上告诉投资者，公司的一项主要优先事项是在模型训练环节加大使用国产芯片。他预计华为最早将于今年第四季度开始向 DeepSeek 交付训练芯片。梁文锋发表上述言论之际，DeepSeek 正在敲定第二轮融资，目标是以 5000 亿元人民币估值募集 500 亿元人民币（约 75 亿美元）。
+  > 💡 DeepSeek 与华为的合作把美国先进芯片出口管制压力转化为国产 AI 算力联盟的推进动力；一旦华为训练芯片如期交付，将影响国内大模型公司在 NVIDIA 之外的训练路线选择与算力成本结构。
+   - 来源: [The Information](https://www.theinformation.com/articles/deepseek-bets-big-huawei-chips-bypass-u-s-export-controls)
 
 **三星 C&T 向 Kairos Power 注资最高 1 亿美元，为 Google 建造 50 兆瓦示范堆**
 - 未来 Google 供应商 Kairos Power 与三星 C&T 签署协议，由后者协助建设其首座 50 兆瓦核电示范堆，目标 2030 年完工。三星 C&T 将以股权方式投资 Kairos，并提供“实物”工程服务，合计金额最高达 1 亿美元，其中股权部分为 7000 万美元。三星 C&T 此前在全球参建约 12 座核反应堆。Kairos 当前在田纳西州 Oak Ridge 建造 Hermes 1 与 Hermes 2 两座反应堆，前者为低功率示范装置，后者为氟盐冷却高温堆、商用规模首堆，其输出将计入与 Google 协议的首批 50 兆瓦；公司预计 Hermes 2 于 2030 年投运。
@@ -113,6 +98,16 @@
    - 来源: [arXiv](https://arxiv.org/abs/2609.22000)
 
 ### X讨论
+**Cognition 推出 Devin Cloud in Terminal：CLI 中创建/接管云端会话，可 SSH 进入 Devin VM**
+- Cognition 发布 Devin Cloud in Terminal 与 devin ssh 两项更新。开发者可在终端用 `devin --cloud` 或 `/cloud` 创建、转向、恢复并观看 Devin Cloud 会话；`/handoff` 可把本地任务即时移交 Devin 在其云端 VM 上继续（也可反向执行：把云会话的 PR 分支拉回本地继续打磨），云会话独立于终端存续，`/open` 可随时切换到网页或桌面端查看。新的 `devin ssh` 首次允许 SSH 进入 Devin 的专属 VM，把其开发环境当自己的用：直接编辑源码、启动开发服务器并转发端口测试、用 scp 在 VM 与本机间拷贝文件。官方提供 **10 月 8 日前的免费 SWE-2 会话**。
+  > 💡 把"本地 CLI 快迭代"与"云端长任务"的切换成本压到一条命令，并以 SSH 开放底层 VM，Devin 正把 agent 的运行环境变成开发者可直接接管的工作站；这模糊了"AI 工具"与"开发环境租用"的边界，也是对本地优先路线 coding agent 的差异化反击。
+   - 来源: [@cognition](https://x.com/cognition/status/2102104259219406886) ; [Devin Blog](https://devin.ai/blog/devin-cloud-in-your-terminal)
+
+**LangChain 将 TypeSafe 的 Jev 引入 LangSmith：作为第三类 Agent 评测裁判**
+- LangChain 宣布 TypeSafe AI 的 System One 模型 Jev 以"Jev-as-a-judge"形式进入 LangSmith 评测。Jev 不是传统 LLM、不生成文本，而是对 agent 轨迹等状态直接返回类型化答案（是/否概率、单选、量表评分）；据 TypeSafe AI，其在分类任务上比可比 LLM **便宜约 450 倍、快约 200 倍**。LangChain 实测中，Jev 与人类评审在每个判断上一致，方差比 LLM 裁判低 **92-913 倍**，平均 **0.44 秒/次**（LLM 裁判 2.16-2.83 秒），完整判断集成本仅 **0.34 美元**（Claude Sonnet 4.6 为 28.17 美元）。这使"给每条生产 trace 全量打分而非抽样"在经济上变得可行，PII 泄露等安全类反馈可设告警触发自动响应。
+  > 💡 评测成本是 agent 迭代速度的隐形税，450 倍价差让全量评测从奢望变成默认；若非生成式的 System One 模型在裁判场景站住脚，可能催生一类专做高速结构化决策的小模型市场，与 LLM 形成"系统一/系统二"分工。
+   - 来源: [LangChain Blog](https://www.langchain.com/blog/jev-is-now-available-in-langsmith-evals) ; [@langchain](https://x.com/LangChain/status/2102081155277246532)
+
 **NVIDIA：以“Physical AI Halos”框架应对规模化部署中的多层安全挑战**
 - NVIDIA 指出，Physical AI 正快速从研究走向规模化部署，并援引 ABI Research 预测：到 2035 年 L3–L5 自动驾驶汽车保有量将达 4900 万辆；Omdia 则估算 2026 至 2035 年间将部署约 6000 万台工业机器人。博客以此为背景，倡导在物理 AI 系统进入道路、工厂、仓储等与人共处的环境时引入贯穿各层的系统级安全机制（NVIDIA 称之为 Physical AI Halos）。原文在可读片段中并未披露该框架的具体技术栈细节。
   > 💡 把“自动驾驶+工业机器人”的部署数字摆到一起，NVIDIA 实质在为 Halos 安全框架做需求侧铺垫：Physical AI 的规模化拐点若真按 2030–2035 年到来，安全层将是车厂与集成商无法绕开的采购项，这也是 NVIDIA 从算力供应商升级为“安全标准供应商”的关键卡位。
