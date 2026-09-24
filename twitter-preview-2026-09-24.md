@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-09-24 07:15
-**总计**：95 条推文
+**总计**：93 条推文
 
 ---
 
@@ -13,30 +13,20 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **OpenAI发布MentalHealthBench心理健康基准测试**
-   @openai
-2. **ChatGPT Voice新增插件支持并集成GPT-6模型**
-   @openai
-3. **Mark Zuckerberg在Meta Connect大会发布多项公告**
-   @meta
-4. **OpenAI声称解决数学重大问题**
+1. **OpenAI声称解决数学重大问题，AI在智识层面超越人类**
    @gklambauer
-5. **阿里巴巴发布Qwen Intelligence，含三大SOTA智能体**
-   @alibaba_qwen
-6. **Qwen-Audio-3.1发布，音频模型全面升级并大幅降价**
-   @alibaba_qwen
-7. **Qwen-Image-2.1登顶开源图像编辑与文生图竞技场**
-   @alibaba_qwen
-8. **Gemini 3.8 Flash和Flash-Lite TTS发布**
-   @demishassabis
-9. **Shane Legg分享其2008年博士论文**
-   @demishassabis
-10. **波士顿动力Stretch机器人工程师访谈**
-   @bostondynamics
+2. **Qwen3.8 Max Prime上线OpenRouter，支持1M上下文及多模态输入**
+   @openrouter
+3. **Memebench趣味评测：8款AI模型同台竞技，谁更能玩转梗图**
+   @openrouter
+4. **Recraft V4.1 Flash上线，每张图像仅需1.3秒、$0.007**
+   @openrouter
+5. **Space Bunny Alpha模型上线OpenRouter，支持1M token上下文**
+   @openrouter
 
 ---
 
-## 🏢 公司发布（71条）
+## 🏢 公司发布（70条）
 
 ### @1x_tech | App
 
@@ -54,8 +44,6 @@
   [查看](https://x.com/Alibaba_Qwen/status/2102727405198876753)
 - ⚡ Meet Qwen-Audio-3.1! ASR, TTS & Realtime are fully upgraded, joined by two new models: TTS-Next for audio creation and ASR-Next for audio understanding.  Five models, one complete audio stack: understanding, generation, interaction & creation.   Plus big price cuts across the lineup: TTS ~70% off, Realtime ~85% off, and ASR up to 95% off.  Highlights: 🥳 - ASR: stronger multilingual & dialect rec...
   [查看](https://x.com/Alibaba_Qwen/status/2102687258990026993)
-- Thanks @arena for the recognition! 🏆 Qwen-Image-2.1 is now the #1 open-source model in both the Image Edit and Text-to-Image Arenas. Try it now and show us what you create! 🎨
-  [查看](https://x.com/Alibaba_Qwen/status/2102569821997346912)
 
 ### @anthropicai | Model
 
@@ -66,6 +54,8 @@
 
 ### @artificialanlys | Model
 
+- Claude Opus 5.5 is the new #1 in the Artificial Analysis Coding Agent Index, with gains across all three evaluations, though at a higher Cost per Task  At max effort in Claude Code, Opus 5.5 scores 66 on the Coding Agent Index, the highest score we have measured. It is up 6 points against Opus 5 (60) and 4 points against Claude Fable 5.1 (62).  Anthropic has cut Opus pricing to $4/$20 per million ...
+  [查看](https://x.com/ArtificialAnlys/status/2102932119995756613)
 - inclusionAI's Ming-Image-0.1-Design is the #1 open weights model for UI/UX Design on the Artificial Analysis Text to Image Leaderboard, ranking #17 amongst all models in the category  Ming-Image-0.1-Design is a 6B parameter Text to Image model from inclusionAI, Ant Group's AI initiative. It is built for UI, infographics, posters and other text-rich visual designs, supports RGBA output with transpa...
   [查看](https://x.com/ArtificialAnlys/status/2102917486027079957)
 - The Intelligence Index vs Cost per Task Pareto frontier shifted this week with the releases of MiMo-V2.6-Pro, Claude Opus 5.5, GPT-6 Luna, and GPT-6 Sol  Together they have established eleven new points on the Pareto frontier (driven by different reasoning efforts): five from GPT-6 Luna, one each from MiMo-V2.6-Pro and GPT-6 Sol, and four from Claude Opus 5.5.  GPT-6 Luna (max) scores 37 at $0.068...
@@ -198,8 +188,6 @@
   [查看](https://x.com/SemiAnalysis_/status/2102793595019317665)
 - MI355X IS UP TO 1.7X BETTER 💰️PERF PER DOLLAR 💰️THAN DGX B300. The AMD Mainland China UMBP team co-designed, in collaboration with Alibaba & the @sgl_project community, a new feature in SGLang that removes the duplicated KVCache contained between local L2 DRAM & distributed L3 DRAM, allowing for up to 2x more KVCache to be stored in DRAM. This feature is called UnifiedRadixCache external cache.  B...
   [查看](https://x.com/SemiAnalysis_/status/2102760327792193978)
-- We tracked China's STAR Market semiconductor IPOs since Jan 2025, 13 in total with 60 days of trading, from IPO price → first-day close → day 60. All four chip designers are red from the first close, though none below issue. Packaging &amp; test fared better: 3 of 4 green. https://t.co/aWlkj09lTv
-  [查看](https://x.com/SemiAnalysis_/status/2102564302544638461)
 
 ### @skildai | Research
 
@@ -243,7 +231,7 @@
 - 762 commits. 315 contributors. 104 first-timers. vLLM v0.30.0 is live. 🎉  Highlights:  🤖 Hybrid-attention hot paths: Kimi K3 streamlines KDA, AttnRes, and MLA; DeepSeek-V4.1-Flash adds MXFP8 KV and async Engram; Qwen3.8-Flash-Next fuses QSA/PLE and cuts sparse-GQA overhead 🗄️ HiSparse adds a host tier beneath sparse-MLA decode; under GPU pressure, only top-k misses return to a per-request hot buff...
   [查看](https://x.com/vllm_project/status/2102593516740411733)
 
-## 👤 研究者动态（24条）
+## 👤 研究者动态（23条）
 
 ### @chelseabfinn [Stanford] | Research
 
@@ -258,11 +246,6 @@
   [查看](https://x.com/demishassabis/status/2102892566022885404)
 - RT @ShaneLegg: My 2008 PhD thesis was well ahead of its time :-) https://t.co/1DBCRnaOqB
   [查看](https://x.com/demishassabis/status/2102586395424600545)
-
-### @denny_zhou [Google DeepMind] | Model
-
-- RT @xinyun_chen_: Have been working on long-context for Muse Spark since 1.1, with @denny_zhou @qiqihelloworld @songlin_vin_li, and many ot…
-  [查看](https://x.com/denny_zhou/status/2102602643499864296)
 
 ### @gklambauer | Research
 
