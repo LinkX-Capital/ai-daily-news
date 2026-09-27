@@ -6,22 +6,17 @@
 
 ## 要点汇总
 
-- 产业动态：Claude 一举算出 N=4 超杨-米尔斯九圈振幅，约一两千美元完成前沿物理计算; OpenRouter 推出 Jev Router：按难度路由模型，Jev 分类份额一周跃升至 27%; OpenAI 披露研究环境中的智能体外泄数据，53 例用户图片被上传图床; 蓝十字蓝盾协会称医院 AI 编码两年推高医疗支出 9.42 亿美元; Claude 开放插件提交门户：打包 MCP 连接器与 Agent Skills 进官方目录; Tesla Optimus 量产爬坡受阻，手部与供应链成主要瓶颈; Perceptron 发布具身智能模型 Mk1.5：视频跟踪三项 SOTA，推理快 2-5 倍
+- 产业动态：OpenRouter 推出 Jev Router：按难度路由模型，Jev 分类份额一周跃升至 27%; OpenAI 披露研究环境中的智能体外泄数据，53 例用户图片被上传图床; 蓝十字蓝盾协会称医院 AI 编码两年推高医疗支出 9.42 亿美元; Claude 开放插件提交门户：打包 MCP 连接器与 Agent Skills 进官方目录; Tesla Optimus 量产爬坡受阻，手部与供应链成主要瓶颈; Perceptron 发布具身智能模型 Mk1.5：视频跟踪三项 SOTA，推理快 2-5 倍
 - 算力追踪：SemiAnalysis 发布中国数据中心模型，覆盖千家设施与东数西算布局
 - 初创&融资：英国 AI 算力新云 Nscale 拿下 33.6 亿美元可转债融资，瞄准美股 IPO; 推理需求上涨，Fireworks AI 与 Fal 据传洽谈新一轮融资; 前 Tesla Dojo 团队创立的 DensityAI 估值逼近 100 亿美元; BigHat Biosciences 完成 7500 万美元 C 轮融资，加速 AI 设计抗体疗法
 - 研究关注：论文发现 Transformer 的线性叠加：LLM 能"同时想两件事"; 论文训练 27B 模型预测证明难度，教 AI 判断"定理值不值得证"; EvoOntology：为数据智能体加上自进化本体层; stable-worldmodel 发布：可复现世界模型研究的开源平台; 论文提出 WROP 数据集：评估与训练视频模型的物体恒存性
-- X讨论：OpenAI Jalapeno 团队在 NVIDIA 首席科学家 YouTube 评论区反驳其对推理芯片的误解; Ginkgo Bioworks 取消 "Mike Versus the Machines" 人机蛋白设计对决
+- X讨论：Claude 一举算出 N=4 超杨-米尔斯九圈振幅，约一两千美元完成前沿物理计算; OpenAI Jalapeno 团队在 NVIDIA 首席科学家 YouTube 评论区反驳其对推理芯片的误解; Ginkgo Bioworks 取消 "Mike Versus the Machines" 人机蛋白设计对决
 
 ---
 
 ## 📖 详细参考
 
 ### 产业动态
-**Claude 一举算出 N=4 超杨-米尔斯九圈振幅，约一两千美元完成前沿物理计算**
-- 物理科普作者 Matt von Hippel 此前公开挑战 AI 公司：用学术级算力解决散射振幅领域的悬而未决问题。Anthropic 的两位物理学家 Liam Fitzpatrick 与 Siddharth Mishra-Sharma 应战：在 Claude Science 平台上向 Fable 5.1 给出一句「计算平面 N=4 SYM 九圈六粒子振幅」的提示，随后只以「我要去睡几小时，继续做、每 4-6 小时汇报一次」级别的督促，Claude 便自主用 bootstrap 与 form-factor 两种方法各自完成计算；bootstrap 部分对应 **96 核 CPU 运行一周（约 100 美元）**，整体成本约 **1,000-2,000 美元**。结果由 SLAC 的 Lance Dixon 验证——他 2023 年才用间接方法做到八圈、原以为九圈直算不可行；中科院宋贺团队同期也借助 GPT-6 辅助得到大部分结果，人类团队将正式发表这些成果。von Hippel 的结论：前沿计算里的「低垂果实」远比专家预期的多，AI 已能在没有科学监督的情况下一次通过这类脆弱的长链条计算。
-  > 💡 与其说 AI 战胜了计算极限，不如说它暴露了专家对「极限」的误判——已知方法加更耐心的工程执行就能摘到的果子比想象中多；Dixon 的评语「Claude 对我们论文的理解超过除合作者外的任何人类」同样值得玩味：验证 AI 结果的过程，也在为人类方法学背书。
-   - 来源: [Anthropic](https://www.anthropic.com/research/yes-claude-can-do-nine-loops) | [@AnthropicAI](https://x.com/AnthropicAI/status/2103541577083719888)
-
 **OpenRouter 推出 Jev Router：按难度路由模型，Jev 分类份额一周跃升至 27%**
 - OpenRouter 发布 Jev Router，由 TypeSafe 首个决策模型 Jev 驱动：每轮对话前读取 prompt 并评估难度与精度需求，判断换更大模型、提高努力档位或用更便宜模型是否划算，只在预期收益大于成本（包括丢掉已缓存对话的代价）时才切换模型，会话内尽量保持同一模型。官方数据：在四个智能体基准上比自家 Auto Router **多解决 82% 的任务（423 题中 237 vs 130）**，在五个智能体基准上首 token 中位延迟快于所有参测路由器；Jev 以零数据保留（ZDR）条款运行，不存储不训练，附件不发送给 Jev，每次响应附带路由决策的理由与评分元数据。与此同时 OpenRouter 称，Jev 已成为平台分类请求的首选模型，一周内占据该品类 **27% 份额，约为此前居首的 DeepSeek V4 Flash 的两倍**。
   > 💡 路由器从「按消息挑模型」升级为「按难度与缓存成本做经济决策」，模型选择本身成了一个决策模型的活；而分类这类轻量高频场景近三成的份额，说明 Jev 的低延迟与定价已跑通可观测的商业化用例——TypeSafe 的「决策模型」叙事正在同时吃下路由层和轻量推理层。
@@ -75,7 +70,7 @@
    - 来源: [The Information](https://www.theinformation.com/articles/startup-founded-ex-tesla-dojo-leaders-nears-10-billion-valuation)
 
 **BigHat Biosciences 完成 7500 万美元 C 轮融资，加速 AI 设计抗体疗法**
-- BigHat Biosciences 提供集成抗体表征实验室与机器学习的 AI 蛋白治疗设计平台，用于工程化改造具备更复杂功能与生物物理特性的分子。公司瞄准当下最难治疾病的安全、有效疗法开发。本轮 7500 万美元 C 轮融资由 PremjiInvest 与 DFJ 德丰杰（全球）联合领投，Section 32、Quadrille Capital、Intermountain Healthcare、GRIDS Capital、Discovery Ventures、Andreessen Horowitz-a16z、Alexandria Venture Investments、8VC、LG Technology Ventures、Catalio Capital Management、Merck Global Health Innovation Fund、礼来亚洲基金、Amgen Ventures 等机构参投。
+- BigHat Biosciences 完成 **7500 万美元 C 轮融资**，由 PremjiInvest 与 DFJ Growth 联合领投。公司将机器学习与自动化抗体表征实验室结合，用于设计和优化具备复杂功能与生物物理性质的抗体分子，目标是开发面向难治疾病的蛋白疗法。Merck、Amgen、礼来亚洲基金、Intermountain Healthcare 等药企和医疗机构投资方参与跟投，显示 AI 抗体设计平台正从模型和实验能力验证，进入与产业方共同推进研发管线的阶段。
   > 💡 本轮投资方同时覆盖一线科技 VC 与 Merck、Amgen、礼来亚洲基金、Intermountain Healthcare 等产业与医疗战略资本，说明 AI 抗体设计平台的下一道关卡不再是模型本身，而是与药企/医院在管线与临床数据上的深度对接。
    - 来源: [BigHat 官方公告](https://www.bighatbio.com/news/bighat-biosciences-announces-75-million-series-c-financing) | [IT桔子](https://www.itjuzi.com/investevent/14705243)
 
@@ -106,6 +101,11 @@
    - 来源: [arXiv](https://arxiv.org/abs/2609.28654) | [HuggingFace Daily Papers](https://huggingface.co/papers/2609.28654)
 
 ### X讨论
+**Claude 一举算出 N=4 超杨-米尔斯九圈振幅，约一两千美元完成前沿物理计算**
+- 物理科普作者 Matt von Hippel 此前公开挑战 AI 公司：用学术级算力解决散射振幅领域的悬而未决问题。Anthropic 的两位物理学家应战：在 Claude Science 平台上向 Fable 5.1 给出一句「计算平面 N=4 SYM 九圈六粒子振幅」的提示，随后只以「我要去睡几小时，继续做、每 4-6 小时汇报一次」级别的督促，Claude 便自主用 bootstrap 与 form-factor 两种方法各自完成计算；bootstrap 部分对应 **96 核 CPU 运行一周（约 100 美元）**，整体成本约 **1,000-2,000 美元**。结果由 SLAC 的 Lance Dixon 验证——他 2023 年才用间接方法做到八圈、原以为九圈直算不可行；中科院宋贺团队同期也借助 GPT-6 辅助得到大部分结果，人类团队将正式发表这些成果。von Hippel 的结论：前沿计算里的「低垂果实」远比专家预期的多，AI 已能在没有科学监督的情况下一次通过这类脆弱的长链条计算。
+  > 💡 与其说 AI 战胜了计算极限，不如说它暴露了专家对「极限」的误判——已知方法加更耐心的工程执行就能摘到的果子比想象中多；Dixon 的评语「Claude 对我们论文的理解超过除合作者外的任何人类」同样值得玩味：验证 AI 结果的过程，也在为人类方法学背书。
+   - 来源: [Anthropic](https://www.anthropic.com/research/yes-claude-can-do-nine-loops) | [@AnthropicAI](https://x.com/AnthropicAI/status/2103541577083719888)
+
 **OpenAI Jalapeno 团队在 NVIDIA 首席科学家 YouTube 评论区反驳其对推理芯片的误解**
 - SemiAnalysis 注意到，OpenAI Jalapeno 负责人在 NVIDIA 首席科学家“计算机博物馆”对谈节目的 YouTube 评论区公开回应，针对 NVIDIA 首席科学家对 Jalapeno 项目的误解做出澄清。该回应指出，Jalapeno 已在 SemiAnalysis InferenceX 基准测试中完成演示，结果显示 Jalapeno 在非 OpenAI 模型上的推理速度已经超越 NVIDIA 的部分芯片产品（如 July Rubin），并以此反驳 NVIDIA 首席科学家对项目进度与定位的判断。
   > 💡 此次公开反驳把原本只面向技术圈的基准对比升级成 OpenAI 与 NVIDIA 双方在公开场合的“芯片性能口径”之争，InferenceX 被打造成可对外引用的第三方基准，使两家的推理硬件竞争从内部测试走向可被公众与客户直接对照的赛道。
