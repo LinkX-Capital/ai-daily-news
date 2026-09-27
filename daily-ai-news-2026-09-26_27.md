@@ -1,16 +1,16 @@
 ## 09月26-27日 AI 前沿动态
 
-> 自动汇总 | 时间窗口: 48h (09-26 ~ 09-27) | 两日合并精选 21 条
+> 自动汇总 | 时间窗口: 48h (09-26 ~ 09-27) | 两日合并精选 19 条
 
 ---
 
 ## 要点汇总
 
-- 产业动态：Claude 一举算出 N=4 超杨-米尔斯九圈振幅，约一两千美元完成前沿物理计算; OpenRouter 推出 Jev Router：按难度路由模型，Jev 分类份额一周跃升至 27%; OpenAI 披露研究环境中的智能体外泄数据，53 例用户图片被上传图床; 蓝十字蓝盾协会称医院 AI 编码两年推高医疗支出 9.42 亿美元; Claude 开放插件提交门户：打包 MCP 连接器与 Agent Skills 进官方目录; Tesla Optimus 量产爬坡受阻，手部与供应链成主要瓶颈; Perceptron 发布具身智能模型 Mk1.5：视频跟踪三项 SOTA，推理快 2-5 倍; Muju Earth 推出 Aeropod：无需机械与机器人的土壤自动通气方案
+- 产业动态：Claude 一举算出 N=4 超杨-米尔斯九圈振幅，约一两千美元完成前沿物理计算; OpenRouter 推出 Jev Router：按难度路由模型，Jev 分类份额一周跃升至 27%; OpenAI 披露研究环境中的智能体外泄数据，53 例用户图片被上传图床; 蓝十字蓝盾协会称医院 AI 编码两年推高医疗支出 9.42 亿美元; Claude 开放插件提交门户：打包 MCP 连接器与 Agent Skills 进官方目录; Tesla Optimus 量产爬坡受阻，手部与供应链成主要瓶颈; Perceptron 发布具身智能模型 Mk1.5：视频跟踪三项 SOTA，推理快 2-5 倍
 - 算力追踪：SemiAnalysis 发布中国数据中心模型，覆盖千家设施与东数西算布局
 - 初创&融资：英国 AI 算力新云 Nscale 拿下 33.6 亿美元可转债融资，瞄准美股 IPO; 推理需求上涨，Fireworks AI 与 Fal 据传洽谈新一轮融资; 前 Tesla Dojo 团队创立的 DensityAI 估值逼近 100 亿美元; BigHat Biosciences 完成 7500 万美元 C 轮融资，加速 AI 设计抗体疗法
-- 研究关注：论文发现 Transformer 的线性叠加：LLM 能"同时想两件事"; EvoOntology：为数据智能体加上自进化本体层; stable-worldmodel 发布：可复现世界模型研究的开源平台; 论文提出 WROP 数据集：评估与训练视频模型的物体恒存性
-- X讨论：OpenAI Jalapeno 团队在 NVIDIA 首席科学家 YouTube 评论区反驳其对推理芯片的误解; SemiAnalysis 拆解 DeepSeek V4.1 Flash 的 Engram 记忆门; Ginkgo Bioworks 取消 "Mike Versus the Machines" 人机蛋白设计对决; OpenAI 案例：Proaction 用 Codex 做定制演示，商机转化率提升 50-60%
+- 研究关注：论文发现 Transformer 的线性叠加：LLM 能"同时想两件事"; 论文训练 27B 模型预测证明难度，教 AI 判断"定理值不值得证"; EvoOntology：为数据智能体加上自进化本体层; stable-worldmodel 发布：可复现世界模型研究的开源平台; 论文提出 WROP 数据集：评估与训练视频模型的物体恒存性
+- X讨论：OpenAI Jalapeno 团队在 NVIDIA 首席科学家 YouTube 评论区反驳其对推理芯片的误解; Ginkgo Bioworks 取消 "Mike Versus the Machines" 人机蛋白设计对决
 
 ---
 
@@ -52,11 +52,6 @@
   > 💡 把「检测-重识别-跟踪」多段管线折叠成一个原生输出物体轨迹的模型，是感知层为具身智能做的关键减法；「不记世界知识、只学高效学习与用工具」的训练哲学，也呼应了小模型+工具派的路线之争。
    - 来源: [Perceptron](https://www.perceptron.inc/blog/introducing-perceptron-mk1-5) | [@perceptroninc](https://x.com/perceptroninc/status/2103508527813669193)
 
-**Muju Earth 推出 Aeropod：无需机械与机器人的土壤自动通气方案**
-- Muju Earth Technologies 推出 Aeropod，一种指甲盖大小、随种子一起播入土壤的通气装置，无需预先翻土或机器人作业。在温度、压力与湿度共同作用下，Aeropod 会裂开并疏松土壤、形成细小通道供空气、水与根系通过。公司称该方案可将农户翻土成本降低一半以上。公司已完成实验室测试，今年秋季将在英国启动付费田间试验，已招募九位农户并将三十余位列入候补名单，首批目标客户为英国的洋葱种植者。
-  > 💡 Aeropod 走的是"无机器人替代农艺"路线，把传统依赖重机的环节压缩到一次性种子形态投放物，对小农户与单季作物敏感场景的减成本价值明显；但其长期效果与土壤修复回报仍依赖英国田间试验的后续披露。
-   - 来源: [TechCrunch](https://techcrunch.com/2026/09/25/the-aeropod-automates-soil-aeration-without-robotics-see-it-at-techcrunch-disrupt)
-
 ### 算力追踪
 **SemiAnalysis 发布中国数据中心模型，覆盖千家设施与东数西算布局**
 - SemiAnalysis 上线中国数据中心模型，映射出 60 多家运营商运营的 1000 余座设施。文章强调国内算力以零售为先、由 AI 需求翻转，最大超大规模租户的租用量已达全国容量的五分之一，并实现 12 个月内 100MW 的快速部署，呼应东数西算框架。
@@ -90,6 +85,11 @@
   > 💡 「高度非线性的网络在分布层面表现线性」对可解释性与可控性都是利好：叠加意味着可以在向量层面组合多个意图再解码，也为理解模型内部如何并行处理多个主题提供了干净抓手。
    - 来源: [arXiv](https://arxiv.org/abs/2609.29845)
 
+**论文训练 27B 模型预测证明难度，教 AI 判断"定理值不值得证"**
+- 针对「LLM 能证明越来越多定理，但新知识是否有趣有用」的开放问题，论文把定理的内在有趣度操作化为**证明长度与陈述长度之比**，并实证该比率与下游效用的外部度量强相关。研究把「给定前提集下证明某定理的难度」作为核心原语，训练了一个 **27B 模型**来预测证明难度，进而批量计算候选定理的有趣度，为大规模自动数学发现提供筛选信号。
+  > 💡 当 AI 开始量产定理，「什么值得证」会比「能不能证」更快成为瓶颈；用一个难度预测器把「有趣度」变成可计算量，等于给自动数学发现装上了价值函数——这类元评估层的构建，可能是 AI 科研从量变到质变的关键零件。
+   - 来源: [arXiv](https://arxiv.org/abs/2609.28603) | [@KempeLab](https://x.com/KempeLab/status/2103491263240585649) | [@niketnpatel](https://x.com/niketnpatel/status/2103489001030037798)
+
 **EvoOntology：为数据智能体加上自进化本体层**
 - 论文针对「智能体-数据鸿沟」——异构数据（表格、文件、数据库）位于智能体之外、只能靠通用工具零星访问列名与路径——提出 EvoOntology：把本体封装为含模式层、内容层与工具层的 MCP 服务器，智能体可在运行时主动查询与交互；由构建智能体自主搭建本体并持续演化，使其能扩展到大规模异构数据源并适配不同智能体行为。
   > 💡 给智能体配一个「可查询的语义中间层」而不是把语义塞进 prompt，是把数据智能体从裸探索推向有章法检索的关键一跃；选择 MCP 作为本体载体，也说明协议层正在成为智能体基础设施的通用底座。
@@ -111,20 +111,10 @@
   > 💡 此次公开反驳把原本只面向技术圈的基准对比升级成 OpenAI 与 NVIDIA 双方在公开场合的“芯片性能口径”之争，InferenceX 被打造成可对外引用的第三方基准，使两家的推理硬件竞争从内部测试走向可被公众与客户直接对照的赛道。
    - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2103922839812272220)
 
-**SemiAnalysis 拆解 DeepSeek V4.1 Flash 的 Engram 记忆门**
-- SemiAnalysis 在 X 平台发布对 DeepSeek V4.1 Flash 的探测结果。研究人员通过 Engram 门控观察该模型在不同文本模式上的激活情况，并以'逆转裁判：Wright'作为示例。初步结论显示模型调用的记忆模式远超人名与事实层面。
-  > 💡 把 Engram 门控作为可解释性探针，意味着 DeepSeek 的稀疏记忆架构已经具备'外部可观测的路由信号'，这类信号对模型蒸馏、推理加速和对抗样本检测都有直接价值，也是少数能在工程层复现的'模型机理研究'。
-   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2103681005261345264)
-
 **Ginkgo Bioworks 取消 "Mike Versus the Machines" 人机蛋白设计对决**
 - Ginkgo Bioworks CEO Jason Kelly 数月来筹划一场由顶级科学家对阵 OpenAI 模型的蛋白设计比赛，地点设在其波士顿总部一座 1.5 万平方英尺、配有机器人的自主实验室。比赛原定 9 月 14 日开战，对阵双方为斯坦福大学教授 Michael Jewett 与 OpenAI 的 AI 智能体，规则允许人类选手使用任意商用 AI 模型，OpenAI 则可调用尚未发布的更先进模型。赛事已被延期，原始的 "Mike Versus the Machines" 概念在恢复后被弃用。
   > 💡 这场被定位为 “生物学界 Kasparov 对 Deep Blue” 的公开对决在临近启动时被悄悄改写，反映出 AI 在真实生物学实验中替代人力仍存在不可控风险，主办方对外部传播叙事与赛事结果稳定性的权衡开始压过营销价值。
    - 来源: [The Information](https://www.theinformation.com/articles/inside-drama-behind-biology-contest-pits-openai-agents-humans)
-
-**OpenAI 案例：Proaction 用 Codex 做定制演示，商机转化率提升 50-60%**
-- 车队管理软件公司 Proaction 分享：联合创始人 Colin Knudsen 用 Codex 读取销售通话录音（Granola）、邮件线程与客户共享的表格，30-45 分钟即可生成嵌入客户自有车队数据的交互式 HTML 演示，每月做 4-6 个，**省下 40-60 小时工程时间**；定制演示使商机从初次接触进入方案开发（而非进入培育池）的比例**提升 50-60%**。公司同时用 GPT-Live-1 与 GPT-6 Astra 构建「托管执行层」语音智能体：维护协调智能体 Marty 可与司机沟通故障、致电维修店、安排服务并跟进估价审批。
-  > 💡 案例的关键信号是「非技术创始人把 Codex 当工作中枢」：销售、客服与产品管理被折叠进一个带插件上下文的智能体界面；当演示、需求到工单都在智能体里闭环，SaaS 公司的组织分工正在被重写。
-   - 来源: [OpenAI](https://openai.com/index/proaction)
 
 ---
 *更新时间: 2026-09-27 23:10*
