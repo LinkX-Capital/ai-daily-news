@@ -8,7 +8,7 @@
 
 - 产业动态：MiniMax 发布 M3.1-Flash-Preview：登陆 MiniMax Code，面向日常开发; Microsoft 重做 Copilot：Home、Code 与 Autopilot 三套能力陆续上线; Sakana AI 聘请 Jürgen Schmidhuber 担任首席科学顾问，推进物理 AI 与世界模型; 智元与长隆部署超 300 台机器人，具身智能进入主题乐园常态化运营
 - 算力追踪：中国或允许阿里、字节采购 NVIDIA RTX Pro 5500 芯片
-- X讨论：SemiAnalysis AgentX 评测框架集成至 ModelScope; Epoch AI：华为到 2030 年仍可能落后 NVIDIA 约四年
+- X讨论：SemiAnalysis AgentX 评测框架集成至 ModelScope; Epoch AI：华为 AI 芯片持续追赶，但到 2030 年仍可能落后 NVIDIA 约四年
 
 ---
 
@@ -47,7 +47,7 @@
   > 💡 AgentX 同时被中美头部模型厂商与云服务商接入，显示 SemiAnalysis 正在把单点拆解能力转化为跨厂商通用的评测基础设施。
    - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2104043521699119320)
 
-**Epoch AI：华为到 2030 年仍可能落后 NVIDIA 约四年**
+**Epoch AI：华为 AI 芯片持续追赶，但到 2030 年仍可能落后 NVIDIA 约四年**
 - Epoch AI 估算，2026 年华为旗舰 AI 芯片 Ascend 950 的单芯片计算吞吐约为 NVIDIA B300 的 **七分之一**，约为 2022 年 H100 的一半；华为预计生产约 **150 万颗**芯片，NVIDIA 约 **600 万颗**，综合产出算力约低 **25 倍**。报告认为，出口管制限制了华为提升单芯片性能和芯片产量两项关键规模化杠杆，到 2030 年华为在芯片性能和总产量上都可能仍落后 NVIDIA 约 **四年**。
   > 💡 中国 AI 芯片的追赶难点不仅是单颗芯片性能，更是先进制造、互联和规模化生产的乘数效应；即使架构和软件持续改进，产量与供应链约束仍会把总算力差距拉大。
    - 来源: [Epoch AI](https://epochai.substack.com/p/how-far-behind-nvidia-is-huawei)
