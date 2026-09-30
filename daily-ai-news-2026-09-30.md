@@ -7,7 +7,7 @@
 ## 要点汇总
 
 - 模型前沿：OpenAI 发布 GPT-6.1 Sol：智能指数距 Astra 仅 1 分，单任务成本约其四分之一
-- 产业动态：微软撤回 Power BI 数据封锁加入 Ossie，Google 亦申请加入该联盟; OpenAI 发布 Dot：由 GPT-6 Astra 驱动的全天候主动型智能体; Meta 推出 Muse for Small Business：接入 15 款办公工具的个人 AI 智能体; Perplexity Computer 推出 Automations：事件触发或定时的持续型智能体; Claude 扩展 Preserved Thinking：思维块绑定账户与前缀，封堵蒸馏攻击
+- 产业动态：微软撤回 Power BI 数据封锁加入 Ossie，Google 亦申请加入：为 AI 智能体打通数据访问; OpenAI 发布 Dot：由 GPT-6 Astra 驱动的全天候主动型智能体; Meta 推出 Muse for Small Business：接入 15 款办公工具的个人 AI 智能体; Perplexity Computer 推出 Automations：事件触发或定时的持续型智能体; Claude 扩展 Preserved Thinking：思维块绑定账户与前缀，封堵蒸馏攻击
 - 算力追踪：Anthropic 招股书披露：与 SpaceX 算力协议规模最高达 845 亿美元
 - 初创&融资：OpenAI 据传洽谈 300 亿美元 Pre-IPO 融资，估值或达 1.4 万亿美元; a16z 投资的 EliseAI 完成 3.5 亿美元融资，估值翻倍至 40 亿美元; 前 Tesla 团队供应链智能体公司 Atomic 完成 1250 万美元 A 轮
 - 研究关注：Active Taskless Distillation：仅靠单词级提示实现能力迁移; VisionHOPE：把视觉骨干网络重写为自修改学习系统; DN-MOPD：按领域方差归一化多教师反馈，找回被稀释的数学增益; GAGAR：用智能体评分器对代码 RL 的通过轨迹再分配优势
@@ -24,7 +24,7 @@
    - 来源: [OpenAI](https://openai.com/index/introducing-gpt-6-1-sol) | [@ArtificialAnlys](https://x.com/ArtificialAnlys/status/2105025585332605357) | [@OpenAI](https://x.com/OpenAI/status/2104986129686741046)
 
 ### 产业动态
-**微软撤回 Power BI 数据封锁加入 Ossie，Google 亦申请加入该联盟**
+**微软撤回 Power BI 数据封锁加入 Ossie，Google 亦申请加入：为 AI 智能体打通数据访问**
 - 微软宣布加入成立一年的 Apache Ossie 联盟，该组织旨在让 AI 工具更方便地访问各类应用与数据库中的数据；四个月前微软曾阻止合作伙伴将其数据管理工具接入 Power BI，被外界解读为保护自有 Fabric 产品，Salesforce 此前也经历过类似转向。据公司发言人透露，Google 也正在申请加入该联盟——其现有成员包括 Snowflake 和英伟达，Google 搜索与云业务将因此成为最新加入的主要软件厂商。
   > 💡 微软的转向呼应了 CEO Satya Nadella 一贯的"与竞品兼容"策略，意味着它放弃以 Fabric 数据栈直接对抗 Databricks 与 Snowflake，转而参与通用互操作标准保住平台层；云厂商相继入局一个由数据库与硬件厂商牵头的组织，说明数据可访问性正成为模型以外新一轮云服务竞争的底层筹码，Google 更多是补齐生态短板而非单纯做贡献。
    - 来源: [The Information](https://www.theinformation.com/articles/microsoft-tears-ai-data-wall) | [The Information](https://www.theinformation.com/briefings/google-joins-industry-group-working-help-ai-better-understand-data)
