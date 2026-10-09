@@ -1,0 +1,132 @@
+## 10月09日 AI 前沿动态
+
+> 自动汇总 | 时间窗口: 24h | 全局精选 21 条
+
+---
+
+## 要点汇总
+
+- 模型前沿：StepFun 旗舰 Step 5 Preview 上线 OpenRouter：稀疏 MoE、支持 1M 上下文与多模态输入
+- 产业动态：Google 发布统一工作智能体 Gemini：单一提示框、云端持久执行与模型自由编排; Claude 上线 Dashboards 与 Motion：数据变实时仪表盘、想法变动画解说; OpenAI 据报年化收入「接近 500 亿美元」，较此前口径少 200 亿; Anthropic 更新使用政策：禁止长期辱骂模型与干预选举; Natura 99 美元智能戒指把 AI 智能体戴上手指，可指定不同智能体分工
+- 算力追踪：SemiAnalysis：SK Hynix 公开承认 16-Hi HBM 困难，Hybrid Bonding 路线受到质疑
+- 初创&融资：Manus 母公司 Butterfly Effect 完成逾 5 亿美元融资，已与 Meta 分拆; AI 评测平台 Arena 完成 2 亿美元 B 轮融资，估值升至 31 亿美元; 自动芯片设计实验室 Phinity 走出隐身：520 万美元种子轮，年化收入达八位数; Cal AI 19 岁创始人再创业：个人智能体 Persona 获 1000 万美元，179 美元手环 12 月发货; 抵押贷款智能体公司 Vesta 融资 3000 万美元，收入同比增 12 倍
+- 研究关注：STEPQuant：面向 Delta-rule 循环状态的时空后训练量化框架; Long-WAM：扩展世界-动作模型上下文，动态叠杯任务成功率 95%; Continuous Memory Machines：给循环网络配上矩阵化的短长期双记忆; Meta 旧文 Memory Mosaics at scale 再获关注：1T token 训练胜 8T token Transformer
+- X讨论：OpenAI 发布 722 篇含 AI 解法的数学论文，分析称靠蛮力与耐力; AutoInteract：从真实交互史学用户模型，多轮协作数据合成; DeepMind 研究院随笔「弯折发现曲线」：LLM 与专用模型是科学的经济互补品; Anthropic 启动 Cyber Mission：保卫关键基础设施与开源软件，上线免费 OSS Scanner; Anthropic 三年投入 1.5 亿美元加入 Genesis Mission，Claude 覆盖 15 个联邦机构
+
+---
+
+## 📖 详细参考
+
+### 模型前沿
+**StepFun 旗舰 Step 5 Preview 上线 OpenRouter：稀疏 MoE、支持 1M 上下文与多模态输入**
+- OpenRouter 在 X 上宣布，StepFun 旗下 Step 5 Preview 已在其平台上线。官方介绍 Step 5 Preview 为面向 Agent 工作的新旗舰模型，采用稀疏 MoE 架构，激活参数 27B、总参数 600B，上下文窗口 100 万，支持文本、图像与视频输入。OpenRouter 同时指出，该模型在编程与金融等专业类知识工作上表现较强。
+  > 💡 Step 5 Preview 用 27B 激活 / 600B 总参数的稀疏 MoE 与 1M 上下文切入 Agent 工作流，意味着 StepFun 选择以「长上下文 + 多模态输入 + 低激活成本」的组合在专业场景与开源前沿模型正面竞争。
+   - 来源: [StepFun](https://www.stepfun.com/step-5-preview) | [@openrouter](https://x.com/OpenRouter/status/2108188953757331803)
+
+### 产业动态
+**Google 发布统一工作智能体 Gemini：单一提示框、云端持久执行与模型自由编排**
+- Google Cloud 在 Gemini at Work 活动上发布面向工作的统一智能体 Gemini：用户给出目标而非指令，它从单一提示框完成问答、知识工作、内容创作与编码，并带回成品。架构要点：云端持久执行——单一记忆、上下文与个性化图谱跨设备不变，关上笔记本长任务继续跑；可动态创建带独立身份的子智能体，也可作为拥有 @agents.company.com 邮箱与持久角色的「同事智能体」；底层模型是独立选择，可在 Gemini 家族与 Anthropic Claude 间编排以平衡质量与成本。同步宣布：Workspace 内联工作、金融与法律行业专精版、数据与分析技能、Agent Gateway 与实时支出上限。Sundar Pichai 披露 Gemini 月活超 10 亿、Fortune 100 中近 90% 在用 Gemini Enterprise。
+  > 💡 「单一智能体 + 可换底座模型」的设计把 Google 从模型竞赛中解耦出来——当领先模型几个月一换，上下文、技能与数据留在智能体层才是企业资产；「同事智能体拥有自己的邮箱与身份」则把 org chart 第一次为 AI 员工开门。
+   - 来源: [Google Cloud Blog](https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026) | [@ThomasOrTK](https://x.com/ThomasOrTK/status/2108245829530325307) | [TechCrunch](https://techcrunch.com/2026/10/08/google-brings-agentic-ai-to-gemini-starting-with-businesses)
+
+**Claude 上线 Dashboards 与 Motion：数据变实时仪表盘、想法变动画解说**
+- Claude 推出两项 beta 功能：Dashboards 可连接 BigQuery、Databricks、Snowflake 等数据平台或 Salesforce 等 CRM，用自然语言提问即生成随数据刷新而更新的仪表盘，点击任一数字可查看背后的查询语句，并能一键转入 Amplitude、Grafana、Hex 等分析工具继续深挖；Motion 把季度报告变成 30 秒动画解说或产品演示——由代码驱动动画（文本、图表、形状与图片），可逐字修改、导出 MP4，不使用视频生成模型、无 AI 生成人物。同期 Docs、Slides 与 Design 正式结束 beta 并向包括免费版在内的所有套餐开放，迄今用户已在 Claude 中创建超过 **4,500 万**份文档、幻灯片与设计。
+  > 💡 Claude 的产出格式正从「文本+Artifact」扩展到持续更新的数据界面与可编辑动画，「每个图表都显示背后的查询」则把生成结果锚定在可验证性上；对 Knowledge Worker 而言，BI 工具与演示工具的边界正被对话界面重画。
+   - 来源: [Claude](https://claude.com/resources/articles/dashboards-and-motion) | [@claudeai](https://x.com/claudeai/status/2108271552991252810)
+
+**OpenAI 据报年化收入「接近 500 亿美元」，较此前口径少 200 亿**
+- 据《金融时报》报道，OpenAI 向投资人表示其年化收入「接近 **500 亿美元**」，比一周前外界报道的「接近 700 亿美元」低约 200 亿。报道称 700 亿的数字源自 OpenAI 投资人为与 Anthropic 年化收入直接对标而做的估算；两家公司口径本身不同——Anthropic 计入云伙伴贡献的销售而 OpenAI 不计。收入问题持续困扰试图论证巨额投资的 OpenAI：三月单轮融资即达 1220 亿美元，泄露的 2025 年财务数据显示其收入约 130 亿美元而支出显著更高，IPO 已推迟至 2027 年初。
+  > 💡 200 亿美元的口径差不是小事：它既暴露了「投资人自行估算对外吹风」的数字来源风险，也说明在与 Anthropic 的对标叙事里，双方连收入定义都未对齐；在 Pre-IPO 定价博弈当口，这种模糊性本身就是估值分歧的燃料。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/10/08/openais-revenue-is-reportedly-20-billion-less-than-previously-projected/)
+
+**Anthropic 更新使用政策：禁止长期辱骂模型与干预选举**
+- Anthropic 发布新版使用政策：最受关注的是明确禁止用户对模型进行「长期语言虐待」——政策说明这仅适用于极端情形（用户反复残忍对待模型且无任何可辨目的），不适用于常见的用户挫败、反驳、黑暗创作主题或模型测试研究；自 8 月起 Claude 已被训练为终止此类持续有害的对话，新规则从用户侧明令禁止。政策同时新增对选举干预、欺骗性营销活动（假账号、虚构新闻机构）、武器软件与监控的禁令，单列「不得破坏民主进程」章节。
+  > 💡 「虐待 AI」首次成为可封禁的违规行为，等于在服务条款层面承认了模型交互的伦理属性——这与其「模型可能有道德地位」的内部研究方向一致；而把普通发泄明确排除在外，也划清了边界：禁的是残忍，不是差评。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/10/08/anthropic-changes-usage-policy-to-ban-model-abuse-and-election-interference/)
+
+**Natura 99 美元智能戒指把 AI 智能体戴上手指，可指定不同智能体分工**
+- AI 硬件初创 Natura 推出 99 美元的 Interface 智能戒指：按下手指即可召唤 AI 智能体完成任务、捕捉想法、控制设备，同时内置心率、HRV、睡眠与活动追踪；续航 6-12 天。戒指可连接 Muse、Instinct、Grok Bot、Claude、ChatGPT 等多种智能体与应用，用户可为不同任务指定不同智能体——让 Claude 写代码、Instinct 订餐厅、Grok Bot 处理其他事务；回应经耳机、iPhone Live Activity 或 App 返回。创始人 Carlo Edoardo Ferraris（此前创立配件公司 Rolling Square）称戒指是「人的延伸，可戴着洗澡睡觉永不摘下」，预售下月开启、12 月或 1 月发货，初期免费后拟收每月 9 美元订阅。
+  > 💡 继 Muse Gadgets 的开源硬件之后，智能体生态开始抢占「永不摘下的入口」：戒指把 summon 智能体的成本降到一次按压，而「按任务指定不同智能体」的设定默认了多智能体共存——底层模型之争未分胜负，指环上的分发位先成了战场。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/10/08/naturas-smart-ring-puts-ai-agents-on-your-finger/)
+
+### 算力追踪
+**SemiAnalysis：SK Hynix 公开承认 16-Hi HBM 困难，Hybrid Bonding 路线受到质疑**
+- SemiAnalysis 发文指出，存储厂商开始公开认同其此前关于 HBM 规格下移的判断；SK Hynix 公开发声承认 16-Hi 难度较高，市场需求正在从容量优先转向带宽优先。其观点认为，混合键合在 HBM 中的价值原本建立在堆叠高度问题上，4-Hi 与 8-Hi 阶段并不存在需要被解决的高度难题；用于 HBM 的 D2W 混合键合已从「何时落地」转为「是否会落地」的争论。
+  > 💡 头部存储厂商的公开表态意味着 HBM 的技术路线选择正在向带宽与可制造性倾斜，混合键合方案的市场预期需要被重新定价，而不只是等待时间表。
+   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2108256589559865346)
+
+### 初创&融资
+**Manus 母公司 Butterfly Effect 完成逾 5 亿美元融资，已与 Meta 分拆**
+- AI Agent 初创公司 Manus 的母公司 Butterfly Effect 周四宣布，已在最新一轮融资中募集逾 5 亿美元。公司在微信社交媒体上透露，本轮由新投资方 Boyu Capital 与 IDG Capital 领投，Tencent、HSG 与 ZhenFund 等既有投资方参与跟投。
+  > 💡 在脱离 Meta 之后短期内拿到由中资美元与人民币一线基金共同领投的逾 5 亿美元，说明 Butterfly Effect 把分拆定位成一次资本与治理层面的独立重置，而非单纯的业务切割。
+   - 来源: [The Information](https://www.theinformation.com/briefings/manus-raises-500-million-unwinding-meta-deal)
+
+**AI 评测平台 Arena 完成 2 亿美元 B 轮融资，估值升至 31 亿美元**
+- 运营热门大模型榜单 LMArena 的 Arena 公司周四宣布完成 2 亿美元 B 轮融资，投后估值 31 亿美元。本轮由 Lightspeed Venture Partners 与 Khosla Ventures 领投，Salesforce Ventures、01 Advisors、Dell Technologies Capital、Endeavor Catalyst、a16z、Felicis 等机构参与。Arena 表示其年化收入运行率已在六月达到 1 亿美元，新资金将用于把模型评估范围扩展到对齐维度，例如模型说谎行为。此前 Arena 在一月披露 1.5 亿美元 A 轮时投后估值 17 亿美元、年化收入 3000 万美元。
+  > 💡 在大模型厂商被指通过刷榜抬高基准分数的背景下，依赖众包人类偏好的 Arena 凭借“静态榜单失效”叙事同时拿下模型实验室与企业客户，意味着评测环节正从开源工具升级为估值数十亿美元的独立业务。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/10/08/popular-ai-leaderboard-arena-nearly-doubles-valuation-to-3-1b-valuation-in-10-months)
+
+**自动芯片设计实验室 Phinity 走出隐身：520 万美元种子轮，年化收入达八位数**
+- 面向自主芯片设计的应用研究实验室 Phinity 走出隐身，完成 **520 万美元种子轮**，Uncork Capital 领投，Moxxie 参投、天使投资人包括 Jeff Dean，此前 pre-seed 由 Pear 领投；公司称已与多家头部基础模型实验室合作、年化收入达**八位数**。其使命是让智能体在真实物理反馈的闭环中完成从架构探索到流片的设计-评估-修订，官方称产出的经验证设计比资深硬件工程师加前沿编码智能体快一个数量级，且功耗、性能与面积更优；团队包括 Intel 定制硅前负责人、NVIDIA 多次先进节点流片架构师等。创始人援引 Jevons 悖论：定制芯片越快越便宜，需求就越爆发——「每个重要产品都能有为自己量身打造的硅」。
+  > 💡 「AI 设计运行 AI 的芯片」是自举叙事的硬件版：当流片从数年缩到数月，芯片设计会从少数巨头的特权变成长尾需求的标准件；八位数年收入说明头部模型实验室已开始为「为自己架构定制硅」付费——这与 Google TPU、微软自研芯片的逻辑一致，只是把设计环节外包给了智能体。
+   - 来源: [Phinity](https://www.phinity.ai/blog/introducing-phinity) | [@aadi_nash](https://x.com/aadi_nash/status/2108246167872221658)
+
+**Cal AI 19 岁创始人再创业：个人智能体 Persona 获 1000 万美元，179 美元手环 12 月发货**
+- Cal AI（三月被 MyFitnessPal 收购，两年内年收超 3000 万美元）的 19 岁联合创始人 Zach Yadegari 推出个人 AI 智能体 Persona 并完成 **1000 万美元**融资，Vine Ventures 领投。Persona 类似 Instinct 与 Muse，但配备 179 美元手环：按键或甩腕唤醒、非环境监听，模型运行在云端，数据加密、可删除、承诺不卖给广告商；支付经 Stripe Link 处理、agent 看不到卡号，购买需用户批准，并内置防钓鱼与提示注入措施。商业模式靠购物研究中的广告（agent 不知哪些商品是赞助的），手环 12 月发货，iMessage 免费 beta 已有数千用户。
+  > 💡 个人助手赛道同时挤进了 19 岁连环创业者与 Meta/OpenAI，差异化全押在「硬件+隐私」组合上；「agent 不知道哪个结果是广告」的设计聪明地把广告激励与推荐解耦——但能否撑住与巨头正面竞争，仍取决于执行细节而非理念。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/10/08/cal-ais-19-year-old-founder-just-raised-10m-for-his-new-ai-startup/)
+
+**抵押贷款智能体公司 Vesta 融资 3000 万美元，收入同比增 12 倍**
+- 帮助贷款机构处理抵押贷款发放的 AI-native 公司 Vesta 完成 **3000 万美元**融资，Conversion Capital 领投，客户 Pennymac 与 New American Funding 以及 Citi Ventures、a16z 参投，总融资达 8500 万美元。CEO Mike Yu 称收入同比增长 **12 倍**但仍不足 5% 市场份额：美国平均放贷需 40 天、每笔成本约 1.1 万美元，多数成本是人工；Vesta 让人类部署智能体集群完成任务，客户通常从「人审批 agent 工作」起步再逐步放权，部分贷款机构已用其 agent 做承保决策，全部动作与推理留痕供合规审计。他表示关键突破是 Claude Sonnet 4.5 对长时程用户指令的遵循显著改善。
+  > 💡 抵押贷款是「多阶段流程+强合规留痕」的典型场景，agent 集群在这里的价值不是替代某个岗位而是压缩 40 天的时间线；客户直接参投本轮，说明「被服务者变股东」的深度绑定正成为垂直 AI 的护城河打法。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/10/08/vesta-raises-30m-as-lenders-adopt-ai-agents/)
+
+### 研究关注
+**STEPQuant：面向 Delta-rule 循环状态的时空后训练量化框架**
+- 论文针对线性注意力模型在并发推理场景下循环状态占用显存过大的问题，分析了量化误差沿时间和空间两个维度传播的规律。在 Qwen3.8-27B 与 Kimi-Linear-48B-A3B-Instruct 上，6 比特 STEPQuant 在长短生成基准下精度接近 FP32 状态，并优于均匀 INT8 的 4 比特配置。该方法已集成到 SGLang 中，配合定制 GPU 内核实现超过 5 倍循环状态压缩，整机服务显存最高可降低 68.7%。
+  > 💡 线性注意力通过固定大小的循环状态替代增长的 KV 缓存，把瓶颈转移到了状态本身的显存上；STEPQuant 把误差分解为时间（长寿命）与空间（关键行影响差异）两个维度，并据此分配精度，是把量化做成「按误差与寿命分配预算」的工程化路径。其 6 比特配置已能逼近 FP32 精度，对长上下文、并发推理的部署成本是直接利好。
+   - 来源: [arXiv](https://arxiv.org/abs/2609.38169) | [HuggingFace Daily Papers](https://huggingface.co/papers/2609.38169)
+
+**Long-WAM：扩展世界-动作模型上下文，动态叠杯任务成功率 95%**
+- 实时机器人控制需要足够的视觉历史来推断运动与任务进展，但处理历史又会拖慢动作。论文提出 Long-WAM，在实时控制约束下扩展因果世界-动作模型的上下文，核心发现是「能访问历史」不等于「会用历史」：只有当视频基座以自回归方式预训练时，更长历史才显著见效。先从机器人与第一人称视频无动作标签地学习因果预测，再在世界-动作适配中保持这一「历史到未来」结构。RoboCasa GR-1 上把上下文从 0 秒增至 19.2 秒使成功率从 63.3% 升至 **78.7%**（双向预训练初始化则无净增益）；流式观测编码、异步执行与硬件加速使其可部署于 RTX 5090、Jetson AGX Thor 等设备，Unitree G1 真机上动态叠杯成功率 **95%**（Pi0.5 与 Fast-WAM 在 20 次试验中均未成功）。
+  > 💡 「预训练方式决定上下文收益」是个便宜却常被忽视的结论：扩散式或双向视频基座白看了历史，自回归结构才把历史变成可用的因果线索；在边缘设备上以 107ms 级延迟同时做动作与未来视频潜预测，也让世界模型真正跑进了实时控制。
+   - 来源: [arXiv](https://arxiv.org/abs/2610.10528)
+
+**Continuous Memory Machines：给循环网络配上矩阵化的短长期双记忆**
+- 循环神经网络通常把信息压缩进单一向量循环状态，短期计算与长期保持被迫共享同一表征；既有扩展或增大容量或分离时间尺度，却缺少生物系统中「快速神经元级加工+长期保持」的组合。Sakana AI 团队在其 Continuous Thought Machine（CTM）基础上提出 Continuous Memory Machine（CMM）：矩阵值的短期记忆追踪近期神经活动、由独立参数化的神经元级模型学习用活动模式做计算，持久长期记忆供日后调用；一个 Transformer 联合更新两个记忆库，提供表达力强的双向读写机制——每个库可重组自身内容、互相读写。在算法、上下文学习与循环推理任务上，CMM 超过一系列基线，泛化强于既有记忆增强网络并保留 CTM 可解释的注意力模式。已入选 NeurIPS 2026 PALM Workshop。
+  > 💡 「计算用短期记忆、存储用长期记忆、Transformer 当双向总线」——把认知科学里的多存储模型做成了可训练架构；与 CLM（上下文当文件）从两端逼近同一问题：模型如何自己管理记忆。
+   - 来源: [arXiv](https://arxiv.org/abs/2610.07907)
+
+**Meta 旧文 Memory Mosaics at scale 再获关注：1T token 训练胜 8T token Transformer**
+- 一条获数千转发的推文让 Meta 研究者 Jianyu Zhang 与 Léon Bottou 2025 年 7 月的论文《Memory Mosaics at scale》重回视野，并冠以「可能终结 Transformer 时代」的说法。论文实际结论：把关联记忆网络（Memory Mosaics）扩展到 10B 规模、以 1 万亿 token 训练并引入 v2 架构修改后，其在训练知识存储上与 Transformer 持平，而在新知识存储与上下文学习两个推理时维度上显著胜出——**1T token 训练的 Memory Mosaics v2 在这些任务上优于 8T token 训练的 Transformer**，且这些提升无法靠给 Transformer 加数据轻易复制。
+  > 💡 推文的「终结 Transformer」虽属夸张，但论文的核心数据确实扎眼：在「执行新任务」这一维度上，架构差异抵得上 8 倍训练数据；关联记忆网络以键值存取替代注意力序列计算的路数，与近期 LoopVL、CMM 等工作共同指向同一命题——注意力的垄断地位正被多路线围攻，值得按季度重新评估一次。
+   - 来源: [@CrazyShyyt](https://x.com/CrazyShyyt/status/2108128585760596237) | [arXiv](https://arxiv.org/abs/2507.03285)
+
+### X讨论
+**OpenAI 发布 722 篇含 AI 解法的数学论文，分析称靠蛮力与耐力**
+- OpenAI 周二一次性发布 722 篇研究论文，涵盖数学多个细分领域的 AI 解法，被部分数学家类比为软件工程师此前数月经历的冲击。文章援引参与披露建议的数学家观点称，AI 之所以能攻克极难数学问题，关键在于数学解法通常可被验证、数学与 AI 自身研究存在大量重叠，并且在足够算力下能持续进行人类需要数年的高强度计算而不放弃；该团队将这种能力称为「蛮力与耐力」。
+  > 💡 把可验证性与持续计算当作突破口，意味着 OpenAI 这类项目的胜负不再只看模型规模，而要看算力与流程工程能否支撑大规模可验证推理循环。
+   - 来源: [The Information](https://www.theinformation.com/articles/openai-beat-math)
+
+**AutoInteract：从真实交互史学用户模型，多轮协作数据合成**
+- 当前主流后训练配方针对「完全指明的任务+自动验证器」、没有人参与，而真实用户往往目标模糊、中途改需求、看到产出才补充澄清。Jason Weston 团队的 AutoInteract 把「人机交互本身」变成合成对象：第一阶段从真实交互日志学习用户模型——用 GEPA 优化历史条件化的用户行为提示，并按专业度、模糊度、反驳倾向、需求变更频率等维度构建多样化用户画像群；第二阶段由控制器把已验证源任务与用户模型组合，在生成-评估-修订循环中合成多轮轨迹，源任务的参考解与可执行验证器原样保留，用户模拟器私下持有特权信息而不泄露给助手。LiveCodeBench-Pro 上 Qwen3.5-4B 平均 Pass@1 从 29.9 升至 **43.0**（多轮变体 23.0→43.2），SWE-Together 从 6.0 升至 **20.6**；消融显示三者缺一不可。
+  > 💡 「用户不把话说全」是部署 agent 与刷榜 agent 的真实差距所在，AutoInteract 把这种模糊性做成了可验证、可校准难度的训练数据；论文结尾把路线总结为 co-improvement 而非 self-improvement——先教会模型和人合作，可能比教会它独自变强更快也更安全。
+   - 来源: [Meta RAM Blog](https://facebookresearch.github.io/RAM/blogs/autointeract/) | [@jaseweston](https://x.com/jaseweston/status/2108176858520924594)
+
+**DeepMind 研究院随笔「弯折发现曲线」：LLM 与专用模型是科学的经济互补品**
+- DeepMind 研究院发布 Alex Imas 与 James Manyika 合写的 AI×Science 长文。基于 1500 万次 Gemini 交互、2,600 余个专用模型的文献计量与 600 余名美英科学家调查：科学家比其他职业更重度使用 AI，近半数每天使用，平均每周节省近 7 小时；LLM 承担编码与写作、专用模型（AlphaFold、GNoME、MatterGen 等）承担领域预测，两者任务几乎不重叠、构成经济互补品。但瓶颈正移向下游：近半数科学家称主要约束已迁移到物理实验与验证，**45.7%** 把节省时间的四分之一以上花在审计 AI 输出上，**48.8%** 承认 AI 使自己转向更安全的增量问题。文章提出 AI 的真正潜力是成为「发明方法的发明」（IMI）——如显微镜之于生物学，并给出投资验证基础设施、改革资助与同行评审等五项优先事项。
+  > 💡 这篇随笔用数据钉死了两个直觉：一是「假设生成已廉价、验证成为新稀缺」，与 OpenAI《永恒互补》殊途同归；二是「AI 正把科学引向增量与数据富集区」——近半科学家自认变保守，是比任何 benchmark 都重要的警报，解释了为什么「品味与出题权」正在成为人类科学家的核心资产。
+   - 来源: [DeepMind Institute](https://institute.deepmind.com/essays/bending-the-curve-of-discovery-ai-in-science-today-and-tomorrow/) | [@alexolegimas](https://x.com/alexolegimas/status/2108202009673244700)
+
+**Anthropic 启动 Cyber Mission：保卫关键基础设施与开源软件，上线免费 OSS Scanner**
+- Anthropic 启动长期项目 Cyber Mission，从两个方向支持防御者：一是关键基础设施——上线 Critical Infrastructure Defense Program，把前沿 Claude 模型、驻场工程师与威胁研究带给保卫电网、水务与交通运营技术的可信服务商，创始伙伴包括 Accenture、Booz Allen、CrowdStrike、Deloitte、Hitachi、Palo Alto Networks、Rockwell Automation 等；二是开源软件——上线免费的选择性服务 OSS Scanner（受 OSS-Fuzz 启发），为注册的开源项目定期扫描漏洞，报告含概念验证与建议修复，官方预期真阳性率超 **90%**；Project Glasswing 的经验已并入扩大的 Cyber Verification Program。
+  > 💡 「发现漏洞容易、验证与修复慢」是当前安全链条的断点，Anthropic 把模型、工程师与资金直接嵌进防御方的组织里而非只卖 API；免费 OSS Scanner 相当于给志愿者维护的开源底座配上了前沿模型安检员——若 90% 真阳性率站得住，这可能是模型厂「防御倾斜」叙事里最可量化的公共品。
+   - 来源: [Anthropic](https://www.anthropic.com/news/anthropic-cyber-mission) | [@AnthropicAI](https://x.com/AnthropicAI/status/2108302539498414208)
+
+**Anthropic 三年投入 1.5 亿美元加入 Genesis Mission，Claude 覆盖 15 个联邦机构**
+- Anthropic 宣布三年内向联邦科研倡议 Genesis Mission 投入 **1.5 亿美元**，为 NASA、NIH、国家科学基金会等 **15 个以上**联邦机构提供 Claude：包括向数百个研究项目提供 Claude、Claude Code 与 API 额度，围绕聚变能源与量子计算等行政科技优先事项与各机构及国家实验室紧密合作，并为科学家提供培训与技术支持。该承诺在白宫科技政策办公室主办的「科学：新黄金时代」峰会上宣布；Anthropic 去年 12 月已与美国能源部建立 Genesis Mission 合作，今年还推出了科研工作台 Claude Science 与学术免费席位。
+  > 💡 从 DOE 到 15 个机构，Anthropic 正把「AI 加速美国科学」做成系统性的联邦生意——与 Google 参与的 18 亿美元虚拟生物学计划形成同一天的两笔国家级押注；科研公共资金流向 AI 工具订阅的速度，正在成为观测「AI for Science」渗透率最直接的仪表。
+   - 来源: [Anthropic](https://www.anthropic.com/news/genesis-mission-commitment) | [@AnthropicAI](https://x.com/AnthropicAI/status/2108226292235809081)
+
+---
+*更新时间: 2026-10-09 06:55*
