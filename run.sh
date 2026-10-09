@@ -225,11 +225,15 @@ publish_files=(
 )
 "$GIT_BIN" add -- "${publish_files[0]}" "${publish_files[2]}"
 "$GIT_BIN" add -f -- "${publish_files[1]}"
+# 生成当天 html 时 _patch_prev_day_next_link 会顺带修补此前各期的「下一期」链接，
+# 这些已跟踪旧期 html 的改动必须随本次提交一并推送，否则线上会停留在 <span></span> 占位。
+# -u 仅作用于已跟踪文件，不会引入 untracked 的 md/png。
+"$GIT_BIN" add -u -- 'daily-ai-news-*.html'
 
 if "$GIT_BIN" diff --cached --quiet -- "${publish_files[@]}"; then
     log "ℹ️ 网页产物与当前版本一致，无需新建提交"
 else
-    "$GIT_BIN" commit -m "Update: $REPORT_DATE" -- "${publish_files[@]}"
+    "$GIT_BIN" commit -m "Update: $REPORT_DATE" -- "${publish_files[@]}" 'daily-ai-news-*.html'
 fi
 "$GIT_BIN" push
 
