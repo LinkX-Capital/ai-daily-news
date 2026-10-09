@@ -6,7 +6,7 @@
 
 ## 要点汇总
 
-- 模型前沿：StepFun 旗舰 Step 5 Preview 上线 OpenRouter：稀疏 MoE、支持 1M 上下文与多模态输入
+- 模型前沿：StepFun 发布旗舰模型 Step 5 Preview：稀疏 MoE、支持 1M 上下文，主打 Agent 工作
 - 产业动态：Google 发布统一工作智能体 Gemini：单一提示框、云端持久执行与模型自由编排; Claude 上线 Dashboards 与 Motion：数据变实时仪表盘、想法变动画解说; OpenAI 据报年化收入「接近 500 亿美元」，较此前口径少 200 亿; Anthropic 更新使用政策：禁止长期辱骂模型与干预选举; Natura 99 美元智能戒指把 AI 智能体戴上手指，可指定不同智能体分工
 - 算力追踪：SemiAnalysis：SK Hynix 公开承认 16-Hi HBM 困难，Hybrid Bonding 路线受到质疑
 - 初创&融资：Manus 母公司 Butterfly Effect 完成逾 5 亿美元融资，已与 Meta 分拆; AI 评测平台 Arena 完成 2 亿美元 B 轮融资，估值升至 31 亿美元; 自动芯片设计实验室 Phinity 走出隐身：520 万美元种子轮，年化收入达八位数; Cal AI 19 岁创始人再创业：个人智能体 Persona 获 1000 万美元，179 美元手环 12 月发货; 抵押贷款智能体公司 Vesta 融资 3000 万美元，收入同比增 12 倍
@@ -18,8 +18,8 @@
 ## 📖 详细参考
 
 ### 模型前沿
-**StepFun 旗舰 Step 5 Preview 上线 OpenRouter：稀疏 MoE、支持 1M 上下文与多模态输入**
-- OpenRouter 在 X 上宣布，StepFun 旗下 Step 5 Preview 已在其平台上线。官方介绍 Step 5 Preview 为面向 Agent 工作的新旗舰模型，采用稀疏 MoE 架构，激活参数 27B、总参数 600B，上下文窗口 100 万，支持文本、图像与视频输入。OpenRouter 同时指出，该模型在编程与金融等专业类知识工作上表现较强。
+**StepFun 发布旗舰模型 Step 5 Preview：稀疏 MoE、支持 1M 上下文，主打 Agent 工作**
+- StepFun 发布面向 Agent 工作的新旗舰模型 Step 5 Preview：采用稀疏 MoE 架构，激活参数 **27B**、总参数 **600B**，上下文窗口 100 万，支持文本、图像与视频输入，在编程与金融等专业类知识工作上表现较强。模型已上线 OpenRouter 开放调用，官方页面同步公布。
   > 💡 Step 5 Preview 用 27B 激活 / 600B 总参数的稀疏 MoE 与 1M 上下文切入 Agent 工作流，意味着 StepFun 选择以「长上下文 + 多模态输入 + 低激活成本」的组合在专业场景与开源前沿模型正面竞争。
    - 来源: [StepFun](https://www.stepfun.com/step-5-preview) | [@openrouter](https://x.com/OpenRouter/status/2108188953757331803)
 
