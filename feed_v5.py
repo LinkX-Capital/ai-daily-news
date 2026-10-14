@@ -900,7 +900,8 @@ SUBFIELD_ORDER = {
     "其他研究": 10,
 }
 
-RANK_TARGET_COUNT = 15       # 阶段1全局排序选出的目标条目数
+RANK_TARGET_COUNT = int(os.environ.get("RANK_TARGET_COUNT", "15"))  # 发布目标条数（可用环境变量按日覆盖）
+RANK_TAIL_CUTOFF = int(os.environ.get("RANK_TAIL_CUTOFF", "30"))    # 初排名次劣于该值且无 desk 保护的条目视为凑数，剔除
 RANK_RESERVE_COUNT = 10      # 额外保留候补顺序，仅用于审计/人工复核
 RANK_POOL_COUNT = 35         # 初排扩大候选池，再做事件级复核
 RANK_MAX_CANDIDATES = 200    # 正常单日全量送入排序，避免低分重要事件未被模型看见
@@ -2032,6 +2033,20 @@ def process_with_llm(articles, recent_articles=None):
         article_by_id[candidate_id]["_editorial_rank"] = index
 
     selected_ids = ranked_ids[: min(RANK_TARGET_COUNT, len(ranked_ids))]
+    # 宁缺毋滥：初排名次明显靠后、又无研究/机器人/前沿能源/战略资本覆盖保护的
+    # 条目属于凑数项（典型如小众初创融资、泛模板论文），直接裁掉少发几条。
+    tail_ids = [
+        candidate_id for candidate_id in selected_ids
+        if article_by_id[candidate_id].get("_preliminary_rank", 0) > RANK_TAIL_CUTOFF
+        and not article_by_id[candidate_id].get("_portfolio_required")
+    ]
+    if tail_ids:
+        tail_set = set(tail_ids)
+        selected_ids = [c for c in selected_ids if c not in tail_set]
+        print(
+            f"   ✂️ 宁缺毋滥: 裁掉 {len(tail_ids)} 条初排名次 "
+            f">{RANK_TAIL_CUTOFF} 且无 desk 保护的凑数项"
+        )
     selected_articles = [article_by_id[candidate_id] for candidate_id in selected_ids]
     # Persist the editorial decision before writing starts. If a later model
     # call fails, the selected/reserve/not-selected split remains inspectable.
@@ -2061,7 +2076,7 @@ def process_with_llm(articles, recent_articles=None):
         article.pop("_writer_ref", None)
         ready.append(article)
 
-    expected_ready = min(RANK_TARGET_COUNT, len(sorted_articles))
+    expected_ready = len(selected_ids)
     if len(ready) != expected_ready:
         raise PipelineBlocked(f"成稿数量 {len(ready)} != 预期 {expected_ready}")
 

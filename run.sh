@@ -219,12 +219,13 @@ require_nonempty_file "$INDEX_FILE"
 
 log "▶️ 推送网页产物"
 publish_files=(
+    "daily-ai-news-$REPORT_DATE.md"
     "daily-ai-news-$REPORT_DATE.html"
     "daily-ai-news-$REPORT_DATE-mobile.png"
     "index.html"
 )
-"$GIT_BIN" add -- "${publish_files[0]}" "${publish_files[2]}"
-"$GIT_BIN" add -f -- "${publish_files[1]}"
+"$GIT_BIN" add -- "${publish_files[0]}" "${publish_files[1]}" "${publish_files[3]}"
+"$GIT_BIN" add -f -- "${publish_files[2]}"
 # 生成当天 html 时 _patch_prev_day_next_link 会顺带修补此前各期的「下一期」链接，
 # 这些已跟踪旧期 html 的改动必须随本次提交一并推送，否则线上会停留在 <span></span> 占位。
 # -u 仅作用于已跟踪文件，不会引入 untracked 的 md/png。
