@@ -28,19 +28,34 @@ def is_questionable_tweet(tweet):
     return False, None
 
 
-def extract_highlights_llm(tweets: list) -> list:
-    """用 LLM 提取今日重点（MiniMax 优先，GLM-4.7 备用）"""
+def extract_highlights_llm(tweets: list):
+    """用 LLM 提取今日重点（MiniMax 优先，GLM-4.7 备用）。
+
+    返回 (highlights, selected)：selected 是实际送入 LLM 的推文列表，
+    highlights 各项带 idx（selected 中的 1-based 序号），供回流日报候选池时精确映射。
+    """
     import os
     import httpx
     import time
 
+    # 预筛：跳过存疑项，取前 30 条送 LLM（此前只看前 10 条会漏掉大部分重点）
+    selected = []
+    for t in tweets:
+        if is_questionable_tweet(t)[0]:
+            continue
+        selected.append(t)
+        if len(selected) >= 30:
+            break
+
     tweets_text = []
-    for i, t in enumerate(tweets[:10], 1):
+    for i, t in enumerate(selected, 1):
         title = t['title'].replace('\n', ' ')
         source = t['source'].replace('@', '')
-        tweets_text.append(f"{i}. @{source}: {title}")
+        tweets_text.append(f"{i}. @{source}: {title[:300]}")
 
-    prompt = f"""返回JSON：{{"highlights": [{{"title": "标题", "source": "来源"}}]}}
+    prompt = f"""返回JSON：{{"highlights": [{{"idx": 序号, "title": "标题", "source": "来源"}}]}}
+
+从下列推文中选出 6-8 条当日最重要的动态（官方发布、研究突破、重要数据优先），idx 填推文序号。
 
 推文：
 {chr(10).join(tweets_text)}"""
@@ -53,7 +68,7 @@ def extract_highlights_llm(tweets: list) -> list:
                 response = httpx.post(
                     "https://api.minimaxi.com/anthropic/v1/messages",
                     headers={"Authorization": f"Bearer {minimax_key}", "Content-Type": "application/json"},
-                    json={"model": "minimaxi-text-01", "max_tokens": 1000, "messages": [{"role": "user", "content": prompt}]},
+                    json={"model": "minimaxi-text-01", "max_tokens": 1500, "messages": [{"role": "user", "content": prompt}]},
                     timeout=60
                 )
                 if response.status_code == 200:
@@ -70,7 +85,7 @@ def extract_highlights_llm(tweets: list) -> list:
                                 break
                     data = _extract_json(content_text)
                     if data:
-                        return data.get("highlights", [])
+                        return data.get("highlights", []), selected
             except Exception:
                 if attempt < 2:
                     time.sleep(2)
@@ -80,12 +95,12 @@ def extract_highlights_llm(tweets: list) -> list:
     # 2. 备用 GLM-4.7
     glm_key = os.environ.get("ZHIPU_API_KEY", "")
     if not glm_key:
-        return None
+        return None, selected
     try:
         response = httpx.post(
             "https://open.bigmodel.cn/api/paas/v4/chat/completions",
             headers={"Authorization": f"Bearer {glm_key}", "Content-Type": "application/json"},
-            json={"model": "GLM-4.7", "max_tokens": 1000, "messages": [{"role": "user", "content": prompt}]},
+            json={"model": "GLM-4.7", "max_tokens": 1500, "messages": [{"role": "user", "content": prompt}]},
             timeout=60
         )
         if response.status_code == 200:
@@ -93,11 +108,29 @@ def extract_highlights_llm(tweets: list) -> list:
             content_text = result["choices"][0]["message"]["content"]
             data = _extract_json(content_text)
             if data:
-                return data.get("highlights", [])
+                return data.get("highlights", []), selected
     except Exception:
         pass
 
-    return None
+    return None, selected
+
+
+def build_highlight_records(highlights, selected):
+    """把 LLM 重点（带 idx）映射回原始推文，生成可回流日报候选池的记录。"""
+    by_idx = {i: t for i, t in enumerate(selected, 1)}
+    records = []
+    for h in highlights or []:
+        rec = {
+            "title": h.get('title', ''),
+            "source": (h.get('source') or '').replace('@', ''),
+        }
+        t = by_idx.get(h.get('idx'))
+        if t:
+            rec["tweet_title"] = (t.get('title') or '')[:200]
+            rec["link"] = t.get('link', '')
+            rec["published"] = t.get('published', '')
+        records.append(rec)
+    return records
 
 
 
@@ -303,7 +336,7 @@ def push_to_feishu(cache, webhook_url, highlights=None, date_str=None):
     # LLM 提取重点（优先使用已提取的结果）
     if highlights is None:
         print("   🔄 调用 LLM 提取今日重点...")
-        highlights = extract_highlights_llm(cache)
+        highlights, _ = extract_highlights_llm(cache)
 
     if highlights:
         print(f"   ✅ LLM 提取到 {len(highlights)} 条重点")
@@ -382,9 +415,22 @@ def main():
     tweets = get_tweets()
     print(f'   抓取到 {len(tweets)} 条推文')
 
-    # 2. LLM 提取重点（用于飞书推送）
+    # 2. LLM 提取重点（用于飞书推送 + 次日日报候选池回流）
     print('🔄 调用 LLM 提取...')
-    highlights = extract_highlights_llm(tweets)
+    highlights, selected = extract_highlights_llm(tweets)
+
+    # 2.5 重点落盘：feed_v5 次日运行时读取，给命中候选加排序权重
+    hl_path = Path(__file__).parent / 'cache' / f'twitter_highlights_{date_str}.json'
+    try:
+        hl_path.parent.mkdir(exist_ok=True)
+        hl_path.write_text(json.dumps({
+            "date": date_str,
+            "generated_at": datetime.now().isoformat(),
+            "highlights": build_highlight_records(highlights, selected),
+        }, ensure_ascii=False, indent=1), encoding='utf-8')
+        print(f'   ⭐ 重点已回流: cache/twitter_highlights_{date_str}.json')
+    except Exception as e:
+        print(f'   ⚠️ 重点回流落盘失败: {e}')
 
     # 3. 生成预览
     print('📝 生成 preview...')

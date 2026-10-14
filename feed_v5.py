@@ -1286,15 +1286,56 @@ def _build_recent_context(recent_articles):
     return "\n".join(f"- {title}" for title in titles[:50])
 
 
+def _apply_preview_highlights(articles):
+    """Twitter 预览重点回流：preview 管线的 LLM 已判定的当日重点推文，
+    命中候选池时给予排序加成，避免短推文在百级候选池中被长文挤掉。"""
+    import glob
+    root = os.path.dirname(os.path.abspath(__file__))
+    records = []
+    # 最近 2 天的 preview 重点：昨天的 preview 覆盖今天窗口的大部
+    for path in sorted(glob.glob(os.path.join(root, "cache", "twitter_highlights_*.json")))[-2:]:
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                records.extend(json.load(f).get("highlights", []))
+        except Exception:
+            continue
+    if not records:
+        return
+    by_link = {r.get("link"): r for r in records if r.get("link")}
+    boosted = 0
+    for article in articles:
+        rec = by_link.get(article.get("link") or "")
+        if rec is None:
+            # 兜底：来源 handle 一致且推文原文前缀匹配
+            src = (article.get("source") or "").lstrip("@").lower()
+            a_title = normalize(article.get("raw_title") or article.get("title") or "")
+            for r in records:
+                r_head = normalize(r.get("tweet_title", ""))[:40]
+                if src and r.get("source", "").lower() == src and r_head and r_head in a_title:
+                    rec = r
+                    break
+        if rec:
+            article["priority"] = article.get("priority", 0) + 30
+            article["_preview_highlight"] = True
+            boosted += 1
+    if boosted:
+        print(f"   ⭐ Twitter 预览重点回流: {boosted} 条候选获得加成")
+
+
 def _rank_candidate_text(article):
     evidence = article.get("content") or article.get("summary") or ""
     duplicate_hint = "; ".join(article.get("_possible_recent_duplicate", []))
+    highlight_hint = (
+        "⭐ Twitter 预览 LLM 已列为当日重点"
+        if article.get("_preview_highlight") else "无"
+    )
     return (
         f"candidate_id: {article.get('_rank_ref') or article['candidate_id']}\n"
         f"标题: {article.get('raw_title') or article.get('title', '')}\n"
         f"来源: {article.get('source', '')}\n"
         f"启发式priority: {article.get('priority', 0)}\n"
         f"候选事实: {clean_text(evidence)[:450]}\n"
+        f"预览重点: {highlight_hint}\n"
         f"近期重复提示: {duplicate_hint or '无'}"
     )
 
@@ -2026,6 +2067,7 @@ def process_with_llm(articles, recent_articles=None):
             f"候选数 {len(sorted_articles)} 超过可审计上限 {RANK_MAX_CANDIDATES}，禁止静默截断"
         )
 
+    _apply_preview_highlights(sorted_articles)
     print(f"   🔍 全量排序 {len(sorted_articles)} 条候选（无公司/来源硬删除）")
     ranked_ids = _rank_candidates(sorted_articles, recent_articles)
     article_by_id = {article["candidate_id"]: article for article in sorted_articles}
@@ -2074,6 +2116,7 @@ def process_with_llm(articles, recent_articles=None):
         article.pop("_writer_evidence", None)
         article.pop("_writer_retry_feedback", None)
         article.pop("_writer_ref", None)
+        article.pop("_preview_highlight", None)
         ready.append(article)
 
     expected_ready = len(selected_ids)
