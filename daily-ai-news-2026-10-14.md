@@ -6,9 +6,9 @@
 
 ## 要点汇总
 
-- 产业动态：Physical Intelligence 开放 Pi API 测试版：上传数据微调 π 机器人模型并托管推理，覆盖无人装载机与草莓采摘; Cursor 并入 The X Subscription：与 Grok Build 共享用量池，第三方模型转为 API 计价; Neuralink 联创创办的 Science Corp 视觉修复芯片 PRIMA 完成首例 Stargardt 植入，两次康复训练后可读词; OpenAI 在下一代旗舰模型发布前紧急修补安全问题; Agility Robotics 借壳上市进程推进：SEC 宣布其与 Churchill Capital Corp XI 的 S-4 文件生效; FastH3-Omni 上线 Reactor API：MiniMax H3 实时视频的开源后训练版，单提示同步生成音画
+- 产业动态：Physical Intelligence 开放 Pi API 测试版：上传数据微调 π 机器人模型并托管推理，覆盖无人装载机与草莓采摘; Cursor 并入 The X Subscription：与 Grok Build 共享用量池，第三方模型转为 API 计价; Neuralink 联创创办的 Science Corp 视觉修复芯片 PRIMA 完成首例 Stargardt 植入，两次康复训练后可读词; 报道称 OpenAI 在下一代旗舰模型发布前紧急修补安全问题; FastH3-Omni 上线 Reactor API：MiniMax H3 实时视频的开源后训练版，单提示同步生成音画
 - 算力追踪：Modal：混合精度、混合加速器采样器跑 RL，off-policy 修正下训练稳定且成本更低; Anthropic 据报将在日本建设首个数据中心，规划最高 500 兆瓦
-- 初创&融资：Neocloud 厂商 Prime Intellect 收购 Moondream，以加速开源模型推理; Character.ai 申请 Chapter 11 破产重组，迪士尼将作为首轮竞标方并支付 2000 万美元获取 IP 授权; 企业 AI 安全初创 Pluto Security 出隐身即融资 4200 万美元，主打 AI 工具使用风险管控; Cambridge Heavy Industries 桌面聚变装置曝光：小型模块化设计，目标燃料下一代聚变电厂; 密歇根大学衍生公司 Laplace Intelligence：用 AI Agent 在仿真中红队测试机器人与自动驾驶
+- 初创&融资：Agility Robotics 借壳上市进程推进：SEC 宣布其与 Churchill Capital Corp XI 的 S-4 文件生效; Character.ai 申请 Chapter 11 破产重组，迪士尼将作为首轮竞标方并支付 2000 万美元获取 IP 授权; Neocloud 厂商 Prime Intellect 收购 Moondream，以加速开源模型推理; 企业 AI 安全初创 Pluto Security 出隐身即融资 4200 万美元，主打 AI 工具使用风险管控; Cambridge Heavy Industries 桌面聚变装置曝光：小型模块化设计，目标燃料下一代聚变电厂; 密歇根大学衍生公司 Laplace Intelligence：用 AI Agent 在仿真中红队测试机器人与自动驾驶
 - 研究关注：GroundingPI：4B 参数 grounding 基座模型，在 34 项基准上以 73.68% 平均分刷新 SOTA，超过 GPT-6 Astra; Thinking Inertia：LLM 被要求停止思考仍在推理，显式开关关不掉思维惯性; TerminalHorizon：自动合成 1500 个长时程终端任务环境，SFT 教会 agent 专业工作流; ReHarness：给 agent harness 加反向修订，持续学习兼顾稳定与可塑; DUET：求解器与评分器 agent 共同进化，把评测变成一等优化目标
 - X讨论：Coinbase 披露反欺诈 agent 全流程：微调 Qwen3.5-9B 四项指标全面超过 Opus，延迟降 55%; Anthropic 披露蒸馏防御进展：被盗取数据量降约 90-99%，点名 GLM-5.3 与 Kimi 案例; Google Gemini 4 Argon 正式发布：首度回归 7 个月以来的前沿基座，AA 智能指数与 GPT-6 Astra 持平
 
@@ -32,15 +32,10 @@
   > 💡 Science Corp 把人工耳蜗、视网膜假体、运动假体统一表述为「不同类型的 BCI」，用视觉修复先跑通「证明方法有效+可持续商业」两件事，再向颅内在体传感扩张——这条从外周到中枢的路线比直接做全脑接口务实，而 PRIMA 在不可治疾病上的每一步功能恢复都在为整个 BCI 品类积累临床信用。
    - 来源: [TechCrunch](https://techcrunch.com/2026/10/13/science-corporation-implants-its-vision-restoring-chip-in-its-first-stargardt-disease-patient/)
 
-**OpenAI 在下一代旗舰模型发布前紧急修补安全问题**
-- 报道称，OpenAI 正在围绕一种名为 loop transformers（也称 recurrent depth）的模型设计技术处理内部争议，力求在下一代未发布旗舰模型上线前达到管理层可接受的安全门槛。该技术使外部更难监测 AI 的推理过程，被视作可能削弱 OpenAI 与同行用来抓取模型异常行为的关键工具。Microsoft 上周在一篇博客中意外证实 OpenAI 已在 GPT-6.1 Sol 中使用该技术，随后又编辑博客删除了相关说法，但 OpenAI 迄今未公开承认。
+**报道称 OpenAI 在下一代旗舰模型发布前紧急修补安全问题**
+- 据悉，OpenAI 正在围绕一种名为 loop transformers（也称 recurrent depth）的模型设计技术处理内部争议，力求在下一代未发布旗舰模型上线前达到管理层可接受的安全门槛。该技术使外部更难监测 AI 的推理过程，被视作可能削弱 OpenAI 与同行用来抓取模型异常行为的关键工具。Microsoft 上周在一篇博客中意外证实 OpenAI 已在 GPT-6.1 Sol 中使用该技术，随后又编辑博客删除了相关说法，但 OpenAI 迄今未公开承认。
   > 💡 loop transformers 把推理过程压缩进循环深度，本质上是让模型'怎么想'更难被解释器读出来；OpenAI 在旗舰交付前才紧急修补安全，说明监测能力已经被甩在了被前沿的上游，而 GPT-6.1 Sol 已经被微软无意间'半官宣'使用，这种结构性可解释性赤字将成为下一代模型的交付阻碍。
    - 来源: [The Information](https://www.theinformation.com/articles/openai-scrambles-fix-safety-issues-shipping-next-flagship-model)
-
-**Agility Robotics 借壳上市进程推进：SEC 宣布其与 Churchill Capital Corp XI 的 S-4 文件生效**
-- Agility Robotics 官方宣布，其与 Churchill Capital Corp XI（Nasdaq: CCXI）联合提交的 S-4 注册声明已于 10 月 13 日被 SEC 宣布生效；Churchill XI 定于 **11 月 2 日**召开股东大会表决合并及关联事项，完成后 Agility 将以代码 **AGLT** 交易，公司称其将成为美国唯一一家有真实活跃商业部署的纯人形机器人上市公司。Agility 的商业部署与协议客户包括 Schaeffler、GXO 与 Toyota Motor Manufacturing Canada，历代 Digit 累计超 **6.5 万小时**真实环境运行；最新 Digit 5 主打协作安全，配套 Agility Arc 云端机队管理平台与年产能最高 **1 万台**的 RoboFab 制造工厂，投资方包括 DCVC、NVIDIA、SoftBank Vision Fund 2 等。
-  > 💡 S-4 生效把人形机器人第一股的时间表钉在了 11 月 2 日表决——「6.5 万小时真实运行+具名企业客户+万台产能」的组合是它区别于纯概念 SPAC 标的的核心叙事；若 AGLT 顺利挂牌，具身智能赛道将首次获得公开市场连续定价，其估值锚也会反过来影响一级市场融资。
-   - 来源: [Agility Robotics](https://www.agilityrobotics.com/content/agility-robotics-and-churchill-capital-corp-xi-s-4-registration-statement-declared-effective-by-sec-in-connection-with-proposed-business-combination) | [@agilityrobotics](https://x.com/agilityrobotics/status/2110124714735849916)
 
 **FastH3-Omni 上线 Reactor API：MiniMax H3 实时视频的开源后训练版，单提示同步生成音画**
 - Reactor 平台发布 FastH3-Omni，定位为 MiniMax H3 实时视频模型「最快、质量最高的开源版本」，由 FastVideo（Hao AI Lab）与 nuva lab 后训练，**10 月 20 日前**在 Reactor API 独家预览。模型从文本、参考图与音频参考直接生成带同步音频的视频：首尾帧可分别指定关键帧，实时生成支持最多 **3 张**参考图（非实时最多 9 张）、最多 **3 段**音频参考引导人声与配乐；片段长约 **5-15 秒**、24fps、最高 1344×768（16:9），支持片段排队、定序播放与续接生成，官方称达到前沿级性能。
@@ -59,15 +54,20 @@
    - 来源: [The Information](https://www.theinformation.com/briefings/anthropic-build-first-data-center-japan)
 
 ### 初创&融资
-**Neocloud 厂商 Prime Intellect 收购 Moondream，以加速开源模型推理**
-- 据 The Information 报道，估值 10 亿美元的 Neocloud 厂商 Prime Intellect 宣布收购初创公司 Moondream，后者员工不足 10 人，此前融资 450 万美元。Moondream 总部位于旧金山和西雅图，以开源视觉语言模型著称，主要用于识别图像中的物体（如仓库中的箱子或直播流中的广告）。Prime Intellect 联合创始人兼 CEO Vincent Weisser 表示，收购的主要目的是引入其团队成员在 Nvidia 服务器上让模型更高效运行的能力，收购条款未披露。
-  > 💡 Neocloud 当前的差异化已经把'跑得快'压缩到软件层——收购一家不到 10 人的开源模型团队，目的不是模型本身，而是写脚本加速员工的能力，这说明在 GenAI 推理市场，硬件趋同之后剩下的竞争维度只剩软件优化经验。
-   - 来源: [The Information](https://www.theinformation.com/articles/neocloud-prime-intellect-acquires-startup-speed-inference)
+**Agility Robotics 借壳上市进程推进：SEC 宣布其与 Churchill Capital Corp XI 的 S-4 文件生效**
+- Agility Robotics 官方宣布，其与 Churchill Capital Corp XI（Nasdaq: CCXI）联合提交的 S-4 注册声明已于 10 月 13 日被 SEC 宣布生效；Churchill XI 定于 **11 月 2 日**召开股东大会表决合并及关联事项，完成后 Agility 将以代码 **AGLT** 交易，公司称其将成为美国唯一一家有真实活跃商业部署的纯人形机器人上市公司。Agility 的商业部署与协议客户包括 Schaeffler、GXO 与 Toyota Motor Manufacturing Canada，历代 Digit 累计超 **6.5 万小时**真实环境运行；最新 Digit 5 主打协作安全，配套 Agility Arc 云端机队管理平台与年产能最高 **1 万台**的 RoboFab 制造工厂，投资方包括 DCVC、NVIDIA、SoftBank Vision Fund 2 等。
+  > 💡 S-4 生效把人形机器人第一股的时间表钉在了 11 月 2 日表决——「6.5 万小时真实运行+具名企业客户+万台产能」的组合是它区别于纯概念 SPAC 标的的核心叙事；若 AGLT 顺利挂牌，具身智能赛道将首次获得公开市场连续定价，其估值锚也会反过来影响一级市场融资。
+   - 来源: [Agility Robotics](https://www.agilityrobotics.com/content/agility-robotics-and-churchill-capital-corp-xi-s-4-registration-statement-declared-effective-by-sec-in-connection-with-proposed-business-combination) | [@agilityrobotics](https://x.com/agilityrobotics/status/2110124714735849916)
 
 **Character.ai 申请 Chapter 11 破产重组，迪士尼将作为首轮竞标方并支付 2000 万美元获取 IP 授权**
 - 消息称，成立五年的 AI 角色扮演初创公司 Character.ai 于本周一向法院提交 Chapter 11 破产重组申请，理由是遭遇重大法律、监管与运营逆风。Disney 将作为破产拍卖的初始竞标方，并以 2000 万美元获得 Character.ai 的一部分知识产权授权。
   > 💡 Disney 以拍卖初始竞标方+2000 万美元 IP 授权的组合接手，而非直接收购，意味着角色 AI 这类依赖大量训练投入与算力消耗的娱乐应用，正在被证明难以独立支撑长期运营成本；AI 角色扮演的资产价值正在被下游内容方以'IP 切片'方式重新定价。
    - 来源: [The Information](https://www.theinformation.com/briefings/character-ai-files-bankruptcy-citing-costs-litigation)
+
+**Neocloud 厂商 Prime Intellect 收购 Moondream，以加速开源模型推理**
+- 据 The Information 报道，估值 10 亿美元的 Neocloud 厂商 Prime Intellect 宣布收购初创公司 Moondream，后者员工不足 10 人，此前融资 450 万美元。Moondream 总部位于旧金山和西雅图，以开源视觉语言模型著称，主要用于识别图像中的物体（如仓库中的箱子或直播流中的广告）。Prime Intellect 联合创始人兼 CEO Vincent Weisser 表示，收购的主要目的是引入其团队成员在 Nvidia 服务器上让模型更高效运行的能力，收购条款未披露。
+  > 💡 Neocloud 当前的差异化已经把'跑得快'压缩到软件层——收购一家不到 10 人的开源模型团队，目的不是模型本身，而是写脚本加速员工的能力，这说明在 GenAI 推理市场，硬件趋同之后剩下的竞争维度只剩软件优化经验。
+   - 来源: [The Information](https://www.theinformation.com/articles/neocloud-prime-intellect-acquires-startup-speed-inference)
 
 **企业 AI 安全初创 Pluto Security 出隐身即融资 4200 万美元，主打 AI 工具使用风险管控**
 - 据报道，企业 AI 安全初创 Pluto Security 在走出隐身模式时披露已完成 4200 万美元融资。公司 CEO Shahar Bahat 称，新发布的 AI 工具可在两小时内进入企业环境，跨客户群检测到的风险中约 60% 来自非开发人员 vibe-coded 的工具，财务部门是最大风险来源。Bahat 表示公司今年 4 月才开始销售产品，已拿到首批客户，产品定位是帮助企业获得对员工 AI 工具使用方式的风险分析与可视化管理能力。
