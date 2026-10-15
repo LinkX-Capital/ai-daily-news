@@ -1,35 +1,56 @@
 ## 10月15日 AI 前沿动态
 
-> 自动汇总 | 时间窗口: 24h | 全局精选 15 条
+> 自动汇总 | 时间窗口: 24h | 全局精选 22 条
 
 ---
 
 ## 要点汇总
 
-- 产业动态：OpenRouter：ElevenLabs 上线一周拿下近三分之一语音合成支出，并提供半价活动; Boston Dynamics 展示 Atlas 人形机器人制造流程：一体化车间把复杂设计加速变成可量产硬件
-- 算力追踪：英伟达追加英国创业生态部署：五年 2.5 亿美元算力承诺，强化智能体安全与安全; SemiAnalysis：台积电与同业晶圆 ASP 差距持续扩大，先进制程迁移推升均价
-- 初创&融资：3D 算力芯片公司算苗科技完成 Pre-A2 与 A 轮融资，北京国资领投、一年累计近 20 亿元; AI 训练与评测公司 Unipat AI 新一轮估值达 25 亿美元，阿里、腾讯、红杉中国押注; 跨平台环境智能公司 Mistlabs 完成 2600 万美元 Pre-A 轮融资，华勤与光合方联合领投; Berkshire Hathaway 同意以 3.3 亿美元入股意大利数字集团 Bending Spoons，后者股价当日跳涨 40%
-- 研究关注：APEX：用分层潜空间与异步去噪把扩散模型的潜变量压缩推到 64× 与 128×; 论文提出 GreenWAM：单一机器人世界基座模型同时充当世界模型与策略，20 类机器人共用一套动作空间; 论文提出 WAVE-0：用轻量潜在世界模型桥接 VLA 与 WAM，RoboTwin 2.0 成功率 91.47%、真实任务从 38.3% 拉到 73.3%; 论文提出 Urbex：把城市级 3D 定位改写为 VLM 主动空间搜索，CityRefer Hit@1 与速度均超对比方法
-- X讨论：Artificial Analysis 上线 DeepSeek V4.1 Flash：英伟达 GB300 每兆瓦吞吐 2.61 亿 tokens/s 居首; SpaceXAI Grok Voice 3.0 登顶 Artificial Analysis 语音到语音榜单，分数 86; Artificial Analysis 上线 AA-Robotics v0.1：用 6 轴机械臂评估前沿语言模型的具身能力
+- 模型前沿：
+- 产业动态：面向 agent 的搜索公司 Exa 年化收入破 1 亿美元：月处理 20 亿次请求; Anthropic 自研版本控制系统 Scion：五个月完成 monorepo 迁移，日均合并从 2,500 涨到 30,000; Meta 用 Muse 模型加速健康数据科研：医生主导产出 10 篇手稿，接入 500 万份脱敏病历; Bespoke 开源决策模型 Nimble-v4：公开 Decision Index 超越闭源 Jev，9B 版登顶 25B 以下榜首; OpenAI 经济研究报告：欧盟企业 AI 使用过半来自智能体，中小企业用户八个月增至 8 倍
+- 算力追踪：FLAT：TPU 上的线性注意力训练内核开源，GLA 前向+反向较 H100 上的 FLA 快 3 倍; 英伟达追加英国创业生态部署：五年 2.5 亿美元算力承诺，强化智能体安全与安全; SemiAnalysis：台积电与同业晶圆 ASP 差距持续扩大，先进制程迁移推升均价
+- 初创&融资：Mistral 收购人本设计公司 New Material：组建 Solutions Design 团队，打通部署与产品反馈环; 企业 AI 通讯应用 Zenzap 融资 4400 万美元：要做合规版 WhatsApp，瞄准一线员工; B2B 客户知识平台 Floqer：AI agent 持续调研客户，ARR 破 120 万美元并计划开源; AI 指环 Stream Ring 宣布下月开始发货：三年研发，获 Fast Company 年度创新设计报道; 印度 AI 特种材料平台 Scimplify 融资 2500 万美元：对标中国关键材料供给，估值升至 2.5 亿
+- 研究关注：Urbex：把城市级 3D 定位改写为 VLM 主动空间搜索，CityRefer Hit@1 与速度均超对比方法; Tev：1170 个带稠密进度奖励的长时程环境，Tev-27B 在 ALE 计算数学域比肩 GPT-6; Agent-Reflex：教 agent 在噪声工具反馈与用户纠正间主动反思，五项长时程基准达 58.6; Harness²：无真值验证器的递归 harness 进化，WorkBuddy-Bench 最高提升 11.5 分; Jeva：决策原生架构从第一性原理重构 system one 模型，统一 Choice/Noul/Score 输出
+- X讨论： OpenAI 披露办公室发现隐藏录音设备：用自家模型锁定植入员工，已移交 FBI; Artificial Analysis 上线 AA-Robotics v0.1：用 6 轴机械臂评估前沿语言模型的具身能力; OpenRouter：ElevenLabs 上线一周拿下近三分之一语音合成支出，并提供半价活动; Boston Dynamics 展示 Atlas 人形机器人制造流程：一体化车间把复杂设计加速变成可量产硬件
 
 ---
 
 ## 📖 详细参考
 
 ### 产业动态
-**OpenRouter：ElevenLabs 上线一周拿下近三分之一语音合成支出，并提供半价活动**
-- OpenRouter 公布数据，ElevenLabs 在上线仅 7 天后的次日，其文本转语音模型在 OpenRouter 上贡献了接近三分之一的同类支出。OpenRouter 表示，ElevenLabs 全系模型在该平台限时五折，优惠持续至 10 月 19 日。
-  > 💡 语音合成赛道在模型 API 渠道出现了明确的支出迁移信号，说明头部语音厂商已经具备与通用 LLM 同台抢占开发者预算的能力。半价窗口叠加新模型发布窗口，意味着 ElevenLabs 在用价格补贴换调用量份额。
-   - 来源: [@openrouter](https://x.com/OpenRouter/status/2110404020192092611)
+**面向 agent 的搜索公司 Exa 年化收入破 1 亿美元：月处理 20 亿次请求**
+- Exa 联合创始人 Will Bryk 宣布公司年化收入突破 **1 亿美元**，近三年每年增长约 **10 倍**，现每月处理来自超 **20 万**个团队的 20 亿次请求。他重申其判断：到 2030 年 agent 的搜索量将是人类的 **1,000 倍**——agent 写长而复杂的查询、要的是全量世界数据而非仅网页；在模型接近「完美智能」的同时「完美信息」仍远未达成，信息获取正成为 agent 性能的瓶颈。
+  > 💡 「模型不缺、信息缺」的叙事第一次拿到营收验证——搜索 API 按 agent 使用形态重构（长查询、全量数据、程序化调用）就能撑起亿级 ARR；若 1000 倍预测成立，搜索市场的计费单位将从「人次」变成「agent 调用」。
+   - 来源: [@WilliamBryk](https://x.com/WilliamBryk/status/2110058915589464192)
 
-**Boston Dynamics 展示 Atlas 人形机器人制造流程：一体化车间把复杂设计加速变成可量产硬件**
-- Boston Dynamics 发布幕后视频，展示 Atlas 人形机器人从定制零件到落地行走的制造过程。视频介绍其车间以精密加工、快速装配与实时协作为基础，零件在内部机加工，装配与维修在同一屋檐下流水线化。公司表示，这种一体化制造能力是「将复杂设计加速变成可量产行走硬件」所需的速度来源。视频已上线 YouTube。
-  > 💡 Atlas 把机加工、装配、维修都收进同一屋檐，本质上是在为下一代量产做工艺打底；这条幕后视频与已发布的 Spot 宣传形成对照——前者讲产能速度，后者讲场景广度，Boston Dynamics 的叙事重心已经从演示转向交付节奏。
-   - 来源: [@bostondynamics](https://x.com/BostonDynamics/status/2110392871127790060)
+**Anthropic 自研版本控制系统 Scion：五个月完成 monorepo 迁移，日均合并从 2,500 涨到 30,000**
+- Anthropic 工程博客披露：今年 5 月其日均合并约 **2,500** 次代码变更，9 月已超 **30,000** 次——Claude 大规模自主写码后，为人类规模构建的开发者基础设施（版本控制、构建、CI）成了最大瓶颈。为此 Anthropic 自研版本控制系统 Scion，并在 **五个月内**完成 monorepo 从 git 的整体迁移；同期还上线代码评审界面 Antique、代码搜索、细粒度源控 IAM 与大批量已评审代码的落地机制。官方称这是一个有趣的案例：Claude 的写码能力既是造成压力的原因，也是能快速造出可扩展系统来应对它的原因。
+  > 💡 「合并需求近乎无限」是 AI 编码时代最直白的基础设施预言——git 的去中心化设计在十万级日合并面前失效，头部实验室被迫重造版本控制；随着 agent 写码量向全行业扩散，开发者基础设施会成为下一个被 AI 重写的层。
+   - 来源: [Anthropic](https://www.anthropic.com/engineering/redesigning-source-control) | [@AnthropicAI](https://x.com/AnthropicAI/status/2110047081414987957)
+
+**Meta 用 Muse 模型加速健康数据科研：医生主导产出 10 篇手稿，接入 500 万份脱敏病历**
+- Meta 分享用 Muse 模型加速健康数据科学的初步探索：构建以人类为主导的研究脚手架，由 Muse Spark 1.3 与 Muse Wonder 驱动，接入 **500 万份**回溯性去标识电子病历与公开数据；一批医学专家用该系统开展原创研究——加速假设生成、代码执行与手稿撰写，科学决策权完全保留在专家手中。Meta 同步发布由此产出的 **10 篇**研究手稿，覆盖心血管、肿瘤、感染病与急诊医学等领域；官方同时强调健康数据科学依赖不完美的真实世界数据与关乎人群、变量与因果假设的重大选择，AI 辅助仍处早期。
+  > 💡 「人类主导+AI 脚手架」的措辞与 10 篇手稿同发，是 Meta 在临床研究这一高风险区的一次合规友好能力展示——把权威留给医生、把加速留给模型，这种分工框架大概率会成为健康 AI 科研的默认叙事。
+   - 来源: [Meta AI Research](https://research.meta.ai/blog/accelerating-scientific-research-in-health-data-science-with-muse-models) | [@AIatMeta](https://x.com/AIatMeta/status/2110441716507693450)
+
+**Bespoke 开源决策模型 Nimble-v4：公开 Decision Index 超越闭源 Jev，9B 版登顶 25B 以下榜首**
+- Bespoke Labs 发布开源决策模型系列 Nimble-v4（9B）与 Nimble-v4-max（27B）：给定文本与 schema 即单步输出类型化决策（多选/是非及各选项概率），不写推理过程、主打低延迟。官方自测公开 Decision Index：Nimble-v4-max 得 **68.46** 居第一，Nimble-v4 以 **63.70** 成 104 个 25B 以下模型之首，均超闭源参考 Jev 1.13（57.96）；内部评测称较 Jev 错误少 **43%**、模型路由决策提升 **50 个百分点**，编码与事实核查场景亦有实质改进。仓库同步公开数据策展、LoRA 训练与服务配方（基座 Qwen3.5-9B），并强调未从 Jev 蒸馏。
+  > 💡 Jev 开创「决策模型」品类仅一个月就被开源追平反超，Bespoke 用「公开配方+不蒸馏」把品类拉回开放生态；决策类小模型在路由、事实核查等场景对生成式 LLM 的替代，正从演示变成可自部署的工程选项。
+   - 来源: [GitHub](https://github.com/bespokelabsai/nimble) | [@madiator](https://x.com/madiator/status/2110061495795216639)
+
+**OpenAI 经济研究报告：欧盟企业 AI 使用过半来自智能体，中小企业用户八个月增至 8 倍**
+- OpenAI 经济研究团队发布欧盟智能体采用报告：在其欧盟企业样本中，Codex 与 ChatGPT 工作等智能体工具已贡献超过一半的输出 token；自 2026 年 5 月以来，欧盟中小企业的智能体周活用户增至 **8 倍以上**，所有成员国均在增长。采用并不均衡——企业账户中智能体输出 token 占比最低为斯洛文尼亚的 **22%**、最高为立陶宛的 **85%**；欧盟前 10% 领先企业的人均输出 token 超过一般企业 4 倍，但仍不及欧盟以外领先企业的一半，全球「领先企业」中欧盟总部企业仅占 **10%**。
+  > 💡 智能体用量首超对话用量是平台级信号——ChatGPT 的角色正从「问答产品」迁移为「执行产品」；22%-85% 的国别离散度与「欧盟落后全球领先者一半」的结论，也为欧盟 AI 政策辩论补上了需求侧标尺。
+   - 来源: [OpenAI](https://openai.com/zh-Hans-CN/index/the-eus-next-chapter-in-ai-is-agentic/) | [@OpenAI](https://x.com/OpenAI/status/2110442001749659890)
 
 ### 算力追踪
+**FLAT：TPU 上的线性注意力训练内核开源，GLA 前向+反向较 H100 上的 FLA 快 3 倍**
+- 生产级 LLM 正快速混入线性注意力层（Kimi K3 用 Kimi Delta Attention、Qwen3.5 混合 Gated DeltaNet），但 TPU 上一直没有开源训练内核。UC Berkeley、Stanford、Princeton 等机构团队发布 FLAT：用 Pallas 实现的 Linear Attention、Mamba-2 与 GLA 训练内核及短因果卷积内核。单颗 TPU v6e（Trillium）上，GLA 前向+反向比 NVIDIA H100 上的 FLA 快最高 **3 倍**（1,982 对 6,106 微秒），Linear Attention 快 1.6 倍、Mamba-2 快 1.5 倍；团队已用这些内核在 TPU 上训练 Rigel 模型。
+  > 💡 线性注意力的内核生态此前基本被 CUDA 垄断，FLAT 把「TPU 训练现代架构」的缺口补上——对被 GPU 供给约束的团队，这是把存量 TPU 算力接入 Mamba/GLA 系模型的最短路径。
+   - 来源: [FLAT 博客](https://trainstation-project.github.io/blog/flat/) | [@MayankMish98](https://x.com/MayankMish98/status/2110119911410524525)
+
 **英伟达追加英国创业生态部署：五年 2.5 亿美元算力承诺，强化智能体安全与安全**
-- 英伟达宣布在英国创业生态体系追加投入，落地一个总额 2.5 亿美元、为期五年的算力承诺，用于强化英国的智能体（agentic）安全与安全能力。该承诺是英伟达在英国推动全栈部署的组成部分，覆盖从企业级应用到初创公司的战略部署。
+- 英伟达宣布在英国创业生态体系追加投入，落地一个总额 2.5 亿美元、为期五年的算力承诺，用于强化英国的智能体（agentic）安全与安全能力。该承诺是 NVIDIA 在英国推动全栈部署的组成部分，覆盖从企业级应用到初创公司的战略部署。
   > 💡 英伟达不再满足于卖硬件，把算力以多年承诺的形式直接锁定给国家的「智能体安全」议题，等同于把 GPU 变成 AI 主权基础设施合约的一部分，后续欧盟、日韩大概率会复制同类交易。
    - 来源: [NVIDIA Blog](https://blogs.nvidia.com/blog/uk-ecosystem-deployment)
 
@@ -39,63 +60,77 @@
    - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2110406886126174399)
 
 ### 初创&融资
-**3D 算力芯片公司算苗科技完成 Pre-A2 与 A 轮融资，北京国资领投、一年累计近 20 亿元**
-- 算苗科技宣布近日完成 Pre-A2 轮（含加入轮）与 A 轮融资，一年内融资总额接近 20 亿元。该公司专注于 3D 算力芯片研发，是业界首家采用 Hybrid Bonding 工艺实现 3D 堆叠芯片研发与大规模量产的团队。本轮融资由亦庄国投等北京市区两级国资平台领投。
-  > 💡 3D 堆叠 + Hybrid Bonding 是 HBM/AI 加速器之外的另一条先进封装路线，算苗抢到「首家大规模量产」定位，北京国资愿意领投，意味着地方政府把先进封装当成与存储、逻辑并列的押注方向。
-   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14705974)
+**Mistral 收购人本设计公司 New Material：组建 Solutions Design 团队，打通部署与产品反馈环**
+- 欧洲前沿实验室 Mistral 收购成立六年的 AI 设计公司 New Material，后者曾与 Ford、Wellcome Trust、AmLaw 50 律所等合作交付 AI 原生产品与工具。收购后 New Material 将组建新团队 Solutions Design，横跨设计、工程与 AI 与客户共同开发，在真实世界部署与 Mistral 产品之间建立紧密反馈环；Mistral 设计负责人 Zach Krasner 称「伟大的设计对交付强大的 AI 方案至关重要」，应用 AI 负责人称这将加速其面向企业与政府的主权 AI 使命。收购条款未披露。
+  > 💡 前沿模型公司开始为「交付」买单——模型能力趋同时，企业落地差异越来越取决于方案设计层；Mistral 借收购把设计前置进交付体系，对标的正是 OpenAI/Anthropic 的企业解决方案组织。
+   - 来源: [New Material](https://newmaterial.ai/stories/newmaterial-joins-mistral) | [@newmaterialAI](https://x.com/newmaterialAI/status/2110370038796464317)
 
-**AI 训练与评测公司 Unipat AI 新一轮估值达 25 亿美元，阿里、腾讯、红杉中国押注**
-- Unipat AI 近日完成新一轮融资，估值 25 亿美元，约合人民币 160 亿元。该公司专注于构建真实场景下的 AI 训练、评测与应用新范式，为 AI 模型设计贴近真实使用环境的测试与评估场景。本轮投资方包括阿里、腾讯、红杉中国等头部机构。
-  > 💡 阿里、腾讯、红杉中国同时押注一家评测公司，意味着中文 AI 生态正在把「模型评测」视为与基座模型同等重要的入口，谁掌握评测口径，谁就掌握国产模型对外对齐的标尺。
-   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14705978)
+**企业 AI 通讯应用 Zenzap 融资 4400 万美元：要做合规版 WhatsApp，瞄准一线员工**
+- 企业级 AI 私密通讯应用 Zenzap 完成 **4,400 万美元**融资，Bessemer、Lightspeed 与 The Garage 及 Wix 总裁 Nir Zohar 等个人投资者参投。曾自举创业并出售 StuccoMedia 的创始人 Guy Weiss 瞄准用 WhatsApp、Telegram 等消费级应用沟通的企业一线员工：Zenzap 在移动优先的聊天之上叠加带组织上下文的 AI，同时满足 IT 与安全合规——「WhatsApp 上装不了企业 AI agent，Slack/Teams 又不是为酒店、建筑、餐饮一线员工设计的」。
+  > 💡 企业通讯的空白带在「消费级易用 × 企业级合规 × AI 原生」的交集处，Zenzap 赌的是全球数亿用 WhatsApp 干活的一线员工；首发即 4,400 万美元也说明该赛道的资本耐心正在变短。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/10/14/zenzap-raises-44m-for-its-ai-chat-app-that-aims-to-replace-whatsapp-in-the-workplace/)
 
-**跨平台环境智能公司 Mistlabs 完成 2600 万美元 Pre-A 轮融资，华勤与光合方联合领投**
-- Mistlabs 是一家跨平台环境智能技术开发商，核心产品 Ambi 环境智能系统可在 Mac、iPhone、Apple Watch 等苹果终端运行，无需手动输入指令即可感知会议与工作上下文，并自动提炼信息、生成任务，支持跨设备任务流转与 AI 间自主协商。公司同步与华勤合作开发 AI 可穿戴硬件。近日，Mistlabs 获得 2600 万美元 Pre-A 轮融资，华勤技术与光合创投联合领投。
-  > 💡 Mistlabs 的产品形态落在"无需输入、主动感知"的环境智能路线上，与一般语音助手差异明显；同期与硬件厂商联合开发 AI 可穿戴，表明其商业落地并非纯软件订阅，而可能把硬件作为数据与分发入口。结合近期 Ambi 已宣布的 2600 万美元融资口径，本轮更接近同一轮披露的不同来源。
-   - 来源: [IT桔子](https://www.itjuzi.com/investevent/14705983)
+**B2B 客户知识平台 Floqer：AI agent 持续调研客户，ARR 破 120 万美元并计划开源**
+- 在 TechCrunch Disrupt Startup Battlefield 路演的 Floqer 定位「自主客户知识平台」：AI agent 持续收集、组织并更新 B2B 销售与营销团队理解客户所用的数据库，替代在 Google、LinkedIn、公司网站与职位公告间数小时的人工检索。公司披露年经常性收入已超 **120 万美元**、总收入一年增长约 **10 倍**，并计划 2027 年初通过安全审查后开源其自主客户知识数据库技术。公司由 Shivam Mahajan 与 Zaaheda Islam 创立，首个产品为 Chrome 扩展 Super Chat，后因企业客户清理 CRM 数据的需求转向现产品。
+  > 💡 「CRM 自动保鲜」切中的是销售运营中最琐碎也最普遍的痛点；ARR 数据与开源计划同发的组合，是 Battlefield 舞台上典型的「先证商业、再换生态位」打法。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/10/14/floqers-ai-agents-help-b2b-revenue-teams-research-customers/)
 
-**Berkshire Hathaway 同意以 3.3 亿美元入股意大利数字集团 Bending Spoons，后者股价当日跳涨 40%**
-- 据 The Information 报道，Berkshire Hathaway 已同意以定向增发方式向意大利数字集团 Bending Spoons 投资 3.3 亿美元，对应每股价格 33 美元、共 1000 万股。消息公布当日，Bending Spoons 股价上涨 40% 至 52.88 美元。该报道作者为 Martin Peers。
-  > 💡 Bending Spoons 本就以收购老牌软件 IP（如 Meetup、Evernote）著称，Berkshire 给出的 33 美元定增价相比当日 52.88 美元的市价存在显著折扣，等于把巴菲特的名号折价换成现金；这种「名人折扣入股」对正在强化 AI 内容工厂的 Bending Spoons 而言，是比单纯估值更重要的信用背书。
-   - 来源: [The Information](https://www.theinformation.com/briefings/berkshire-hathaway-invest-330-million-bending-spoons)
+**AI 指环 Stream Ring 宣布下月开始发货：三年研发，获 Fast Company 年度创新设计报道**
+- Sandbar 宣布其定位「人类思维的延伸」的硬件 Stream Ring 将于下月开始发货：产品研发历时三年，期间收集超 **100 名**内测用户反馈、完成 **1,000 余次**线下演示，官方同步发布最新进展与常见问题解答。该产品获 Fast Company Innovation by Design 2026 专题报道。
+  > 💡 AI 硬件的「常驻贴身」路线正从吊坠、耳机延展到指环——发货承诺是对硬件初创最硬的检验，Stream 用三年打磨单品的节奏与快消式 AI 硬件潮形成对照。
+   - 来源: [@sandbar](https://x.com/sandbar/status/2110060670700097858) | [Fast Company](https://www.fastcompany.com/91590534/stream-innovation-by-design-2026)
+
+**印度 AI 特种材料平台 Scimplify 融资 2500 万美元：对标中国关键材料供给，估值升至 2.5 亿**
+- 班加罗尔初创 Scimplify 完成 **2,500 万美元**全股权战略轮融资，Hitachi Ventures 领投，客户汉高与 Teknor Apex 作为新投资方加入，Accel India 等老股东跟投；据知情人士其投后估值升至 **2.5 亿美元**。公司用 AI 平台 Scinode 协调研发与生产：识别合适的生产路线与制造设施并追踪质量与合规要求，把从客户需求到成品交付的周期从行业常规的 12-18 个月压缩到最快 **2 个月**，半导体、国防与能源成为关键增长市场。
+  > 💡 「去中国化」供应链焦虑正在变成特种化学的创业窗口——AI 在这里的价值不是发现新材料，而是压缩「实验室到合格产能」的工程周期；客户直接入股的融资结构，说明下游对非中国供给的付费意愿已足够刚性。
+   - 来源: [TechCrunch](https://techcrunch.com/2026/10/14/scimplify-raises-25m-to-challenge-chinas-grip-on-critical-materials-with-ai/)
 
 ### 研究关注
-**APEX：用分层潜空间与异步去噪把扩散模型的潜变量压缩推到 64× 与 128×**
-- 论文提出 APEX（Asynchronous Prefix denoising for EXtreme compression）框架，针对扩散模型中激进潜变量压缩带来的重建-生成两难问题，将分层潜空间与按通道组异步去噪结合。自动编码器按"结构到细节"的顺序排列通道前缀，共享去噪器在不增加 token 的前提下以错开的局部时间步生成各通道。在 ImageNet-512 上，APEX 在 64× 与 128× 压缩倍率下的所有通道数档位上均优于现有方法；在匹配的训练与引导采样算力下，也优于 256-token 模型，且算力越低优势越大。代码已公开。
-  > 💡 APEX 的关键不在"更小的潜变量"本身，而在共享去噪器通过错开局部时间步同时兼顾结构与细节，把"压缩越狠、质量越差"的代价曲线压低。对低成本图像生成来说，这种用通道分组与异步时间步换 token 数量的思路，可能比单纯改进架构更值得工程复用。
-   - 来源: [HuggingFace Daily Papers](https://huggingface.co/papers/2610.12843)
-
-**论文提出 GreenWAM：单一机器人世界基座模型同时充当世界模型与策略，20 类机器人共用一套动作空间**
-- 论文提出 GreenWAM，一款面向机器人的世界基座模型。模型采用覆盖 20 个机器人家族（含双臂臂与灵巧人形机器人）的共享解剖式动作坐标，并在视觉、动作条件与世界动作三种模式下共同训练，策略从生成器中拆出独立的动作专家。作为世界模型，GreenWAM 在 WorldArena 1.0 上取得轨迹、深度与 3D 准确率的最高分；作为策略，它在 RoboTwin 2.0 排行榜上排名靠前，在 LIBERO-plus 上达到参与比较方法中最高的零样本成功率。论文进一步把 GreenWAM 适配到真实人形机器人，成功率超过由 π_{0.5} 与 Cosmos 3 Edge 适配的策略，并蒸馏成单步策略用于实时控制。
-  > 💡 把世界模型与策略塞进同一个生成器、再在适配阶段拆出动作专家，是一条比并行维护 VLA 与世界动作模型更经济的工程路线；3 个受控实验给出的判定（专门化提升动作-端变好的同时世界预测也变好、动作专家从一开始就拆分、策略适配期保留世界模型模式）相当于把后续工作流变成可复制的 checklist。
-   - 来源: [HuggingFace Daily Papers](https://huggingface.co/papers/2610.18774)
-
-**论文提出 WAVE-0：用轻量潜在世界模型桥接 VLA 与 WAM，RoboTwin 2.0 成功率 91.47%、真实任务从 38.3% 拉到 73.3%**
-- 论文提出 WAVE-0（World-model-Augmented VLA Execution）框架，在预训练 VLA 上接入一个 257M 参数的轻量潜在世界模型，将 VLM 生成的潜在动作规划转为对未来表征的预测，并以此条件化动作专家。世界模型直接以真实机器人动作训练，采用反事实排序目标，无需像素重建或大规模视频预训练。在 RoboTwin 2.0 上达到 91.47% 成功率，在 LIBERO 上达到 98.20%，在 LIBERO-Plus、LIBERO-Pro 与 LIBERO-Para 上分别为 88.0%、61.4% 与 75.0%。在真实任务中，将 π_{0.5} 的成功率由 38.3% 提升至 73.3%。
-  > 💡 WAVE-0 用一个 257M 的潜在预测头替代了视频生成式 WAM 的算力开销，把“未来预测”从耗能大模型压缩成可嵌进 VLA 的小模块，使规划、预测与动作生成第一次能在同一前向里完成；它在真实任务上把 π_{0.5} 翻倍的提升幅度，比任何基准分数都更接近部署意义。
-   - 来源: [HuggingFace Daily Papers](https://huggingface.co/papers/2610.18568)
-
-**论文提出 Urbex：把城市级 3D 定位改写为 VLM 主动空间搜索，CityRefer Hit@1 与速度均超对比方法**
+**Urbex：把城市级 3D 定位改写为 VLM 主动空间搜索，CityRefer Hit@1 与速度均超对比方法**
 - 论文提出 Urbex，一个把城市级 3D 定位改写为 VLM 主动空间搜索的智能体框架。模型把城市级 3D 场景表示为可交互的多视图环境，允许 VLM 智能体查询地标、放大局部区域、渲染倾斜视角，并最终提交一个 3D 包围框。该工具调用策略通过强化学习在 CityRefer 上优化，使用平滑定位奖励与轻量塑形奖励以提高探索效率。实验显示，Urbex 在 CityRefer 上取得最佳 Hit@1 与 IoU，支持无需真值框的无候选定位，并显著快于最强的城市级排序基线；在 STPLS3D-Refer 上的零样本结果进一步表明其跨场景鲁棒性有所提升。
   > 💡 Urbex 把定位从「排序」改成「搜索」，等于让 VLM 直接拿城市当工具箱来调用，省掉了预计算候选实例这一步；这种主动视觉范式与当前 grounding 主流的“先生成再排序”路线分歧明显，是 3D grounding 接下来值得跟踪的方向。
-   - 来源: [HuggingFace Daily Papers](https://huggingface.co/papers/2610.18356)
+   - 来源: [arXiv](https://arxiv.org/abs/2610.18356) | [HuggingFace Daily Papers](https://huggingface.co/papers/2610.18356)
+
+**Tev：1170 个带稠密进度奖励的长时程环境，Tev-27B 在 ALE 计算数学域比肩 GPT-6**
+- 开源模型在长时程任务上仍缺训练数据与配方：长任务难策展难验证、奖励稀疏。论文两线并进：Tev-Gym 是首个带可验证、稠密、渐进奖励的长时程 agent 训练集——**1,170 个**已验证任务环境覆盖 7 个领域，采用「潜世界优先」构建：先写出任务域、工作流与每步期望状态的完整隐藏规范，再从该规范渐进渲染出 agent 面向的环境，天然获得可控复杂度与进度度量；进度势奖励塑形（PPRS）把进度转成逐步稠密奖励，使原本不可训练的任务变得可训、训练效率提升。据此训练的 Tev-27B 在 Agents' Last Exam 计算与数学科学域（ALE-CM）取得大幅提升，匹配 GPT-6。
+  > 💡 「先写隐藏规范再渲染环境」把任务生成从拼素材变成编译器式构造，稠密进度奖励则与 QwenGyre「部分进度也计分」殊途同归——长时程 RL 的瓶颈正从数据量转向「任务的可验证构造方式」。
+   - 来源: [arXiv](https://arxiv.org/abs/2610.18868)
+
+**Agent-Reflex：教 agent 在噪声工具反馈与用户纠正间主动反思，五项长时程基准达 58.6**
+- 真实部署中 MCP 工具会返回噪声反馈、用户会中途纠正 agent，但既有方法缺少对反思学习与失败恢复的监督。论文提出三阶段训练框架 Agent-Reflex：环境反思技能发现（RSD）向环境注入有据的工具反馈扰动、采样能力多样的 LLM 池、挖掘成败对并总结可复用的反思元技能；反思监督微调（ReSFT）把技能转化为自我反思、技能恢复与用户中心纠正的监督；ORPO 再把噪声交互下的 agent 强化学习与反思引导的 on-policy 蒸馏结合。基于 Qwen3-8B，在五项长时程工具使用基准上整体达 **58.6**、AgentNoiseBench 达 **29.1**，超过强环境扩展与反思基线。
+  > 💡 「反思」第一次成为可训练的监督信号而非 prompt 技巧——刻意注入扰动再配对成败轨迹，等于给反思行为造了课程；对依赖 MCP 生态的 agent 产品，噪声鲁棒性训练正成为上线前的必需项。
+   - 来源: [arXiv](https://arxiv.org/abs/2610.17953)
+
+**Harness²：无真值验证器的递归 harness 进化，WorkBuddy-Bench 最高提升 11.5 分**
+- 用递归自我改进（RSI）演化 agent harness 在开放世界面临两难：测试时任务全新、没有真值验证器可指导在线改 harness，且 RSI 高度任务特定、难以泛化。论文提出即插即用的递归框架 Harness²：任务级递归用对比式 Propose-Probe-Compose 步骤，在无真值验证器的情况下可靠引导 harness 编辑，并可并行或串行扩展；harness 层递归再从这些编辑中提取经验、更新一个持续改进的 harness 以适配未来任务。三个专业基准、四种模型-harness 配置下，单步即可持续改进 GLM-5 与 Gemini 3.5 Flash：WorkBuddy-Bench 最高 **+11.5** 分、JobBench +4.5 分、LAB +11.8 个百分点。
+  > 💡 「没有验证器就自己构造对比信号」延续了 h1、ReHarness 一脉对 harness 自进化的推进——双层递归把任务内改进与跨任务经验沉淀分开，正对应「快思考调工具、慢思考改习惯」的分工。
+   - 来源: [arXiv](https://arxiv.org/abs/2610.14224)
+
+**Jeva：决策原生架构从第一性原理重构 system one 模型，统一 Choice/Noul/Score 输出**
+- System one（直接低延迟决策）模型的通行做法是从序列化文本预测答案，但这并不尊重决策问题的结构。论文提出四个被忽视的结构性要求：可空感知（区分「无答案」与候选间不确定）、置换不变（选项重排不改变决策）、选项可扩展（候选集增大无需重定义输出空间）、可缓存（与请求无关的选项计算可跨请求复用），并给出决策原生架构 Jeva：共享编码器独立表示请求与各选项，紧凑决策栈只针对不可变选项记忆精炼请求状态，对称聚合产生置换等变的概率，独立的覆盖度估计支持显式空输出。评测中 Jeva 在保持强类型决策性能的同时统一了 Choice、Noul 与 Score 三类输出。
+  > 💡 「决策问题有自己的不变量」是对 system one 路线的一次架构纠偏——把置换不变性与空值感知做进归纳偏置而非指望模型从数据里学；这份结构性要求清单也适合当作决策模型（Jev/Nimble 类）的评估维度交叉核对。
+   - 来源: [arXiv](https://arxiv.org/abs/2610.18773)
 
 ### X讨论
-**Artificial Analysis 上线 DeepSeek V4.1 Flash：英伟达 GB300 每兆瓦吞吐 2.61 亿 tokens/s 居首**
-- Artificial Analysis 将 DeepSeek V4.1 Flash 接入 AA-AgentPerf，并完成其在英伟达与 AMD 硬件上的推理性能测试。在每用户 100 tokens/s 的条件下，英伟达 GB300 排名第一，每兆瓦吞吐最高达 2.61 亿 tokens/s。AA-AgentPerf 用于回放真实 agentic 编码会话，包含 prompt caching 与链路延迟等真实负载因素。
-  > 💡 「每兆瓦吞吐」把推理竞争直接拉进电力维度，未来前沿实验室选 GPU 会在每瓦 tokens/s 的指标上反复内卷，AMD 若不能在每兆瓦效率上跟进，将在 agentic 推理的算力采购环节被边缘化。
-   - 来源: [@artificialanlys](https://x.com/ArtificialAnlys/status/2110265347396055410)
-
-**SpaceXAI Grok Voice 3.0 登顶 Artificial Analysis 语音到语音榜单，分数 86**
-- SpaceXAI 的 Grok Voice 3.0 在 Artificial Analysis Speech to Speech Index 上以 86 分排名第一，延迟指标具备竞争力。Grok Voice 3.0 是 Grok Voice 2.0 的继任模型，作为语音到语音模型通过 SpaceXAI Realtime API 提供服务，定价为 0.08 美元/分钟，评测使用的是 Rex 音色。
-  > 💡 0.08 美元/分钟是当前语音到语音模型里相当激进的一档，SpaceXAI 在实时语音赛道继续用低价抢入口，Realtime API 的存在意味着开发者一旦接入就很难切到更贵的替代品。
-   - 来源: [@artificialanlys](https://x.com/ArtificialAnlys/status/2110421964095713743)
+**OpenAI 披露办公室发现隐藏录音设备：用自家模型锁定植入员工，已移交 FBI**
+- OpenAI 表示在其一间办公室内发现一个隐藏的精密录音设备，并使用自家模型分析该设备及其来源，确认系一名员工数天前植入。公司已将此事移交 FBI，相关人员已被逮捕并解雇，调查仍在进行。OpenAI 称目前没有迹象表明该员工不当访问或外泄模型权重、源代码或客户数据，并称此案体现了 AI 在应对从内部风险到国家级威胁等高级安全威胁上的作用。
+  > 💡 「用模型逆向分析物理取证线索」把 AI 安全能力的应用面从数字域扩到物理域——随着模型资产价值飙升，内部威胁只会更密集，头部实验室的安防叙事正在与国家安全基础设施深度绑定。
+   - 来源: [@OpenAINewsroom](https://x.com/OpenAINewsroom/status/2110095403198849132)
 
 **Artificial Analysis 上线 AA-Robotics v0.1：用 6 轴机械臂评估前沿语言模型的具身能力**
 - Artificial Analysis 宣布推出 AA-Robotics v0.1 评测预览版，聚焦前沿语言模型在物理世界中的理解、规划与行动能力。v0.1 中，每个模型将获得一台包含 5 个关节与一个夹爪的 6 轴机械臂控制权，并完成简单目标，机构同步发布首批 8 个任务的结果。
   > 💡 AA 把评测从纯文本与代码能力延伸到具身控制，意味着第三方基准开始把"能否驱动机器人完成物理动作"作为衡量前沿模型的标准维度之一。这一方向会推动模型厂商在视觉-语言-动作联合训练上的投入，也是具身智能赛道走向"以模型能力为核心卖点"的信号。
    - 来源: [@artificialanlys](https://x.com/ArtificialAnlys/status/2110500262628806787)
 
+**OpenRouter：ElevenLabs 上线一周拿下近三分之一语音合成支出，并提供半价活动**
+- OpenRouter 公布数据，ElevenLabs 在上线仅 7 天后的次日，其文本转语音模型在 OpenRouter 上贡献了接近三分之一的同类支出。OpenRouter 表示，ElevenLabs 全系模型在该平台限时五折，优惠持续至 10 月 19 日。
+  > 💡 语音合成赛道在模型 API 渠道出现了明确的支出迁移信号，说明头部语音厂商已经具备与通用 LLM 同台抢占开发者预算的能力。半价窗口叠加新模型发布窗口，意味着 ElevenLabs 在用价格补贴换调用量份额。
+   - 来源: [@openrouter](https://x.com/OpenRouter/status/2110404020192092611)
+
+**Boston Dynamics 展示 Atlas 人形机器人制造流程：一体化车间把复杂设计加速变成可量产硬件**
+- Boston Dynamics 发布幕后视频，展示 Atlas 人形机器人从定制零件到落地行走的制造过程。视频介绍其车间以精密加工、快速装配与实时协作为基础，零件在内部机加工，装配与维修在同一屋檐下流水线化。公司表示，这种一体化制造能力是「将复杂设计加速变成可量产行走硬件」所需的速度来源。视频已上线 YouTube。
+  > 💡 Atlas 把机加工、装配、维修都收进同一屋檐，本质上是在为下一代量产做工艺打底；这条幕后视频与已发布的 Spot 宣传形成对照——前者讲产能速度，后者讲场景广度，Boston Dynamics 的叙事重心已经从演示转向交付节奏。
+   - 来源: [@bostondynamics](https://x.com/BostonDynamics/status/2110392871127790060)
 
 ---
 *更新时间: 2026-10-15 06:49*
