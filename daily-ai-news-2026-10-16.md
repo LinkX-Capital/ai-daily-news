@@ -7,9 +7,9 @@
 ## 要点汇总
 
 - 模型前沿：Meta 发布 Muse Spark Open：8160 亿参数开源权重模型，本地运行需至少 1TB 内存
-- 产业动态：Cognition 推出 Devin Oncall：自动调查告警与线上事故，SREGym 达 100% 端到端解决率; Claude 平台开放 Agent 可观测性：Messages API 与 SDK 现可输出 OpenTelemetry 追踪; Amazon 发布两款 Bee 个人 AI 设备：75 美元起，实时转录不上传原始音频; PrismML 发布三值化 Bonsai 2 小模型家族：2B 仅 0.43GB，面向手机与可穿戴本地 agent
+- 产业动态：Cognition 推出 Devin Oncall：自动调查告警与线上事故，SREGym 达 100% 端到端解决率; Claude 平台开放 Agent 可观测性：Messages API 与 SDK 现可输出 OpenTelemetry 追踪; Amazon 发布两款 Bee 个人 AI 设备：75 美元起，实时转录不上传原始音频; PrismML 发布三值化 Bonsai 2 小模型家族：2B 仅 0.43GB，面向手机与可穿戴本地 agent; Paper Instruments 发布 Ultramarine 1 Flash：5 人 30 万美元后训练，知识工作成本仅为 Fable 5 的约 1/60
 - 算力追踪：台积电宣布在台南再建一座 3nm 工厂，目标 2028 年上半年投产; SK Hynix 旗下 Solidigm 拟以美国建厂换取向大连工厂增运芯片设备
-- 初创&融资：AI 云平台 Modal 年化收入破 10 亿美元，7.5 亿美元 D 轮估值 157.5 亿; Cohere 意向收购网络安全公司 AISLE：其曾在 curl、FFmpeg 等关键软件找出 200+ 高危漏洞; 数据中心机柜设计初创 Mueon 融资 6500 万美元，主打同功耗下十倍算力; Ramp 完成 18.5 亿美元新融资估值 600 亿美元，四个月内估值由 440 亿跃升并全面押注 AI; Paper Instruments 发布 Ultramarine 1 Flash：5 人 30 万美元后训练，知识工作成本仅为 Fable 5 的约 1/60
+- 初创&融资：AI 云平台 Modal 年化收入破 10 亿美元，7.5 亿美元 D 轮估值 157.5 亿; Cohere 意向收购网络安全公司 AISLE：其曾在 curl、FFmpeg 等关键软件找出 200+ 高危漏洞; 数据中心机柜设计初创 Mueon 融资 6500 万美元，主打同功耗下十倍算力; Ramp 完成 18.5 亿美元新融资估值 600 亿美元，四个月内估值由 440 亿跃升并全面押注 AI
 - 研究关注：DexAgent：单段第一人称人类视频经 Human2Sim2Robot 生成灵巧操作训练数据，工具库自我进化; CriticOPD：教师会顺着学生的错误 rollout 走，批评引导改写恢复可监督性; Road MOPD：跨教师互审化解多教师蒸馏的梯度冲突，弱势域提升超 5 个百分点; ATAS：世界状态中心的智能体视频生成，跨镜头时空一致性全面领先
 - X讨论：Anthropic 据报披露第三季度营收 168 亿美元，环比增长约 45%; Artificial Analysis：NVIDIA Nemotron 3.5 Super VL 成美国开源权重榜首，智能指数 26 分
 ---
@@ -18,7 +18,7 @@
 
 ### 模型前沿
 **Meta 发布 Muse Spark Open：8160 亿参数开源权重模型，本地运行需至少 1TB 内存**
-- Meta 发布开源权重模型 Muse Spark Open，与 Apple 合作使其可在 Apple silicon 上本地运行，自称迄今最强的美国开源权重模型。该模型为稀疏 MoE：**8,160 亿**总参数、**420 亿**激活，100 万 token 上下文，原生多模态（文本/图像/视频/音频），面向复杂编程与智能体任务。本地运行用两台 M5 Ultra Mac Studio（各 512GB 统一内存、1.2TB/s 带宽，经最新 MLX 框架组成一台「1TB 统一内存的超级计算机」）；权重上架 Hugging Face 与三大云模型库，API 入口覆盖 Baseten、Fireworks、Groq、Modal、Nebius、OpenRouter 与 Together AI，支持 SGLang/vLLM/TensorRT-LLM/MLX/llama.cpp 等推理引擎与 AMD/Apple/Intel/NVIDIA 硬件，并附带 Helion GPU 内核（内核级加速 1.03-3.95 倍）。Meta 用 Muse Code 驱动其修复 Mastodon 客户端 Ice Cubes 的真实 iOS 变更、在 DaVinci Resolve 中逐帧审片并竖屏裁剪；许可证为带有限商业条款的 Muse Model License，安全上按 Meta Superintelligence Scaling Framework 评估达标后发布。
+- Meta 发布开源权重模型 Muse Spark Open，与 Apple 合作使其可在 Apple silicon 上本地运行，自称迄今最强的美国开源权重模型。该模型为稀疏 MoE：**8,160 亿**总参数、**420 亿**激活，100 万 token 上下文，原生多模态（文本/图像/视频/音频），面向复杂编程与智能体任务。本地运行用两台 M5 Ultra Mac Studio（各 512GB 统一内存、1.2TB/s 带宽，经 MLX 组成一台「1TB 统一内存的超级计算机」）；权重上架 Hugging Face 与主流云模型库，多家推理平台同步开放，支持主流引擎与 AMD/Apple/Intel/NVIDIA 硬件，并附带 Helion GPU 内核（内核级加速 **1.03-3.95 倍**）。Meta 用 Muse Code 驱动其修复 Mastodon 客户端 Ice Cubes 的真实 iOS 变更、在 DaVinci Resolve 中逐帧审片并竖屏裁剪；许可证带有限商业条款，安全评估按 Meta 超级智能扩展框架达标后发布。
   > 💡 Muse Spark Open 进一步把前端旗舰的开源权重版推向桌面端，强调本地推理与硬件协同，是 Meta 在终端侧 AI 与开发者工作流上的双线推进；「两台 Mac Studio 组成超算跑 8160 亿参数」第一次让消费级硬件摸到了开源权重的性能上限。
    - 来源: [Meta AI Research](https://research.meta.ai/blog/muse-spark-open) | [TechCrunch](https://techcrunch.com/2026/10/15/meta-launches-an-open-weight-model-that-runs-on-macs) | [@AIatMeta](https://x.com/AIatMeta/status/2110779754274292212)
 
@@ -42,6 +42,11 @@
 - PrismML 扩充三值化（权重仅取 {-1, 0, +1}）Bonsai 2 家族，发布基于 Qwen3.5 的 2B、4B 与 9B 模型，容量分别仅 **0.43GB、0.95GB 与 2.0GB**——比全精度小 9 倍以上，与既有 27B 组成四档阵容。本次更新聚焦本地助手的实用行为：遵循指令、避免重复循环、在移动设备上调用工具、控制冗余输出（9B 在标准指令与日常数学任务上少用约 **40%** token），支持推理、视觉与工具调用，Apache 2.0 开源。
   > 💡 三值化把「手机上跑 agent」的内存门槛压到 1GB 以内，9 倍压缩后仍保留工具调用能力，说明端侧模型的竞争点已从「能不能跑」转向「够不够省、听不听话」；Qwen3.5 底座+极限量化的组合也在成为端侧部署的事实配方。
    - 来源: [PrismML](https://prismml.com/news/bonsai-2-family) | [@PrismML](https://x.com/PrismML/status/2110823964650164348)
+
+**Paper Instruments 发布 Ultramarine 1 Flash：5 人 30 万美元后训练，知识工作成本仅为 Fable 5 的约 1/60**
+- 初创 Paper Instruments 发布面向专业知识工作的开源 agentic 模型 Ultramarine 1 Flash：在开源基座 GLM-5.3-Flash 上做大规模「不可验证任务」RL——尽调备忘录、诉讼时间线这类无法用单元测试校验的工作，靠按领域定制的任务与评分规则协同合成来构造奖励。官方数据：六个知识工作基准平均提升 **4.1 分**、token 输出减少 6.5%；内部知识工作套件上每任务成本 **0.13 美元**，优于 Claude Fable 5（8.19 美元）与 GPT-5.6 Sol（2.09 美元），距 Opus 5.5 与 GPT-6 Sol 的差距在 3 分以内（对手均开最大推理）。模型由 **5 人团队**以约 **30 万美元**总成本后训练完成，API 即日可用、两周后开放权重。
+  > 💡 「不可验证任务的 RL 配方」是这篇最值钱的部分——把 rubric 评分做成可规模化的奖励信号，让 RL 从代码走向法律、金融等真正的知识工作；5 人 30 万美元的成本结构也在重演 DeepSeek 式的效率宣言。
+   - 来源: [Paper Instruments](https://www.paperinstruments.com/blog/ultramarine) | [@bertgodel](https://x.com/bertgodel/status/2110400987622265232)
 
 ### 算力追踪
 **台积电宣布在台南再建一座 3nm 工厂，目标 2028 年上半年投产**
@@ -74,11 +79,6 @@
 - 支出管理公司 Ramp 周四宣布完成 18.5 亿美元新融资，估值达 600 亿美元，由 Dragoneer、Thrive Capital、Founders Fund、Sands Capital 与 Avenir Growth 联合领投。公司年化收入已突破 20 亿美元，年化采购处理量超过 2750 亿美元，客户数从 6 月的 7 万家增至 8.5 万家，包括 Visa、Uber、Shopify、Robinhood、Anduril、Notion、Cursor 和 Figma。Ramp 已从支出管理扩展至支付、反欺诈、采购、供应商管理乃至会计，近期还在产品中嵌入 AI 智能体，并推出面向 AI 智能体使用的企业信用卡，8 月进入模型路由业务。本月早些时候，Ramp 上线 Glass 工作空间，用于沉淀员工构建的 AI 自动化与提示词。
   > 💡 Ramp 把金融 SaaS 升级为 AI 原生操作平台，从支出管理延伸至 token 监控、模型路由与智能体信用卡，意在抢占企业 AI 工作流的钱包入口。
    - 来源: [TechCrunch](https://techcrunch.com/2026/10/15/ramp-reaches-60b-valuation-as-it-pushes-deeper-into-ai)
-
-**Paper Instruments 发布 Ultramarine 1 Flash：5 人 30 万美元后训练，知识工作成本仅为 Fable 5 的约 1/60**
-- 初创 Paper Instruments 发布面向专业知识工作的开源 agentic 模型 Ultramarine 1 Flash：在开源基座 GLM-5.3-Flash 上做大规模「不可验证任务」RL——尽调备忘录、诉讼时间线这类无法用单元测试校验的工作，靠按领域定制的任务与评分规则协同合成来构造奖励。官方数据：六个知识工作基准平均提升 **4.1 分**、token 输出减少 6.5%；内部知识工作套件上每任务成本 **0.13 美元**，优于 Claude Fable 5（8.19 美元）与 GPT-5.6 Sol（2.09 美元），距 Opus 5.5 与 GPT-6 Sol 的差距在 3 分以内（对手均开最大推理）。模型由 **5 人团队**以约 **30 万美元**总成本后训练完成，API 即日可用、两周后开放权重。
-  > 💡 「不可验证任务的 RL 配方」是这篇最值钱的部分——把 rubric 评分做成可规模化的奖励信号，让 RL 从代码走向法律、金融等真正的知识工作；5 人 30 万美元的成本结构也在重演 DeepSeek 式的效率宣言。
-   - 来源: [Paper Instruments](https://www.paperinstruments.com/blog/ultramarine) | [@bertgodel](https://x.com/bertgodel/status/2110400987622265232)
 
 ### 研究关注
 **DexAgent：单段第一人称人类视频经 Human2Sim2Robot 生成灵巧操作训练数据，工具库自我进化**
