@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from html_generator import parse_md
 
 # ========== 配置 ==========
-from llm_config import API_KEY, API_URL, light_model, llm_headers
+from llm_config import API_KEY, API_URL, light_model, light_extra, llm_headers
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -82,7 +82,7 @@ def call_llm(system_prompt, user_prompt):
 
     headers = llm_headers()
     data = {
-        "model": light_model("MiniMax-M2.5"),
+        **light_extra(), "model": light_model("MiniMax-M2.5"),
         "max_tokens": 2000,
         "temperature": 0.2,
         "system": system_prompt,

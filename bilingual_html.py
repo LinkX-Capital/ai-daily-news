@@ -14,7 +14,7 @@ import os, sys, re, json, time, glob, httpx, asyncio
 from datetime import datetime
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-from llm_config import API_KEY, API_URL, light_model, llm_headers
+from llm_config import API_KEY, API_URL, light_model, light_extra, llm_headers
 CACHE_PATH = os.path.join(BASE, '.bilingual_cache.json')
 
 # ── Helpers ───────────────────────────────────────────────
@@ -46,7 +46,7 @@ SYSTEM_PROMPT = (
 def call_minimax_sync(prompt):
     headers = llm_headers()
     data = {
-        "model": light_model("MiniMax-M2.7"),
+        **light_extra(), "model": light_model("MiniMax-M2.7"),
         "temperature": 0.2,
         "max_tokens": 16000,
         "system": SYSTEM_PROMPT,
@@ -68,7 +68,7 @@ async def call_minimax_async(client, prompt, sem, chunk_id=None):
     async with sem:
         headers = llm_headers()
         data = {
-            "model": light_model("MiniMax-M2.7"),
+            **light_extra(), "model": light_model("MiniMax-M2.7"),
             "temperature": 0.2,
             "max_tokens": 16000,
             "system": SYSTEM_PROMPT,

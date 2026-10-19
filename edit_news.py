@@ -65,7 +65,7 @@ def call_llm_for_article(article):
     """用 LLM 处理单篇文章"""
     import httpx
     
-    from llm_config import API_KEY, API_URL, light_model, llm_headers
+    from llm_config import API_KEY, API_URL, light_model, light_extra, llm_headers
     if not API_KEY:
         return None
 
@@ -89,7 +89,7 @@ def call_llm_for_article(article):
 
     try:
         r = httpx.post(API_URL, headers=llm_headers(), json={
-            "model": light_model("MiniMax-M2.5"),
+            **light_extra(), "model": light_model("MiniMax-M2.5"),
             "temperature": 0.2,
             "max_tokens": 2000,
             "system": "你是一个顶尖AI新闻分析师。",

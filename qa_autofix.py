@@ -26,7 +26,7 @@ from qa import (
 )
 from release_gate import GateResult, chinese_text_ok
 
-from llm_config import API_KEY, API_URL, light_model, llm_headers
+from llm_config import API_KEY, API_URL, light_model, light_extra, llm_headers
 
 
 @dataclass
@@ -195,7 +195,7 @@ def _enrich_body_with_llm(title, current_body, source_text, category):
 
     headers = llm_headers()
     data = {
-        "model": light_model("MiniMax-M2.5"), "temperature": 0.1,
+        **light_extra(), "model": light_model("MiniMax-M2.5"), "temperature": 0.1,
         "max_tokens": 500,
         "messages": [{"role": "user", "content": prompt}]
     }

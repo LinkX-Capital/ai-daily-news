@@ -504,7 +504,7 @@ class MCPWebReader:
 
 def call_llm_factcheck(title, body, insight, source_text):
     """用 LLM 对单条新闻做事实校验"""
-    from llm_config import API_KEY as api_key, API_URL as api_url, light_model, llm_headers
+    from llm_config import API_KEY as api_key, API_URL as api_url, light_model, light_extra, llm_headers
     if not api_key:
         return None
 
@@ -533,7 +533,7 @@ Insight：{insight}
 
     headers = llm_headers(api_key)
     data = {
-        "model": light_model("MiniMax-M2.5"),
+        **light_extra(), "model": light_model("MiniMax-M2.5"),
         "max_tokens": 2000,
         "temperature": 0.1,
         "messages": [{"role": "user", "content": prompt}],

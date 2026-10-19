@@ -11,7 +11,7 @@ from collections import defaultdict, Counter
 sys.path.insert(0, str(Path(__file__).parent))
 
 from tweet_fetcher import get_tweets
-from llm_config import API_KEY as LLM_API_KEY, API_URL as LLM_API_URL, light_model, llm_headers
+from llm_config import API_KEY as LLM_API_KEY, API_URL as LLM_API_URL, light_model, light_extra, llm_headers
 
 
 def is_questionable_tweet(tweet):
@@ -56,7 +56,7 @@ def extract_highlights_llm(tweets: list):
 
     prompt = f"""返回JSON：{{"highlights": [{{"idx": 序号, "title": "标题", "source": "来源"}}]}}
 
-从下列推文中选出 6-8 条当日最重要的动态（官方发布、研究突破、重要数据优先），idx 填推文序号。
+从下列推文中选出 6-8 条当日最重要的动态（官方发布、研究突破、重要数据优先），idx 填推文序号。title 用中文写一句话标题，公司名、人名、产品名保持英文。
 
 推文：
 {chr(10).join(tweets_text)}"""
@@ -69,7 +69,7 @@ def extract_highlights_llm(tweets: list):
                 response = httpx.post(
                     LLM_API_URL,
                     headers=llm_headers(minimax_key),
-                    json={"model": light_model("minimaxi-text-01"), "max_tokens": 1500, "messages": [{"role": "user", "content": prompt}]},
+                    json={**light_extra(), "model": light_model("minimaxi-text-01"), "max_tokens": 1500, "messages": [{"role": "user", "content": prompt}]},
                     timeout=60
                 )
                 if response.status_code == 200:
@@ -189,7 +189,7 @@ def extract_single_title_llm(title: str, source: str) -> str:
             LLM_API_URL,
             headers=llm_headers(api_key),
             json={
-                "model": light_model("minimaxi-text-01"),
+                **light_extra(), "model": light_model("minimaxi-text-01"),
                 "max_tokens": 50,
                 "messages": [{"role": "user", "content": prompt}]
             },
