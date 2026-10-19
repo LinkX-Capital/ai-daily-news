@@ -117,7 +117,7 @@ def push_feishu(dates: list[str]):
         return
 
     for date in dates:
-        gh_url = f"https://LinkX-Capital.github.io/ai-daily-news/daily-ai-news-{date}.html"
+        gh_url = f"https://linkxcapital.github.io/ai-daily-news/daily-ai-news-{date}.html"
 
         # 要点速览内容
         summary_elements = _parse_summary_from_html(date)

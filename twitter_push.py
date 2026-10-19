@@ -386,7 +386,7 @@ def push_to_feishu(cache, webhook_url, highlights=None, date_str=None):
                     'actions': [{
                         'tag': 'button',
                         'text': {'tag': 'plain_text', 'content': '📖 查看详情'},
-                        'url': f'https://LinkX-Capital.github.io/ai-daily-news/twitter-preview-{date_str}.md',
+                        'url': f'https://linkxcapital.github.io/ai-daily-news/twitter-preview-{date_str}.md',
                         'type': 'primary'
                     }]
                 }

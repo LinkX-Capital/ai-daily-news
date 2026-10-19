@@ -155,7 +155,7 @@ def main() -> int:
 
     public_base_url = os.environ.get(
         "PUBLIC_BASE_URL",
-        "https://LinkX-Capital.github.io/ai-daily-news",
+        "https://linkxcapital.github.io/ai-daily-news",
     ).rstrip("/")
     report_url = f"{public_base_url}/daily-ai-news-{args.date}.html"
     payload = _build_payload(args.date, report_url)
