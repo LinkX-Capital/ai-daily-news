@@ -504,8 +504,7 @@ class MCPWebReader:
 
 def call_llm_factcheck(title, body, insight, source_text):
     """用 LLM 对单条新闻做事实校验"""
-    api_key = os.environ.get("MINIMAX_API_KEY", "")
-    api_url = "https://api.minimaxi.com/anthropic/v1/messages"
+    from llm_config import API_KEY as api_key, API_URL as api_url, light_model, llm_headers
     if not api_key:
         return None
 
@@ -532,12 +531,9 @@ Insight：{insight}
 如果没有问题，输出：[]
 """
 
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
+    headers = llm_headers(api_key)
     data = {
-        "model": "MiniMax-M2.5",
+        "model": light_model("MiniMax-M2.5"),
         "max_tokens": 2000,
         "temperature": 0.1,
         "messages": [{"role": "user", "content": prompt}],

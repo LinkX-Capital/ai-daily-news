@@ -471,15 +471,16 @@ class ResearchAgent:
         self.reports_dir.mkdir(exist_ok=True)
 
         # LLM 配置
-        self.api_key = os.getenv("ANTHROPIC_API_KEY") or os.getenv("MINIMAX_API_KEY", "")
+        from llm_config import API_KEY, API_URL, light_model, llm_headers
+        self.api_key = os.getenv("ANTHROPIC_API_KEY") or API_KEY
         # 优先使用 Anthropic
         if os.getenv("ANTHROPIC_API_KEY"):
             self.api_url = "https://api.anthropic.com/v1/messages"
             self.model = "claude-sonnet-4-20250514"
             self.use_anthropic = True
         else:
-            self.api_url = "https://api.minimaxi.com/anthropic/v1/messages"
-            self.model = "MiniMax-M2.5"
+            self.api_url = API_URL
+            self.model = light_model("MiniMax-M2.5")
             self.use_anthropic = False
 
         # Knowledge Graph
@@ -524,11 +525,7 @@ class ResearchAgent:
                 return None
         else:
             # MiniMax API (Anthropic 兼容格式)
-            headers = {
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json",
-                "anthropic-version": "2023-06-01"
-            }
+            headers = llm_headers(self.api_key)
             data = {
                 "model": self.model,
                 "max_tokens": max_tokens,

@@ -11,6 +11,7 @@ from collections import defaultdict, Counter
 sys.path.insert(0, str(Path(__file__).parent))
 
 from tweet_fetcher import get_tweets
+from llm_config import API_KEY as LLM_API_KEY, API_URL as LLM_API_URL, light_model, llm_headers
 
 
 def is_questionable_tweet(tweet):
@@ -61,14 +62,14 @@ def extract_highlights_llm(tweets: list):
 {chr(10).join(tweets_text)}"""
 
     # 1. 尝试 MiniMax
-    minimax_key = os.environ.get("MINIMAX_API_KEY", "")
+    minimax_key = LLM_API_KEY
     if minimax_key:
         for attempt in range(3):
             try:
                 response = httpx.post(
-                    "https://api.minimaxi.com/anthropic/v1/messages",
-                    headers={"Authorization": f"Bearer {minimax_key}", "Content-Type": "application/json"},
-                    json={"model": "minimaxi-text-01", "max_tokens": 1500, "messages": [{"role": "user", "content": prompt}]},
+                    LLM_API_URL,
+                    headers=llm_headers(minimax_key),
+                    json={"model": light_model("minimaxi-text-01"), "max_tokens": 1500, "messages": [{"role": "user", "content": prompt}]},
                     timeout=60
                 )
                 if response.status_code == 200:
@@ -169,7 +170,7 @@ def extract_single_title_llm(title: str, source: str) -> str:
     import os
     import httpx
 
-    api_key = os.environ.get("MINIMAX_API_KEY", "")
+    api_key = LLM_API_KEY
     if not api_key:
         return title[:50] + "..." if len(title) > 50 else title
 
@@ -185,13 +186,10 @@ def extract_single_title_llm(title: str, source: str) -> str:
 
     try:
         response = httpx.post(
-            "https://api.minimaxi.com/anthropic/v1/messages",
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            },
+            LLM_API_URL,
+            headers=llm_headers(api_key),
             json={
-                "model": "minimaxi-text-01",
+                "model": light_model("minimaxi-text-01"),
                 "max_tokens": 50,
                 "messages": [{"role": "user", "content": prompt}]
             },
@@ -453,9 +451,9 @@ def main():
     import subprocess
     date_str_for_git = date_str  # 使用与 preview 一致的日期
     try:
-        subprocess.run(['git', 'add', f'twitter-preview-{date_str_for_git}.md'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
-        subprocess.run(['git', 'commit', '-m', f'twitter preview {date_str_for_git}'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
-        subprocess.run(['git', 'push'], check=True, capture_output=True, cwd='/Users/shenyalan/ai-daily-news')
+        subprocess.run(['git', 'add', f'twitter-preview-{date_str_for_git}.md'], check=True, capture_output=True, cwd=Path(__file__).resolve().parent)
+        subprocess.run(['git', 'commit', '-m', f'twitter preview {date_str_for_git}'], check=True, capture_output=True, cwd=Path(__file__).resolve().parent)
+        subprocess.run(['git', 'push'], check=True, capture_output=True, cwd=Path(__file__).resolve().parent)
         print('   ✅ GitHub push 成功')
     except subprocess.CalledProcessError:
         print('   ⚠️ GitHub push 失败')

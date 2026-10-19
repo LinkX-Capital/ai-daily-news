@@ -60,7 +60,7 @@ def main():
     start_date = datetime(2026, 6, 16)
     end_date = datetime(2026, 6, 28)
 
-    news_dir = Path('/Users/shenyalan/ai-daily-news')
+    news_dir = Path(__file__).resolve().parent
 
     all_entries = []
 

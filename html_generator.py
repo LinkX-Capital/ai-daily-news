@@ -9,7 +9,7 @@ from collections import defaultdict
 
 # 尝试导入路径配置
 try:
-    sys.path.insert(0, '/Users/shenyalan/ai-daily-news')
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from config_loader import base_dir, output_md, output_html
     HAS_CONFIG = True
 except ImportError:
@@ -1524,7 +1524,7 @@ def md_to_html(md_file, output_html=None, dated_html=None):
 
 
 if __name__ == "__main__":
-    BASE_DIR = "/Users/shenyalan/ai-daily-news"
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     today = os.environ.get("NEWS_DATE") or datetime.now().strftime('%Y-%m-%d')
     MD_FILE = os.path.join(BASE_DIR, f"daily-ai-news-{today}.md")
     DATED = os.path.join(BASE_DIR, f"daily-ai-news-{today}.html")

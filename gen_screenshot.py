@@ -401,8 +401,9 @@ html, body {{
 
 async def generate_screenshot():
     today = datetime.now().strftime('%Y-%m-%d')
-    md_file = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{today}.md"
-    output_file = "/Users/shenyalan/ai-daily-news/daily-ai-news-mobile.png"
+    base = os.path.dirname(os.path.abspath(__file__))
+    md_file = os.path.join(base, f"daily-ai-news-{today}.md")
+    output_file = os.path.join(base, "daily-ai-news-mobile.png")
 
     with open(md_file, 'r', encoding='utf-8') as f:
         md_content = f.read()

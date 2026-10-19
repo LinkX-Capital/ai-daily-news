@@ -1,7 +1,7 @@
 #!/bin/bash
 # AI Daily News - 交互审核工作台启动脚本
 
-cd /Users/shenyalan/ai-daily-news
+cd "$(dirname "$0")"
 
 # 检查 Streamlit 是否安装
 if ! command -v streamlit &> /dev/null; then

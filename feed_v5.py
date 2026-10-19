@@ -18,7 +18,7 @@ import subprocess
 
 # 导入规范化模块
 import sys
-sys.path.insert(0, '/Users/shenyalan/ai-daily-news')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from improve_news import improve_news, title_similarity
 from config_loader import (
     twitter_company_accounts, twitter_researcher_accounts,
@@ -127,8 +127,7 @@ def fetch_researcher_tweets(start_time=None, end_time=None):
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ========== 配置 ==========
-API_KEY = os.environ.get("MINIMAX_API_KEY", "")  # 独立变量，不影响 GLM
-API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
+from llm_config import API_KEY, API_URL, MODEL_MAIN, llm_headers  # 独立变量，不影响 GLM
 OPML_FILE = opml_file()
 ARCHIVE_DIR = archive_dir()
 OUTPUT_FILE = output_md()
@@ -1194,11 +1193,7 @@ def dedup_articles(articles, report_date=None):
 def call_llm(prompt, system_prompt_file="news_processor.md", include_feedback=True):
     if not API_KEY:
         return None
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json",
-        "anthropic-version": "2023-06-01"
-    }
+    headers = llm_headers()
     # 写作/选稿可选择加载近期人工修正；不同任务使用独立 system prompt。
     _fb_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "feedback.md")
     _feedback_examples = ""
@@ -1251,7 +1246,7 @@ def call_llm(prompt, system_prompt_file="news_processor.md", include_feedback=Tr
         return None
 
     data = {
-        "model": "MiniMax-M3", "temperature": 0.2,
+        "model": MODEL_MAIN, "temperature": 0.2,
         "max_tokens": 16000,
         "system": system_prompt,
         "messages": [{"role": "user", "content": prompt}]
@@ -2054,7 +2049,7 @@ def process_with_llm(articles, recent_articles=None):
     """Rank all eligible candidates, then write and validate exactly Top N."""
     recent_articles = recent_articles or []
     if not API_KEY:
-        raise PipelineBlocked("MINIMAX_API_KEY 缺失，禁止发布原始候选")
+        raise PipelineBlocked("LLM_API_KEY / MINIMAX_API_KEY 缺失，禁止发布原始候选")
     if not articles:
         raise PipelineBlocked("候选为空，禁止生成空日报")
 

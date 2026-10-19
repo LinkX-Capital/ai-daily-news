@@ -23,8 +23,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from html_generator import parse_md
 
 # ========== 配置 ==========
-API_KEY = os.environ.get("MINIMAX_API_KEY", "")
-API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
+from llm_config import API_KEY, API_URL, light_model, llm_headers
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -78,16 +77,12 @@ def fetch_source(url, timeout=10):
 def call_llm(system_prompt, user_prompt):
     """调用 MiniMax API（Anthropic 兼容格式）"""
     if not API_KEY:
-        print("  WARNING: MINIMAX_API_KEY 未设置，跳过 LLM 补充")
+        print("  WARNING: LLM_API_KEY / MINIMAX_API_KEY 未设置，跳过 LLM 补充")
         return None
 
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json",
-        "anthropic-version": "2023-06-01"
-    }
+    headers = llm_headers()
     data = {
-        "model": "MiniMax-M2.5",
+        "model": light_model("MiniMax-M2.5"),
         "max_tokens": 2000,
         "temperature": 0.2,
         "system": system_prompt,

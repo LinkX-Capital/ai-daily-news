@@ -4,8 +4,9 @@
 用法: python test_classify.py
 """
 
+import os
 import sys
-sys.path.insert(0, '/Users/shenyalan/ai-daily-news')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from improve_news import improve_news, title_similarity
 

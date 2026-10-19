@@ -28,7 +28,7 @@ SLACK_WEBHOOK = os.environ.get("SLACK_WEBHOOK", "")
 DINGTALK_WEBHOOK = os.environ.get("DINGTALK_WEBHOOK", "")
 FEISHU_WEBHOOK = os.environ.get("FEISHU_WEBHOOK", "")
 
-BASE_DIR = "/Users/shenyalan/ai-daily-news"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 _NEWS_DATE = os.environ.get("NEWS_DATE") or datetime.now().strftime('%Y-%m-%d')
 REPORT_FILE = os.path.join(BASE_DIR, f"daily-ai-news-{_NEWS_DATE}.md")
 
@@ -141,7 +141,7 @@ def send_feishu(report):
     date_str = _date_obj.strftime("%m月%d日")
 
     # 直接从 HTML 文件读取要点速览
-    html_file = f"/Users/shenyalan/ai-daily-news/daily-ai-news-{_NEWS_DATE}.html"
+    html_file = os.path.join(BASE_DIR, f"daily-ai-news-{_NEWS_DATE}.html")
     try:
         with open(html_file, 'r', encoding='utf-8') as f:
             html_content = f.read()

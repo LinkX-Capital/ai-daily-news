@@ -14,8 +14,7 @@ import os, sys, re, json, time, glob, httpx, asyncio
 from datetime import datetime
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-API_KEY = os.environ.get("MINIMAX_API_KEY", "")
-API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
+from llm_config import API_KEY, API_URL, light_model, llm_headers
 CACHE_PATH = os.path.join(BASE, '.bilingual_cache.json')
 
 # ── Helpers ───────────────────────────────────────────────
@@ -45,13 +44,9 @@ SYSTEM_PROMPT = (
 )
 
 def call_minimax_sync(prompt):
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json",
-        "anthropic-version": "2023-06-01"
-    }
+    headers = llm_headers()
     data = {
-        "model": "MiniMax-M2.7",
+        "model": light_model("MiniMax-M2.7"),
         "temperature": 0.2,
         "max_tokens": 16000,
         "system": SYSTEM_PROMPT,
@@ -71,13 +66,9 @@ def call_minimax_sync(prompt):
 
 async def call_minimax_async(client, prompt, sem, chunk_id=None):
     async with sem:
-        headers = {
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json",
-            "anthropic-version": "2023-06-01"
-        }
+        headers = llm_headers()
         data = {
-            "model": "MiniMax-M2.7",
+            "model": light_model("MiniMax-M2.7"),
             "temperature": 0.2,
             "max_tokens": 16000,
             "system": SYSTEM_PROMPT,

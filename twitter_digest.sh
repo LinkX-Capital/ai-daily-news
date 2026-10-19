@@ -1,7 +1,7 @@
 #!/bin/bash
 # Twitter 动态推送 - 每天早上7:15
 
-cd /Users/shenyalan/ai-daily-news
+cd "$(dirname "$0")"
 
 # 加载环境变量（proxy等）
 source ~/.zshrc

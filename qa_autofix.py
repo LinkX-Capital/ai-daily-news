@@ -26,8 +26,7 @@ from qa import (
 )
 from release_gate import GateResult, chinese_text_ok
 
-API_KEY = os.environ.get("MINIMAX_API_KEY", "")
-API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
+from llm_config import API_KEY, API_URL, light_model, llm_headers
 
 
 @dataclass
@@ -194,13 +193,9 @@ def _enrich_body_with_llm(title, current_body, source_text, category):
 - 海外公司/人名保持英文
 - 直接输出body文本，不要任何前缀说明"""
 
-    headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json",
-        "anthropic-version": "2023-06-01"
-    }
+    headers = llm_headers()
     data = {
-        "model": "MiniMax-M2.5", "temperature": 0.1,
+        "model": light_model("MiniMax-M2.5"), "temperature": 0.1,
         "max_tokens": 500,
         "messages": [{"role": "user", "content": prompt}]
     }

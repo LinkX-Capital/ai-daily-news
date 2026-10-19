@@ -175,8 +175,8 @@ else
     if manifest_has_status ready; then
         log "⚠️ ready 产物缺失、损坏或内容哈希不一致，禁止直接发布"
     fi
-    if [ -z "${MINIMAX_API_KEY:-}" ]; then
-        echo "❌ MINIMAX_API_KEY 未设置，无法执行强制排序与中文写作，已安全终止" >&2
+    if [ -z "${LLM_API_KEY:-${MINIMAX_API_KEY:-}}" ]; then
+        echo "❌ LLM_API_KEY / MINIMAX_API_KEY 未设置，无法执行强制排序与中文写作，已安全终止" >&2
         exit 78
     fi
 

@@ -376,8 +376,9 @@ html, body {{
 
 
 async def generate_screenshot():
-    md_file = "/Users/shenyalan/ai-daily-news/weekly-2026-05-05.md"
-    output_file = "/Users/shenyalan/ai-daily-news/weekly-2026-05-05.png"
+    base = os.path.dirname(os.path.abspath(__file__))
+    md_file = os.path.join(base, "weekly-2026-05-05.md")
+    output_file = os.path.join(base, "weekly-2026-05-05.png")
 
     with open(md_file, 'r', encoding='utf-8') as f:
         md_content = f.read()

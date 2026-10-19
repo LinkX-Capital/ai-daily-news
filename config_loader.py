@@ -4,7 +4,8 @@
 import json
 import os
 
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.json")
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+CONFIG_FILE = os.path.join(PROJECT_DIR, "config.json")
 ACCOUNTS_FILE = os.path.join(os.path.dirname(__file__), "accounts.yaml")
 _config = None
 _accounts_cache = None
@@ -134,38 +135,41 @@ def non_news_keywords():
     return get("filter.non_news_keywords", [])
 
 def get_path(key, default=None):
-    """获取路径配置"""
-    return get(f"paths.{key}", default)
+    """获取路径配置；相对路径按项目目录解析"""
+    value = get(f"paths.{key}", default)
+    if isinstance(value, str) and not os.path.isabs(value):
+        value = os.path.normpath(os.path.join(PROJECT_DIR, value))
+    return value
 
 def base_dir():
-    return get("paths.base_dir", "/Users/shenyalan/ai-daily-news")
+    return get_path("base_dir", ".")
 
 def archive_dir():
-    return get("paths.archive_dir", "/Users/shenyalan/ai-daily-news/archive")
+    return get_path("archive_dir", "archive")
 
 def output_md(date_str=None):
     from datetime import datetime as _dt
-    base = get("paths.base_dir", "/Users/shenyalan/ai-daily-news")
+    base = get_path("base_dir", ".")
     day = date_str if date_str else _dt.now().strftime('%Y-%m-%d')
     return os.path.join(base, f"daily-ai-news-{day}.md")
 
 def output_html():
-    return get("paths.output_html", "/Users/shenyalan/ai-daily-news/daily-ai-news.html")
+    return get_path("output_html", "daily-ai-news.html")
 
 # 别名，保持向后兼容
 output_html_path = output_html
 
 def summary_md():
-    return get("paths.summary_md", "/Users/shenyalan/ai-daily-news/daily-ai-news-summary.md")
+    return get_path("summary_md", "daily-ai-news-summary.md")
 
 def cache_file():
-    return get("paths.cache_file", "/Users/shenyalan/ai-daily-news/cache_raw_news.json")
+    return get_path("cache_file", "cache_raw_news.json")
 
 def tweet_cache():
-    return get("paths.tweet_cache", "/Users/shenyalan/ai-daily-news/tweet_fetcher/cache.json")
+    return get_path("tweet_cache", "tweet_fetcher/cache.json")
 
 def opml_file():
-    return get("paths.opml_file", "/Users/shenyalan/Desktop/Subscriptions-OnMyMac.opml")
+    return get_path("opml_file", "Subscriptions-OnMyMac.opml")
 
 if __name__ == "__main__":
     # 测试配置加载

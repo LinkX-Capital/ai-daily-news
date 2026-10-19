@@ -12,8 +12,8 @@ import re
 import sys
 from datetime import datetime, timedelta
 
-ARCHIVE_DIR = "/Users/shenyalan/ai-daily-news/archive"
-OUTPUT_DIR = "/Users/shenyalan/ai-daily-news"
+OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
+ARCHIVE_DIR = os.path.join(OUTPUT_DIR, "archive")
 
 def get_date(default_date=None):
     """获取日期，默认昨天"""
@@ -65,11 +65,10 @@ def call_llm_for_article(article):
     """用 LLM 处理单篇文章"""
     import httpx
     
-    API_KEY = os.environ.get("MINIMAX_API_KEY", "")
+    from llm_config import API_KEY, API_URL, light_model, llm_headers
     if not API_KEY:
         return None
-    
-    API_URL = "https://api.minimaxi.com/anthropic/v1/messages"
+
     
     title = article.get('title', '')
     summary = article.get('summary', '') or article.get('content', '')
@@ -89,12 +88,8 @@ def call_llm_for_article(article):
 摘要：{summary[:500]}"""
 
     try:
-        r = httpx.post(API_URL, headers={
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json",
-            "anthropic-version": "2023-06-01"
-        }, json={
-            "model": "MiniMax-M2.5",
+        r = httpx.post(API_URL, headers=llm_headers(), json={
+            "model": light_model("MiniMax-M2.5"),
             "temperature": 0.2,
             "max_tokens": 2000,
             "system": "你是一个顶尖AI新闻分析师。",
