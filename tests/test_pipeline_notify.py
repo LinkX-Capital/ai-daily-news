@@ -89,6 +89,48 @@ class PipelineNotifyTests(unittest.TestCase):
         self.assertEqual([element["tag"] for element in elements], ["div", "hr", "action"])
         self.assertIn("今日日报已发布", elements[0]["text"]["content"])
 
+    def test_pushplus_payload_lists_summary_and_link(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            base_dir = Path(temporary_directory)
+            (base_dir / "daily-ai-news-2099-01-02.html").write_text(
+                """
+                <div class="summary">
+                  <div class="sum-cat">
+                    <span class="sum-cat-name">模型前沿</span>
+                    <span class="sum-item">模型 A &amp; 模型 B</span>
+                  </div>
+                </div>
+                <div class="layout"></div>
+                """,
+                encoding="utf-8",
+            )
+
+            payload = pipeline_notify._build_pushplus_payload(
+                "2099-01-02",
+                "https://example.com/report.html",
+                "test-token",
+                base_dir,
+            )
+
+        self.assertEqual(payload["token"], "test-token")
+        self.assertEqual(payload["template"], "html")
+        self.assertIn("01月02日", payload["title"])
+        self.assertIn("<h4>模型前沿</h4>", payload["content"])
+        self.assertIn("<li>模型 A &amp; 模型 B</li>", payload["content"])
+        self.assertIn('href="https://example.com/report.html"', payload["content"])
+
+    def test_pushplus_payload_without_summary_still_links_report(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            payload = pipeline_notify._build_pushplus_payload(
+                "2099-01-02",
+                "https://example.com/report.html",
+                "test-token",
+                Path(temporary_directory),
+            )
+
+        self.assertIn("今日日报已发布", payload["content"])
+        self.assertIn('href="https://example.com/report.html"', payload["content"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Send the published daily-news link to Feishu using an environment credential."""
+"""Send the published daily-news link to Feishu and/or WeChat (PushPlus) using environment credentials."""
 
 from __future__ import annotations
 
 import argparse
 from datetime import date
-from html import unescape
+from html import escape, unescape
 import json
 import os
 from pathlib import Path
@@ -33,8 +33,8 @@ def _clean_html_text(value: str) -> str:
     return re.sub(r"<[^>]+>", "", unescape(value)).strip()
 
 
-def _summary_elements(report_date: str, base_dir: Path = BASE_DIR) -> list[dict]:
-    """Build Feishu card blocks from the report's rendered briefing section."""
+def _summary_sections(report_date: str, base_dir: Path = BASE_DIR) -> list[tuple[str, list[str]]]:
+    """Parse (category, titles) pairs from the report's rendered briefing section."""
     html_path = base_dir / f"daily-ai-news-{report_date}.html"
     try:
         html_content = html_path.read_text(encoding="utf-8")
@@ -54,7 +54,7 @@ def _summary_elements(report_date: str, base_dir: Path = BASE_DIR) -> list[dict]
         return []
     summary_html = html_content[summary_start : min(summary_end_candidates)]
 
-    elements: list[dict] = []
+    sections: list[tuple[str, list[str]]] = []
     if "sum-cat-name" in summary_html:
         chunks = re.split(r'<div\s+class=["\']sum-cat["\']\s*>', summary_html)[1:]
         category_pattern = r'<span\s+class=["\']sum-cat-name["\']\s*>(.*?)</span>'
@@ -84,18 +84,29 @@ def _summary_elements(report_date: str, base_dir: Path = BASE_DIR) -> list[dict]
         if not category or not titles:
             continue
         parsed_titles += len(titles)
-        content = f"**{category}**\n" + "\n".join(f"• {title}" for title in titles)
-        elements.append(
-            {"tag": "div", "text": {"tag": "lark_md", "content": content}}
-        )
+        sections.append((category, titles))
 
     if (
-        not elements
-        or len(elements) != expected_categories
+        not sections
+        or len(sections) != expected_categories
         or parsed_titles != expected_titles
     ):
         return []
-    return elements
+    return sections
+
+
+def _summary_elements(report_date: str, base_dir: Path = BASE_DIR) -> list[dict]:
+    """Build Feishu card blocks from the report's rendered briefing section."""
+    return [
+        {
+            "tag": "div",
+            "text": {
+                "tag": "lark_md",
+                "content": f"**{category}**\n" + "\n".join(f"• {title}" for title in titles),
+            },
+        }
+        for category, titles in _summary_sections(report_date, base_dir)
+    ]
 
 
 def _build_payload(report_date: str, report_url: str, base_dir: Path = BASE_DIR) -> dict:
@@ -143,25 +154,35 @@ def _build_payload(report_date: str, report_url: str, base_dir: Path = BASE_DIR)
     }
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--date", required=True, type=_valid_date)
-    args = parser.parse_args()
+def _build_pushplus_payload(
+    report_date: str, report_url: str, token: str, base_dir: Path = BASE_DIR
+) -> dict:
+    """PushPlus message (HTML template) shown in WeChat."""
+    display_date = date.fromisoformat(report_date).strftime("%m月%d日")
+    sections = _summary_sections(report_date, base_dir)
+    if sections:
+        parts = [
+            f"<h4>{escape(category)}</h4><ul>"
+            + "".join(f"<li>{escape(title)}</li>" for title in titles)
+            + "</ul>"
+            for category, titles in sections
+        ]
+    else:
+        parts = ["<p>今日日报已发布，点击下方链接查看完整内容。</p>"]
+    parts.append(f'<p><a href="{escape(report_url)}">👉 查看完整日报</a></p>')
+    return {
+        "token": token,
+        "title": f"📡 {display_date} AI 前沿动态",
+        "content": "".join(parts),
+        "template": "html",
+    }
 
-    webhook = os.environ.get("FEISHU_WEBHOOK", "")
-    if not webhook:
-        print("ℹ️ FEISHU_WEBHOOK 未设置，跳过通知")
-        return 0
 
-    public_base_url = os.environ.get(
-        "PUBLIC_BASE_URL",
-        "https://linkxcapital.github.io/ai-daily-news",
-    ).rstrip("/")
-    report_url = f"{public_base_url}/daily-ai-news-{args.date}.html"
-    payload = _build_payload(args.date, report_url)
+def _post_json(url: str, payload: dict, label: str) -> dict | None:
+    """POST JSON and return the parsed response, or None after printing a safe error."""
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     request = Request(
-        webhook,
+        url,
         data=body,
         headers={"Content-Type": "application/json"},
         method="POST",
@@ -172,22 +193,43 @@ def main() -> int:
             status = response.status
             raw_response = response.read()
     except HTTPError as exc:
-        print(f"❌ 飞书通知失败（HTTP {exc.code}）", file=sys.stderr)
-        return 1
+        print(f"❌ {label}通知失败（HTTP {exc.code}）", file=sys.stderr)
+        return None
     except (URLError, TimeoutError, OSError) as exc:
         # Do not render exception details: some clients include the credential URL.
-        print(f"❌ 飞书通知失败（{type(exc).__name__}）", file=sys.stderr)
-        return 1
+        print(f"❌ {label}通知失败（{type(exc).__name__}）", file=sys.stderr)
+        return None
 
     if status != 200:
-        print(f"❌ 飞书通知失败（HTTP {status}）", file=sys.stderr)
-        return 1
+        print(f"❌ {label}通知失败（HTTP {status}）", file=sys.stderr)
+        return None
 
     try:
-        result = json.loads(raw_response)
+        return json.loads(raw_response)
     except (UnicodeError, json.JSONDecodeError):
-        print("❌ 飞书通知响应不是有效 JSON", file=sys.stderr)
-        return 1
+        print(f"❌ {label}通知响应不是有效 JSON", file=sys.stderr)
+        return None
+
+
+def _send_pushplus(token: str, report_date: str, report_url: str) -> bool:
+    url = os.environ.get("PUSHPLUS_URL", "https://www.pushplus.plus/send")
+    payload = _build_pushplus_payload(report_date, report_url, token)
+    result = _post_json(url, payload, "微信")
+    if result is None:
+        return False
+    # PushPlus 用 code=200 表示已受理，之后异步投递到微信。
+    if result.get("code") != 200:
+        print(f"❌ 微信通知被拒绝（code={result.get('code', 'unknown')}）", file=sys.stderr)
+        return False
+    print("✅ 微信通知已发送（PushPlus）")
+    return True
+
+
+def _send_feishu(webhook: str, report_date: str, report_url: str) -> bool:
+    payload = _build_payload(report_date, report_url)
+    result = _post_json(webhook, payload, "飞书")
+    if result is None:
+        return False
 
     if "code" in result:
         success = result.get("code") == 0
@@ -198,13 +240,39 @@ def main() -> int:
     if not success:
         code = result.get("code", result.get("StatusCode", "unknown"))
         print(f"❌ 飞书通知被拒绝（code={code}）", file=sys.stderr)
-        return 1
+        return False
 
     summary_count = sum(
         element.get("tag") == "div" for element in payload["card"]["elements"]
     )
     print(f"✅ 飞书通知已发送（正文 {summary_count} 个区块）")
-    return 0
+    return True
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--date", required=True, type=_valid_date)
+    args = parser.parse_args()
+
+    webhook = os.environ.get("FEISHU_WEBHOOK", "")
+    pushplus_token = os.environ.get("PUSHPLUS_TOKEN", "")
+    if not webhook and not pushplus_token:
+        print("ℹ️ FEISHU_WEBHOOK / PUSHPLUS_TOKEN 均未设置，跳过通知")
+        return 0
+
+    public_base_url = os.environ.get(
+        "PUBLIC_BASE_URL",
+        "https://linkxcapital.github.io/ai-daily-news",
+    ).rstrip("/")
+    report_url = f"{public_base_url}/daily-ai-news-{args.date}.html"
+
+    # 每个已配置的渠道都必须成功；任一失败都阻断 published。
+    ok = True
+    if webhook:
+        ok = _send_feishu(webhook, args.date, report_url) and ok
+    if pushplus_token:
+        ok = _send_pushplus(pushplus_token, args.date, report_url) and ok
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":

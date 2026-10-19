@@ -255,10 +255,47 @@ set -e
 wait "$server_pid"
 [ "$rc" -eq 1 ] || fail "rejected webhook returned $rc instead of 1"
 
+port_file="$TEST_ROOT/pushplus-success.port"
+"$REAL_PYTHON" "$REPO_DIR/tests/fixtures/webhook_server.py" \
+    --port-file "$port_file" --response '{"code":200,"msg":"请求成功","data":"x"}' &
+server_pid=$!
+for _ in $(seq 1 100); do
+    [ -s "$port_file" ] && break
+    sleep 0.02
+done
+[ -s "$port_file" ] || fail "local PushPlus success server did not start"
+env -u FEISHU_WEBHOOK \
+    PUSHPLUS_TOKEN="offline-token" \
+    PUSHPLUS_URL="http://127.0.0.1:$(cat "$port_file")/send" \
+    "$REAL_PYTHON" "$REPO_DIR/pipeline_notify.py" --date "$TEST_DATE" \
+    >"$TEST_ROOT/pushplus-success.log" 2>&1 ||
+    fail "successful PushPlus response was rejected"
+wait "$server_pid"
+
+port_file="$TEST_ROOT/pushplus-rejected.port"
+"$REAL_PYTHON" "$REPO_DIR/tests/fixtures/webhook_server.py" \
+    --port-file "$port_file" --response '{"code":903,"msg":"无效的用户token"}' &
+server_pid=$!
+for _ in $(seq 1 100); do
+    [ -s "$port_file" ] && break
+    sleep 0.02
+done
+[ -s "$port_file" ] || fail "local PushPlus rejection server did not start"
+set +e
+env -u FEISHU_WEBHOOK \
+    PUSHPLUS_TOKEN="offline-token" \
+    PUSHPLUS_URL="http://127.0.0.1:$(cat "$port_file")/send" \
+    "$REAL_PYTHON" "$REPO_DIR/pipeline_notify.py" --date "$TEST_DATE" \
+    >"$TEST_ROOT/pushplus-rejected.log" 2>&1
+rc=$?
+set -e
+wait "$server_pid"
+[ "$rc" -eq 1 ] || fail "rejected PushPlus response returned $rc instead of 1"
+
 echo "9/9 credentials load only from environment or configured environment file"
 project="$(new_project env_loading)"
 set +e
-env -u MINIMAX_API_KEY \
+env -u MINIMAX_API_KEY -u LLM_API_KEY \
     AI_DAILY_NEWS_DIR="$project" \
     MANIFEST_DIR="$project/archive/manifests" \
     PIPELINE_LOCK_DIR="$project/pipeline.lock" \
@@ -276,7 +313,7 @@ if [ -e "$project/calls.log" ] && grep -q '^feed ' "$project/calls.log"; then
 fi
 
 printf 'MINIMAX_API_KEY=offline-file-key\n' >"$project/pipeline.env"
-env -u MINIMAX_API_KEY \
+env -u MINIMAX_API_KEY -u LLM_API_KEY \
     AI_DAILY_NEWS_DIR="$project" \
     MANIFEST_DIR="$project/archive/manifests" \
     PIPELINE_LOCK_DIR="$project/pipeline.lock" \
