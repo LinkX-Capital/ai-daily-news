@@ -1,6 +1,9 @@
+import os
 from pathlib import Path
+import smtplib
 import tempfile
 import unittest
+from unittest import mock
 
 import pipeline_notify
 
@@ -130,6 +133,63 @@ class PipelineNotifyTests(unittest.TestCase):
 
         self.assertIn("今日日报已发布", payload["content"])
         self.assertIn('href="https://example.com/report.html"', payload["content"])
+
+    def test_email_has_subject_recipients_and_html_link(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            message = pipeline_notify._build_email(
+                "2099-01-02",
+                "https://example.com/report.html",
+                "sender@example.com",
+                ["a@example.com", "b@example.com"],
+                Path(temporary_directory),
+            )
+
+        self.assertIn("01月02日", message["Subject"])
+        self.assertEqual(message["To"], "a@example.com, b@example.com")
+        html_part = message.get_body(preferencelist=("html",))
+        self.assertIn('href="https://example.com/report.html"', html_part.get_content())
+
+    def test_send_email_logs_in_and_sends_to_all_recipients(self) -> None:
+        environment = {
+            "EMAIL_RECIPIENTS": "a@example.com, b@example.com",
+            "SMTP_USER": "sender@example.com",
+            "SMTP_PASSWORD": "offline-code",
+            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_PORT": "465",
+        }
+        with mock.patch.dict(os.environ, environment), mock.patch(
+            "pipeline_notify.smtplib.SMTP_SSL"
+        ) as smtp_ssl:
+            client = smtp_ssl.return_value
+            ok = pipeline_notify._send_email("2099-01-02", "https://example.com/r.html")
+
+        self.assertTrue(ok)
+        smtp_ssl.assert_called_once_with("smtp.example.com", 465, timeout=20)
+        client.login.assert_called_once_with("sender@example.com", "offline-code")
+        sent = client.send_message.call_args.args[0]
+        self.assertEqual(sent["To"], "a@example.com, b@example.com")
+
+    def test_send_email_rejected_login_fails(self) -> None:
+        environment = {
+            "EMAIL_RECIPIENTS": "a@example.com",
+            "SMTP_USER": "sender@example.com",
+            "SMTP_PASSWORD": "wrong-code",
+        }
+        with mock.patch.dict(os.environ, environment), mock.patch(
+            "pipeline_notify.smtplib.SMTP_SSL"
+        ) as smtp_ssl:
+            client = smtp_ssl.return_value
+            client.login.side_effect = smtplib.SMTPAuthenticationError(535, b"denied")
+            ok = pipeline_notify._send_email("2099-01-02", "https://example.com/r.html")
+
+        self.assertFalse(ok)
+        client.send_message.assert_not_called()
+
+    def test_send_email_without_credentials_fails(self) -> None:
+        with mock.patch.dict(os.environ, {"EMAIL_RECIPIENTS": "a@example.com"}, clear=True):
+            self.assertFalse(
+                pipeline_notify._send_email("2099-01-02", "https://example.com/r.html")
+            )
 
 
 if __name__ == "__main__":

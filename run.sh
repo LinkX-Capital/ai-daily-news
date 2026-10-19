@@ -239,11 +239,11 @@ fi
 "$GIT_BIN" push
 
 # 通知是可选集成：未配置凭据时明确跳过；一旦配置，发送失败必须阻断 published。
-if [ -n "${FEISHU_WEBHOOK:-}" ] || [ -n "${PUSHPLUS_TOKEN:-}" ]; then
+if [ -n "${FEISHU_WEBHOOK:-}" ] || [ -n "${PUSHPLUS_TOKEN:-}" ] || [ -n "${EMAIL_RECIPIENTS:-}" ]; then
     log "▶️ 发送日报通知"
     "$PYTHON_BIN" pipeline_notify.py --date "$REPORT_DATE"
 else
-    log "ℹ️ 未设置 FEISHU_WEBHOOK / PUSHPLUS_TOKEN，跳过通知"
+    log "ℹ️ 未设置 FEISHU_WEBHOOK / PUSHPLUS_TOKEN / EMAIL_RECIPIENTS，跳过通知"
 fi
 
 "$PYTHON_BIN" "$MANIFEST_TOOL" mark-published \

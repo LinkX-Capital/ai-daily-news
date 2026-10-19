@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Send the published daily-news link to Feishu and/or WeChat (PushPlus) using environment credentials."""
+"""Send the published daily-news link to Feishu, WeChat (PushPlus) and/or email using environment credentials."""
 
 from __future__ import annotations
 
 import argparse
 from datetime import date
+from email.message import EmailMessage
 from html import escape, unescape
 import json
 import os
 from pathlib import Path
 import re
+import smtplib
 import sys
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -158,6 +160,19 @@ def _build_pushplus_payload(
     report_date: str, report_url: str, token: str, base_dir: Path = BASE_DIR
 ) -> dict:
     """PushPlus message (HTML template) shown in WeChat."""
+    title, content = _build_html_message(report_date, report_url, base_dir)
+    return {
+        "token": token,
+        "title": title,
+        "content": content,
+        "template": "html",
+    }
+
+
+def _build_html_message(
+    report_date: str, report_url: str, base_dir: Path = BASE_DIR
+) -> tuple[str, str]:
+    """(title, HTML body) shared by the WeChat and email channels."""
     display_date = date.fromisoformat(report_date).strftime("%m月%d日")
     sections = _summary_sections(report_date, base_dir)
     if sections:
@@ -170,12 +185,58 @@ def _build_pushplus_payload(
     else:
         parts = ["<p>今日日报已发布，点击下方链接查看完整内容。</p>"]
     parts.append(f'<p><a href="{escape(report_url)}">👉 查看完整日报</a></p>')
-    return {
-        "token": token,
-        "title": f"📡 {display_date} AI 前沿动态",
-        "content": "".join(parts),
-        "template": "html",
-    }
+    return f"📡 {display_date} AI 前沿动态", "".join(parts)
+
+
+def _build_email(
+    report_date: str, report_url: str, sender: str, recipients: list[str],
+    base_dir: Path = BASE_DIR,
+) -> EmailMessage:
+    title, content = _build_html_message(report_date, report_url, base_dir)
+    message = EmailMessage()
+    message["Subject"] = title
+    message["From"] = sender
+    message["To"] = ", ".join(recipients)
+    message.set_content(f"{title}\n\n查看完整日报：{report_url}\n")
+    message.add_alternative(f"<html><body>{content}</body></html>", subtype="html")
+    return message
+
+
+def _send_email(report_date: str, report_url: str) -> bool:
+    recipients = [
+        address.strip()
+        for address in os.environ.get("EMAIL_RECIPIENTS", "").split(",")
+        if address.strip()
+    ]
+    user = os.environ.get("SMTP_USER", "")
+    password = os.environ.get("SMTP_PASSWORD", "")
+    if not user or not password:
+        print("❌ 邮件通知缺少 SMTP_USER / SMTP_PASSWORD", file=sys.stderr)
+        return False
+    server = os.environ.get("SMTP_SERVER", "smtp.qq.com")
+    port = int(os.environ.get("SMTP_PORT", "465"))
+    use_ssl = os.environ.get("SMTP_SSL", "true").lower() != "false"
+    message = _build_email(report_date, report_url, user, recipients)
+
+    try:
+        if use_ssl:
+            client = smtplib.SMTP_SSL(server, port, timeout=20)
+        else:
+            client = smtplib.SMTP(server, port, timeout=20)
+        with client:
+            if not use_ssl:
+                client.starttls()
+            client.login(user, password)
+            client.send_message(message)
+    except smtplib.SMTPAuthenticationError:
+        print("❌ 邮件通知失败：邮箱登录被拒绝（检查 SMTP_USER 和授权码）", file=sys.stderr)
+        return False
+    except (smtplib.SMTPException, OSError) as exc:
+        # Do not render exception details: they may echo server responses with account info.
+        print(f"❌ 邮件通知失败（{type(exc).__name__}）", file=sys.stderr)
+        return False
+    print(f"✅ 邮件通知已发送（{len(recipients)} 个收件人）")
+    return True
 
 
 def _post_json(url: str, payload: dict, label: str) -> dict | None:
@@ -259,8 +320,9 @@ def main() -> int:
 
     webhook = os.environ.get("FEISHU_WEBHOOK", "")
     pushplus_token = os.environ.get("PUSHPLUS_TOKEN", "")
-    if not webhook and not pushplus_token:
-        print("ℹ️ FEISHU_WEBHOOK / PUSHPLUS_TOKEN 均未设置，跳过通知")
+    email_recipients = os.environ.get("EMAIL_RECIPIENTS", "").strip()
+    if not webhook and not pushplus_token and not email_recipients:
+        print("ℹ️ FEISHU_WEBHOOK / PUSHPLUS_TOKEN / EMAIL_RECIPIENTS 均未设置，跳过通知")
         return 0
 
     public_base_url = os.environ.get(
@@ -275,6 +337,8 @@ def main() -> int:
         ok = _send_feishu(webhook, args.date, report_url) and ok
     if pushplus_token:
         ok = _send_pushplus(pushplus_token, args.date, report_url) and ok
+    if email_recipients:
+        ok = _send_email(args.date, report_url) and ok
     return 0 if ok else 1
 
 
