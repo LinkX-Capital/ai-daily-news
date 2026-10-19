@@ -219,7 +219,10 @@ def _send_pushplus(token: str, report_date: str, report_url: str) -> bool:
         return False
     # PushPlus 用 code=200 表示已受理，之后异步投递到微信。
     if result.get("code") != 200:
-        print(f"❌ 微信通知被拒绝（code={result.get('code', 'unknown')}）", file=sys.stderr)
+        print(
+            f"❌ 微信通知被拒绝（code={result.get('code', 'unknown')}，{result.get('msg', '')}）",
+            file=sys.stderr,
+        )
         return False
     print("✅ 微信通知已发送（PushPlus）")
     return True
