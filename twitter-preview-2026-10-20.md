@@ -13,33 +13,31 @@
 
 ## ⭐ 今日重点（LLM 提炼）
 
-1. **aiatmeta 发布 30B 开源模型 Muse Glimmer 技术报告，消费级 GPU 可跑智能体任务**
+1. **Meta发布Muse Glimmer技术报告：30B开源模型面向消费级硬件的Agent任务**
    @aiatmeta
-2. **aiatmeta 披露在俄亥俄州 Prometheus 吉瓦级超集群上训练 Muse 系列基础模型**
+2. **Meta披露Prometheus超算集群细节：训练Muse基础模型的工程挑战**
    @aiatmeta
-3. **SGLang 合并 Megakernel 支持，GB300 NVL72 上逼近每用户 1000 tok/s**
-   @semianalysis_
-4. **NVIDIA GB300 FP4 反击提交仍比 TPUv7 每美元性能低 1.64 倍**
-   @semianalysis_
-5. **SemiAnalysis 报告：2027 年数据中心单年新增超 50GW，60GW 在建**
-   @semianalysis_
-6. **Inception AI 扩散模型 Mercury 3 上线 OpenRouter，速度超 1000 tok/s**
+3. **Mercury 3扩散模型上线OpenRouter：1000+ tok/s，1M上下文，性能超越多个前沿模型**
    @openrouter
-7. **OpenRouter 揭晓隐形模型 Space Bunny 即 MiniMax M3.1 Flash，曾连续十天登顶**
-   @openrouter
-8. **Artificial Analysis 推出 OpenAI HealthBench 系列健康对话基准排行榜**
-   @artificialanlys
+4. **SemiAnalysis：Vera Rubin NVL72在百万上下文Agent推理中性价比超GB300 NVL72达7.3倍**
+   @semianalysis_
+5. **SGLang合并MegaKernel支持：GB300上接近1000 tok/s/user，交互性提升1.5倍**
+   @semianalysis_
+6. **SemiAnalysis：NVIDIA GB300 FP4首轮反提交仍较Google TPUv7差1.64倍**
+   @semianalysis_
+7. **DeepSeek发布开源DeepInfer推理引擎，基于vLLM并采用Apache 2.0协议**
+   @vllm_project
+8. **本周必读论文：Cortex、Librarian Agents、OpenGCUA、DuoDiscover等前沿研究**
+   @theturingpost
 
 ---
 
-## 🏢 公司发布（55条）
+## 🏢 公司发布（54条）
 
 ### @agilityrobotics | App
 
 - Our co-founder's earlier robots could run. Digit 5 can't. Jonathan Hurst on why, in @IEEESpectrum:  https://t.co/p3s7dukeRB  #Agility #MadeForWork #Digit5 https://t.co/IuB1mfwGCX
   [查看](https://x.com/agilityrobotics/status/2112286284236640320)
-- Former UPS president Mark Vale is expected to join our board as audit committee chair once our merger with Churchill Capital Corp XI (NASDAQ: CCXI) closes.  Read the announcement: https://t.co/MmLNGuutZn https://t.co/FAMq4MR7vb
-  [查看](https://x.com/agilityrobotics/status/2112140452531220643)
 
 ### @aiatmeta | Model
 
@@ -50,6 +48,8 @@
 
 ### @artificialanlys | Model
 
+- Ant Group's Ming-3.0-tts is the new #1 open weights model in the Artificial Analysis Controlled Voice TTS Arena and takes the #1 spot on our Pronunciation Robustness leaderboard, level with Fish Audio's Drama 3 Preview and ahead of Eleven v4  Ming-3.0-tts is the new open weights Text to Speech model from @AntLingAGI's team, a dense 0.5B parameter model with preset voices and stateless voice clonin...
+  [查看](https://x.com/ArtificialAnlys/status/2112389514404462613)
 - We’re launching leaderboards for HealthBench and HealthBench Professional, two benchmarks evaluating how AI models respond in realistic health conversations  HealthBench and HealthBench Professional are benchmarks from @OpenAI that grade model replies to realistic health conversations against physician-created rubrics.  HealthBench tests models on 5,000 health conversations with everyday users and...
   [查看](https://x.com/ArtificialAnlys/status/2112318755321868493)
 - FLUX 3 Max from @fal, a post-trained version of @bfl_ai's FLUX 3, ranks #2 on AA-Video-I2V v1.1 (statistically tied for #1) and #4 on AA-Video-T2V v2.1, ahead of the base FLUX 3 on both  FLUX 3 Max generates 5 to 20 second, 720p videos with native audio from a text prompt or a starting image. fal reports that it generates a 10 second video in under 12 seconds. We benchmarked it at the high reasoni...
@@ -70,6 +70,11 @@
 - What if your AI budget went to the engineers who use it best?  Blanket usage caps are a hiring freeze in disguise.  Introducing efficiency-based auto-approvals for your most productive engineers, plus Devin Coach to help everyone get there.  https://t.co/or2tz1XOmw
   [查看](https://x.com/cognition/status/2112223929414607228)
 
+### @deepseek_ai | Model
+
+- 🚀 Introducing DeepInfer, our in-house inference framework, now fully open source!  Powering DeepSeek-V4.1-Flash at scale with high throughput and low latency. We’re sharing our production stack to help the community lower compute costs, reduce energy use, and make AI more affordable.  🔗 https://t.co/JGAik1kgk0  1/4
+  [查看](https://x.com/deepseek_ai/status/2112476496283775135)
+
 ### @langchain | Infra
 
 - RT @sydneyrunkle: joined @TalkPython w/ @mkennedy, @reuvenmlerner, @calvinhp, and pat decker to talk about "the state of python in 2026"  s…
@@ -88,8 +93,6 @@
   [查看](https://x.com/LangChain/status/2112198096209825800)
 - ✅ Everything we shipped at Interrupt NYC and London ✅ Open source updates ✅ Upcoming events &amp; livestreams  Catch up on everything LangChain in our latest newsletter.  https://t.co/VulhXu1Cel
   [查看](https://x.com/LangChain/status/2112167681075958200)
-- RT @sydneyrunkle: harness² from @GoogleResearch offers techniques for RSI on the harness, with a fixed model  they call it "harnessing", bu…
-  [查看](https://x.com/LangChain/status/2112045185547096485)
 
 ### @lumalabsai | Research
 
@@ -130,13 +133,11 @@
 
 - Mercury 3 is live on OpenRouter!  @_inception_ai's new diffusion model generates 1,000+ tok/s with 1M context, 4x more than Mercury 2.5. Inception reports it beats GPT-6 Luna and Haiku 5.5 on IFBench, GPQA Diamond, and SWE-Bench Atlas.  50% off at launch: $0.10/M in, $0.35/M out https://t.co/QuHw9l3QYe
   [查看](https://x.com/OpenRouter/status/2112225779782398131)
-- Stealth model reveal 🐰  Space Bunny was OpenRouter’s #1 model for 10 straight days, processing 56.7T tokens! The most of any stealth model we’ve run.  Space Bunny hopped off OpenRouter on Oct 5. It's back today as @MiniMax_AI's M3.1 Flash, and it's free for the next 72 hours. https://t.co/2i0HsEibp5
-  [查看](https://x.com/OpenRouter/status/2112152045461680591)
-- RT @alexatallah: A few months ago, we built a self-improving security agent called Sentinel to help protect OpenRouter users. It runs 24/7…
-  [查看](https://x.com/OpenRouter/status/2112058430953599268)
 
 ### @semianalysis_ | Infra
 
+- ALERT🚨: Vera Rubin NVL72 is up to 7.3x better in perf per dollar than GB300 NVL72 for 1 million context length agentic inference workloads!  THE MORE U BUY, THE MORE U EARN 👇️(1/3)🧵 https://t.co/wD4BDNpJ5m
+  [查看](https://x.com/SemiAnalysis_/status/2112379877621919877)
 - ALERT🚨: SGLANG JUST MERGED MEGAKERNEL SUPPORT, GETTING CLOSE TO 1000 tok/s/user on the GB300 NVL72 AgentX Harness & increasing interactivity by 1.5x on MI355X too! Great work by the SGLang, RadixArk, NVIDIA, and AMD teams!  Best of all, this already works out of the box on SGLang Docker images! Excited to rapidly get this on the official AgentX!  https://t.co/9KzTMxawaG
   [查看](https://x.com/SemiAnalysis_/status/2112347284713148746)
 - SemiAnalysis is an active supporter of open source in the ML community! As such, we are excited to sponsor the open-source SGLang Summit! SGLang is one of the engines that power production inference across many frontier labs globally!  At the summit, we’ll share more about our collaboration with SGLang, including our latest AgentX benchmarks. https://t.co/h1jOhVqrLj
@@ -145,8 +146,6 @@
   [查看](https://x.com/SemiAnalysis_/status/2112258243372146742)
 - viz @altcap https://t.co/H7PVM72iHP
   [查看](https://x.com/SemiAnalysis_/status/2112223527533207964)
-- Datacenters 2027: The Year of Acceleration,  +50GW in a Single Year 60GW Under Construction, SemiAnalysis Leading Indicators, 1.3T of Lease Contracts Signed YTD, The Shortage Could Move to Chips https://t.co/lTJ1Sbv5nl
-  [查看](https://x.com/SemiAnalysis_/status/2112069964131713517)
 
 ### @thehumanoidai | App
 
@@ -156,13 +155,13 @@
 ### @theturingpost | Research
 
 - RT @TheTuringPost: Looped Transformers are a hot topic these days  And these 10 new papers are really worth your attention.  ▪️ Recurrent L…
-  [查看](https://x.com/TheTuringPost/status/2112234866628772211)
+  [查看](https://x.com/TheTuringPost/status/2112506672975585394)
+- RT @TheTuringPost: Must-read papers of the week  ▪️ Cortex ▪️ Librarian Agents ▪️ OpenGCUA ▪️ DuoDiscover ▪️ WAVE-0 model ▪️ ACT3D model ▪️…
+  [查看](https://x.com/TheTuringPost/status/2112499122565706112)
+- Must-read papers of the week  ▪️ Cortex ▪️ Librarian Agents ▪️ OpenGCUA ▪️ DuoDiscover ▪️ WAVE-0 model ▪️ ACT3D model ▪️ Execution Before Memory ▪️ Has GPT-6-Astra Achieved Embodied Intelligence? ▪️ Persistent Planar Memory ▪️ Relational Learning as World Modeling ▪️ More Methods, Better Agents? ▪️ Mosaic: Multi-Session Agentic Reinforcement Learning ▪️ HexaShell: A Thin Harness for Exploring the ...
+  [查看](https://x.com/TheTuringPost/status/2112362208512590151)
 - RT @TheTuringPost: Harness is dead, long live the harness?  I went to @aiDotEngineer NYC and heard some very strong opinions about harnesse…
   [查看](https://x.com/TheTuringPost/status/2112223518121189627)
-- Looped Transformers are a hot topic these days  And these 10 new papers are really worth your attention.  ▪️ Recurrent Looped Transformer ▪️ Looped Prediction Transformer (LPT) ▪️ Recursive Multi-Agent Systems (based on looped transformer) ▪️ Loop Flow Transformers (LiFT) ▪️ Looped Diffusion Transformer ▪️ LAST: Looped Audio Spectrogram Transformer ▪️ LoopCD ▪️ Hyperloop Transformer ▪️ OperLoop ▪️...
-  [查看](https://x.com/TheTuringPost/status/2112098054837002526)
-- I recommend joining an upcoming session from @Rubrik on October 21 → When Agents Go Off-Script  It's a technical deep dive for security, IT and AI platform teams that need to know how to get agents back on track when they violate policy.  You’ll learn how to:  - Detect an agent sharing confidential deal values in a live Salesforce scenario - Trace the violation to the agent, action, and data invol...
-  [查看](https://x.com/TheTuringPost/status/2111999858517373336)
 
 ### @theworldlabs | Research
 
@@ -173,20 +172,38 @@
 
 ### @vllm_project | Infra
 
+- RT @vllm_project: Grateful to @deepseek_ai for releasing DeepInfer, initially built primarily on @vllm_project, under Apache 2.0 and credit…
+  [查看](https://x.com/vllm_project/status/2112484885151777004)
+- Grateful to @deepseek_ai for releasing DeepInfer, initially built primarily on @vllm_project, under Apache 2.0 and crediting the open-source community!  We've worked hard on DeepSeek V4.1 Flash inference efficiency and will keep improving with ideas from DeepInfer! Stay tuned 🙌 https://t.co/okrttNqkYa
+  [查看](https://x.com/vllm_project/status/2112480719952138301)
+- ⚡️ Solid work from the Physis-AI Infra team. Together with Physis-AI, we’re introducing PhysisServe.  PhysisServe advances autoregressive denoising serving via fine-grained stage pipelining, time-sharing and multi-stream joint scheduling, optimizing both single-stream output latency and multi-stream system efficiency in one inference system.  PhysisServe’s core techniques are coming to vLLM-Omni, ...
+  [查看](https://x.com/vllm_project/status/2112409984617394181)
+- The vLLM community is coming to #PyTorchCon, Oct 20–21 in San Jose! 🎉  Explore talks on attention, KV transfer, prefix caching, the vLLM roadmap &amp; more.  📅 Build your schedule: https://t.co/M3WjwaYYa5  We can't wait to see you there! 🙌
+  [查看](https://x.com/vllm_project/status/2112389827530567748)
 - The vLLM ecosystem keeps growing 📷   d3-turbo: SOTA multimodal decision model for intelligent routing — #1 on the Jev Decision Index, 15x faster than d3 flash with StateOnce.   Great work @XunzhuoLiu and the vllm-sr team 📷
   [查看](https://x.com/vllm_project/status/2112352859937439745)
 - Day-0 support for Ming-3.0 in vLLM-Omni  @AntLingAGI just open-sourced 5 speech models spanning TTS, audio understanding, and ASR — ranging from 0.5B to 126B total parameters (6.5B active).  Serve them today with vLLM-Omni. Congrats to the @AntLingAGI  team!
   [查看](https://x.com/vllm_project/status/2112220256941085002)
 - Speculators v0.9.0 is out — faster, lighter speculative decoding training 📷   Up to 2x faster forward training passes with a fused loss kernel, plus an FP8 hidden-state backend that cuts storage 50% with no quality loss.   Train better speculators, serve them in vLLM. Great work @RedHat_AI 📷
   [查看](https://x.com/vllm_project/status/2112218060962893905)
-- RT @simon_mo_: A story in 3 acts, last 3 days: AMD, NVIDIA, Google all contribute significant improvement to  @vllm_project, measured with…
-  [查看](https://x.com/vllm_project/status/2112063895661928571)
-- RT @nilsmatteson: Fresh vLLM containers can recompile thousands of Python files at startup.  One build flag moves that work to image build…
-  [查看](https://x.com/vllm_project/status/2112063843182759987)
-- Great work from @XunzhuoLiu and the vLLM Semantic Router team on D3. All six models, from 0.6B to 27B, now have merged vLLM recipes!  D3 ranked #1 on both Jev Decision Index 0.3.2 boards: 66.3 text and 71.3 vision (Oct. 12 snapshot).  Run multimodal decisions on your own infrastructure through /v1/systemone—with control over data residency, latency budgets and governance.  vLLM serves decision mod...
-  [查看](https://x.com/vllm_project/status/2112005673303339084)
 
-## 👤 研究者动态（14条）
+## 👤 研究者动态（15条）
+
+### @gklambauer | Research
+
+- RT @patchwanders: @gklambauer @HochreiterSepp @anamariarp17 A bounded expected memory norm without extra stabilization is a particularly ni…
+  [查看](https://x.com/gklambauer/status/2112513022614810672)
+- RT @anamariarp17: New paper 🧵 KronLSTM: a new member of the xLSTM family, built on the Kronecker Delta Rule. ✏️ less interference than delt…
+  [查看](https://x.com/gklambauer/status/2112499687194579051)
+- KronLSTM is out!! | Candidate to replace TRANSFORMER in LLMs  KronLSTM is built on the Kronecker Delta Rule: instead of correcting the vector stored at a key, it corrects a single scalar, how strongly this key is bound to this value.   P: https://t.co/NTJXMPIhoE https://t.co/MSR2n7dj0E
+  [查看](https://x.com/gklambauer/status/2112450218700722262)
+
+### @percyliang [Stanford] | Research
+
+- RT @togethercompute: Together Post-Training is live  Turn open models into custom models you own, with SFT or RL.  You define the data, rew…
+  [查看](https://x.com/percyliang/status/2112387650795831796)
+- RT @StefanoErmon: 1/4 Today, we’re releasing Mercury 3. Mercury 3 is by far our most powerful model and the most intelligent diffusion LLM…
+  [查看](https://x.com/percyliang/status/2112386823498686964)
 
 ### @steipete [OpenClaw] | Application
 
@@ -195,6 +212,8 @@
 
 ### @swyx [AI社区] | App
 
+- RT @aiDotEngineer: Should every agent wait in the same approval queue?  @jxxf contrasts a ticket summarizer with an agent that can deploy t…
+  [查看](https://x.com/swyx/status/2112366027539611857)
 - RT @rvivek: We started @HackerRank a decade ago with the belief that skills matter more than pedigree. That’s still our core ethos, but the…
   [查看](https://x.com/swyx/status/2112316655934349381)
 - RT @aiDotEngineer: First AIE Code Summit speakers:  @poteto, Principal Engineer @ SpaceX @steve_yegge, Engineer, Writer, Advisor @zachbrugg…
@@ -203,24 +222,14 @@
   [查看](https://x.com/swyx/status/2112244640774807941)
 - "O Infallible one, why do the people not heed the sign we tap?"  "My dear Parth, each believes he is the first to wish for an end to chat. On X we are cursed with the eternal September of the Thoughtless Mind."  "But O Govinda, they yearn for what lies beyond it, and cast their votes by the thousands. Surely the people's wants must be made."  *a wan smile* “O son of Kunti, observe what they applau...
   [查看](https://x.com/swyx/status/2112182228977348963)
-- RT @pmarca: YOU CAN SEE EVERYTHING, PRIMETIME, and DIGGER make 2026 the best year for film since 2015 (SICARIO, EX MACHINA, and MAD MAX: FU…
-  [查看](https://x.com/swyx/status/2112141678425538754)
-- RT @thorwebdev: What's better than visiting Taiwan with Jensen? Joining @HackerHouseTW in Taipei in December!   RSVP now 👉 https://t.co/tdA…
-  [查看](https://x.com/swyx/status/2112114215456850180)
-- RT @chrisalbon: This essay on RSI by @ramez was like a breath of fresh air in a smoke filled bar. https://t.co/AUnd6nJnaL  I started readin…
-  [查看](https://x.com/swyx/status/2112088847031083367)
-- Data engineers > AI engineers  there's a big difference between a "RAG guy" and a "Data Intensive Applications" person like in this screenshot and there's never been a starker difference in demand in my entire career in tech (aka post search engine wars)  if your blog / github is full of stuff like this, I have a fantastic mission/job for you (SF preferred, can relocate u, visas ok)  (if you can n...
-  [查看](https://x.com/swyx/status/2112073533794971941)
 
 ### @ylecun [NYU] | Research
 
+- RT @KenRoth: It speaks to the unchecked power of the American presidency that a single warped occupant of the Oval Office can transform the…
+  [查看](https://x.com/ylecun/status/2112495690798547356)
 - RT @JustinWolfers: Washington has discovered a brilliant financial strategy. Cut benefits for people who need them, cut taxes for people wh…
   [查看](https://x.com/ylecun/status/2112311633166901746)
 - RT @SteveRattner: Trump has raised $330 million from private donors for his White House ballroom.  About half have received federal contrac…
   [查看](https://x.com/ylecun/status/2112308387417358442)
 - RT @ylecun: @spiroskaye @elonmusk I'm definitely not anti-achievement and never criticized real achievements, including by Elon. I even own…
   [查看](https://x.com/ylecun/status/2112281012856107148)
-- RT @FredLambert: Everything Yann said here is roughly correct, and Musk knows it, which is why he responded like a 14-year-old. https://t.c…
-  [查看](https://x.com/ylecun/status/2112019850381930683)
-- RT @SamCKx: Yann LeCun, one of the world’s foremost AI, machine-learning and robotics researchers, an engineer, NYU professor and ACM Turin…
-  [查看](https://x.com/ylecun/status/2112015283539865858)
