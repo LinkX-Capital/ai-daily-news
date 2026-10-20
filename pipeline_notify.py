@@ -193,16 +193,30 @@ def _build_email(
     base_dir: Path = BASE_DIR,
 ) -> EmailMessage:
     title, content = _build_html_message(report_date, report_url, base_dir)
+    return _compose_email(
+        title, content, f"{title}\n\n查看完整日报：{report_url}\n", sender, recipients
+    )
+
+
+def _compose_email(
+    subject: str, html_content: str, text_content: str, sender: str, recipients: list[str]
+) -> EmailMessage:
     message = EmailMessage()
-    message["Subject"] = title
+    message["Subject"] = subject
     message["From"] = sender
     message["To"] = ", ".join(recipients)
-    message.set_content(f"{title}\n\n查看完整日报：{report_url}\n")
-    message.add_alternative(f"<html><body>{content}</body></html>", subtype="html")
+    message.set_content(text_content)
+    message.add_alternative(f"<html><body>{html_content}</body></html>", subtype="html")
     return message
 
 
 def _send_email(report_date: str, report_url: str) -> bool:
+    title, content = _build_html_message(report_date, report_url)
+    return send_html_email(title, content, f"{title}\n\n查看完整日报：{report_url}\n")
+
+
+def send_html_email(subject: str, html_content: str, text_content: str) -> bool:
+    """Send one HTML email to EMAIL_RECIPIENTS with the SMTP_* settings (also used by twitter_push)."""
     recipients = [
         address.strip()
         for address in os.environ.get("EMAIL_RECIPIENTS", "").split(",")
@@ -216,7 +230,7 @@ def _send_email(report_date: str, report_url: str) -> bool:
     server = os.environ.get("SMTP_SERVER", "smtp.qq.com")
     port = int(os.environ.get("SMTP_PORT", "465"))
     use_ssl = os.environ.get("SMTP_SSL", "true").lower() != "false"
-    message = _build_email(report_date, report_url, user, recipients)
+    message = _compose_email(subject, html_content, text_content, user, recipients)
 
     try:
         if use_ssl:

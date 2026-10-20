@@ -315,6 +315,39 @@ def generate_preview_md(cache, output_path, highlights=None, date_str=None):
     return total
 
 
+def build_twitter_email(cache, highlight_records, date_str):
+    """(subject, html, text) for the Twitter preview email; highlights link back to each tweet."""
+    from html import escape
+
+    display_date = datetime.strptime(date_str, "%Y-%m-%d").strftime("%m月%d日")
+    cats = Counter(t.get('category', '?') for t in cache)
+    preview_url = f'https://linkxcapital.github.io/ai-daily-news/twitter-preview-{date_str}.md'
+    subject = f"🐦 {display_date} Twitter 动态"
+
+    parts = [
+        f"<p>共 {len(cache)} 条推文：公司发布 {cats.get('Company', 0)} 条，"
+        f"研究者动态 {cats.get('Researcher', 0)} 条</p>",
+        "<h4>⭐ 今日重点</h4>",
+    ]
+    text_lines = [subject, "", "今日重点："]
+    if highlight_records:
+        items = []
+        for record in highlight_records:
+            title = escape(record.get('title', ''))
+            source = escape(record.get('source', ''))
+            link = record.get('link', '')
+            label = f'<a href="{escape(link)}">{title}</a>' if link else title
+            items.append(f"<li>{label}<br><small>@{source}</small></li>")
+            text_lines.append(f"- {record.get('title', '')}（@{record.get('source', '')}）{link}")
+        parts.append("<ol>" + "".join(items) + "</ol>")
+    else:
+        parts.append("<p>今日未能提取重点，请查看全部推文。</p>")
+        text_lines.append("今日未能提取重点，请查看全部推文。")
+    parts.append(f'<p><a href="{preview_url}">👉 查看全部推文</a></p>')
+    text_lines += ["", f"查看全部推文：{preview_url}"]
+    return subject, "".join(parts), "\n".join(text_lines) + "\n"
+
+
 def push_to_feishu(cache, webhook_url, highlights=None, date_str=None):
     """推送到飞书"""
     import httpx
@@ -457,6 +490,16 @@ def main():
         print('   ✅ GitHub push 成功')
     except subprocess.CalledProcessError:
         print('   ⚠️ GitHub push 失败')
+
+    # 6. 邮件推送（放在 GitHub 推送之后，邮件里的"查看全部"链接才能打开）
+    if os.environ.get("EMAIL_RECIPIENTS", "").strip():
+        print('📧 发送 Twitter 邮件...')
+        from pipeline_notify import send_html_email
+        subject, html_content, text_content = build_twitter_email(
+            tweets, build_highlight_records(highlights, selected), date_str
+        )
+        if not send_html_email(subject, html_content, text_content):
+            print('   ⚠️ Twitter 邮件发送失败，不影响日报')
 
     print(f'\n✅ 完成: {datetime.now().strftime("%H:%M:%S")}')
 
