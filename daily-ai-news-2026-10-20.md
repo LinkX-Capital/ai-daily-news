@@ -1,108 +1,101 @@
 ## 10月20日 AI 前沿动态
 
-> 自动汇总 | 时间窗口: 24h | 全局精选 16 条
+> 自动汇总 | 时间窗口: 24h | 全局精选 15 条
 
 ---
 
 ## 要点汇总
 
-- 模型前沿：Inception 扩散模型 Mercury 3 上线 OpenRouter：生成速度较 Mercury 2.5 提升 4 倍至 1,000+ tok/s
-- 产业动态：NVIDIA 发布开源权重模型 Nemotron 3.5 Super VL 与端侧 Bolt 系列：120B 主攻企业 Agent，Bolt 落地 AI PC; 五角大楼官员 Emil Michael 放话：AI 公司若不配合政府，将动用出口管制等行政工具; 密歇根大学分拆公司 Laplace Intelligence：用 AI 智能体在仿真中红队测试机器人与自动驾驶
-- 算力追踪：报道称 DeepSeek 深度参与华为下一代 AI 芯片设计：工程师长期驻场，需求直接写入设计决策; Amazon 出资建设 12 台 Xe-100 小型核电堆：装机 960 兆瓦落户印第安纳旧煤电厂址，并锁定首批购电; SemiAnalysis：2027 年将成为数据中心"加速之年"，单年新增超 50GW、60GW 在建、年内已签 1.3 万亿美元租约; Meta 披露 Muse 系列在吉瓦级超算 Prometheus 上训练：预训练 goodput 超 85%，强化学习超 90%
-- 初创&融资：AI 芯片创业公司 Tenstorrent 融资 15 亿美元、估值达 62 亿美元，拒绝收购意向选择独立发展
-- 研究关注：HexaShell：让编程 Agent 写代码直接操控双臂机器人，RoboDojo 42 项任务成功率 39.7% 创新纪录，瓶颈在接触而非推理; 商汤 SenseNova 系统评测 GPT-6-Astra 具身能力：12 项基准成绩空前，8 种真机部署暴露落地鸿沟; 蚂蚁国际 BizBench：用真实支付业务流程测长程 Agent，Claude Opus 5 严格成功率仅 64%; ACT3D：结果奖励 RL 让 VLM 自学 3D 主动探索，六基准平均 53.2% 超过 Gemini 3.6 Flash; Consistent Distribution Matching：免数据免仿真的扩散蒸馏，单步生成在 ImageNet 256 拿到 FID 2.04; LiveMACEBench：以实时金融市场为测试场的过程感知基准，30 天实测发现智能体结果与能力脱节
-- X讨论：Cognition 宣称 Devin Fusion 以 68 分登顶 AA Coding Agent Index，较 Claude Code 单任务成本再降 31%
+- 模型前沿：MiniMax 发布 M3.1 Flash：兼顾空间能力与快速推理; Inception AI 推出 Mercury 3：扩散模型支持 1M 上下文，上线即降半价; OpenAI 公布最新模型进展，主打 COBOL、Fortran 等小语种代码的构建与迁移能力
+- 产业动态：MiniMax 在 OpenRouter 上线 M3.1 Flash 正式版，免费开放 72 小时; Agility Robotics 宣布前 UPS 总裁 Mark Vale 将在与 Churchill Capital XI 合并完成后加入董事会
+- 算力追踪：SemiAnalysis：英伟达 GB300 FP4 单位成本性能落后 TPUv7; SemiAnalysis：2027 年数据中心单年增量或达 50GW，在建规模达 60GW; Meta：Prometheus 万卡级超集群支撑 Muse 基础模型训练
+- 研究关注：EvoSkill v2：把指令改写做成有状态单智能体，SpreadsheetBench v2 通过率领先 SkillOpt 与 SkillBoost 7.7 个百分点; Maestro 以全局协调处理 Lean 证明失败：PutnamBench 解出 669/672，arXivLean 自证 34/48; PSSE：用条件状态空间探索缓解多轮强化学习无效动作与循环陷阱
+- X讨论：DeepSeek 上线 V4.1 Flash 1017 更新，AA 智能指数 45 分位列开源权重并列第二; fal 发布 FLUX 3 Max：FLUX 3 后训练版，AA 视频图生视频榜并列第一、文生视频榜第四; Cognition 发布 Devin Fusion：拿 AA 编码智能体指数 68 分，单任务成本较 Claude Code 低 31%; Agility Robotics 联合创始人解释 Digit 5 无法运行的原因
 
 ---
 
 ## 📖 详细参考
 
 ### 模型前沿
-**Inception 扩散模型 Mercury 3 上线 OpenRouter：生成速度较 Mercury 2.5 提升 4 倍至 1,000+ tok/s**
-- Inception 的新一代扩散模型 Mercury 3 已上线 OpenRouter，生成速度超过 1,000 tokens/s、支持 1M 上下文，速度为 Mercury 2.5 的 4 倍。据 Inception 方面报告，该模型在 IFBench、GPQA Diamond 与 SWE-Bench Atlas 上击败 GPT-6 Luna 与 Haiku 5.5。上线期间定价五折，输入为每百万 tokens 0.10 美元、输出为每百万 tokens 0.35 美元。
-  > 💡 扩散语言模型把"快"做成核心卖点，1,000+ tok/s 叠加 1M 上下文直指 Agent 长链路任务的吞吐经济学；但当前跑分是厂商自报口径，半价也属上线促销，规模化后的真实性价比仍需第三方评测与稳定定价验证。
+**MiniMax 发布 M3.1 Flash：兼顾空间能力与快速推理**
+- MiniMax 发布 M3.1 Flash，并将 Space Bunny 称为该模型的早期版本。MiniMax 称 Space Bunny 曾以超过 200T tokens 的规模登顶全球榜单。M3.1 Flash 在 Automation-Bench、ALE、DeepSWE 和 BabyVision 上分别取得 62%、30%、74% 和 91% 的结果。
+  > 💡 M3.1 Flash 将智能、编码与视觉推理能力集中到快速推理模型中，但相关成绩来自厂商披露。
+   - 来源: [@minimax_ai](https://x.com/MiniMax_AI/status/2112150867868541221)
+
+**Inception AI 推出 Mercury 3：扩散模型支持 1M 上下文，上线即降半价**
+- OpenRouter 上线 Inception AI 的 Mercury 3 扩散模型，支持 1M 上下文，生成速度超过 1,000 tokens/s。Inception 表示，该速度是 Mercury 2.5 的 4 倍，并在 IFBench、GPQA Diamond 和 SWE-Bench Atlas 上超过 GPT-6 Luna 与 Haiku 5.5。上线期间价格为每百万输入 tokens 0.10 美元、每百万输出 tokens 0.35 美元，优惠幅度为 50%。
+  > 💡 Mercury 3 将高速生成、百万级上下文与 OpenRouter 的渠道分发结合，但领先结论仍需结合第三方实测审视。
    - 来源: [@openrouter](https://x.com/OpenRouter/status/2112225779782398131)
 
+**OpenAI 公布最新模型进展，主打 COBOL、Fortran 等小语种代码的构建与迁移能力**
+- OpenAI 在官方账号宣布，最新模型进展将强化 COBOL、Fortran 与 Visual Basic 等低资源编程语言上的代码构建与迁移能力。这些语言支撑着银行、政府与企业长期依赖的业务系统，进展意味着模型需要理解数十年沉淀的业务逻辑，并在保留原有功能的前提下协助开发者完成现代化改造。OpenAI 表示将继续围绕该方向投入相关能力建设。
+  > 💡 把 COBOL、Fortran 这类承载关键基础设施但被新生态边缘化的语言列为改进方向，意味着 OpenAI 在意的不只是开发者圈层的基准名次，更在押注企业级遗留系统改造这块高粘性、强付费意愿的市场。
+   - 来源: [@openai](https://x.com/OpenAI/status/2112310345863930168)
+
 ### 产业动态
-**NVIDIA 发布开源权重模型 Nemotron 3.5 Super VL 与端侧 Bolt 系列：120B 主攻企业 Agent，Bolt 落地 AI PC**
-- NVIDIA 发布面向常驻 Agent 与边缘计算的开源权重模型：Nemotron 3.5 Super VL 为 1200 亿参数，定位企业级 Agent，官方称参数量虽少于 Nemotron 3 Ultra，但在指令遵循与工具使用任务上可达到相近准确率。同时发布的两款轻量 Bolt 模型面向本地运行，适配搭载 RTX Spark 芯片的 AI PC 与配备 DGX Spark 的工作站，相关设备正通过 Microsoft、Dell 等伙伴进入市场。NVIDIA 称 Super VL 在文档智能、财务核算、科学实验、医疗保险理赔与安全攻防等特定 Agent 任务上经后训练后，完成任务速度快于 Anthropic 与 OpenAI 的竞品模型，并列出 Skydance、EY、Ramp、CrowdStrike、Perplexity、Salesforce 等使用方。
-  > 💡 开源权重加分层部署是 NVIDIA 把模型生态绑到自家硬件上的打法——模型免费开放，真正的护城河在 RTX Spark、DGX 设备与 NVIDIA 基础设施的出货；对企业自建推理栈是降低选型成本的选择，但速度对比仍是官方口径，需第三方验证。
-   - 来源: [TechCrunch](https://techcrunch.com/2026/10/19/nvidia-launches-new-open-models-to-run-agents-in-the-enterprise-and-on-pcs)
+**MiniMax 在 OpenRouter 上线 M3.1 Flash 正式版，免费开放 72 小时**
+- MiniMax 发布 M3.1 Flash 正式版本，并在 OpenRouter 平台免费开放 72 小时。官方账号透露在 M3.1 正式版之前曾经有过一个被开发者连续十天上榜到第一的早期版本，并戏称 OpenRouter 为其保守了秘密。
+  > 💡 用 72 小时免费窗口跟进此前的早期试用热度，是把开发者社区的尝鲜流量转化为正式版第一波使用数据的标准动作；限时免费的强度决定了其能否在 OpenRouter 与 Hugging Face 等聚合渠道上跑出口碑。
+   - 来源: [@minimax_ai](https://x.com/MiniMax_AI/status/2112287025361801272)
 
-**五角大楼官员 Emil Michael 放话：AI 公司若不配合政府，将动用出口管制等行政工具**
-- Emil Michael 是美国国防部高级官员，也是 Trump 本月宣布的 Super Intelligence Force 四位牵头官员之一。他在接受 The Information 采访时表示，如果 AI 公司不与政府合作，将动用包括出口管制在内的一系列行政工具来约束其行为，并把呼吁加强监管的前沿实验室比作要求别人替自己停车的醉汉。此前他曾主导与 Anthropic 的公开冲突，在后者拒绝移除安全护栏后推动国防部将其列为供应链风险。如今他作为政府与 Anthropic 等 AI 公司的联络人，负责牵头制定网络入侵、黑客攻击等关键事件的处理协议。
-  > 💡 同一官员既手握"政府联络人"的合作通道，又公开保留出口管制的强制选项，说明华盛顿对前沿实验室的策略已转向合作与施压并举；安全护栏是否保留正在从技术争论升级为国家安全议题，Anthropic 与政府关系的走向将持续牵动行业。
-   - 来源: [The Information](https://www.theinformation.com/articles/pentagons-emil-michael-vows-export-controls-ai-labs-cooperate-government)
-
-**密歇根大学分拆公司 Laplace Intelligence：用 AI 智能体在仿真中红队测试机器人与自动驾驶**
-- 位于 Ann Arbor 的 Laplace Intelligence 一年前从密歇根大学分拆成立，联合创始人为 CEO Howie Sun 与首席科学家 Henry Liu。公司构建面向机器人与物理 AI 的自动化红队测试，用 AI 智能体与交互式仿真在部署前对机器人与自动驾驶车辆做压力验证，通过刻意诱导失败来暴露问题。Sun 过去八年在学术界研究如何在仿真中挑战自动驾驶 AI，2023 年与当时的导师 Liu 合作的论文登上 Nature 封面。公司目前已实现盈利，入选 TechCrunch Disrupt（10 月 13 日至 15 日，旧金山）Startup Battlefield 200 的 20 强，并于 10 月 13 日登台展示。Sun 表示，目标是帮助企业在部署前发现并修复问题，并逐步建立可供客户、保险方与监管者信赖的共享证据库。
-  > 💡 “AI 测 AI”在物理世界比纯软件场景更迫切，因为失败代价不可回滚；仿真红队若能产出保险与监管认可的量化证据，有机会从安全验证工具升级为物理 AI 部署链路上的合规基础设施。
-   - 来源: [TechCrunch](https://techcrunch.com/2026/10/19/laplace-intelligence-red-teams-robots-and-self-driving-cars-before-they-hit-the-real-world)
+**Agility Robotics 宣布前 UPS 总裁 Mark Vale 将在与 Churchill Capital XI 合并完成后加入董事会**
+- Agility Robotics 在社交平台宣布，前 UPS 总裁 Mark Vale 预计将在公司 与 Churchill Capital Corp XI（NASDAQ: CCXI）合并完成后加入董事会，并担任审计委员会主席一职。公告中提供了相关链接以供查阅更多细节。
+  > 💡 在 SPAC 合并的关键节点引入具有大型上市公司运营背景的高管出任审计委员会主席，体现出 Agility Robotics 为公开市场合规与公司治理标准做准备的动作；这也是其商业化进入资本市场的常规前置安排。
+   - 来源: [@agilityrobotics](https://x.com/agilityrobotics/status/2112140452531220643)
 
 ### 算力追踪
-**报道称 DeepSeek 深度参与华为下一代 AI 芯片设计：工程师长期驻场，需求直接写入设计决策**
-- 据报道，DeepSeek 正与华为深度合作，参与其未来 AI 芯片的设计，两位知情人士称这一合作有望帮助中国在不依赖英伟达技术的情况下构建前沿模型。据悉双方关系超出了客户与芯片供应商之间常见的路线图沟通：华为工程师正把 DeepSeek 的需求与建议纳入具体设计决策，例如模型如何在处理器之间计算与搬运数据，相关芯片将于明年及以后推出。其中一位知情人士称，华为工程师已在 DeepSeek 办公场地长期派驻。
-  > 💡 模型公司反向定义芯片设计，说明 DeepSeek 的计算与数据搬运策略正成为国产芯片的事实规格来源；对英伟达的威胁不在单卡性能，而在于芯片与头部模型工作负载的贴合度，这会加速中国前沿模型与本土算力的绑定。
-   - 来源: [The Information](https://www.theinformation.com/articles/deepseek-shaping-huaweis-ai-chips-growing-challenge-nvidia)
+**SemiAnalysis：英伟达 GB300 FP4 单位成本性能落后 TPUv7**
+- SemiAnalysis 表示，上周 TPUv7 FP8 提交结果展现出更优的每美元性能后，英伟达已投入额外时间应对竞争。英伟达提交的 GB300 FP4 首次对比结果在多数端到端性能区间内，面向外部客户的每美元性能仍比 TPUv7 低 1.64 倍。
+  > 💡 该对比显示，AI 基础设施竞争除峰值算力外，单位成本性能和外部客户可用性已成为关键衡量维度。
+   - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2112258243372146742)
 
-**Amazon 出资建设 12 台 Xe-100 小型核电堆：装机 960 兆瓦落户印第安纳旧煤电厂址，并锁定首批购电**
-- Amazon 宣布出资支持在印第安纳州建设装机 960 兆瓦的核电站，并将成为该电站电力的首个买家，电站由公用事业公司 AEP 运营，X-energy 提供 12 台 Xe-100 小型模块化反应堆，选址位于 Terre Haute 以南一座已拆除的燃煤电厂旧址。这是双方两年内的第二份商业协议，规模为上一份的三倍；Amazon 曾于 2024 年 10 月领投 X-energy 7 亿美元 C-1 轮，两家公司计划到 2039 年在美国新建 5 吉瓦核电装机。这些反应堆将接入公共电网，Amazon 称电力同时服务其数据中心。项目进度取决于 X-energy 能否按期交付位于休斯敦东南 Dow Chemical 园区的首座电站：该选址将部署四台 Xe-100，目前尚未开工，建造许可处于美国监管审批的后期阶段，且近期卷入德州政府指控涉及水务与固废法规许可"惯常违规"的诉讼。
-  > 💡 从买绿电升级为出资建核电并锁定首购，是巨头对数据中心负荷扩张最直接的供给侧锁定方式；但 X-energy 首个项目尚未动工又涉诉讼，SMR 供应链能否支撑 2039 年 5 吉瓦目标仍是最大不确定因素。
-   - 来源: [TechCrunch](https://techcrunch.com/2026/10/19/amazon-to-fund-12-small-nuclear-reactors-at-former-indiana-coal-plant)
-
-**SemiAnalysis：2027 年将成为数据中心"加速之年"，单年新增超 50GW、60GW 在建、年内已签 1.3 万亿美元租约**
-- SemiAnalysis 发布数据中心 2027 年前瞻分析，称 2027 年将是"加速之年"，单年新增容量超过 50GW。该机构的前瞻指标显示，目前有 60GW 数据中心在建，年内至今已签署的租约合同总额达 1.3 万亿美元。分析同时判断，算力短缺的瓶颈可能从电力侧转移到芯片侧。
-  > 💡 租约先行、建设跟进，1.3 万亿美元的合同额意味着未来几年的交付压力已经锁定；若短缺确实从电力转向芯片，产业链约束将从"能否供电"变成"能否拿到芯片"，服务器与芯片排产节奏将成为 2027 年的关键变量。
+**SemiAnalysis：2027 年数据中心单年增量或达 50GW，在建规模达 60GW**
+- SemiAnalysis 将 2027 年称为数据中心加速之年，预计该年将新增 50GW 容量。当前处于建设阶段的数据中心规模达到 60GW，年初至今已签署 1.3T 的租赁合同。该机构认为，短缺压力可能进一步传导至芯片。
+  > 💡 数据中心建设与长期租赁合同同步扩张，意味着算力需求仍在增长，但新增容量也可能把供应瓶颈推向芯片环节。
    - 来源: [@semianalysis_](https://x.com/SemiAnalysis_/status/2112069964131713517)
 
-**Meta 披露 Muse 系列在吉瓦级超算 Prometheus 上训练：预训练 goodput 超 85%，强化学习超 90%**
-- Meta 表示，包括 Muse Wonder 在内的 Muse 系列基础模型，都在其位于俄亥俄州 New Albany 的吉瓦级超算集群 Prometheus 上完成训练。Meta 称，在拥有数十万块 GPU 的集群里，哪怕一台主机性能不达标也会拖慢整个训练任务，因此 Prometheus 以大规模容错为设计目标：预训练 goodput（有效训练时间占比）达到 **85%** 以上，强化学习达到 **90%** 以上，平均中断间隔约 **4.7 万 GPU 小时**。
-  > 💡 在数十万卡规模下，goodput 每提升 1 个百分点就相当于多出数千块 GPU 的有效算力；Meta 公开这组可靠性指标，说明超大集群的竞争正从"有多少卡"转向"能稳定用上多少卡"。
+**Meta：Prometheus 万卡级超集群支撑 Muse 基础模型训练**
+- Meta 表示，Muse 基础模型均在俄亥俄州 New Albany 的 Prometheus 超集群上训练，其中包括 Muse Wonder。Prometheus 由数十万块 GPU 构成，Meta 称其预训练 goodput 超过 85%，强化学习 goodput 超过 90%，平均故障时间为约 47K GPU 小时。
+  > 💡 超大规模训练的关键不只是 GPU 数量，Meta 将重点放在降低单个故障主机对整体训练进度的影响。
    - 来源: [@aiatmeta](https://x.com/AIatMeta/status/2112245968750145561)
 
-### 初创&融资
-**AI 芯片创业公司 Tenstorrent 融资 15 亿美元、估值达 62 亿美元，拒绝收购意向选择独立发展**
-- 聚焦推理的 AI 芯片公司 Tenstorrent 完成 15 亿美元融资，估值 62 亿美元，较 2024 年底的 26 亿美元估值翻倍以上，本轮由 Trace Capital 与 Innovation X 领投，Cadence Ventures、Eclipse、Fidelity、SanDisk 和 T. Rowe Price 等参投。据此前报道，这家成立十年的公司五个月前曾收到 Intel 与 Qualcomm 方面最高 50 亿美元估值的收购意向。CEO Jim Keller 向 Bloomberg 表示，在验证 Galaxy 服务器可以运行 DeepSeek 模型后，公司决定保持独立并继续融资，新资金将用于扩展面向开源权重模型服务和视频生成的芯片。
-  > 💡 在英伟达供给紧张、开源模型推理需求放量的窗口期，独立算力标的的稀缺性明显抬升，估值翻倍反映的是这种筹码价值；但拒绝被收购也意味着必须靠 Galaxy 方案的真实出货兑现估值，软件生态仍是其与英伟达竞争的最大短板。
-   - 来源: [TechCrunch](https://techcrunch.com/2026/10/19/tenstorrent-hits-6-2b-valuation-to-scale-open-weight-ai-chips)
-
 ### 研究关注
-**HexaShell：让编程 Agent 写代码直接操控双臂机器人，RoboDojo 42 项任务成功率 39.7% 创新纪录，瓶颈在接触而非推理**
-- HexaFuture 团队提出 HexaShell，一个刻意做"薄"的控制框架：只负责把 Agent 的命令转成机器人动作，Agent 通过一个命令行驱动双臂机器人，可看到三路 RGB 相机画面及其标定参数。每次尝试失败后，Agent 读取日志、定位原因，再编写或修复称为"工具"的小程序，把学到的经验沉淀为代码，就像编程 Agent 修复失败的测试一样；工具只能使用机器人可观测的信息，靠多相机三角测量和"视线与桌面等已知平面求交"来定位物体与夹爪的相对位置，头部相机看不清时会移动腕部相机补拍。工具在每个任务的 10 种布局上构建后冻结，再在 10 种新布局上测试，实验使用 Codex 搭配 GPT-6-Astra（medium 推理强度）。在 RoboDojo 全部 **42 项**任务上，HexaShell 取得 **39.7%** 成功率与 **48.0** 进度分，为该榜单新的最好成绩；其中推动类任务达 **92.5%**、记忆类 **65.0%**，精密插接仅 **8.3%**，失败时 Agent 通常能看出问题、却无法让动作做到位。演化出的工具已在 GitHub 开源。
-  > 💡 把机器人操作改写成"写代码—看日志—修 bug"的编程问题，让通用编程 Agent 不训练专用策略也能登顶操作榜单；92.5% 对 8.3% 的落差则说明，眼下卡住具身 Agent 的是接触与力控执行而非理解推理，下一步突破更可能来自底层控制与触觉，而不是更强的大模型。
-   - 来源: [arXiv](https://arxiv.org/abs/2610.23479) | [HuggingFace Daily Papers](https://huggingface.co/papers/2610.23479) | [GitHub](https://github.com/HexaFuture/HexaShell)
+**EvoSkill v2：把指令改写做成有状态单智能体，SpreadsheetBench v2 通过率领先 SkillOpt 与 SkillBoost 7.7 个百分点**
+- 论文提出 EvoSkill v2，把智能体优化「指令（skills）」的过程拆成三智能体系统：用户在运行时描述基准并提供评分器，由基准适配器生成基准插件，求解器完成任务，进化器读取求解器训练 rollout 后在每个 epoch 改写指令。论文将进化器实现为带 bash 工具的有状态编码智能体，而非 SkillOpt 的多次单次模型调用或 SkillBoost 每轮重新启动智能体的常见设计。论文同时测量求解器 rollout 的逐次波动、为每个训练任务提供多次尝试，并接受每个 epoch 改写出的全部指令而非按噪声分数筛选。在 SpreadsheetBench v2 与 τ³-bench 银行两个基准、两种反馈设置下，EvoSkill v2 改写后的指令将留出测试通过率较 SkillOpt 与 SkillBoost 中较强基线分别提升 7.7 与 5.4 个百分点，且每提升一个百分点通过率的进化器成本低于两个基线优化器。在 τ³-bench 银行实验里，由 Claude Haiku 5.5 同时驱动求解器与进化器时仍可获得最高 21.5 个百分点的提升。
+  > 💡 EvoSkill v2 的真正区别不在三智能体框架，而在把「进化器」从一次性脚本改写为带工具的有状态智能体：保留历史 rollout、接受噪声、对每次任务允许多次尝试，三件事一起做才能让小模型也能编辑自己的指令。这条技术路径的产业意义是：指令/系统提示调优不必依赖更大模型自审，用一台带 bash 的小模型长期维护即可逐步逼近更强基线，对成本敏感的部署方是直接利好。
+   - 来源: [arXiv cs.LG](https://arxiv.org/abs/2610.25931v1)
 
-**商汤 SenseNova 系统评测 GPT-6-Astra 具身能力：12 项基准成绩空前，8 种真机部署暴露落地鸿沟**
-- 商汤 SenseNova 联合研究团队发布报告，系统评估 GPT-6-Astra 是否已具备具身智能。研究在桌面操作、人形、移动平台与灵巧手等 **12 个**代表性基准上做大规模评测，在允许从训练集演示做上下文学习（ICL）、并大幅增加执行步数的统一协议下，GPT-6-Astra 取得论文所称"前所未有"的成绩。研究还发现，以 GPT-6-Astra 作为高层"System 2"推理器、π0.5 作为低层"System 1"控制器的闭环协同，成本高但有效。在 **8 种**机器人构型的真机实验中暴露出两项明显差距：ICL 所需的机器人演示采集成本高；受物理约束，无法靠延长执行时间换取更高成功率。团队据此提出新一代具身基准原型：任务源自真实需求、不提供同域演示、并在智能体思考时让"世界时钟"持续走动。报告结论是，GPT-6-Astra 已基本跨过"具身胜任"的门槛，但尚未达到"实用具身智能"。
-  > 💡 通用大模型在基准上追平乃至超过专用机器人模型，但真机的演示成本与"时间不等人"让分数难以兑现；"思考时世界时钟照走"的评测设计直指现有基准允许无限思考、无限重试的漏洞，有望成为下一代具身评测的标配。
-   - 来源: [arXiv](https://arxiv.org/abs/2610.22471) | [HuggingFace Daily Papers](https://huggingface.co/papers/2610.22471) | [GitHub](https://github.com/OpenSenseNova/SenseNova-RoboRSI)
+**Maestro 以全局协调处理 Lean 证明失败：PutnamBench 解出 669/672，arXivLean 自证 34/48**
+- 论文提出面向 Lean 的证明器框架 Maestro，让各个证明器报告失败原因，并由可查看完整证明过程的协调器选择引导、修正错误引理、撤回错误子树或重新规划等响应。该框架也扩展到经过验证的代码生成，代码经检查发现反例后会返回修复。论文使用四个前沿 LLM，在七项数学和三项软件验证基准上开展评测；在代理尚未饱和的每项基准上，Maestro 证明的目标数均超过 Claude Code 或 Codex 原生代理，其中 Claude Opus 5 在 2026 年 6 月版 arXivLean 中自行证明了 48 个定理中的 34 个，原生代理为 19 个。Maestro 还超过所有共同覆盖的已发表证明器系统，取得 PutnamBench 669/672、Lean-IMO-Bench 59/60 和 IMO 2026 6/6 的结果。
+  > 💡 Maestro 的关键价值不是单纯增加分解层级，而是让失败反馈进入全局规划，避免系统沿错误证明方向持续消耗预算；其结果也显示，针对形式化证明的代理能力不能只由底层模型衡量。
+   - 来源: [arXiv cs.LG](https://arxiv.org/abs/2610.25920v1)
 
-**蚂蚁国际 BizBench：用真实支付业务流程测长程 Agent，Claude Opus 5 严格成功率仅 64%**
-- 蚂蚁国际团队发布 BizBench，一个基于头部支付公司真实业务流程构建的多轮长程 Agent 基准。其可执行环境整合 **789** 份知识文档与 **601** 个可发现的业务工具，政策、状态与工具行为保持一致；**50** 个任务涉及资源约束、时间依赖、先前承诺以及相互冲突或已过时的指引。每个任务都经过参考执行验证，并用确定性检查同时评估"目标是否达成"与"执行过程是否合规"，不限定唯一解法。结果显示，Claude Opus 5 与 GPT-6 Sol 的严格成功率仅为 **64.0%** 和 **61.3%**；Qwen3.8-27B 的目标达成率为 42.0%，严格成功率则降至 **32.7%**；DeepSeek-V4.1-Flash 平均每次运行调用工具 **191.3** 次，比参考执行多约 70%。
-  > 💡 在支付这类高合规场景，"结果对了但过程违规"同样会带来资金或监管损失；目标达成率与严格成功率之间近 10 个点的差距说明，只看最终结果的 Agent 榜单会系统性高估企业落地可用性。
-   - 来源: [arXiv](https://arxiv.org/abs/2610.20424) | [HuggingFace Daily Papers](https://huggingface.co/papers/2610.20424) | [GitHub](https://github.com/ant-intl/BizAgentBench)
-
-**ACT3D：结果奖励 RL 让 VLM 自学 3D 主动探索，六基准平均 53.2% 超过 Gemini 3.6 Flash**
-- 论文提出 ACT3D，研究视觉语言模型在保持单图原生视觉编码的前提下如何学会在 3D 空间中思考与主动探索：3D 表示仅作为可通过动作（如向左移动）与观测（渲染图像）交互的环境，模型从初始第一人称视角与视觉问题出发，迭代推理、导航并调整视角后再给出最终答案。训练先做轨迹监督微调，再施加以最终答案正确性为主要奖励信号的强化学习，RL 阶段不直接监督该看哪些视点或采取哪些探索动作，模型只能从交互对表现的提升中自行学出探索策略。在六个 3D 基准上，ACT3D 平均准确率达 53.2%，较基座 Qwen 模型提升 22.0%，并超过专有模型 Gemini 3.6 Flash；同时以少 50-70% 的输入帧数超过现有开源 3D 方法，在未见过领域上较监督初始化平均再提升 5.9%。分析显示探索行为随问题条件自适应：初始视角即可回答的问题增益仅 0.6%，需要大量探索的问题增益达 16.3%，模型会搜索被遮挡目标、避免不必要的探索并获取互补视点。
-  > 💡 探索策略没有被显式监督，却在纯结果奖励下自行涌现，说明"何时看、看哪里"可以作为任务奖励的副产品学出，为具身与空间智能省掉了人工标注视点轨迹的成本；两类问题 0.6% 对 16.3% 的增益差也提示，探索能力的主要价值集中在遮挡搜索与空间对比类任务上。
-   - 来源: [arXiv](https://arxiv.org/abs/2610.21783) | [HuggingFace Daily Papers](https://huggingface.co/papers/2610.21783)
-
-**Consistent Distribution Matching：免数据免仿真的扩散蒸馏，单步生成在 ImageNet 256 拿到 FID 2.04**
-- 论文提出 Consistent Distribution Matching，一种免仿真、免数据的蒸馏方法，用于加速扩散与流模型的推理并保留生成能力。框架只包含一个冻结教师与一个可训练学生共两个模型，把样本生成与得分估计统一到同一个学生网络，并只优化单一目标。论文证明最小化该目标意味着学生的流图推送分布按 Wasserstein 距离收敛到教师的边缘分布。在 ImageNet 256×256 上，该方法训练 40 个 epoch 后，单次函数评估（1-NFE）取得 FID 2.04，4-NFE 取得 FID 1.37，超越了现有无数据蒸馏的最优基线。代码与模型已开放。
-  > 💡 现有蒸馏方法常依赖精选数据集、昂贵的教师 rollout 或代理网络，训练与扩展复杂度高；该方法把蒸馏压缩到两模型一目标，且单步 FID 2.04 已具备实用意义，对推理成本敏感的图像生成部署是一条直接可走的加速路径。
-   - 来源: [arXiv](https://arxiv.org/abs/2610.09221) | [HuggingFace Daily Papers](https://huggingface.co/papers/2610.09221)
-
-**LiveMACEBench：以实时金融市场为测试场的过程感知基准，30 天实测发现智能体结果与能力脱节**
-- 论文提出 LiveMACEBench，一个过程感知基准，把实时演变的金融市场作为持久运行 LLM 智能体的天然测试场。五家前沿 LLM 在工具使用、持久记忆、规则遵循与多智能体协作四项配置对齐的条件下沿连续轨迹运行，评估同时覆盖实际结果与从完整决策轨迹导出的机制级诊断。30 天实测发现明显的“结果—能力”差距：实际收益常与能力维度的测量相背离，相近的结果也可能来自截然不同的机制使用模式。轨迹级诊断进一步暴露各能力维度的不同瓶颈，说明机制可及、机制有效使用与下游表现并非可互换的能力度量。
-  > 💡 只看收益排行会掩盖智能体的真实短板，尤其在环境随智能体行为闭环变化时；把活市场从排行榜改造成诊断环境，为评估 agent 在动态条件下的可靠性提供了可复制的度量框架。
-   - 来源: [arXiv](https://arxiv.org/abs/2610.09872) | [HuggingFace Daily Papers](https://huggingface.co/papers/2610.09872)
+**PSSE：用条件状态空间探索缓解多轮强化学习无效动作与循环陷阱**
+- 论文指出，大语言模型智能体在多轮、长周期环境的强化学习中常陷入高置信但低产出行为，反复执行无效动作或进入动作循环，进而违反环境前置条件，暴露出智能体内部状态表征与底层环境动态之间的失配。论文提出一种条件状态空间探索框架，通过引入惩罚观察与历史状态记忆重复的内禀奖励，在不依赖通用信息论度量的前提下抑制冗余行为并鼓励状态空间覆盖。在多轮环境中的结果显示，该方法在策略学习上取得明显提升，并能缓解无效动作与重复循环问题。
+  > 💡 该工作把多轮 RL 中的循环陷阱归因于状态表征与环境的失配，并通过去重式内禀奖励直接施压而非增加信息论开销，对长周期智能体训练的实用价值较高；但摘要未给出具体基准名称与提升幅度，需结合原文进一步核验。
+   - 来源: [arXiv cs.LG](https://arxiv.org/abs/2610.25957v1)
 
 ### X讨论
-**Cognition 宣称 Devin Fusion 以 68 分登顶 AA Coding Agent Index，较 Claude Code 单任务成本再降 31%**
-- Cognition 宣布 Devin Fusion 在 Artificial Analysis Coding Agent Index 上取得 68 分，宣称位居榜首。该方案以 Opus 5.5 担任主导模型、GPT-6 Luna 担任辅助角色。与同样搭载 Opus 5.5 的 Claude Code 相比，Devin Fusion 在性能与价格两端均占优，单任务成本降低 31%。
-  > 💡 Devin Fusion 的成绩由旗舰模型组合与编排层驱动，而非自研基座，说明 Coding Agent 榜单竞争正从单模型能力转向模型配比与 harness 工程。若第三方复测坐实 68 分与 31% 降本，Claude Code 在按任务计费的企业市场将直接承压。
+**DeepSeek 上线 V4.1 Flash 1017 更新，AA 智能指数 45 分位列开源权重并列第二**
+- DeepSeek 发布 V4.1 Flash 1017，是旗舰模型 V4.1 Flash 的迭代版本。在 Artificial Analysis 智能指数上，该版本拿到 45 分，比上一版 V4.1 Flash 提高 6 分，并列开源权重模型第二名。官方 API 方面，V4.1 Flash 1017 每百万输入 token 定价 0.30 美元、每百万输出 token 定价 1.20 美元。
+  > 💡 作为非旗舰的小版本更新，6 分的智能指数涨幅与对标并列开源第二的排位，显示出 DeepSeek 在轻量档位上仍有明确的分数提升空间，开源权重阵营的位次竞争也由此进一步加剧。
+   - 来源: [@artificialanlys](https://x.com/ArtificialAnlys/status/2112218661432000694)
+
+**fal 发布 FLUX 3 Max：FLUX 3 后训练版，AA 视频图生视频榜并列第一、文生视频榜第四**
+- fal 发布 FLUX 3 Max，作为 Black Forest Labs FLUX 3 的后训练版本。在 Artificial Analysis 评测中，FLUX 3 Max 在 AA-Video-I2V v1.1 榜单上位列第二（与第一统计学意义上并列），在 AA-Video-T2V v2.1 榜单上位列第四，均高于基础版 FLUX 3。该模型可由文本提示词或起始图像生成长度 5 到 20 秒、720p 分辨率并带原生音轨的视频，fal 宣称 10 秒视频生成耗时低于 12 秒。
+  > 💡 第三方在开源基底上做后训练就能在一图/文生视频榜单挤进前两名，说明视频生成赛道的产品-模型分工开始清晰化：基础模型提供能力上限，后训练服务厂商则在细分榜单与生成速度上做差异化变现。
+   - 来源: [@artificialanlys](https://x.com/ArtificialAnlys/status/2112266414593827110)
+
+**Cognition 发布 Devin Fusion：拿 AA 编码智能体指数 68 分，单任务成本较 Claude Code 低 31%**
+- Cognition 推出 Devin Fusion，在 Artificial Analysis 编码智能体指数上以 68 分拿下榜首。系统采用 Opus 5.5 担任主模型，GPT-6 Luna 担任辅助角色。Cognition 表示，Devin Fusion 在同跑 Opus 5.5 的条件下，性能与价格均优于 Claude Code，在达成 68 分的同时单任务成本较后者低 31%。
+  > 💡 用双模型分工组合（前沿旗舰做主、较新一代做副）跑出更低的单任务成本，体现了编码智能体的竞争已经从单模型榜单过渡到「调度 + 模型组合」阶段；这也使得同一基座在不同 agent 产品中的相对优势，会更多被工程编排放大或抵消。
    - 来源: [@cognition](https://x.com/cognition/status/2112290148205436979)
+
+**Agility Robotics 联合创始人解释 Digit 5 无法运行的原因**
+- Agility Robotics 在 X 平台表示，其联合创始人 Jonathan Hurst 探讨了 Digit 5 无法运行的原因。相关内容由 IEEE Spectrum 刊载，Agility Robotics 官方账号随后分享了该链接，并标注 Digit 5。
+  > 💡 现有信息仅说明 Agility Robotics 分享了联合创始人对 Digit 5 运行问题的解读，尚未披露具体技术原因或改进方案。
+   - 来源: [@agilityrobotics](https://x.com/agilityrobotics/status/2112286284236640320)
 
 
 ---
-*更新时间: 2026-10-20 06:58*
+*更新时间: 2026-10-20 11:12*
