@@ -1,8 +1,8 @@
 """Twitter/X 推文抓取器 - 统一账号配置（twitterapi.io API）
 
 公共 Nitter 实例已于 2026-08 全线失效（403/人机验证/白名单），改用
-twitterapi.io REST API。API key 存放于本目录 api.key（已被 .gitignore
-的 *.key 规则忽略），也可通过环境变量 TWITTERAPI_KEY 提供。
+twitterapi.io REST API。API key 优先读环境变量 TWITTERAPI_KEY（.env），
+未设置时读本目录 api.key（已被 .gitignore 的 *.key 规则忽略）。
 """
 
 import json
@@ -27,11 +27,13 @@ TITLE_MAX = 400
 
 
 def get_api_key() -> str:
+    # 环境变量（.env）优先，api.key 文件作兜底，便于换机器/换账号时只改 .env。
+    key = os.environ.get("TWITTERAPI_KEY", "").strip()
+    if key:
+        return key
     if KEY_FILE.exists():
-        key = KEY_FILE.read_text().strip()
-        if key:
-            return key
-    return os.environ.get("TWITTERAPI_KEY", "")
+        return KEY_FILE.read_text().strip()
+    return ""
 
 
 def load_config() -> dict:
