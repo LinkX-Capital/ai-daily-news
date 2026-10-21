@@ -1,6 +1,6 @@
 # Twitter 动态预览
 **日期**：2026-10-21 07:15
-**总计**：104 条推文
+**总计**：103 条推文
 
 ---
 
@@ -11,7 +11,7 @@
 
 ---
 
-## 🏢 公司发布（65条）
+## 🏢 公司发布（63条）
 
 ### @agilityrobotics | App
 
@@ -50,8 +50,11 @@
   [查看](https://x.com/ArtificialAnlys/status/2112573259606884640)
 - US open-weights models made gains in both intelligence and parameter efficiency last week:  ➤ Thursday morning: NVIDIA released Nemotron 3.5 Bolt and Nemotron 3.5 Super VL. Super VL scored 26.5 on the Intelligence Index with 120B parameters, pushing Inkling Small off the Pareto frontier  ➤ Thursday midday: Meta's Muse Spark Open scored 38.9, more than 12 points ahead of Super VL and the highest in...
   [查看](https://x.com/ArtificialAnlys/status/2112564497361568153)
-- Ant Group's Ming-3.0-tts is the new #1 open weights model in the Artificial Analysis Controlled Voice TTS Arena and takes the #1 spot on our Pronunciation Robustness leaderboard, level with Fish Audio's Drama 3 Preview and ahead of Eleven v4  Ming-3.0-tts is the new open weights Text to Speech model from @AntLingAGI's team, a dense 0.5B parameter model with preset voices and stateless voice clonin...
-  [查看](https://x.com/ArtificialAnlys/status/2112389514404462613)
+
+### @bespokelabsai | App
+
+- RT @AlexGDimakis: We added Gemini 4 Argon to our AutoResearchExam Pareto curve. It is 2-3 times cheaper compared to the other frontier mode…
+  [查看](https://x.com/bespokelabsai/status/2112712721548661201)
 
 ### @bostondynamics | App
 
@@ -154,6 +157,10 @@
 
 ### @semianalysis_ | Infra
 
+- BREAKING NEWS🚨🚨: TODAY META CONFIRMS THEY ARE RUNNING TPU INFERENCE IN PRODUCTION. What does this mean for the CUDA moat?  For those who read our public newsletter, this is not a surprise, as on Nov 28, 2025, we publicly wrote that Meta is a TPU customer & has lots of engineers working on TPUs. Our accelerator supply chain model has details about Meta's TPU procurement!
+  [查看](https://x.com/SemiAnalysis_/status/2112740274870837443)
+- After eight long years, TSMC is finally shrinking their 6T High Density SRAM bitcell for their A14 process! At IEDM, they will present the world's smallest bitcell, <0.017μm2 on their 2028 node. TSMC has been stuck at 0.021μm2 since N5 in 2020. With designs utilizing even more SRAM as memory bottlenecks grow, a 25% denser SRAM with A14 is significant.
+  [查看](https://x.com/SemiAnalysis_/status/2112712165777903871)
 - BREAKING NEWS🚨: NVIDIA ENGINEERS AT THE PYTORCH CONFERENCE JUST SAID THAT THE SPEED OF OPTIMIZING CUDA SOFTWARE WITH FRONTIER AI MODELS HAS INCREASED RAPIDLY   October 2025 to August 2026: 5x in 1 year with expert human optimization  September 2026 to October 2026: 2x in 1 month with AI assistance  October 2026: 1.5x with AI orchestration + MegaKernels
   [查看](https://x.com/SemiAnalysis_/status/2112650722315510047)
 - TorchTPU shows Google finally embracing open-source and offer serious support. As our InferenceX shown recently, Google engineers and external companies have demonstrated great TCO.
@@ -162,13 +169,11 @@
   [查看](https://x.com/SemiAnalysis_/status/2112592322181607650)
 - Is 50 GW in a single year too aggressive?  "Dear Brad called us out publicly and cut our forecast in half."  So Jeremie (@JeremieEO) and Reyk (@robotknower) came on with Jordan (@JordanNanos) to show their work. They go site by site from satellite and explain why haircutting the number double counts the delays already baked in. Plus moratoriums, 9-month modular builds, and why 2028 is the year to ...
   [查看](https://x.com/SemiAnalysis_/status/2112572601931383202)
-- ALERT🚨: Vera Rubin NVL72 is up to 7.3x better in perf per dollar than GB300 NVL72 for 1 million context length agentic inference workloads!  THE MORE U BUY, THE MORE U EARN 👇️(1/3)🧵 https://t.co/wD4BDNpJ5m
-  [查看](https://x.com/SemiAnalysis_/status/2112379877621919877)
-- ALERT🚨: SGLANG JUST MERGED MEGAKERNEL SUPPORT, GETTING CLOSE TO 1000 tok/s/user on the GB300 NVL72 AgentX Harness & increasing interactivity by 1.5x on MI355X too! Great work by the SGLang, RadixArk, NVIDIA, and AMD teams!  Best of all, this already works out of the box on SGLang Docker images! Excited to rapidly get this on the official AgentX!  https://t.co/9KzTMxawaG
-  [查看](https://x.com/SemiAnalysis_/status/2112347284713148746)
 
 ### @theturingpost | Research
 
+- RT @TheTuringPost: It's amazing how a few JEPA studies can point the way toward answering a question: What does a machine need to predict w…
+  [查看](https://x.com/TheTuringPost/status/2112742792111751663)
 - RT @TheTuringPost: Must-read papers of the week  ▪️ Cortex ▪️ Librarian Agents ▪️ OpenGCUA ▪️ DuoDiscover ▪️ WAVE-0 model ▪️ ACT3D model ▪️…
   [查看](https://x.com/TheTuringPost/status/2112680434232590730)
 - It's amazing how a few JEPA studies can point the way toward answering a question: What does a machine need to predict well enough to plan what to do next?  JEPA's general point is to predict what matters without recreating every pixel. I explored 3 variants - H-JEPA, DeepJEPA and RoboJEPA, and each approaches the question from a different angle:  - Planning at distinct levels, from fine local det...
@@ -181,16 +186,11 @@
   [查看](https://x.com/TheTuringPost/status/2112612419646444026)
 - RT @TheTuringPost: I recommend joining an upcoming session from @Rubrik on October 21 → When Agents Go Off-Script  It's a technical deep di…
   [查看](https://x.com/TheTuringPost/status/2112571139041960381)
-- Must-read papers of the week  ▪️ Cortex ▪️ Librarian Agents ▪️ OpenGCUA ▪️ DuoDiscover ▪️ WAVE-0 model ▪️ ACT3D model ▪️ Execution Before Memory ▪️ Has GPT-6-Astra Achieved Embodied Intelligence? ▪️ Persistent Planar Memory ▪️ Relational Learning as World Modeling ▪️ More Methods, Better Agents? ▪️ Mosaic: Multi-Session Agentic Reinforcement Learning ▪️ HexaShell: A Thin Harness for Exploring the ...
-  [查看](https://x.com/TheTuringPost/status/2112362208512590151)
-
-### @theworldlabs | Research
-
-- RT @XRarchitect: Portal jumping through gaussian splat worlds with WebGPU. real time. sound on. https://t.co/Shlb0vf3xT
-  [查看](https://x.com/theworldlabs/status/2112347970297536770)
 
 ### @vllm_project | Infra
 
+- 1M tokens of context. 4B parameters. Apache 2.0. Controllable thinking.  Spark-X2.6-4B is live, and vLLM serves it day 0. Congrats to the @SparkLLM team! 📷
+  [查看](https://x.com/vllm_project/status/2112730433008054426)
 - Realtime open video generation keeps getting faster. FastH3-Omni is out with weights + training code, and vLLM-Omni serves it day 0 — including on consumer RTX GPUs. Congrats to the @haoailab team! 📷
   [查看](https://x.com/vllm_project/status/2112704330335945064)
 - 🚨🚨🚨 vLLM is all you need to reproduce DeepSeek’s performance.  With Wide-EP and EPLB, vLLM can match DeepInfer’s decode performance within 6% and generate $39/gpu/hr in revenue at DeepSeek’s off-peak pricing, at 200 P90 TPS on the AgentX workload.  Specifically: • Under DeepSeek’s decode configuration (DeepSeek-V4.1-Flash, 131K context, nextn=3), vLLM on GB200 achieves throughput within 6% of Deep...
@@ -201,12 +201,8 @@
   [查看](https://x.com/vllm_project/status/2112480719952138301)
 - ⚡️ Solid work from the Physis-AI Infra team. Together with Physis-AI, we’re introducing PhysisServe.  PhysisServe advances autoregressive denoising serving via fine-grained stage pipelining, time-sharing and multi-stream joint scheduling, optimizing both single-stream output latency and multi-stream system efficiency in one inference system.  PhysisServe’s core techniques are coming to vLLM-Omni, ...
   [查看](https://x.com/vllm_project/status/2112409984617394181)
-- The vLLM community is coming to #PyTorchCon, Oct 20–21 in San Jose! 🎉  Explore talks on attention, KV transfer, prefix caching, the vLLM roadmap &amp; more.  📅 Build your schedule: https://t.co/M3WjwaYYa5  We can't wait to see you there! 🙌
-  [查看](https://x.com/vllm_project/status/2112389827530567748)
-- The vLLM ecosystem keeps growing 📷   d3-turbo: SOTA multimodal decision model for intelligent routing — #1 on the Jev Decision Index, 15x faster than d3 flash with StateOnce.   Great work @XunzhuoLiu and the vllm-sr team 📷
-  [查看](https://x.com/vllm_project/status/2112352859937439745)
 
-## 👤 研究者动态（39条）
+## 👤 研究者动态（40条）
 
 ### @bobmcgrewai [Anthropic] | Research
 
@@ -253,15 +249,15 @@
 
 ### @jeffdean [Google] | Infra
 
+- RT @anurahk: I launched the first image and video generation models at Google, and kept asking why all AI designs look the same.  AI has br…
+  [查看](https://x.com/JeffDean/status/2112740690115637420)
 - RT @iScienceLuvr: Cancer patients with the same diagnosis often have very different tumor biology.  Molecular testing can reveal underlying…
   [查看](https://x.com/JeffDean/status/2112662164490350864)
 
 ### @percyliang [Stanford] | Research
 
-- RT @togethercompute: Together Post-Training is live  Turn open models into custom models you own, with SFT or RL.  You define the data, rew…
-  [查看](https://x.com/percyliang/status/2112387650795831796)
-- RT @StefanoErmon: 1/4 Today, we’re releasing Mercury 3. Mercury 3 is by far our most powerful model and the most intelligent diffusion LLM…
-  [查看](https://x.com/percyliang/status/2112386823498686964)
+- RT @LaudeInstitute: Introducing Slingshots // FOUR: 14 projects across eight top institutions. Self-improving agent systems and harnesses,…
+  [查看](https://x.com/percyliang/status/2112717298574442885)
 
 ### @sama [OpenAI] | Model
 
@@ -270,6 +266,8 @@
 
 ### @steipete [OpenClaw] | Application
 
+- See you at @Cloudflare Connect tomorrow! Will be chatting with @dok2001 about agents https://t.co/P4oYlOZ80s
+  [查看](https://x.com/steipete/status/2112735411688857770)
 - RT @badlogicgames: just used @steipete 's old mcporter to get mcp into a non-mcp supporting harness on the go. he invented codemode before…
   [查看](https://x.com/steipete/status/2112661600092221666)
 - RT @eligaultney: Seriously, OpenClaw is so good now. I'm starting to see a real gap in skills between people who haven't yet set up a perso…
@@ -285,6 +283,8 @@
 
 ### @swyx [AI社区] | App
 
+- RT @teortaxesTex: Insane alpha, must read, might well redefine this economy. Everything me, Zephyr etc have been saying about the real prof…
+  [查看](https://x.com/swyx/status/2112722821306835440)
 - RT @latentspacepod: https://t.co/gJmkNpRtPl
   [查看](https://x.com/swyx/status/2112682820141486402)
 - RT @latentspacepod: The Programmable Data Center  @martin_casado’s Nicira virtualized networking by separating the control plane from the h…
@@ -297,8 +297,6 @@
   [查看](https://x.com/swyx/status/2112587397380943953)
 - underrated podcast. i dont understand the twitter algorithm, u guys are sleeping on some real bangers
   [查看](https://x.com/swyx/status/2112560809809498187)
-- RT @aiDotEngineer: Should every agent wait in the same approval queue?  @jxxf contrasts a ticket summarizer with an agent that can deploy t…
-  [查看](https://x.com/swyx/status/2112366027539611857)
 
 ### @thesephist [Anthropic] | Research
 
