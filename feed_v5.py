@@ -1135,11 +1135,47 @@ def _load_recent_tweet_links(days=3, report_date=None):
     return seen
 
 
+def _funding_signature(title):
+    """融资类标题签名：(金额串, 公司名 token 集)；非融资标题返回 None。
+
+    用途：拦截二手源的隔天延迟报道（如 IT桔子次日转载海外融资，数字常滞后）。
+    匹配规则取「公司名 token 交集」而非金额一致，因为二手源金额经常过时
+    （例：一手口径"累计 2.3 亿"，二手仍写旧数"1.6 亿"）。
+    """
+    amounts = re.findall(
+        r"\d+(?:\.\d+)?\s*(?:亿美元|亿美金|亿|千万|百万|万|美元|元)"
+        r"|[$￥]\d+(?:\.\d+)?\s*[MB]?"
+        r"|\d+(?:\.\d+)?\s*(?:million|billion)",
+        title, re.IGNORECASE,
+    )
+    if not amounts:
+        return None
+    # 投资机构名与行业通用词不作公司名证据，防止"同投资方不同公司"误杀
+    stop = {
+        "robotics", "funding", "round", "series", "seed", "million", "billion",
+        "valuation", "startup", "inc", "corp", "ltd", "labs", "lab",
+        "technologies", "technology", "raises", "lands", "closes", "dollars",
+        "led", "investors", "capital", "general", "catalyst", "sequoia",
+        "lightspeed", "a16z", "andreessen", "benchmark", "accel", "khosla",
+        "altimeter", "bessemer", "felicis", "index", "openai", "anthropic",
+        "google", "meta", "nvidia", "microsoft", "amazon", "app",
+    }
+    tokens = {
+        t for t in re.findall(r"[A-Za-z][A-Za-z0-9.\-]{2,}", title)
+        if t.lower().strip(".-") not in stop
+    }
+    if not tokens:
+        return None
+    return (tuple(sorted(set(amounts))), frozenset(tokens))
+
+
 def dedup_articles(articles, report_date=None):
     """跨天去重只做高置信 URL 匹配；语义相似项交给 rank 审核。
 
     旧实现会因为融资标题模板或跨语言标题相似而直接删除不同事件。召回
     优先阶段只允许 canonical URL 这种可解释、可复现的硬去重。
+    例外：融资类标题的「公司名 token」与近 3 天重叠时直接跳过——二手源
+    （IT桔子等）对海外融资有约一天延迟且金额常滞后，实测靠 rank 审核拦不住。
     """
     ensure_candidate_ids(articles)
     try:
@@ -1161,6 +1197,11 @@ def dedup_articles(articles, report_date=None):
         for pair in _extract_product_entities(rt):
             recent_entities.add(pair)
 
+    # 预计算近3天融资标题签名（含标题，用于日志）
+    recent_funding_sigs = [
+        (t, _funding_signature(t)) for t in recent_titles
+    ]
+
     filtered = []
     for a in articles:
         link = canonicalize_url(a.get("link", ""))
@@ -1170,6 +1211,18 @@ def dedup_articles(articles, report_date=None):
         if link and link in seen_links:
             print(f"   [跨天去重-URL] '{title[:40]}...' 已在前几天发布，跳过")
             continue
+
+        # 1.5 融资类公司名去重：公司 token 与近3天任一融资标题重叠 → 二手延迟报道
+        sig = _funding_signature(title)
+        if sig:
+            dup = next(
+                ((rt, s) for rt, s in recent_funding_sigs
+                 if s and sig[1] & s[1]),
+                None,
+            )
+            if dup:
+                print(f"   [跨天去重-融资] '{title[:40]}' 公司名与近期 '{dup[0][:40]}' 重叠，跳过")
+                continue
 
         # 2. 实体/标题相似只标记，不能在 rank 前销毁候选。
         entities = _extract_product_entities(title)
