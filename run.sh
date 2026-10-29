@@ -93,7 +93,6 @@ export NEWS_DATE="$REPORT_DATE"
 MANIFEST_FILE="$MANIFEST_DIR/$REPORT_DATE.json"
 MD_FILE="$PROJECT_DIR/daily-ai-news-$REPORT_DATE.md"
 HTML_FILE="$PROJECT_DIR/daily-ai-news-$REPORT_DATE.html"
-SCREENSHOT_FILE="$PROJECT_DIR/daily-ai-news-$REPORT_DATE-mobile.png"
 INDEX_FILE="$PROJECT_DIR/index.html"
 ARCHIVE_FILE="$PROJECT_DIR/archive/news_$REPORT_DATE.json"
 
@@ -208,24 +207,16 @@ require_nonempty_file "$HTML_FILE"
 require_nonempty_file "$ARCHIVE_FILE"
 
 # feed_v5.py 已生成一次 HTML；这里不再重复调用 html_generator.py。
-# 截图阶段显式移除 webhook，确保 GitHub 页面完成推送后才发送通知。
-log "▶️ 生成移动端截图"
-(
-    unset FEISHU_WEBHOOK
-    "$PYTHON_BIN" screenshot_and_push.py "$REPORT_DATE"
-)
-require_nonempty_file "$SCREENSHOT_FILE"
+# 2026-10-29 起不再生成截图；飞书卡片推送在 git push 之后（见 feishu_push.py）。
 require_nonempty_file "$INDEX_FILE"
 
 log "▶️ 推送网页产物"
 publish_files=(
     "daily-ai-news-$REPORT_DATE.md"
     "daily-ai-news-$REPORT_DATE.html"
-    "daily-ai-news-$REPORT_DATE-mobile.png"
     "index.html"
 )
-"$GIT_BIN" add -- "${publish_files[0]}" "${publish_files[1]}" "${publish_files[3]}"
-"$GIT_BIN" add -f -- "${publish_files[2]}"
+"$GIT_BIN" add -- "${publish_files[@]}"
 # 生成当天 html 时 _patch_prev_day_next_link 会顺带修补此前各期的「下一期」链接，
 # 这些已跟踪旧期 html 的改动必须随本次提交一并推送，否则线上会停留在 <span></span> 占位。
 # -u 仅作用于已跟踪文件，不会引入 untracked 的 md/png。
@@ -237,6 +228,12 @@ else
     "$GIT_BIN" commit -m "Update: $REPORT_DATE" -- "${publish_files[@]}" 'daily-ai-news-*.html'
 fi
 "$GIT_BIN" push
+
+# 飞书机器人私发日报卡片给 Sheryl（新应用 cli_aa68626a48395cf1）
+log "▶️ 飞书机器人推送日报卡片"
+if ! "$PYTHON_BIN" feishu_push.py "$REPORT_DATE"; then
+    log "⚠️ 飞书推送失败，不影响日报发布（可手动重跑 feishu_push.py）"
+fi
 
 # 通知是可选集成：未配置凭据时明确跳过；一旦配置，发送失败必须阻断 published。
 if [ -n "${FEISHU_WEBHOOK:-}" ] || [ -n "${PUSHPLUS_TOKEN:-}" ] || [ -n "${EMAIL_RECIPIENTS:-}" ]; then
