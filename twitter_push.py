@@ -321,7 +321,7 @@ def build_twitter_email(cache, highlight_records, date_str):
 
     display_date = datetime.strptime(date_str, "%Y-%m-%d").strftime("%m月%d日")
     cats = Counter(t.get('category', '?') for t in cache)
-    preview_url = f'https://linkxcapital.github.io/ai-daily-news/twitter-preview-{date_str}.md'
+    preview_url = f'https://linkx-capital.github.io/ai-daily-news/twitter-preview-{date_str}.md'
     subject = f"🐦 {display_date} Twitter 动态"
 
     parts = [
@@ -417,7 +417,7 @@ def push_to_feishu(cache, webhook_url, highlights=None, date_str=None):
                     'actions': [{
                         'tag': 'button',
                         'text': {'tag': 'plain_text', 'content': '📖 查看详情'},
-                        'url': f'https://linkxcapital.github.io/ai-daily-news/twitter-preview-{date_str}.md',
+                        'url': f'https://linkx-capital.github.io/ai-daily-news/twitter-preview-{date_str}.md',
                         'type': 'primary'
                     }]
                 }

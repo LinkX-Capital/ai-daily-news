@@ -341,7 +341,7 @@ def main() -> int:
 
     public_base_url = os.environ.get(
         "PUBLIC_BASE_URL",
-        "https://linkxcapital.github.io/ai-daily-news",
+        "https://linkx-capital.github.io/ai-daily-news",
     ).rstrip("/")
     report_url = f"{public_base_url}/daily-ai-news-{args.date}.html"
 

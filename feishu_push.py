@@ -73,7 +73,7 @@ def _parse_summary_from_html(date: str) -> list[dict]:
 
 
 def build_card(date: str) -> dict:
-    gh_url = f"https://linkxcapital.github.io/ai-daily-news/daily-ai-news-{date}.html"
+    gh_url = f"https://linkx-capital.github.io/ai-daily-news/daily-ai-news-{date}.html"
 
     elements = []
     summary_elements = _parse_summary_from_html(date)
