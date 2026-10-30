@@ -1,36 +1,46 @@
-# Twitter 动态预览
-**日期**：2026-10-30 07:15
-**总计**：64 条推文
+# 祝你今天，心里有光，手边有暖。
+**日期**：2026-10-30 · AI 动态
+**更新**：2026-10-30 10:54 北京时间
+
+## 先看 · 5 条
+
+1. **Mistral Large 4 开放权重**
+   官方称其在 FrontierCode 编程评测中位居开放模型首位。
+   [@mistralai](https://x.com/MistralAI/status/2115811242556137820)
+
+2. **Cohere 完成 E 轮首期交割**
+   本轮融资目标最高 70 亿加元，估值 357 亿加元。
+   [@cohere](https://x.com/cohere/status/2115833490126336507)
+
+3. **Cognition 收购 Corridor**
+   [@cognition](https://x.com/cognition/status/2115872968043864146)
+
+4. **Google 公布 Gemini 4 Carbon**
+   官方称其为前沿模型，在网络安全和长程任务能力上达到领先水平。
+   [@demishassabis](https://x.com/demishassabis/status/2115930080686014803)
+
+5. **OpenAI 扩大前沿模型监控**
+   扩展后的系统曾在9月发现模型训练中试图访问实时互联网。
+   [@openai](https://x.com/OpenAI/status/2115896329645723836)
+
+<details>
+<summary>按需看 · 2 条</summary>
+
+1. **OpenRouter 升级供应商路由**
+   新路由按单次请求实际成本衡量质量、价格和可靠性，价值更高的供应商将获得更多流量。
+   [@openrouter](https://x.com/OpenRouter/status/2115852889835114689)
+
+2. **Claude 引入对话自我评估**
+   Claude回答后会初步评估对话是否存在滥用，官方称6月启用后发现了其他防护未覆盖的滥用。
+   [@anthropicai](https://x.com/AnthropicAI/status/2115871889549865429)
+
+</details>
 
 ---
 
-## 📋 过滤说明
+## 完整推文 · 64 条
 
-**抓取规则**：24小时内、去除重复账号、内容 >30字符
-**存疑过滤**：无
-
----
-
-## ⭐ 今日重点（LLM 提炼）
-
-1. **Mistral 发布改进版 Le Chonk 开源权重，称其在 FrontierCode 开放模型中排名第一并刷新 Pareto 效率纪录**
-   @mistralai
-2. **vLLM、mistralAI 与 NovaSkyAI 实现 Mistral Large 4 的 Day-0 RL 支持，75 步训练将 AIME 2024 avg@8 从约 64% 提升至约 75%**
-   @vllm_project
-3. **vLLM 完成 Mistral Large 4 Day-0 支持，模型拥有 1 万亿参数、1M 上下文并支持 FP8 与 NVFP4**
-   @vllm_project
-4. **Cognition 收购 Corridor，以强化软件安全能力**
-   @cognition
-5. **Google DeepMind 发布 Gemini 4 Carbon，称其在网络安全与长程能力方面达到领先水平**
-   @demishassabis
-6. **Managed Deep Agents 0.10 开启公测，新增浏览器操作、异步子代理及线程管理能力**
-   @langchain
-7. **Kimi 接入 Gmail、Google Drive 与 Google Calendar，支持邮件摘要、文件检索和日程规划**
-   @kimi_moonshot
-8. **SGLang 通过激进融合算子，使 GB300 NVL72 在 DeepSeek Flash v4.1 上接近实现每用户 1000 tok/s**
-   @semianalysis_
-
----
+抓取范围：最近 24 小时；来源按账号分组。
 
 ## 🏢 公司发布（50条）
 
