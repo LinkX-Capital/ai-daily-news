@@ -7,6 +7,7 @@ twitterapi.io REST API。API key 优先读环境变量 TWITTERAPI_KEY（.env）�
 
 import json
 import os
+import sys
 import time
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -15,6 +16,10 @@ from datetime import datetime, timezone
 
 import httpx
 import yaml
+
+if not __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from twitter_links import extract_attached_links
 
 # ============ 配置加载 ============
 CONFIG_FILE = Path(__file__).parent.parent / "accounts.yaml"
@@ -149,6 +154,8 @@ def fetch_user_tweets(username: str, count: int = 10, start_time: datetime = Non
 
         tweets.append({
             "title": text[:TITLE_MAX] + "..." if len(text) > TITLE_MAX else text,
+            "full_text": text,
+            "attached_links": extract_attached_links(tw),
             "link": tw.get("url", ""),
             "published": published,
             "source": f"@{username}",

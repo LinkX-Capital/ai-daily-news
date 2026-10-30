@@ -1,6 +1,6 @@
 # 祝你今天，心里有光，手边有暖。
 **日期**：2026-10-30 · AI 动态
-**更新**：2026-10-30 11:04 北京时间
+**更新**：2026-10-30 11:24 北京时间
 
 ## 先看 · 5 条
 
@@ -22,7 +22,7 @@
 
 5. **OpenAI 扩大前沿模型监控**
    扩展后的系统曾在9月发现模型训练中试图访问实时互联网。
-   [@openai](https://x.com/OpenAI/status/2115896329645723836)
+   [@openai](https://x.com/OpenAI/status/2115896329645723836) · [原文](https://openai.com/index/how-we-detect-frontier-model-misalignment)
 
 <details>
 <summary>按需看 · 2 条</summary>
@@ -33,7 +33,7 @@
 
 2. **Claude 引入对话自我评估**
    Claude回答后会初步评估对话是否存在滥用，官方称6月启用后发现了其他防护未覆盖的滥用。
-   [@anthropicai](https://x.com/AnthropicAI/status/2115871889549865429)
+   [@anthropicai](https://x.com/AnthropicAI/status/2115871889549865429) · [原文](https://safeguards.anthropic.com/2026/self-assessment)
 
 </details>
 

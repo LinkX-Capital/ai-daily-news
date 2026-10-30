@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from tweet_fetcher import get_tweets
 from llm_config import API_KEY as LLM_API_KEY, API_URL as LLM_API_URL, MODEL_MAIN, light_model, light_extra, llm_headers
+from twitter_links import extract_attached_links, enrich_attached_links, attachment_links
 
 PRIMARY_LIMIT = 5
 SECONDARY_LIMIT = 3
@@ -155,7 +156,7 @@ def extract_highlights_llm(tweets: list):
 
     tweets_text = []
     for i, t in enumerate(selected, 1):
-        title = t['title'].replace('\n', ' ')
+        title = (t.get('full_text') or t['title']).replace('\n', ' ')
         source = t['source'].replace('@', '')
         tweets_text.append(f"{i}. @{source}: {title}")
 
@@ -249,6 +250,11 @@ def build_highlight_records(highlights, selected):
             rec["related_links"] = list(dict.fromkeys(
                 by_idx[idx].get('link', '') for idx in h.get('related_idxs', []) if idx in by_idx
             ))
+            evidence_indices = list(dict.fromkeys([h['idx'], *h.get('related_idxs', [])]))
+            rec["attachments"] = [
+                link for idx in evidence_indices if idx in by_idx
+                for link in extract_attached_links(by_idx[idx])
+            ]
         records.append(rec)
     primary, secondary = split_highlights(records)
     return [*primary, *secondary]
@@ -368,8 +374,8 @@ def generate_preview_md(cache, output_path, highlights=None, date_str=None):
             source = item.get('source', '').lstrip('@')
             link = item.get('link', '')
             attribution = f"[@{source}]({link})" if link else f"@{source}"
-            if item.get('context_url'):
-                attribution += f" · [公告]({item['context_url']})"
+            for attachment in attachment_links(item):
+                attribution += f" · [{attachment['label']}]({attachment['url']})"
             lines.append(f"   {attribution}")
             lines.append("")
 
@@ -469,8 +475,11 @@ def build_twitter_email(cache, highlight_records, date_str):
             source = escape(record.get('source', ''))
             link = record.get('link', '')
             label = f'<a href="{escape(link)}">{title}</a>' if link else title
-            items.append(f"<li>{label}<br><small>@{source}</small></li>")
+            resources = attachment_links(record)
+            resource_html = ''.join(f' · <a href="{escape(item["url"])}">{item["label"]}</a>' for item in resources)
+            items.append(f"<li>{label}<br><small>@{source}{resource_html}</small></li>")
             text_lines.append(f"- {record.get('title', '')}（@{record.get('source', '')}）{link}")
+            text_lines.extend(f'  {item["label"]}：{item["url"]}' for item in resources)
         parts.append("<ol>" + "".join(items) + "</ol>")
     if not primary and not secondary:
         parts.append("<p>今日未能提取重点，请查看全部推文。</p>")
@@ -575,8 +584,8 @@ def build_twitter_card(cache, highlights, date_str):
             source = escape(item.get('source', '').lstrip('@'))
             link = item.get('link', '')
             attribution = f"[@{source}]({link})" if link else f"@{source}"
-            if item.get('context_url'):
-                attribution += f" · [公告]({item['context_url']})"
+            for attachment in attachment_links(item):
+                attribution += f" · [{attachment['label']}]({attachment['url']})"
             elements.append({'tag': 'markdown', 'content': f"**{i:02d}  {title}**"})
             if item.get('summary'):
                 elements.append({'tag': 'markdown', 'content': escape(item['summary'])})
@@ -651,6 +660,9 @@ def main():
     print('🔄 调用 LLM 提取...')
     highlights, selected = extract_highlights_llm(tweets)
     records = build_highlight_records(highlights, selected) if highlights is not None else None
+    if records:
+        print('🔗 整理入选原帖的附加链接...')
+        enrich_attached_links(records)
 
     # 2.5 重点落盘：feed_v5 次日运行时读取，给命中候选加排序权重
     hl_path = Path(__file__).parent / 'cache' / f'twitter_highlights_{date_str}.json'
