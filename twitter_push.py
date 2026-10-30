@@ -364,7 +364,6 @@ def generate_preview_md(cache, output_path, highlights=None, date_str=None):
 
     primary, secondary = split_highlights(highlights)
     _require_summaries([*primary, *secondary])
-    lines.extend([f"## 先看 · {len(primary)} 条", ""])
 
     def append_items(items):
         for i, item in enumerate(items, 1):
@@ -384,7 +383,7 @@ def generate_preview_md(cache, output_path, highlights=None, date_str=None):
     else:
         lines.extend(['重点提炼暂不可用，原始推文已保留。' if highlights is None else '今天暂无需要优先阅读的新动态。', ''])
     if secondary:
-        lines.extend(['<details>', f'<summary>按需看 · {len(secondary)} 条</summary>', ''])
+        lines.extend(['<details>', f'<summary>还有精力？再看 {len(secondary)} 条</summary>', ''])
         append_items(secondary)
         lines.extend(['</details>', ''])
 
@@ -464,11 +463,12 @@ def build_twitter_email(cache, highlight_records, date_str):
     ]
     text_lines = [subject, daily_blessing(date_str), ""]
     primary, secondary = split_highlights(highlight_records)
-    for heading, group in [('先看', primary), ('按需看', secondary)]:
+    for heading, group in [('', primary), ('还有精力？再看', secondary)]:
         if not group:
             continue
-        parts.append(f'<h4>{heading}</h4>')
-        text_lines.append(f'{heading}：')
+        if heading:
+            parts.append(f'<h4>{heading}</h4>')
+            text_lines.append(f'{heading}：')
         items = []
         for record in group:
             title = escape(record.get('title', ''))
@@ -602,13 +602,13 @@ def build_twitter_card(cache, highlights, date_str):
         'columns': [{
             'tag': 'column', 'width': 'weighted', 'weight': 1,
             'vertical_spacing': '8px',
-            'elements': [{'tag': 'markdown', 'content': '**先看**'}, *items],
+            'elements': items,
         }],
     }]
     if secondary:
         elements.append({
             'tag': 'collapsible_panel', 'expanded': False,
-            'header': {'title': {'tag': 'plain_text', 'content': f'按需看 · {len(secondary)} 条'}},
+            'header': {'title': {'tag': 'plain_text', 'content': f'还有精力？再看 {len(secondary)} 条'}},
             'vertical_spacing': '8px', 'elements': item_elements(secondary),
         })
     elements.extend([

@@ -1,8 +1,6 @@
 # 祝你今天，心里有光，手边有暖。
 **日期**：2026-10-30 · AI 动态
-**更新**：2026-10-30 11:24 北京时间
-
-## 先看 · 5 条
+**更新**：2026-10-30 12:51 北京时间
 
 1. **Mistral Large 4 开放权重**
    官方称其在 FrontierCode 编程评测中位居开放模型首位。
@@ -25,7 +23,7 @@
    [@openai](https://x.com/OpenAI/status/2115896329645723836) · [原文](https://openai.com/index/how-we-detect-frontier-model-misalignment)
 
 <details>
-<summary>按需看 · 2 条</summary>
+<summary>还有精力？再看 2 条</summary>
 
 1. **OpenRouter 升级供应商路由**
    新路由按单次请求实际成本衡量质量、价格和可靠性，价值更高的供应商将获得更多流量。
