@@ -11,7 +11,7 @@ from collections import defaultdict, Counter
 sys.path.insert(0, str(Path(__file__).parent))
 
 from tweet_fetcher import get_tweets
-from llm_config import API_KEY as LLM_API_KEY, API_URL as LLM_API_URL, light_model, light_extra, llm_headers
+from llm_config import API_KEY as LLM_API_KEY, API_URL as LLM_API_URL, MODEL_MAIN, light_model, light_extra, llm_headers
 
 
 def is_questionable_tweet(tweet):
@@ -69,7 +69,7 @@ def extract_highlights_llm(tweets: list):
                 response = httpx.post(
                     LLM_API_URL,
                     headers=llm_headers(minimax_key),
-                    json={**light_extra(), "model": light_model("minimaxi-text-01"), "max_tokens": 1500, "messages": [{"role": "user", "content": prompt}]},
+                    json={**light_extra(), "model": light_model(MODEL_MAIN), "max_tokens": 1500, "messages": [{"role": "user", "content": prompt}]},
                     timeout=60
                 )
                 if response.status_code == 200:

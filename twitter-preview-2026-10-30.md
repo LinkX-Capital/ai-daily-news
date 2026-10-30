@@ -11,6 +11,27 @@
 
 ---
 
+## ⭐ 今日重点（LLM 提炼）
+
+1. **Mistral 发布改进版 Le Chonk 开源权重，称其在 FrontierCode 开放模型中排名第一并刷新 Pareto 效率纪录**
+   @mistralai
+2. **vLLM、mistralAI 与 NovaSkyAI 实现 Mistral Large 4 的 Day-0 RL 支持，75 步训练将 AIME 2024 avg@8 从约 64% 提升至约 75%**
+   @vllm_project
+3. **vLLM 完成 Mistral Large 4 Day-0 支持，模型拥有 1 万亿参数、1M 上下文并支持 FP8 与 NVFP4**
+   @vllm_project
+4. **Cognition 收购 Corridor，以强化软件安全能力**
+   @cognition
+5. **Google DeepMind 发布 Gemini 4 Carbon，称其在网络安全与长程能力方面达到领先水平**
+   @demishassabis
+6. **Managed Deep Agents 0.10 开启公测，新增浏览器操作、异步子代理及线程管理能力**
+   @langchain
+7. **Kimi 接入 Gmail、Google Drive 与 Google Calendar，支持邮件摘要、文件检索和日程规划**
+   @kimi_moonshot
+8. **SGLang 通过激进融合算子，使 GB300 NVL72 在 DeepSeek Flash v4.1 上接近实现每用户 1000 tok/s**
+   @semianalysis_
+
+---
+
 ## 🏢 公司发布（50条）
 
 ### @aiatmeta | Model
