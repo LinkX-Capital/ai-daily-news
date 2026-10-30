@@ -114,7 +114,13 @@ def send_card(card: dict) -> bool:
             ],
             capture_output=True, text=True,
         )
-        if proc.returncode == 0 and '"ok": true' in proc.stdout:
+        try:
+            result = json.loads(proc.stdout)
+        except (json.JSONDecodeError, TypeError):
+            result = {}
+        if proc.returncode == 0 and result.get("ok") is True:
+            receipt = result.get("data") or {}
+            print(f"  message_id={receipt.get('message_id', '')} chat_id={receipt.get('chat_id', '')}")
             return True
         print(f"  attempt {attempt + 1} failed: {proc.stdout.strip()[:200]} {proc.stderr.strip()[:200]}")
     return False

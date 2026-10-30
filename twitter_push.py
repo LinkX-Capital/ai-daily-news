@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Twitter 动态推送 - 抓取+生成预览+飞书推送"""
+"""Twitter 动态推送 - 抓取、生成预览并通过新飞书机器人私发。"""
 
 import sys
 import json
@@ -349,7 +349,7 @@ def build_twitter_email(cache, highlight_records, date_str):
 
 
 def push_to_feishu(cache, webhook_url, highlights=None, date_str=None):
-    """推送到飞书"""
+    """旧版群 webhook 发送器；自动管线改用 push_twitter_to_feishu。"""
     import httpx
 
     if date_str is None:
@@ -429,14 +429,72 @@ def push_to_feishu(cache, webhook_url, highlights=None, date_str=None):
     return r.json()
 
 
+def build_twitter_card(cache, highlights, date_str):
+    """生成新账号私信卡片，重点保留原推文链接。"""
+    from html import escape
+
+    items = []
+    for i, item in enumerate(highlights or [], 1):
+        title = escape(item.get('title', ''))
+        source = escape(item.get('source', '').lstrip('@'))
+        link = item.get('link', '')
+        attribution = f"[@{source}]({link})" if link else f"@{source}"
+        items.append({'tag': 'markdown', 'content': f"{i}. {title}\n{attribution}"})
+    if not items:
+        items.append({'tag': 'markdown', 'content': '本次未能提炼中文重点，可查看全部推文。'})
+
+    return {
+        'schema': '2.0',
+        'config': {'width_mode': 'default'},
+        'header': {
+            'title': {'tag': 'plain_text', 'content': f'{date_str} AI 前沿动态 · Twitter'},
+            'template': 'blue',
+            'icon': {'tag': 'standard_icon', 'token': 'ai-common_colorful'},
+        },
+        'body': {
+            'padding': '12px 12px 20px 12px',
+            'vertical_spacing': '12px',
+            'elements': [
+                {
+                    'tag': 'column_set', 'flex_mode': 'none',
+                    'columns': [{
+                        'tag': 'column', 'width': 'weighted', 'weight': 1,
+                        'background_style': 'blue-50', 'padding': '12px',
+                        'vertical_spacing': '4px',
+                        'elements': [
+                            {'tag': 'markdown', 'content': f"## {len(cache)}", 'text_align': 'center'},
+                            {'tag': 'markdown', 'content': f"<font color='grey'>条推文 · {len(highlights or [])} 条中文重点</font>", 'text_align': 'center', 'text_size': 'notation'},
+                        ],
+                    }],
+                },
+                {
+                    'tag': 'column_set', 'flex_mode': 'none',
+                    'columns': [{
+                        'tag': 'column', 'width': 'weighted', 'weight': 1,
+                        'vertical_spacing': '8px',
+                        'elements': [{'tag': 'markdown', 'content': '**今日重点**'}, *items],
+                    }],
+                },
+                {
+                    'tag': 'button', 'type': 'primary_filled', 'width': 'fill',
+                    'text': {'tag': 'plain_text', 'content': '查看全部 Twitter 动态'},
+                    'behaviors': [{'type': 'open_url', 'default_url': f'https://linkx-capital.github.io/ai-daily-news/twitter-preview-{date_str}.md'}],
+                },
+            ],
+        },
+    }
+
+
+def push_twitter_to_feishu(cache, highlights, date_str):
+    """与日报共用新飞书应用和收件人，避免继续投递到旧群 webhook。"""
+    from feishu_push import send_card
+
+    return send_card(build_twitter_card(cache, highlights, date_str))
+
+
 def main():
     import sys
     import os
-    webhook = (
-        os.environ.get("FEISHU_TWITTER_WEBHOOK")
-        or os.environ.get("FEISHU_WEBHOOK")
-        or ""
-    ).strip()
     # 支持命令行指定日期：python twitter_push.py 2026-06-19
     date_str = sys.argv[1] if len(sys.argv) > 1 else datetime.now().strftime("%Y-%m-%d")
     preview_path = Path(__file__).parent / f'twitter-preview-{date_str}.md'
@@ -469,15 +527,14 @@ def main():
     print(f'   已保存到 {preview_path}')
 
     # 4. 推送飞书
-    print('📨 推送飞书...')
-    if not webhook:
-        print('   ℹ️ 未配置 FEISHU_TWITTER_WEBHOOK/FEISHU_WEBHOOK，跳过')
+    print('📨 通过新飞书机器人私发 Twitter 动态...')
+    feishu_ok = push_twitter_to_feishu(
+        tweets, build_highlight_records(highlights, selected), date_str
+    )
+    if feishu_ok:
+        print('   ✅ 飞书私信推送成功')
     else:
-        result = push_to_feishu(tweets, webhook, highlights, date_str=date_str)
-        if result.get('msg') == 'success':
-            print('   ✅ 飞书推送成功')
-        else:
-            print(f'   ❌ 飞书推送失败: {result}')
+        print('   ❌ 飞书私信推送失败')
 
     # 5. 推送到 GitHub
     print('🔄 推送到 GitHub...')
@@ -502,6 +559,8 @@ def main():
             print('   ⚠️ Twitter 邮件发送失败，不影响日报')
 
     print(f'\n✅ 完成: {datetime.now().strftime("%H:%M:%S")}')
+    if not feishu_ok:
+        raise SystemExit(1)
 
 
 if __name__ == '__main__':
