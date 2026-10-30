@@ -161,6 +161,13 @@ EXTRA_SOURCES = {
     # 添加官方 RSS 源（确认有效的）
     "HuggingFace Blog": ("https://huggingface.co/blog/feed.xml", "US"),
     "The Keyword": ("https://blog.google/rss/", "US"),
+    # 海外顶尖 VC 机构 blog（2026-10-29 加入，均验证可达且月内活跃）
+    # a16z 暂缺：a16z.com/feed 反爬返回 HTML、future.a16z.com 停更于 2022、
+    # simplecast 播客 feed 已空、YouTube 频道页无法直连；待拿到可用的 feed 再补
+    "Sequoia Capital": ("https://www.sequoiacap.com/feed/", "US"),
+    "Greylock": ("https://greylock.com/feed/", "US"),
+    "Kleiner Perkins": ("https://www.kleinerperkins.com/feed/", "US"),
+    "Battery Ventures": ("https://www.battery.com/feed/", "US"),
     # arXiv RSS (export.arxiv.org/rss/*) 已持续返回空 channel（2026-09-10 实测 0 items），
     # 改用 arXiv API（Atom，feedparser 兼容）按提交时间取最新论文；覆盖 OPML 同名条目。
     "arXiv cs.CL": ("http://export.arxiv.org/api/query?search_query=cat:cs.CL&sortBy=submittedDate&sortOrder=descending&max_results=60", "US"),
@@ -381,10 +388,12 @@ SOURCE_AUTHORITY = {
     "OpenAI News": 10, "Google DeepMind": 10, "Anthropic": 10,
     "NVIDIA Blog": 10, "Meta AI": 10, "Microsoft Research": 10,
     "HuggingFace Blog": 10, "DeepSeek": 10, "Mistral AI": 10,
-    # Tier 1.5 - 顶级分析 (9)
-    "SemiAnalysis": 9, "The Information": 9, "Epoch AI": 9,
+    # Tier 1.5 - 顶级分析 (9)（TechCrunch 提为 9：2026-10-29 用户指定核心源）
+    "SemiAnalysis": 9, "The Information": 9, "Epoch AI": 9, "TechCrunch": 9,
+    # 海外顶尖 VC 官方 blog（融资/行业判断一手信源）
+    "Sequoia Capital": 8, "Greylock": 8, "Kleiner Perkins": 8, "Battery Ventures": 8,
     # Tier 2 - 一手信源 (7-8)
-    "TechCrunch": 8, "Wired": 8, "The Verge": 8, "Ars Technica": 8,
+    "Wired": 8, "The Verge": 8, "Ars Technica": 8,
     "36氪": 8,
     # Tier 2.5 - Twitter 官方账号 (7)
     "@openai": 7, "@anthropicai": 7, "@openrouter": 7,
@@ -3039,11 +3048,13 @@ def main():
             raise PipelineBlocked(f"缓存文件不存在: {run_cache_file}")
     else:
         # 抓取 RSS
+        # 核心源抓取上限提升（2026-10-29 用户指定日报核心：Twitter + TechCrunch/The Information）
+        CORE_RSS_FETCH_LIMIT = {"TechCrunch": 30, "The Information": 30}
         for name, (url, tz) in SOURCES.items():
             if is_podcast_source(name):
                 continue
             print(f"  📡 {name}...", end=" ", flush=True)
-            arts, err = fetch_source(name, url)
+            arts, err = fetch_source(name, url, limit=CORE_RSS_FETCH_LIMIT.get(name, 15))
             if err:
                 print("❌")
                 errors.append(f"{name}: {err}")
