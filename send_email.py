@@ -42,7 +42,7 @@ def send_daily_email(image_path=None):
         raise SystemExit(1)
 
     # 构建邮件
-    subject = f"全球AI前沿动态 {today}｜星连资本"
+    subject = f"全球AI前沿动态 {today}｜AI Daily News"
     recipients = [r.strip() for r in config["EMAIL_RECIPIENTS"].split(",")]
 
     msg = MIMEMultipart("related")
@@ -56,7 +56,7 @@ def send_daily_email(image_path=None):
         <p>各位好，</p>
         <p>以下是{month_day}的全球AI前沿动态，请查收。</p>
         <p><img src="cid:daily_image" style="width: 100%; max-width: 375px; border-radius: 8px;"></p>
-        <p style="color: #999; font-size: 12px;">此邮件由系统自动发送，如有问题请联系 shenyalan@linkxcap.com</p>
+        <p style="color: #999; font-size: 12px;">此邮件由 AI Daily News 系统自动发送</p>
     </div>
     """
     msg.attach(MIMEText(html_body, "html", "utf-8"))
