@@ -20,7 +20,7 @@ class TwitterDeliveryTests(unittest.TestCase):
             [], 0, json.dumps({'ok': True, 'data': {'message_id': 'om_test', 'chat_id': 'oc_test'}}, separators=(',', ':')), ''
         )
         cache = [{'title': 'Original tweet', 'source': '@test', 'link': 'https://x.com/test/status/1', 'category': 'Company'}]
-        highlights = [{'idx': 1, 'title': '中文重点', 'source': 'test'}]
+        highlights = [{'idx': 1, 'title': '中文重点', 'summary': '已确认的一句话说明', 'source': 'test'}]
         with tempfile.TemporaryDirectory() as directory, \
                 patch.object(twitter_push, '__file__', str(Path(directory) / 'twitter_push.py')), \
                 patch.object(sys, 'argv', ['twitter_push.py', '2026-10-30']), \

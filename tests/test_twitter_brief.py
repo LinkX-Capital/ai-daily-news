@@ -69,12 +69,29 @@ class TwitterBriefTests(unittest.TestCase):
         self.assertNotIn('Secondary 3', preview)
 
     def test_sparse_selection_is_not_padded(self):
-        records = [{'title': '唯一重点', 'source': 'test', 'tier': 'primary'}]
+        records = [{'title': '唯一重点', 'summary': '已确认的具体事实', 'source': 'test', 'tier': 'primary'}]
         primary, secondary = twitter_push.split_highlights(records)
         self.assertEqual(len(primary), 1)
         self.assertFalse(secondary)
         card = twitter_push.build_twitter_card([], records, '2026-10-30')
         self.assertFalse(any(element['tag'] == 'collapsible_panel' for element in card['body']['elements']))
+
+    def test_title_without_description_cannot_be_published(self):
+        for summary in ('', '  ', None):
+            with self.subTest(summary=summary):
+                item = row(1)
+                item['summary'] = summary
+                with self.assertRaises(ValueError):
+                    twitter_push._normalize_highlights({'highlights': [item]}, [tweet(1)])
+                record = {'title': 'Cognition 收购 Corridor', 'summary': summary, 'tier': 'primary'}
+                with self.assertRaisesRegex(ValueError, '一句话说明'):
+                    twitter_push.build_twitter_card([], [record], '2026-10-30')
+                with tempfile.TemporaryDirectory() as directory:
+                    path = Path(directory) / 'preview.md'
+                    path.write_text('Previously approved preview')
+                    with self.assertRaisesRegex(ValueError, '一句话说明'):
+                        twitter_push.generate_preview_md([], path, [record], '2026-10-30')
+                    self.assertEqual(path.read_text(), 'Previously approved preview')
 
 
 if __name__ == '__main__':

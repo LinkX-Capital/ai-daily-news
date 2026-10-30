@@ -71,6 +71,13 @@ def split_highlights(highlights):
     return primary, secondary
 
 
+def _require_summaries(items):
+    for item in items:
+        summary = item.get('summary')
+        if not isinstance(summary, str) or not summary.strip():
+            raise ValueError(f"动态缺少一句话说明，补全后才能发布：{item.get('title', '')}")
+
+
 def _normalize_highlights(data, selected):
     if not isinstance(data, dict) or not isinstance(data.get('highlights'), list):
         raise ValueError('重点提炼缺少 highlights 数组')
@@ -87,7 +94,7 @@ def _normalize_highlights(data, selected):
             raise ValueError('重点引用了不存在的推文')
         tier = row.get('tier')
         title, summary, event_key = (row.get(key) for key in ('title', 'summary', 'event_key'))
-        if tier not in {'primary', 'secondary'} or not all(isinstance(v, str) and v.strip() for v in (title, event_key)) or not isinstance(summary, str):
+        if tier not in {'primary', 'secondary'} or not all(isinstance(v, str) and v.strip() for v in (title, summary, event_key)):
             raise ValueError('重点缺少分层、标题、事实摘要或事件标识')
         event_key = event_key.strip().casefold()
         if event_key in seen_events or seen_indices.intersection(evidence):
@@ -163,7 +170,7 @@ def extract_highlights_llm(tweets: list):
 - 一个具体事件只出现一次；官方公告、转发、第三方评测和部署支持归入同一事件。不同产品的不同事件保持独立。
 - 有原作者时优先引用原作者。转发只有新增重要信息或其原帖不在候选时才作为代表；宣传、祝贺和空泛预告放弃。
 - 原作者不在候选时，可信转发中明确的重大公告也正常参与排序，不因转发形式漏掉大事。
-- title 通常不超过 28 个中文字；summary 通常不超过 60 个中文字，补充一个具体事实，不重复标题，不写泛泛意义或建议。没有第二项明确事实时 summary 留空，不用“未披露”等说明填充。
+- title 通常不超过 28 个中文字；每条必须有一句非空的 summary，通常不超过 60 个中文字，具体交代主体在做什么、产品作用或发布范围。不重复标题，不写泛泛意义或建议，不用“未披露”等说明填充。给定原文不足以写出一句具体说明时，该条不入选，不能只留标题。
 - 用日常中文，融资写“首期交割”等清楚的说法，不用“初关”等行话；赠言由程序单独生成，此处只返回新闻内容。
 - 只能使用候选原文中明确给出的事实、数字、时间和因果关系；原文被截断时不补猜。融资目标不写成已到账，厂商自评注明主体。
 - 公司名、人名、产品名保持英文。idx 和 related_idxs 只能引用真实候选序号。event_key 对同一事件必须一致。
@@ -350,6 +357,7 @@ def generate_preview_md(cache, output_path, highlights=None, date_str=None):
     lines.append("")
 
     primary, secondary = split_highlights(highlights)
+    _require_summaries([*primary, *secondary])
     lines.extend([f"## 先看 · {len(primary)} 条", ""])
 
     def append_items(items):
@@ -359,7 +367,10 @@ def generate_preview_md(cache, output_path, highlights=None, date_str=None):
                 lines.append(f"   {item['summary']}")
             source = item.get('source', '').lstrip('@')
             link = item.get('link', '')
-            lines.append(f"   [@{source}]({link})" if link else f"   @{source}")
+            attribution = f"[@{source}]({link})" if link else f"@{source}"
+            if item.get('context_url'):
+                attribution += f" · [公告]({item['context_url']})"
+            lines.append(f"   {attribution}")
             lines.append("")
 
     if primary:
@@ -555,6 +566,7 @@ def build_twitter_card(cache, highlights, date_str):
     from html import escape
 
     primary, secondary = split_highlights(highlights)
+    _require_summaries([*primary, *secondary])
 
     def item_elements(items):
         elements = []
@@ -563,6 +575,8 @@ def build_twitter_card(cache, highlights, date_str):
             source = escape(item.get('source', '').lstrip('@'))
             link = item.get('link', '')
             attribution = f"[@{source}]({link})" if link else f"@{source}"
+            if item.get('context_url'):
+                attribution += f" · [公告]({item['context_url']})"
             elements.append({'tag': 'markdown', 'content': f"**{i:02d}  {title}**"})
             if item.get('summary'):
                 elements.append({'tag': 'markdown', 'content': escape(item['summary'])})

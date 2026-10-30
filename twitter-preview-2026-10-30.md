@@ -1,6 +1,6 @@
 # 祝你今天，心里有光，手边有暖。
 **日期**：2026-10-30 · AI 动态
-**更新**：2026-10-30 10:54 北京时间
+**更新**：2026-10-30 11:04 北京时间
 
 ## 先看 · 5 条
 
@@ -13,7 +13,8 @@
    [@cohere](https://x.com/cohere/status/2115833490126336507)
 
 3. **Cognition 收购 Corridor**
-   [@cognition](https://x.com/cognition/status/2115872968043864146)
+   Corridor 为 AI 开发团队提供安全防护，团队加入后将推进 Devin Security 升级。
+   [@cognition](https://x.com/cognition/status/2115872968043864146) · [公告](https://cognition.com/blog/corridor-joining-cognition)
 
 4. **Google 公布 Gemini 4 Carbon**
    官方称其为前沿模型，在网络安全和长程任务能力上达到领先水平。
